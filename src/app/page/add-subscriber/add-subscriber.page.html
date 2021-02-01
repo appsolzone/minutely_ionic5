@@ -1,0 +1,104 @@
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-title>add-subscriber</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+</ion-content> -->
+<ion-row class="" *ngIf="userData">
+  <ion-col size="1" class="ion-hide-xl-down">
+  </ion-col>
+  <ion-col size="12" size-lg>
+    <ion-card class="no-box-shadow">
+      <ion-segment [(ngModel)]="subscriberType" (ionChange)="segmentChanged($event)">
+        <ion-segment-button value="new">
+          <ion-label>New organisation</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="existing">
+          <ion-label>Join organisation</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+      <ion-card-header>
+        <ion-item lines="full">
+          <ion-icon name="cube" color="success" class="ion-padding-end" slot="start"></ion-icon>
+          <ion-label>
+            <h1>Thank you !</h1>
+            <p>for choosing CubedHR</p>
+          </ion-label>
+        </ion-item>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-row>
+          <ion-col size="2" size-xl="3" class="ion-hide-md-down">
+          </ion-col>
+          <ion-col>
+            <ion-list>
+              <ion-list-header lines="none">
+                <ion-label>
+                  <p class="ion-text-wrap ion-text-center">{{userData.providerData[0].displayName}}</p>
+                  <p class="ion-text-wrap ion-text-center">{{userData.providerData[0].email}}</p>
+                  <h1 class="ion-text-wrap ion-text-center"><small>Let's create your profile</small></h1>
+                </ion-label>
+              </ion-list-header>
+              <ion-item lines="inset">
+                <ion-label position="floating"><ion-icon name="qr-code" class="ion-margin-end"></ion-icon> {{subscriberType=='existing' ? 'Enter' : 'Choose'}} Organisation ID</ion-label>
+                <ion-input type="text" [(ngModel)]="orgProfile.subscriberId"
+                  debounce=500 minlength=3 maxlength=20
+                  (ionInput)="ionInputSubscriberId()"
+                  (ionChange)="checkSubscriberId($event)"
+                  ></ion-input>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-text [color]="subscriberExists ? 'danger' : 'medium'">
+                  <p >
+                    <small>
+                      <span *ngIf="subscriberType=='new' && subscriberExists">Organisation id is not available.</span>
+                      <span *ngIf="subscriberType=='existing' && subscriberExists"><ion-text [color]="alreadyJoined ? 'danger' : 'success'">Organisation id found.{{alreadyJoined ? 'You have already joined this organisation' : ''}}</ion-text></span>
+                      <span *ngIf="subscriberType=='new' || (subscriberType=='existing' && !subscriberExists)">
+                        {{
+                          subscriberType=='existing' ?
+                          'Enter the organisation id. If you do not have the organisation id, please check with your administrator'
+                          :
+                          'Choose an unique id for the organization. It may contain alphabets, numbers and should be between 3 and 20 characters'
+                        }}
+                      </span>
+                    </small>
+                  </p>
+                </ion-text>
+              </ion-item>
+              <ion-item lines="inset">
+                <ion-label position="floating"><ion-icon name="business"  class="ion-margin-end"></ion-icon>Organisation name</ion-label>
+                <ion-input type="text" [(ngModel)]="orgProfile.companyName" [disabled]="subscriberType=='existing'"></ion-input>
+              </ion-item>
+              <ion-item lines="inset">
+                <ion-label position="floating"  class="ion-margin-end"><ion-icon name="location"></ion-icon>Address</ion-label>
+                <ion-input type="text" [(ngModel)]="orgProfile.address" [disabled]="subscriberType=='existing'"></ion-input>
+              </ion-item>
+              <ion-item lines="none" class="ion-margin-top" *ngIf="editProfile">
+                <ion-button fill="clear" size="default" color="medium" slot="end" (click)="onSkip()">Skip</ion-button>
+                <ion-button slot="end" size="default" (click)="onSubmit()">Submit</ion-button>
+              </ion-item>
+              <ion-item lines="none" class="ion-padding-top ion-padding-bottom">
+                <ion-button fill="outline" slot="start" (click)="cancelAddSubscriber()">
+                  <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+                </ion-button>
+                <ion-button slot="end" color="primary" (click)="signOut()"
+                  [disabled]="!orgProfile.subscriberId.trim() || alreadyJoined || (subscriberType=='existing' && !subscriberExists) || (subscriberType=='new' && subscriberExists)"
+                >
+                  Next
+                  <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+          <ion-col size="2" size-xl="3" class="ion-hide-md-down">
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </ion-col>
+  <ion-col size="1" class="ion-hide-xl-down">
+  </ion-col>
+</ion-row>

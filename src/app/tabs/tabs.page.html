@@ -1,0 +1,17 @@
+<ion-tabs>
+
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button [tab]="p.tab" *ngFor="let p of appPages; let i = index" [class]="i>4 ? 'ion-hide-lg-down' : ''">
+      <ion-icon [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+      <ion-label>{{ p.title }}</ion-label>
+    </ion-tab-button>
+
+  </ion-tab-bar>
+
+</ion-tabs>
+<!-- fab button to access menus when total menu is more than 5 items on the tab -->
+<ion-fab vertical="top" horizontal="end" slot="fixed" class="ion-hide-lg-up">
+  <ion-fab-button color="light" size="small">
+    <ion-menu-button></ion-menu-button>
+  </ion-fab-button>
+</ion-fab>
