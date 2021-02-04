@@ -34,9 +34,10 @@ export class AppComponent {
     // Subscribe route change events for syncing the split pane menu selectors when the screen size changes
     this.router.events.subscribe((event: Event) => {
             // console.log("events", window.location.hash.replace('#',''), event instanceof NavigationStart, event instanceof NavigationEnd);
+            console.log("events", window.location.pathname);
             if (event instanceof NavigationStart) {
                 //do something on start activity
-                let currentPath = window.location.hash.replace('#','');
+                let currentPath = window.location.pathname; //.hash.replace('#','');
                 let currentIndex = null;
                 if (currentPath !== undefined) {
                   let tabPath = currentPath.split('tabs/')[1];
@@ -52,7 +53,7 @@ export class AppComponent {
 
             if (event instanceof NavigationEnd) {
                 //do something on end activity
-                const path = window.location.hash.replace('#','').split('tabs/')[1];
+                const path = window.location.pathname; //.hash.replace('#','').split('tabs/')[1];
                 if (path !== undefined) {
                   this.selectedIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === path.toLowerCase().split('/')[0]);
                 } else {
