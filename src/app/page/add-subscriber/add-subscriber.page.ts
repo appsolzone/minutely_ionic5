@@ -1,9 +1,11 @@
+import { RegistrationService } from './../../shared/registration.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Autounsubscribe } from '../../decorator/autounsubscribe';
 import { Subscriber } from '../../interface/subscriber';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { SubscriberService } from '../../shared/subscriber.service';
+
 
 @Component({
   selector: 'app-add-subscriber',
@@ -14,6 +16,7 @@ import { SubscriberService } from '../../shared/subscriber.service';
 export class AddSubscriberPage implements OnInit {
   @Input() cancelAddSubscriber: any;
   @Input() allProfiles: any;
+  // @Input() addSubscriber: any;
   // observable
   getSubscriberSubs$;
   getauthStateSubs$;
@@ -29,9 +32,11 @@ export class AddSubscriberPage implements OnInit {
     private router: Router,
     private auth: AuthenticationService,
     private subscriber: SubscriberService,
+    public register: RegistrationService
   ) {
     this.firestore = this.subscriber.db.frb.firestore;
     this.getauthStateSubs$ = this.auth.authState(this.authStateCallBack.bind(this));
+    
   }
 
   ngOnInit() {
@@ -124,6 +129,50 @@ export class AddSubscriberPage implements OnInit {
         Object.assign(this.orgProfile ,{companyName: '', address: ''});
       }
     }
+
+  }
+  submit(){
+    if(this.subscriberType=='new'){
+
+      if(this.orgProfile.subscriberId == '' 
+    || this.orgProfile.address == '' 
+    || this.orgProfile.companyName ==''){
+
+      console.log('cannnot submit, fill all the fields');
+
+    }
+    else{
+      this.register.batchPerform(this.userData.uid,
+        this.orgProfile.subscriberId.trim().toUpperCase(),
+        this.orgProfile.companyName,
+        this.orgProfile.address,
+        this.userData.providerData[0].displayName,
+        this.userData.providerData[0].email).then(feedback=>{
+          this.cancelAddSubscriber(false)
+        }).catch(err=>{
+          console.log('error', err);
+        })
+    }
+
+    }
+    else{
+
+      this.register.batchPerformUser(this.userData.uid,
+        this.orgProfile.subscriberId.trim().toUpperCase(),
+        this.userData.providerData[0].displayName,
+        this.userData.providerData[0].email).then(feedback=>{
+          this.cancelAddSubscriber(false)
+        }).catch(err=>{
+          console.log('error', err);
+        })
+
+      // console.log('join part');
+
+    }
+    
+
+    
+    
 
   }
 

@@ -12,6 +12,8 @@ export class DatabaseService {
     users: 'users',
     subscribers: 'subscribers',
     plans: 'subscriptionOptions',
+    notifications: 'notifications',
+    useruids:'useruids'
   };
 
   constructor(
