@@ -60,8 +60,8 @@ export class ManageprofilePage implements OnInit {
     this.session.clear();
   }
   // cancel add subscriber
-  cancelAddSubscriber(){
-    if(this.allProfiles.length==0){
+  cancelAddSubscriber(checkProfiles:boolean = true){
+    if( checkProfiles && this.allProfiles.length==0){
       this.signOut();
       this.addSubscriber = false;
     } else {

@@ -76,15 +76,15 @@
                 <ion-label position="floating"  class="ion-margin-end"><ion-icon name="location"></ion-icon>Address</ion-label>
                 <ion-input type="text" [(ngModel)]="orgProfile.address" [disabled]="subscriberType=='existing'"></ion-input>
               </ion-item>
-              <ion-item lines="none" class="ion-margin-top" *ngIf="editProfile">
+              <!-- <ion-item lines="none" class="ion-margin-top" *ngIf="editProfile">
                 <ion-button fill="clear" size="default" color="medium" slot="end" (click)="onSkip()">Skip</ion-button>
                 <ion-button slot="end" size="default" (click)="onSubmit()">Submit</ion-button>
-              </ion-item>
+              </ion-item> -->
               <ion-item lines="none" class="ion-padding-top ion-padding-bottom">
                 <ion-button fill="outline" slot="start" (click)="cancelAddSubscriber()">
                   <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
                 </ion-button>
-                <ion-button slot="end" color="primary" (click)="signOut()"
+                <ion-button slot="end" color="primary" (click)="submit()"
                   [disabled]="!orgProfile.subscriberId.trim() || alreadyJoined || (subscriberType=='existing' && !subscriberExists) || (subscriberType=='new' && subscriberExists)"
                 >
                   Next
