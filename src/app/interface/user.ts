@@ -9,6 +9,7 @@ export interface User {
   status: string,
   address?: string,
   picUrl?: string,
+  fcm?: string,
   lastUpdateTimeStamp: any,
   userCreationTimeStamp: any
 }

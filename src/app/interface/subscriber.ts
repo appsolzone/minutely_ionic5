@@ -1,10 +1,10 @@
 export interface Subscriber {
   subscriberId: string,
   companyName: string,
-  country: string,
+  country?: string,
   email: string,
-  phoneNumber: string,
-  paypalId: string,
+  phoneNumber?: string,
+  paypalId?: string,
   noOfFreeLicense: number,
   noOfUserAllowed: number,
   address?: string,
