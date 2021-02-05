@@ -35,6 +35,10 @@ const routes: Routes = [
         path: 'notification',
         loadChildren: () => import('../page/notification/notification.module').then( m => m.NotificationPageModule)
       },
+        {
+        path: 'subscription',
+        loadChildren: () => import('../page/subscription/subscription.module').then( m => m.SubscriptionPageModule)
+      },
       {
         path: '',
         redirectTo: '/tabs/attendance',

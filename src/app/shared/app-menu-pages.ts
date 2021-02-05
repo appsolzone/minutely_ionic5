@@ -51,7 +51,6 @@ export const appPages = [
     icon: 'card',
     tab: 'subscription',
   },
-
 ];
 
 /*

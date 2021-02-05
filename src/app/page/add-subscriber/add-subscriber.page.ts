@@ -1,9 +1,12 @@
+import { RegistrationService } from './../../shared/registration.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Autounsubscribe } from '../../decorator/autounsubscribe';
 import { Subscriber } from '../../interface/subscriber';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { SubscriberService } from '../../shared/subscriber.service';
+import { ComponentsService } from 'src/app/shared/components/components.service';
+
 
 @Component({
   selector: 'app-add-subscriber',
@@ -14,6 +17,7 @@ import { SubscriberService } from '../../shared/subscriber.service';
 export class AddSubscriberPage implements OnInit {
   @Input() cancelAddSubscriber: any;
   @Input() allProfiles: any;
+  // @Input() addSubscriber: any;
   // observable
   getSubscriberSubs$;
   getauthStateSubs$;
@@ -28,10 +32,13 @@ export class AddSubscriberPage implements OnInit {
   constructor(
     private router: Router,
     private auth: AuthenticationService,
-    private subscriber: SubscriberService,
+    private subscriber: SubscriberService, 
+    public register: RegistrationService,
+    public componentService:ComponentsService
   ) {
     this.firestore = this.subscriber.db.frb.firestore;
     this.getauthStateSubs$ = this.auth.authState(this.authStateCallBack.bind(this));
+
   }
 
   ngOnInit() {
@@ -125,6 +132,53 @@ export class AddSubscriberPage implements OnInit {
       }
     }
 
+  }
+  submit(){
+    if(this.subscriberType=='new'){
+
+      if(this.orgProfile.subscriberId == ''
+          || this.orgProfile.address == ''
+          || this.orgProfile.companyName ==''
+        ){
+          this.componentService.presentAlert('Error','cannnot submit, fill all the fields');
+          console.log('cannnot submit, fill all the fields');
+        }
+      else{
+        this.componentService.showLoader();
+        this.register.registerSubscriber(this.userData.uid,
+          this.orgProfile.subscriberId.trim().toUpperCase(),
+          this.orgProfile.companyName,
+          this.orgProfile.address,
+          this.userData.providerData[0].displayName,
+          this.userData.providerData[0].email)
+          .then(feedback=>{
+            this.componentService.hideLoader();
+            this.componentService.presentToaster('Success!! Organisation create successfully');
+            this.router.navigate(['/tabs/subscription/choose-plan']);
+            this.cancelAddSubscriber(false)
+          }).catch(err=>{
+            this.componentService.hideLoader();
+            console.log('error', err);
+          })
+      }
+    }
+    else{
+      this.componentService.showLoader();
+      this.register.joinSubscriber(this.userData.uid,
+        this.orgProfile.subscriberId.trim().toUpperCase(),
+        this.userData.providerData[0].displayName,
+        this.userData.providerData[0].email)
+        .then(feedback=>{
+          this.componentService.hideLoader();
+          this.cancelAddSubscriber(false)
+        }).catch(err=>{
+          this.componentService.hideLoader();
+          console.log('error', err);
+        })
+
+      // console.log('join part');
+
+    }
   }
 
 }

@@ -1,0 +1,115 @@
+<!-- <ion-header>
+
+</ion-header> -->
+
+<ion-content>
+  <ion-toolbar>
+    <ion-title>Subscription</ion-title>
+    <ion-buttons slot="start">
+      <ion-button>
+        <ion-icon slot="icon-only" name="person-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-row class="shapes">
+        <ion-col size="12" size-lg >
+          <ion-row class="">
+            <ion-col size="2">
+            </ion-col>
+            <ion-col size="12" size-md>
+              <ion-card class="no-box-shadow">
+                <ion-card-header>
+                  <ion-item>
+                    <ion-label>
+                      <h1>
+                        <ion-icon name="leaf" color="success" class="ion-padding-end"></ion-icon>Hi !
+                      </h1>
+                    </ion-label>
+                    <ion-button fill="clear" slot="end" (click)="upgradePlan()">
+                      <ion-icon slot="icon-only" name="qr-code" color="success"></ion-icon>
+                    </ion-button>
+                    <!-- <ion-button fill="clear" slot="end" (click)="upgradePlan()">
+                      <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+                    </ion-button> -->
+                  </ion-item>
+                </ion-card-header>
+                <ion-card-content>
+                  <ion-item  lines="none">
+                    <ion-avatar slot="start">
+                      <h1>
+                        <ion-icon color="primary" slot="icon-only" name="person-circle"
+                          [ngStyle]="{'height':'40px','width':'40px'}"></ion-icon>
+                      </h1>
+                    </ion-avatar>
+                    <ion-label color="primary" *ngIf="orgProfile == null">
+                      <h2 class="ion-text-wrap">We are getting the organisation profile information. Please wait ....</h2>
+                      <br />
+                      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+                    </ion-label>
+                    <ion-label>
+                      <h1 class="ion-text-wrap">{{orgProfile?.companyName ? orgProfile?.companyName : 'Guest'}}</h1>
+                    </ion-label>
+                  </ion-item>
+                  <ion-list >
+                    <ion-list-header lines="none">
+                      <ion-label>
+                        <h1 class="ion-padding-bottom"><small>
+                            <ion-text color="primary">Organisation profile</ion-text>
+                          </small></h1>
+                        <ion-progress-bar value="0.5" color="warning"></ion-progress-bar>
+                      </ion-label>
+                    </ion-list-header>
+                    <ion-item lines="inset">
+                      <ion-label>
+                        <ion-icon name="qr-code"></ion-icon>
+                      </ion-label>
+                      <ion-input type="text" [value]="orgProfile?.subscriberId" class="ion-text-right"
+                      disabled readonly ></ion-input>
+                    </ion-item>
+                    <ion-item lines="inset">
+                      <ion-label>
+                        <ion-icon name="mail"></ion-icon>
+                      </ion-label>
+                      <ion-input type="email" [value]="orgProfile?.email" class="ion-text-right" 
+                        disabled
+                        placeholder="Please enter email" readonly></ion-input>
+                    </ion-item>
+                    <ion-item lines="inset">
+                      <ion-label>
+                        <ion-icon name="mail"></ion-icon>
+                      </ion-label>
+                      <ion-input type="email" [value]="orgProfile?.subscriptionType" class="ion-text-right"  disabled
+                        placeholder="Please enter email" readonly></ion-input>
+                    </ion-item>
+                    <ion-item lines="inset">
+                      <ion-label>
+                        <ion-icon name="mail"></ion-icon>
+                      </ion-label>
+                      <ion-input type="email" [value]="orgProfile?.noOfFreeLicense" class="ion-text-right"  disabled
+                        placeholder="Please enter email" readonly></ion-input>
+                    </ion-item>
+                    <ion-item lines="inset">
+                      <ion-label>
+                        <ion-icon name="mail"></ion-icon>
+                      </ion-label>
+                      <ion-badge [color]="currPlanActiveOrNot?'warning':'danger'">{{currPlanActiveOrNot?'Active':'Canceled'}}</ion-badge>
+                    </ion-item>
+
+                    <ion-item lines="none" class="ion-margin-top">
+                      <ion-button fill="clear" size="default" color="danger" slot="end" *ngIf="orgProfile.paypalId && currPlanActiveOrNot" (click)="cancelPlan()">Cancel</ion-button>
+                      <ion-button slot="end" size="default" (click)="upgradePlan()">Upgrade</ion-button>
+                    </ion-item>
+                  </ion-list>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-col size="2" [class]="(!orgProfile ? 'ion-hide-lg-up ' : '') + ' ion-hide-md-down'">
+            </ion-col>
+          </ion-row>
+        </ion-col>
+  </ion-row>
+
+  <!-- <router-outlet></router-outlet> -->
+</ion-content>
+
+
