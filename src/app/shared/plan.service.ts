@@ -12,6 +12,6 @@ export class PlanService {
 
   getPlan(planName:string){
     let queryObj = planName ? [{field: 'planName',operator: '==', value: planName}] : [];
-    return this.db.getAllDocumentsByQuery(this.db.allCollections.plans, queryObj);
+    return this.db.getAllDocumentsSnapshotByQuery(this.db.allCollections.plans, queryObj);
   }
 }

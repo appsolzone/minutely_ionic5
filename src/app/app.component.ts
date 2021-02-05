@@ -34,7 +34,7 @@ export class AppComponent {
     // Subscribe route change events for syncing the split pane menu selectors when the screen size changes
     this.router.events.subscribe((event: Event) => {
             // console.log("events", window.location.hash.replace('#',''), event instanceof NavigationStart, event instanceof NavigationEnd);
-            console.log("events", window.location.pathname);
+            // console.log("events", window.location.pathname);
             if (event instanceof NavigationStart) {
                 //do something on start activity
                 let currentPath = window.location.pathname; //.hash.replace('#','');
@@ -43,7 +43,7 @@ export class AppComponent {
                   let tabPath = currentPath.split('tabs/')[1];
                   currentIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === tabPath?.toLowerCase().split('/')[0]);
                 } else {
-                  currentIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'store');
+                  currentIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'attendance');
                 }
                 if(currentIndex && currentIndex!=-1){
                   appPages[currentIndex].url = currentPath;
@@ -53,13 +53,13 @@ export class AppComponent {
 
             if (event instanceof NavigationEnd) {
                 //do something on end activity
-                const path = window.location.pathname; //.hash.replace('#','').split('tabs/')[1];
+                const path = window.location.pathname.split('tabs/')[1]; //.hash.replace('#','').split('tabs/')[1];
                 if (path !== undefined) {
                   this.selectedIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === path.toLowerCase().split('/')[0]);
                 } else {
-                  this.selectedIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'store');
+                  this.selectedIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'attendance');
                 }
-                // console.log("changeSelectedIndex NavigationEnd", window.location.hash, path, this.selectedIndex, appPages[this.selectedIndex].url);
+                // console.log("changeSelectedIndex NavigationEnd", window.location.hash, path, this.selectedIndex);
             }
     });
   }

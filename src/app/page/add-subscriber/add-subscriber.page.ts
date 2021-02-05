@@ -36,7 +36,7 @@ export class AddSubscriberPage implements OnInit {
   ) {
     this.firestore = this.subscriber.db.frb.firestore;
     this.getauthStateSubs$ = this.auth.authState(this.authStateCallBack.bind(this));
-    
+
   }
 
   ngOnInit() {
@@ -134,33 +134,33 @@ export class AddSubscriberPage implements OnInit {
   submit(){
     if(this.subscriberType=='new'){
 
-      if(this.orgProfile.subscriberId == '' 
-    || this.orgProfile.address == '' 
-    || this.orgProfile.companyName ==''){
-
-      console.log('cannnot submit, fill all the fields');
-
+      if(this.orgProfile.subscriberId == ''
+          || this.orgProfile.address == ''
+          || this.orgProfile.companyName ==''
+        ){
+          console.log('cannnot submit, fill all the fields');
+        }
+      else{
+        this.register.registerSubscriber(this.userData.uid,
+          this.orgProfile.subscriberId.trim().toUpperCase(),
+          this.orgProfile.companyName,
+          this.orgProfile.address,
+          this.userData.providerData[0].displayName,
+          this.userData.providerData[0].email)
+          .then(feedback=>{
+            this.cancelAddSubscriber(false)
+          }).catch(err=>{
+            console.log('error', err);
+          })
+      }
     }
     else{
-      this.register.batchPerform(this.userData.uid,
-        this.orgProfile.subscriberId.trim().toUpperCase(),
-        this.orgProfile.companyName,
-        this.orgProfile.address,
-        this.userData.providerData[0].displayName,
-        this.userData.providerData[0].email).then(feedback=>{
-          this.cancelAddSubscriber(false)
-        }).catch(err=>{
-          console.log('error', err);
-        })
-    }
 
-    }
-    else{
-
-      this.register.batchPerformUser(this.userData.uid,
+      this.register.joinSubscriber(this.userData.uid,
         this.orgProfile.subscriberId.trim().toUpperCase(),
         this.userData.providerData[0].displayName,
-        this.userData.providerData[0].email).then(feedback=>{
+        this.userData.providerData[0].email)
+        .then(feedback=>{
           this.cancelAddSubscriber(false)
         }).catch(err=>{
           console.log('error', err);
@@ -169,11 +169,6 @@ export class AddSubscriberPage implements OnInit {
       // console.log('join part');
 
     }
-    
-
-    
-    
-
   }
 
 }
