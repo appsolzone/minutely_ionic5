@@ -129,7 +129,7 @@ export class ManageprofilePage implements OnInit {
     } else {
       this.updatedProfile = {...this.userProfile};
       this.updatedProfile.lastUpdateTimeStamp = this.firestore.FieldValue.serverTimestamp();
-      // this.router.navigate(['tabs/attendance']);
+      // this.router.navigate(['attendance']);
     }
   }
   // get last sign in info

@@ -5,53 +5,52 @@
 export const appPages = [
   {
     title: 'Attendance',
-    url: '/tabs/attendance',
+    url: 'attendance',
     icon: 'time',
     tab: 'attendance',
   },
   {
     title: 'Leaves',
-    url: '/tabs/leave',
+    url: 'leave',
     icon: 'cafe',
     tab: 'leave',
   },
   {
     title: 'Expenses',
-    url: '/tabs/expense',
+    url: 'expense',
     icon: 'cash',
     tab: 'expense',
   },
   {
     title: 'Profile',
-    url: '/tabs/profile',
+    url: 'profile',
     icon: 'person-circle',
     tab: 'profile',
   },
   {
     title: 'Ntification',
-    url: '/tabs/notification',
+    url: 'notification',
     icon: 'notifications',
     tab: 'notification',
   },
   {
     title: 'Regions',
-    url: '/tabs/region',
+    url: 'region',
     icon: 'earth',
     tab: 'region',
   },
   {
     title: 'Organisation',
-    url: '/tabs/admin',
+    url: 'admin',
     icon: 'people',
     tab: 'admin',
   },
   {
     title: 'Subscription',
-    url: '/tabs/subscription',
+    url: 'subscription',
     icon: 'card',
     tab: 'subscription',
   },
-
 ];
 
 /*

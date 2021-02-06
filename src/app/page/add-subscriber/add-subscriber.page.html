@@ -3,9 +3,7 @@
     <ion-title>add-subscriber</ion-title>
   </ion-toolbar>
 </ion-header>
-
 <ion-content>
-
 </ion-content> -->
 <ion-row class="" *ngIf="userData">
   <ion-col size="1" class="ion-hide-xl-down">
@@ -43,25 +41,30 @@
                 </ion-label>
               </ion-list-header>
               <ion-item lines="inset">
-                <ion-label position="floating"><ion-icon name="qr-code" class="ion-margin-end"></ion-icon> {{subscriberType=='existing' ? 'Enter' : 'Choose'}} Organisation ID</ion-label>
-                <ion-input type="text" [(ngModel)]="orgProfile.subscriberId"
-                  debounce=500 minlength=3 maxlength=20
-                  (ionInput)="ionInputSubscriberId()"
-                  (ionChange)="checkSubscriberId($event)"
-                  ></ion-input>
+                <ion-label position="floating">
+                  <ion-icon name="qr-code" class="ion-margin-end"></ion-icon> {{subscriberType=='existing' ? 'Enter' :
+                  'Choose'}} Organisation ID
+                </ion-label>
+                <ion-input type="text" [(ngModel)]="orgProfile.subscriberId" debounce=500 minlength=3 maxlength=20
+                  (ionInput)="ionInputSubscriberId()" (ionChange)="checkSubscriberId($event)"></ion-input>
               </ion-item>
               <ion-item lines="none">
                 <ion-text [color]="subscriberExists ? 'danger' : 'medium'">
-                  <p >
+                  <p>
                     <small>
                       <span *ngIf="subscriberType=='new' && subscriberExists">Organisation id is not available.</span>
-                      <span *ngIf="subscriberType=='existing' && subscriberExists"><ion-text [color]="alreadyJoined ? 'danger' : 'success'">Organisation id found.{{alreadyJoined ? 'You have already joined this organisation' : ''}}</ion-text></span>
+                      <span *ngIf="subscriberType=='existing' && subscriberExists">
+                        <ion-text [color]="alreadyJoined ? 'danger' : 'success'">Organisation id found.{{alreadyJoined ?
+                          'You have already joined this organisation' : ''}}</ion-text>
+                      </span>
                       <span *ngIf="subscriberType=='new' || (subscriberType=='existing' && !subscriberExists)">
                         {{
-                          subscriberType=='existing' ?
-                          'Enter the organisation id. If you do not have the organisation id, please check with your administrator'
-                          :
-                          'Choose an unique id for the organization. It may contain alphabets, numbers and should be between 3 and 20 characters'
+                        subscriberType=='existing' ?
+                        'Enter the organisation id. If you do not have the organisation id, please check with your
+                        administrator'
+                        :
+                        'Choose an unique id for the organization. It may contain alphabets, numbers and should be
+                        between 3 and 20 characters'
                         }}
                       </span>
                     </small>
@@ -69,12 +72,18 @@
                 </ion-text>
               </ion-item>
               <ion-item lines="inset">
-                <ion-label position="floating"><ion-icon name="business"  class="ion-margin-end"></ion-icon>Organisation name</ion-label>
-                <ion-input type="text" [(ngModel)]="orgProfile.companyName" [disabled]="subscriberType=='existing'"></ion-input>
+                <ion-label position="floating">
+                  <ion-icon name="business" class="ion-margin-end"></ion-icon>Organisation name
+                </ion-label>
+                <ion-input type="text" [(ngModel)]="orgProfile.companyName" [disabled]="subscriberType=='existing'">
+                </ion-input>
               </ion-item>
               <ion-item lines="inset">
-                <ion-label position="floating"  class="ion-margin-end"><ion-icon name="location"></ion-icon>Address</ion-label>
-                <ion-input type="text" [(ngModel)]="orgProfile.address" [disabled]="subscriberType=='existing'"></ion-input>
+                <ion-label position="floating" class="ion-margin-end">
+                  <ion-icon name="location"></ion-icon>Address
+                </ion-label>
+                <ion-input type="text" [(ngModel)]="orgProfile.address" [disabled]="subscriberType=='existing'">
+                </ion-input>
               </ion-item>
               <!-- <ion-item lines="none" class="ion-margin-top" *ngIf="editProfile">
                 <ion-button fill="clear" size="default" color="medium" slot="end" (click)="onSkip()">Skip</ion-button>
