@@ -4,6 +4,7 @@ import { User } from 'src/app/interface/user';
 import { AuthenticationService } from 'src/app/shared/authentication.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { PlanService } from 'src/app/shared/plan.service';
+import { PaypalService } from 'src/app/shared/paypal/paypal.service';
 import { SessionService } from 'src/app/shared/session.service';
 import { Plugins } from '@capacitor/core';
 const { Storage } = Plugins;
@@ -13,72 +14,83 @@ const { Storage } = Plugins;
   styleUrls: ['./subscription.page.scss'],
 })
 export class SubscriptionPage implements OnInit {
+  // observables
+  sessionSubs$;
+  paypalPlanStatussubs$;
+
   allPlans:any= [];
-  getauthStateSubs$;
   signinUi: any;
   userData: any;
   id: string;
   allProfiles: any[];
   userProfile: User;
   orgProfile:any =null;
+  orgPlan: any = null;
   status:boolean;
   currPlanActiveOrNot:boolean;
   constructor(
       private auth: AuthenticationService,
       private planService:PlanService,
+      private paypal: PaypalService,
       private session:SessionService,
       private router:Router,
       private componentService:ComponentsService
   ) { }
 
-  async ngOnInit(){
+  ngOnInit(){
+    // get session info
+    this.getSessionInfo();
+    // get paypalPlanStatus
+    this.getPaypalPlanStatus();
 
-   this.session.watch().subscribe(value=>{
-      console.log("Session Subscription got", value);
-      // Re populate the values as required
-      this.allProfiles = value?.allProfiles;
-      this.orgProfile = value?.orgProfile;
+  }
 
-      if(this.allProfiles){
-        if(this.allProfiles.length==0){
-          this.router.navigate(['profile']);
-        } else if(this.allProfiles.length==1){
-          this.getUserProfile(0);
-        } else {
-          this.getLastSignInProfile();
-        }
-      }
-    });
+  ionViewWillEnter(){
+    if(!this.orgProfile || this.orgProfile==undefined){
+      this.router.navigate(['profile']);
+    }
+  }
 
-    if(this.orgProfile.subscriberType !== 'Free'){
-    // this.componentService.showLoader();
-     await this.planService.getSubcriptionDetails(this.orgProfile.paypalId);
-     this.planService.currPlanActiveOrNot.subscribe(res=>{
-         this.currPlanActiveOrNot = res;
-         console.log("plan status",this.currPlanActiveOrNot);
-         // this.componentService.hideLoader();
+  getSessionInfo(){
+    this.sessionSubs$ = this.session.watch().subscribe(value=>{
+       console.log("Session Subscription got", value);
+       // check if the orgprofile changed, we need check the status in paypal if org changed
+       if(
+         this.orgProfile?.subscriberType !== 'Free'
+         && this.orgProfile?.subscriberId !== value?.orgProfile?.subscriberId
+       ){
+         // this.componentService.showLoader();
+          this.currPlanActiveOrNot = undefined;
+          this.paypal.getSubcriptionDetails(value?.orgProfile?.paypalId);
+       }
+       // Re populate the values as required
+       this.userProfile = value?.userProfile;
+       this.orgProfile = value?.orgProfile;
+       this.orgPlan = value?.orgPlan;
+
+       if(this.userProfile){
+         // Nothing to do just display details
+       } else {
+         this.router.navigate(['profile']);
+       }
      });
-    }
-
-
   }
 
-    // get last sign in info
-  async getLastSignInProfile(){
-    const ret = await Storage.get({ key: 'userProfile' });
-    const lastSigninUserProfile = ret.value && ret.value != 'undefined' ? JSON.parse(ret.value) : {};
-    let idx = this.allProfiles.findIndex(p=>p.data.subscriberId==lastSigninUserProfile.subscriberId);
-    if(idx!= -1){
-      this.getUserProfile(idx);
-    }
+  getPaypalPlanStatus(){
+    this.paypalPlanStatussubs$ = this.paypal.currPlanActiveOrNot.subscribe(res=>{
+        this.currPlanActiveOrNot = res;
+        console.log("plan status",this.currPlanActiveOrNot);
+        // this.componentService.hideLoader();
+    });
   }
-  // get User profile
-  getUserProfile(index){
-    this.userProfile=this.allProfiles[index]?.data;
-    this.id = this.allProfiles[index]?.id;
-    this.session.getSessionInfo(this.userProfile.subscriberId);
-  }
+
  upgradePlan(){
    this.router.navigateByUrl('subscription/choose-plan');
+ }
+ cancelPlan(){
+   if(this.orgProfile?.paypalPlanId){
+     this.paypal.cancelSubcription(this.orgProfile?.paypalId)
+   }
+
  }
 }

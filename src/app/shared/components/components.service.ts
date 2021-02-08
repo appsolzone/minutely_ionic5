@@ -22,7 +22,7 @@ export class ComponentsService {
     let buttons:any = {
       Success:[
          {
-          text: 'Ok,Continue !!',
+          text: 'Ok',
           role: 'ok',
           cssClass: 'ok-button',
           handler: () => {
@@ -32,7 +32,7 @@ export class ComponentsService {
       ],
       Error:[
          {
-          text: 'Please check!!',
+          text: 'Dismiss',
           role: 'error',
           cssClass: 'error-button',
           handler: () => {
@@ -42,14 +42,14 @@ export class ComponentsService {
       ],
       Warning:[
          {
-          text: 'No, cancel it!',
+          text: 'Dismiss',
           role: 'cancel',
           cssClass: 'cancel-button',
           handler: () => {
            console.log('Confirm Cancel');
           }
         }, {
-          text: 'Yes, I agree',
+          text: 'Ok',
           role: 'ok',
           cssClass: 'ok-button',
           handler: () => {

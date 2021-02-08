@@ -1,4 +1,4 @@
-.shapes {
+.wave-background {
   min-height: 100%;
   background-image: url(../../../assets/app-assets/waveBackground.svg),
     linear-gradient(
@@ -12,8 +12,4 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
-}
-.shadow-icon {
-  color: #ffffff;
-  text-shadow: 5px 2px 8px #000000;
 }

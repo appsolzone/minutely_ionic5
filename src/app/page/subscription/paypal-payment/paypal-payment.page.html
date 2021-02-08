@@ -1,57 +1,73 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>paypal-payment</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Review and pay</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-row>
-  <ion-col size-lg="6" size-md="6" size-sm="12" size="12">
-    <ion-card>
-      <ion-item color="primary" [ngStyle]="{'background': plan.color}">
-        <h1 style="color:#ffffff;">
-          <!-- <small> -->
-          {{ plan.planName }}
-          <!-- </small> -->
-        </h1>
-
-       <ion-button slot="end" (click)="backChoosePlan()" color="medium">
-        back
-       </ion-button> 
-      </ion-item>
-      <ion-card-content>
-        <ion-item>
-          <h1>
-            $ {{ plan.price }} / mo
-          </h1>
-        </ion-item>
-        <ion-item *ngFor="let tag of plan.tags;">
-          <p>{{tag}}</p>
-          <small>
-            <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
-          </small>
-        </ion-item>
-      </ion-card-content>
-    </ion-card>
+  <ion-row class="wave-background">
+    <ion-col>
+      <ion-row>
+        <ion-col size="12" size-xl="1">
+        </ion-col>
+        <ion-col>
+          <ion-card mode="ios" class="uniform-card-height">
+            <ion-item lines="none" color="transparent" style="background: {{plan?.color}};">
+              <h1>
+                  <ion-text color="white">{{ plan?.planName }}</ion-text>
+              </h1>
+              <ion-text color="white" slot="end">$ {{plan?.price}} / mo</ion-text>
+            </ion-item>
+            <ion-card-content>
+              <ion-item no-lines>
+                <ion-label class="ion-text-center">
+                  <h1>
+                    <ion-text class="large-title">$ {{ plan?.price/plan?.allowedLicense | number:'1.2-2'}}</ion-text> / mo <br/> <small>per user</small>
+                  </h1>
+                </ion-label>
+              </ion-item>
+              <ion-item lines="none" class="" *ngFor="let tag of plan.tags;">
+                <p class="ion-text-start">{{tag}}</p>
+                <ion-icon slot="start" color="green" name="checkmark-circle-outline"></ion-icon>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col>
+          <ion-card mode="ios" class="uniform-card-height">
+            <ion-item lines="" color="transparent">
+              <h1>
+                  <ion-text color="">Review and pay</ion-text>
+              </h1>
+              <ion-icon color="medium" slot="end" name="card"></ion-icon>
+            </ion-item>
+            <ion-card-content>
+              <ion-item>
+                <ion-icon name="apps" color="medium"></ion-icon>
+                <ion-label class="ion-text-end">{{ orgProfile?.companyName }}</ion-label>
+              </ion-item>
+              <ion-item *ngIf="plan.coupon">
+                <ion-icon  name="paper-plane" color="medium"></ion-icon>
+                <ion-label class="ion-text-end">{{ plan?.coupon?.couponCode }}</ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-icon  name="people" color="medium"></ion-icon>
+                <ion-label class="ion-text-end">{{ plan?.allowedLicense }}</ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-icon name="mail" color="medium"></ion-icon>
+                <ion-label class="ion-text-end">{{ orgProfile?.email }}</ion-label>
+              </ion-item>
+              <ion-item id="paypal" #paypal class="ion-margin-top" lines="none"></ion-item>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col size="12" size-xl="1">
+        </ion-col>
+      </ion-row>
     </ion-col>
-  <ion-col size-lg="6" size-md="6" size-sm="12" size="12">
-    <ion-item>
-      <ion-icon name="apps"></ion-icon>
-      <ion-label>{{ orgProfile?.companyName }}</ion-label>
-    </ion-item>
-    <ion-item *ngIf="plan.coupon">
-      <ion-icon  name="paper-plane"></ion-icon>
-      <ion-label >{{ plan.coupon.couponCode }}</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-icon  name="people"></ion-icon>
-      <ion-label >{{ plan.allowedLicense }}</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-icon name="mail"></ion-icon>
-      <ion-label>{{ orgProfile?.email }}</ion-label>
-    </ion-item>
-    <div id="paypal" #paypal class="text-center" padding></div>
-  </ion-col>
-  </ion-row>    
+  </ion-row>
 </ion-content>

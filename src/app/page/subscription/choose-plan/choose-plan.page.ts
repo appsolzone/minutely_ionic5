@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { User } from 'src/app/interface/user';
-import { AuthenticationService } from 'src/app/shared/authentication.service';
+import { Autounsubscribe } from '../../../decorator/autounsubscribe';
 import { PlanService } from 'src/app/shared/plan.service';
 import { SessionService } from 'src/app/shared/session.service';
 import { Plugins } from '@capacitor/core';
@@ -12,14 +11,14 @@ const { Storage } = Plugins;
   templateUrl: './choose-plan.page.html',
   styleUrls: ['./choose-plan.page.scss'],
 })
+@Autounsubscribe()
 export class ChoosePlanPage implements OnInit {
-  allPlans:any= [];
+  // observables
+  sessionSubs$;
   getauthStateSubs$;
-  signinUi: any;
-  userData: any;
-  id: string;
-  allProfiles: any[];
-  userProfile: User;
+  subscriberChanged: boolean = false;
+  allPlans:any= [];
+  generalPlans: any=[];
   orgProfile: any;
   constructor(
       private planService:PlanService,
@@ -29,50 +28,38 @@ export class ChoosePlanPage implements OnInit {
   ) { }
 
   async ngOnInit() {
-   await this.session.watch().subscribe(value=>{
-      console.log("Session Subscription got", value);
-      // Re populate the values as required
-      this.allProfiles = value?.allProfiles;
-      this.orgProfile = value?.orgProfile;
 
-      if(this.allProfiles && this.orgProfile && value){
-        if(this.allProfiles.length==0){
-          this.router.navigate(['profile']);
-        } else if(this.allProfiles.length==1){
-          this.getUserProfile(0);
-        } else {
-          this.getLastSignInProfile();
-        }
-
-
-      }else{
-        this.router.navigate(['profile']);
-      }
-    });
-
+     this.getSessionInfo();
      await this.fetchAllPlans();
   }
 
+  ngOnDestroy(){
 
-
-    // get last sign in info
-  async getLastSignInProfile(){
-    const ret = await Storage.get({ key: 'userProfile' });
-    const lastSigninUserProfile = ret.value && ret.value != 'undefined' ? JSON.parse(ret.value) : {};
-    let idx = this.allProfiles.findIndex(p=>p.data.subscriberId==lastSigninUserProfile.subscriberId);
-    if(idx!= -1){
-      this.getUserProfile(idx);
+  }
+  ionViewWillEnter(){
+    if(this.subscriberChanged){
+      this.router.navigate(['subscription']);
     }
   }
-  // get User profile
-  getUserProfile(index){
-    this.userProfile=this.allProfiles[index]?.data;
-    this.id = this.allProfiles[index]?.id;
-    this.session.getSessionInfo(this.userProfile.subscriberId);
+
+  getSessionInfo(){
+    this.sessionSubs$ = this.session.watch().subscribe(value=>{
+       console.log("ChoosePlanPage Session Subscription got", value);
+       // Re populate the values as required
+       if(this.orgProfile
+          && this.orgProfile.subscriberId != value?.orgProfile.subscriberId
+        ){
+          this.subscriberChanged = true;
+        }
+
+       this.orgProfile = value?.orgProfile;
+
+       if(!this.orgProfile || !value){
+         // no profile info so go back to profile to login
+         this.router.navigate(['profile']);
+       }
+     });
   }
-
-
-
 
   fetchAllPlans(){
     this.componentService.showLoader();
@@ -86,10 +73,9 @@ export class ChoosePlanPage implements OnInit {
        let planData = {id,...data};
        this.allPlans.push(planData);
        }.bind(this))
+      this.generalPlans = this.allPlans.filter(p=>p.planType=='general').sort((a,b)=>a.price-b.price);
       this.componentService.hideLoader();
       }.bind(this)
-
-
     )
 
   }

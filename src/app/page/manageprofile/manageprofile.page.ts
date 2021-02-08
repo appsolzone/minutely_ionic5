@@ -26,6 +26,7 @@ export class ManageprofilePage implements OnInit {
   addSubscriber: boolean = false;
   emailRegex: string = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$';
   firestore: any;
+  sessionInfo: any;
 
   constructor(
     private router: Router,
@@ -38,6 +39,7 @@ export class ManageprofilePage implements OnInit {
     this.session.watch().subscribe(value=>{
       console.log("Session Subscription got", value);
       // Re populate the values as required
+      this.sessionInfo = value;
       this.allProfiles = value?.allProfiles;
       if(this.allProfiles){
         if(this.allProfiles.length==0){
@@ -48,6 +50,8 @@ export class ManageprofilePage implements OnInit {
           this.getLastSignInProfile();
         }
       }
+      console.log("subscription end check", this.sessionInfo?.orgProfile?.subscriptionEnd);
+      console.log("userProfile status check", this.sessionInfo?.userProfile?.status);
     });
   }
 
@@ -129,8 +133,12 @@ export class ManageprofilePage implements OnInit {
     } else {
       this.updatedProfile = {...this.userProfile};
       this.updatedProfile.lastUpdateTimeStamp = this.firestore.FieldValue.serverTimestamp();
-      // this.router.navigate(['attendance']);
+      // this.router.navigate(['tabs/attendance']);
     }
+    console.log('dhdhdhdhd', this.updatedProfile, this.sessionInfo)
+
+  // this.auth.postAuthCheck(this.updatedProfile, this.id);
+
   }
   // get last sign in info
   async getLastSignInProfile(){
