@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Plugins } from '@capacitor/core';
-import { AuthenticationService } from './authentication.service';
-import { ManageuserService } from './manageuser.service';
-import { SubscriberService } from './subscriber.service';
-// import { Subscriber } from '../../interface/subscriber';
-// import { User } from '../../interface/user';
-import { PlanService } from './plan.service';
+import { AuthenticationService } from '../authentication/authentication.service';
+import { ManageuserService } from '../manageuser/manageuser.service';
+import { SubscriberService } from '../subscriber/subscriber.service';
+// import { Subscriber } from '../../../interface/subscriber';
+// import { User } from '../../../interface/user';
+import { PlanService } from '../plan/plan.service';
 
 const { Storage } = Plugins;
 
@@ -48,9 +48,26 @@ export class SessionService {
           const id = a.payload.doc.id;
           return {id, data};
         });
+        // lets set the userProfile
+        let userProfile = this.getUserProfile(null,allProfiles);
+        console.log("all profile userprofile",userProfile);
         // lets patch the allprofiles data for session$
-        this.patch({ allProfiles });
+        this.patch({ uid, userProfile, allProfiles });
       });
+  }
+
+  // get user profile
+  getUserProfile(subscriberId: string=null, allProfiles: any=null){
+    let sessionInfo = this.peek();
+    subscriberId = subscriberId ? subscriberId : sessionInfo?.subscriberId;
+    allProfiles = allProfiles ? allProfiles : sessionInfo?.allProfiles;
+    if(sessionInfo?.uid && subscriberId){
+      let userProfile = allProfiles.filter(p=>p.data.uid==sessionInfo?.uid && p.data.subscriberId==subscriberId);
+      console.log("getUserProfile userProfile", userProfile);
+      return userProfile[0].data;
+    } else {
+      return undefined;
+    }
   }
 
   // get User profile
@@ -87,8 +104,10 @@ export class SessionService {
             // plan changed so fetch plan again
             this.getSubscriptionPlan(subscriberId, allSubData[0].data);
           } else {
+            // lets set the userProfile
+            let userProfile = this.getUserProfile(subscriberId);
             // plan has not changed so just patch the session data
-            this.patch({subscriberId, orgProfile : allSubData[0].data});
+            this.patch({subscriberId, userProfile, orgProfile : allSubData[0].data});
           }
 
         });
@@ -114,10 +133,13 @@ export class SessionService {
             return {id, data};
           });
           let currentSession = this.peek();
+          // lets set the userProfile
+          let userProfile = this.getUserProfile(subscriberId);
           this.patch({
               subscriberId: subscriberId ? subscriberId : currentSession?.subscriberId,
               orgProfile: orgProfile ? orgProfile : currentSession?.orgProfile,
-              orgPlan : allPlanData[0]?.data
+              orgPlan : allPlanData[0]?.data,
+              userProfile
             });
         });
     }

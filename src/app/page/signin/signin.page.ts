@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthenticationService } from '../../shared/authentication.service';
+import { AuthenticationService } from '../../shared/authentication/authentication.service';
 
 
 @Component({
@@ -17,7 +17,7 @@ export class SigninPage implements OnInit {
                                       targets and leave the rest to HRMS.';
   signinUi: any;
   userData: any;
-  redirectUrl: string = '/tabs/profile';
+  redirectUrl: string = 'profile';
   constructor(
     private router: Router,
     private auth: AuthenticationService,
@@ -32,7 +32,7 @@ export class SigninPage implements OnInit {
   authStateCallBack(data){
     this.signinUi = data.signinUi;
     this.userData = data.userData;
-    this.redirectUrl = history.state?.redirectUrl ? history.state.redirectUrl : '/tabs/profile';
+    this.redirectUrl = history.state?.redirectUrl ? history.state.redirectUrl : 'profile';
     //console.log("SigninPage history.state",this.redirectUrl,history.state?.redirectUrl);
     setTimeout(()=>{
       if(this.signinUi){

@@ -4,13 +4,13 @@ import { AngularFireAuth } from "@angular/fire/auth";
 // Firebase App (the core Firebase SDK) is always required and
 // must be listed before other Firebase SDKs
 import firebase from "firebase/app";
-import { environment } from "../../environments/environment";
+import { environment } from "../../../environments/environment";
 // Add the Firebase services that you want to use
 // import "firebase/auth";
 // import "firebase/firestore";
 // import firebase from 'firebase';
 import * as firebaseui from 'firebaseui';
-import { DatabaseService } from './database.service';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable({
   providedIn: 'root'

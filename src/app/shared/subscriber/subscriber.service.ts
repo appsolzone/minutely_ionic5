@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { DatabaseService } from './database.service';
-import { Subscriber } from '../interface/subscriber';
+import { DatabaseService } from '../database/database.service';
+import { Subscriber } from '../../interface/subscriber';
 @Injectable({
   providedIn: 'root'
 })

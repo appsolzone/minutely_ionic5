@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   firebaseConfig: {
+    //===============[ Appsolzone ]===============
     // apiKey: "AIzaSyBAY9Jaq2AxSm0BOd-EI99U4P8LbXm9T_Q",
     //   authDomain: "hrms-2aae7.firebaseapp.com",
     //   databaseURL: "https://hrms-2aae7.firebaseio.com",

@@ -4,7 +4,7 @@ import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
   {
-    path: 'tabs',
+    path: '',
     component: TabsPage,
     children: [
       {
@@ -35,16 +35,20 @@ const routes: Routes = [
         path: 'notification',
         loadChildren: () => import('../page/notification/notification.module').then( m => m.NotificationPageModule)
       },
+        {
+        path: 'subscription',
+        loadChildren: () => import('../page/subscription/subscription.module').then( m => m.SubscriptionPageModule)
+      },
       {
         path: '',
-        redirectTo: '/tabs/attendance',
+        redirectTo: 'attendance',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/attendance',
+    redirectTo: 'attendance',
     pathMatch: 'full'
   }
 ];

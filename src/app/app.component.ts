@@ -30,7 +30,7 @@ export class AppComponent {
     });
   }
   ngOnInit() {
-    this.selectedIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'store');
+    this.selectedIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'attendance');
     // Subscribe route change events for syncing the split pane menu selectors when the screen size changes
     this.router.events.subscribe((event: Event) => {
             // console.log("events", window.location.hash.replace('#',''), event instanceof NavigationStart, event instanceof NavigationEnd);
@@ -40,7 +40,7 @@ export class AppComponent {
                 let currentPath = window.location.pathname; //.hash.replace('#','');
                 let currentIndex = null;
                 if (currentPath !== undefined) {
-                  let tabPath = currentPath.split('tabs/')[1];
+                  let tabPath = currentPath.split('/')[1];
                   currentIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === tabPath?.toLowerCase().split('/')[0]);
                 } else {
                   currentIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'attendance');
@@ -48,12 +48,12 @@ export class AppComponent {
                 if(currentIndex && currentIndex!=-1){
                   appPages[currentIndex].url = currentPath;
                 }
-                // console.log("changeSelectedIndex", currentPath, currentIndex);
+                 console.log("changeSelectedIndex", currentPath, currentIndex);
             }
 
             if (event instanceof NavigationEnd) {
                 //do something on end activity
-                const path = window.location.pathname.split('tabs/')[1]; //.hash.replace('#','').split('tabs/')[1];
+                const path = window.location.pathname.split('/')[1]; //.hash.replace('#','').split('tabs/')[1];
                 if (path !== undefined) {
                   this.selectedIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === path.toLowerCase().split('/')[0]);
                 } else {

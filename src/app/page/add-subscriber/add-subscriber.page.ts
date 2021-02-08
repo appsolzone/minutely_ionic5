@@ -1,10 +1,12 @@
-import { RegistrationService } from './../../shared/registration.service';
+import { RegistrationService } from './../../shared/registration/registration.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Autounsubscribe } from '../../decorator/autounsubscribe';
 import { Subscriber } from '../../interface/subscriber';
-import { AuthenticationService } from '../../shared/authentication.service';
-import { SubscriberService } from '../../shared/subscriber.service';
+import { AuthenticationService } from '../../shared/authentication/authentication.service';
+import { SubscriberService } from '../../shared/subscriber/subscriber.service';
+import { ComponentsService } from 'src/app/shared/components/components.service';
+
 
 
 @Component({
@@ -32,7 +34,8 @@ export class AddSubscriberPage implements OnInit {
     private router: Router,
     private auth: AuthenticationService,
     private subscriber: SubscriberService,
-    public register: RegistrationService
+    public register: RegistrationService,
+    public componentService:ComponentsService
   ) {
     this.firestore = this.subscriber.db.frb.firestore;
     this.getauthStateSubs$ = this.auth.authState(this.authStateCallBack.bind(this));
@@ -89,7 +92,7 @@ export class AddSubscriberPage implements OnInit {
         };
       } else {
         // go back to manage profile
-        this.router.navigate(['/tabs/profile']);
+        this.router.navigate(['profile']);
       }
   }
 
@@ -138,9 +141,11 @@ export class AddSubscriberPage implements OnInit {
           || this.orgProfile.address == ''
           || this.orgProfile.companyName ==''
         ){
+          this.componentService.presentAlert('Error','cannnot submit, fill all the fields');
           console.log('cannnot submit, fill all the fields');
         }
       else{
+        this.componentService.showLoader();
         this.register.registerSubscriber(this.userData.uid,
           this.orgProfile.subscriberId.trim().toUpperCase(),
           this.orgProfile.companyName,
@@ -148,21 +153,27 @@ export class AddSubscriberPage implements OnInit {
           this.userData.providerData[0].displayName,
           this.userData.providerData[0].email)
           .then(feedback=>{
+            this.componentService.hideLoader();
+            this.componentService.presentToaster('Success!! Organisation create successfully');
+            this.router.navigate(['subscription/choose-plan']);
             this.cancelAddSubscriber(false)
           }).catch(err=>{
+            this.componentService.hideLoader();
             console.log('error', err);
           })
       }
     }
     else{
-
+      this.componentService.showLoader();
       this.register.joinSubscriber(this.userData.uid,
         this.orgProfile.subscriberId.trim().toUpperCase(),
         this.userData.providerData[0].displayName,
         this.userData.providerData[0].email)
         .then(feedback=>{
+          this.componentService.hideLoader();
           this.cancelAddSubscriber(false)
         }).catch(err=>{
+          this.componentService.hideLoader();
           console.log('error', err);
         })
 

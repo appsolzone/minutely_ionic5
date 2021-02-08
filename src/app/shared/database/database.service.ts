@@ -8,13 +8,16 @@ import { map, take } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class DatabaseService {
-  public frb: any = firebase;
+   public frb: any = firebase;
   public allCollections = {
     users: 'users',
     subscribers: 'subscribers',
     plans: 'subscriptionOptions',
     notifications: 'notifications',
-    useruids:'useruids'
+    useruids:'useruids',
+    cart:'cart',
+    transactions:'transactions',
+    coupons:"coupons"
   };
 
   constructor(
@@ -82,4 +85,16 @@ export class DatabaseService {
     return transRef.delete(docRef);
   }
 
+  getServerTime(uid){
+    var sessionsRef = this.frb.database().ref("sessions/"+uid);
+    return sessionsRef.set({
+      serverTime: this.frb.database.ServerValue.TIMESTAMP
+    }).then(function() {
+     return sessionsRef.once("value");
+    })
+    .then(function(snapshot) {
+      var data = snapshot.val();
+      return data;
+    });
+  }
 }
