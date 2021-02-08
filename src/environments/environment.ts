@@ -22,13 +22,13 @@ export const environment = {
       // messagingSenderId: "438479765215",
       // appId: "1:438479765215:web:9389987f7dcabee06b736a"
 
-    apiKey: "AIzaSyARa8_ZMTMIhnFy0C3OcR-SYuEOwCjr8IQ",
-    authDomain: "chat-70583.firebaseapp.com",
-    databaseURL: "https://chat-70583.firebaseio.com",
-    projectId: "chat-70583",
-    storageBucket: "chat-70583.appspot.com",
-    messagingSenderId: "814702150307",
-    appId: "1:814702150307:web:8d6e1849dceb079d8eb516"
+  apiKey: "AIzaSyARa8_ZMTMIhnFy0C3OcR-SYuEOwCjr8IQ",
+  authDomain: "chat-70583.firebaseapp.com",
+  databaseURL: "https://chat-70583.firebaseio.com",
+  projectId: "chat-70583",
+  storageBucket: "chat-70583.appspot.com",
+  messagingSenderId: "814702150307",
+  appId: "1:814702150307:web:8d6e1849dceb079d8eb516"
   },
 
   paypalInfo: {

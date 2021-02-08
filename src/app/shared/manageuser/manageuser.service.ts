@@ -33,4 +33,21 @@ export class ManageuserService {
   updateProfile(docId:string, userProfile:User){
     return this.db.setDocument(this.db.allCollections.users, docId, userProfile);
   }
+
+  checkUser(user){
+    return new Promise((res,rej)=>{
+    
+    if(user?.status != 'ACTIVE'){
+
+      console.log('not active user');
+      return rej(false);
+    }
+    else{
+      console.log('active user');
+
+      return res(true);
+    }
+
+    })
+    }
 }

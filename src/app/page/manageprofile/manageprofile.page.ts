@@ -1,3 +1,7 @@
+import { async } from '@angular/core/testing';
+import { environment } from './../../../environments/environment';
+
+import { DatabaseService } from 'src/app/shared/database/database.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
@@ -5,6 +9,12 @@ import { AuthenticationService } from '../../shared/authentication/authenticatio
 import { ManageuserService } from '../../shared/manageuser/manageuser.service';
 import { User } from '../../interface/user';
 import { SessionService } from '../../shared/session/session.service';
+import * as moment from 'moment';
+import { SubscriberService } from 'src/app/shared/subscriber/subscriber.service';
+
+
+
+
 
 const { Storage } = Plugins;
 
@@ -33,6 +43,10 @@ export class ManageprofilePage implements OnInit {
     private auth: AuthenticationService,
     private user: ManageuserService,
     private session: SessionService,
+    private database: DatabaseService,
+    private subscriber: SubscriberService,
+    
+    
   ) {
     this.firestore = this.user.db.frb.firestore;
     this.getauthStateSubs$ = this.auth.authState(this.authStateCallBack.bind(this));
@@ -50,11 +64,59 @@ export class ManageprofilePage implements OnInit {
           this.getLastSignInProfile();
         }
       }
-      console.log("subscription end check", this.sessionInfo?.orgProfile?.subscriptionEnd);
-      console.log("userProfile status check", this.sessionInfo?.userProfile?.status);
+      // console.log("subscription end check", this.sessionInfo?.orgProfile?.subscriptionEnd);
+      // console.log("userProfile status check", this.sessionInfo?.userProfile?.status);
+
+      
+      this.subscriber.checkOrg(this.sessionInfo?.orgProfile, this.sessionInfo?.userProfile)
+      
+      .then((res)=>{
+
+        if(res){
+        console.log('first function', res);
+
+        this.user.checkUser(this.sessionInfo?.userProfile).then((result)=>{
+
+          if(result){
+            // console.log('ok user');
+            this.router.navigate(['attendance']);
+
+            
+          }
+          else{
+            // console.log('no user');
+            this.router.navigate(['profile']);
+
+          }
+        }).catch((err)=>{
+         // console.log('cant get user');
+          this.router.navigate(['profile']);
+
+        })
+
+        }
+      
+      }).catch((gg)=>{
+        console.log('erorssssss', gg);
+      })
+
+      
+      
+
       
     });
   }
+
+    
+
+
+  
+
+
+   
+    
+
+
 
   ngOnInit() {
 
