@@ -52,6 +52,7 @@ export class ManageprofilePage implements OnInit {
       }
       console.log("subscription end check", this.sessionInfo?.orgProfile?.subscriptionEnd);
       console.log("userProfile status check", this.sessionInfo?.userProfile?.status);
+      
     });
   }
 
