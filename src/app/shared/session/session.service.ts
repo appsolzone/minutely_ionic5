@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Plugins } from '@capacitor/core';
-import { AuthenticationService } from './authentication.service';
-import { ManageuserService } from './manageuser.service';
-import { SubscriberService } from './subscriber.service';
-// import { Subscriber } from '../../interface/subscriber';
-// import { User } from '../../interface/user';
-import { PlanService } from './plan.service';
+import { AuthenticationService } from '../authentication/authentication.service';
+import { ManageuserService } from '../manageuser/manageuser.service';
+import { SubscriberService } from '../subscriber/subscriber.service';
+// import { Subscriber } from '../../../interface/subscriber';
+// import { User } from '../../../interface/user';
+import { PlanService } from '../plan/plan.service';
 
 const { Storage } = Plugins;
 

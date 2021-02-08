@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from 'src/app/interface/user';
-import { AuthenticationService } from 'src/app/shared/authentication.service';
+import { AuthenticationService } from 'src/app/shared/authentication/authentication.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
-import { PlanService } from 'src/app/shared/plan.service';
+import { PlanService } from 'src/app/shared/plan/plan.service';
 import { PaypalService } from 'src/app/shared/paypal/paypal.service';
-import { SessionService } from 'src/app/shared/session.service';
+import { SessionService } from 'src/app/shared/session/session.service';
 import { Plugins } from '@capacitor/core';
 const { Storage } = Plugins;
 @Component({

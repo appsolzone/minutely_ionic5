@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SessionService } from '../../shared/session.service';
+import { SessionService } from '../../shared/session/session.service';
 
 @Component({
   selector: 'app-attendance',

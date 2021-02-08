@@ -1,10 +1,10 @@
-import { RegistrationService } from './../../shared/registration.service';
+import { RegistrationService } from './../../shared/registration/registration.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Autounsubscribe } from '../../decorator/autounsubscribe';
 import { Subscriber } from '../../interface/subscriber';
-import { AuthenticationService } from '../../shared/authentication.service';
-import { SubscriberService } from '../../shared/subscriber.service';
+import { AuthenticationService } from '../../shared/authentication/authentication.service';
+import { SubscriberService } from '../../shared/subscriber/subscriber.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 
 

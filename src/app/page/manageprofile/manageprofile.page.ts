@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
-import { AuthenticationService } from '../../shared/authentication.service';
-import { ManageuserService } from '../../shared/manageuser.service';
+import { AuthenticationService } from '../../shared/authentication/authentication.service';
+import { ManageuserService } from '../../shared/manageuser/manageuser.service';
 import { User } from '../../interface/user';
-import { SessionService } from '../../shared/session.service';
+import { SessionService } from '../../shared/session/session.service';
 
 const { Storage } = Plugins;
 

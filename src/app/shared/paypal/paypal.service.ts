@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
 import { ComponentsService } from '../components/components.service';
-import { DatabaseService } from '../database.service';
+import { DatabaseService } from '../database/database.service';
 declare var paypal;
 
 @Injectable({

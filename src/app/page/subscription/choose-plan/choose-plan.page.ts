@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Autounsubscribe } from '../../../decorator/autounsubscribe';
-import { PlanService } from 'src/app/shared/plan.service';
-import { SessionService } from 'src/app/shared/session.service';
+import { PlanService } from 'src/app/shared/plan/plan.service';
+import { SessionService } from 'src/app/shared/session/session.service';
 import { Plugins } from '@capacitor/core';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 const { Storage } = Plugins;

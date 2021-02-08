@@ -1,10 +1,10 @@
-import { DatabaseService } from './database.service';
+import { DatabaseService } from '../database/database.service';
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
-import { User } from '../interface/user';
-import { Subscriber } from '../interface/subscriber';
-import { ManageuserService } from './manageuser.service';
-import { SubscriberService } from './subscriber.service';
+import { User } from '../../interface/user';
+import { Subscriber } from '../../interface/subscriber';
+import { ManageuserService } from '../manageuser/manageuser.service';
+import { SubscriberService } from '../subscriber/subscriber.service';
 
 
 
