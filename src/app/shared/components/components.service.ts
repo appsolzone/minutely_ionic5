@@ -73,10 +73,10 @@ export class ComponentsService {
 
 
     //============[ loader ]====================
-     async showLoader() {
+     async showLoader(message: string = 'Please wait!') {
         this.loader = await this.loadingController.create({
           cssClass: 'my-custom-class',
-          message: 'Please wait...',
+          message: message,
         });
 
         (await this.loader)?.present();
