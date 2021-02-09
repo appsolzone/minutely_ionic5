@@ -6,6 +6,7 @@ import { Subscriber } from '../../interface/subscriber';
 import { AuthenticationService } from '../../shared/authentication/authentication.service';
 import { SubscriberService } from '../../shared/subscriber/subscriber.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { SessionService } from 'src/app/shared/session/session.service';
 
 
 
@@ -35,7 +36,8 @@ export class AddSubscriberPage implements OnInit {
     private auth: AuthenticationService,
     private subscriber: SubscriberService,
     public register: RegistrationService,
-    public componentService:ComponentsService
+    public componentService:ComponentsService,
+    public sessionService:SessionService
   ) {
     this.firestore = this.subscriber.db.frb.firestore;
     this.getauthStateSubs$ = this.auth.authState(this.authStateCallBack.bind(this));
@@ -152,10 +154,16 @@ export class AddSubscriberPage implements OnInit {
           this.orgProfile.address,
           this.userData.providerData[0].displayName,
           this.userData.providerData[0].email)
-          .then(feedback=>{
+          .then(async feedback=>{
+            // await this.sessionService.getProfiles(this.userData.uid);
+            // await this.sessionService.getSubscriberProfile(this.orgProfile.subscriberId).then(()=>{
+
+            this.sessionService.getSessionInfo(this.orgProfile.subscriberId.trim().toUpperCase());
             this.componentService.hideLoader();
             this.componentService.presentToaster('Success!! Organisation create successfully');
             this.router.navigate(['subscription/choose-plan']);
+            // });
+
             this.cancelAddSubscriber(false)
           }).catch(err=>{
             this.componentService.hideLoader();

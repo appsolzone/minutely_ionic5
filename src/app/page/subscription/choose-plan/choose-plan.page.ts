@@ -5,6 +5,7 @@ import { PlanService } from 'src/app/shared/plan/plan.service';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { Plugins } from '@capacitor/core';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { Platform } from '@ionic/angular';
 const { Storage } = Plugins;
 @Component({
   selector: 'app-choose-plan',
@@ -24,19 +25,19 @@ export class ChoosePlanPage implements OnInit {
       private planService:PlanService,
       private session:SessionService,
       private router:Router,
-      private componentService:ComponentsService
+      private componentService:ComponentsService,
+     // private platform:Platform
   ) { }
 
   async ngOnInit() {
-
-     this.getSessionInfo();
-     await this.fetchAllPlans();
   }
 
   ngOnDestroy(){
 
   }
-  ionViewWillEnter(){
+   async ionViewWillEnter(){
+    this.getSessionInfo();
+    await this.fetchAllPlans();
     if(this.subscriberChanged){
       this.router.navigate(['subscription']);
     }
@@ -54,10 +55,10 @@ export class ChoosePlanPage implements OnInit {
 
        this.orgProfile = value?.orgProfile;
 
-       if(!this.orgProfile || !value){
-         // no profile info so go back to profile to login
-         this.router.navigate(['profile']);
-       }
+      //  if(!this.orgProfile || !value){
+      //    // no profile info so go back to profile to login
+      //    this.router.navigate(['profile']);
+      //  }
      });
   }
 
@@ -72,7 +73,11 @@ export class ChoosePlanPage implements OnInit {
        let data = plan.data();
        let planData = {id,...data};
        this.allPlans.push(planData);
+       
        }.bind(this))
+      console.log("fetch all plans",this.allPlans);
+
+
       this.generalPlans = this.allPlans.filter(p=>p.planType=='general').sort((a,b)=>a.price-b.price);
       this.componentService.hideLoader();
       }.bind(this)
@@ -88,18 +93,12 @@ export class ChoosePlanPage implements OnInit {
       else{
        this.planService.choosePlan.next(plan);
        this.router.navigateByUrl('subscription/payment');
+        //if (plan.planName === "Free" && this.platform === 'web') {
+        // }else if(plan.planName === "Free" && this.platform === 'mobile'){
+        // }else if(plan.planName === "Free" && this.platform === 'newregistration'){
+        // }
       }
     }
-
-    // else if (plan.planName === "Free" && this.navData.platform === 'web') {
-    //      this.navCtrl.push(UserAdminPage, {
-    //     'data': this.navData,
-    //   });
-    // }else if(plan.planName === "Free" && this.navData.platform === 'mobile'){
-    //    this.navCtrl.push(LoginPage);
-    // }else if(plan.planName === "Free" && this.navData.platform === 'newregistration'){
-    //    this.navCtrl.push(LoginPage);
-    // }
   }
 
 
