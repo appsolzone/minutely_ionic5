@@ -72,11 +72,11 @@ export class SessionService {
           return {id, data};
         });
         // lets set the userProfile
-        let userProfile = this.getUserProfile(null,allProfiles);
+        let {data,id} = this.getUserProfile(null,allProfiles);
         let coordinates = await this.getCurrentPosition();
         // console.log("all profile userprofile",userProfile);
         // lets patch the allprofiles data for session$
-        this.patch({ uid, coordinates, userProfile, allProfiles });
+        this.patch({ uid, coordinates, userProfile: data, userProfileDocId: id, allProfiles });
       });
   }
 
@@ -88,9 +88,9 @@ export class SessionService {
     if(sessionInfo?.uid && subscriberId){
       let userProfile = allProfiles.filter(p=>p.data.uid==sessionInfo?.uid && p.data.subscriberId==subscriberId);
       // console.log("getUserProfile userProfile", userProfile);
-      return userProfile[0].data;
+      return userProfile[0];
     } else {
-      return undefined;
+      return {id: undefined, data: undefined};
     }
   }
 
@@ -129,9 +129,9 @@ export class SessionService {
             this.getSubscriptionPlan(subscriberId, allSubData[0].data);
           } else {
             // lets set the userProfile
-            let userProfile = this.getUserProfile(subscriberId);
+            let {data,id} = this.getUserProfile(subscriberId);
             // plan has not changed so just patch the session data
-            this.patch({subscriberId, userProfile, orgProfile : allSubData[0].data});
+            this.patch({subscriberId, userProfile: data, userProfileDocId: id, orgProfile : allSubData[0].data});
           }
 
         });
@@ -158,12 +158,13 @@ export class SessionService {
           });
           let currentSession = this.peek();
           // lets set the userProfile
-          let userProfile = this.getUserProfile(subscriberId);
+          let {data,id} = this.getUserProfile(subscriberId);
           this.patch({
               subscriberId: subscriberId ? subscriberId : currentSession?.subscriberId,
               orgProfile: orgProfile ? orgProfile : currentSession?.orgProfile,
               orgPlan : allPlanData[0]?.data,
-              userProfile
+              userProfile: data,
+              userProfileDocId: id,
             });
         });
     }
