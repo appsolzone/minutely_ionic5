@@ -8,7 +8,69 @@
 </ion-header>
 
 <ion-content>
- <ion-row class="wave-background">
+ <ion-row  class="wave-background">
+  <ion-col size="12" *ngIf="newsubscriber !== undefined">
+    <ion-row>
+    <ion-col size="12" size-xl="1">
+    </ion-col>
+    <ion-col size="12" size-md class="ion-align-items-center">
+    <ion-card mode="ios" *ngIf="orgProfile">
+      <ion-row>
+        <ion-col size="12" size-md>
+          <ion-list>
+            <ion-list-header>
+              Organisation Info
+            </ion-list-header>
+            <ion-item>
+              <ion-label>
+                <p>Name</p>
+                <h3 color="dark">{{orgProfile?.companyName}}</h3>
+              </ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>
+                <p>Current Plan</p>
+                <h3 color="dark">{{orgProfile?.subscriptionType}}</h3>
+              </ion-label>
+            </ion-item>
+            <ion-item lines="none">
+              <ion-label>
+                <p>License</p>
+                <h3 color="dark">{{orgProfile?.noOfUserAllowed-orgProfile?.noOfFreeLicense}}-of-{{orgProfile?.noOfUserAllowed}}</h3>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+    
+        <ion-col size="12" size-md class="ion-padding ion-text-center ion-align-items-center" [ngStyle]="{'background': '#f0f4ff','border': '1px solid blue',
+                'border-style': 'dashed'}">
+          <span color="medium">Apply Coupon Code</span><br> 
+          <br> 
+          <br>
+          <ion-button color="primary" (click)="clickCoupon()" *ngIf="!haveCoupon">I have coupon</ion-button>
+          <div *ngIf="haveCoupon">
+            <ion-item>
+              <ion-label position="fixed">Your Code</ion-label>
+              <ion-input [(ngModel)]="couponCode"></ion-input>
+            </ion-item>
+            <br><br>
+            <ion-row>
+              <ion-col size="8">
+                <ion-button color="success" expand="block" (click)="applyCoupon()">Apply</ion-button>
+              </ion-col>
+              <ion-col size="4">
+                <ion-button color="danger" expand="block" (click)="cancelCoupon()">Cancel</ion-button>
+              </ion-col>
+            </ion-row>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+    </ion-col>
+    <ion-col size="12" size-xl="1">
+    </ion-col>
+    </ion-row>
+  </ion-col>
    <ion-col size="12" size-md class="">
     <ion-row>
       <ion-col size="12" size-xl="1">
