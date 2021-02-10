@@ -7,7 +7,8 @@ import { AuthenticationService } from '../../shared/authentication/authenticatio
 import { SubscriberService } from '../../shared/subscriber/subscriber.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { SessionService } from 'src/app/shared/session/session.service';
-
+import { Plugins } from '@capacitor/core';
+const { Storage } = Plugins;
 
 
 @Component({
@@ -157,11 +158,11 @@ export class AddSubscriberPage implements OnInit {
           .then(async feedback=>{
             // await this.sessionService.getProfiles(this.userData.uid);
             // await this.sessionService.getSubscriberProfile(this.orgProfile.subscriberId).then(()=>{
-
-            this.sessionService.getSessionInfo(this.orgProfile.subscriberId.trim().toUpperCase());
+            // first clear last login info from storage
+            await Storage.remove({key: 'userProfile'});
             this.componentService.hideLoader();
             this.componentService.presentToaster('Success!! Organisation create successfully');
-            this.router.navigate(['subscription/choose-plan']);
+            this.router.navigate(['subscription/choose-plan'],{state: {data:{newsubscriber: this.orgProfile.subscriberId.trim().toUpperCase()}}});
             // });
 
             this.cancelAddSubscriber(false)
