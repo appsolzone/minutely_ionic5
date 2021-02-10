@@ -18,9 +18,11 @@ export class ChoosePlanPage implements OnInit {
   sessionSubs$;
   getauthStateSubs$;
   subscriberChanged: boolean = false;
-  allPlans:any= [];
+  allPlans:any;
   generalPlans: any=[];
   orgProfile: any;
+  uid: string;
+  newsubscriber: string;
   constructor(
       private planService:PlanService,
       private session:SessionService,
@@ -29,66 +31,106 @@ export class ChoosePlanPage implements OnInit {
      // private platform:Platform
   ) { }
 
-  async ngOnInit() {
+  ngOnInit() {
+    let data = history.state.data;
+    console.log("history data", data);
+    if(data && data.newsubscriber){
+      this.newsubscriber = data.newsubscriber;
+    }
+    this.getSessionInfo();
+    this.fetchAllPlans();
   }
 
   ngOnDestroy(){
 
   }
-   async ionViewWillEnter(){
-    this.getSessionInfo();
-    await this.fetchAllPlans();
-    if(this.subscriberChanged){
+  async ionViewWillEnter(){
+    console.log("ChoosePlanPage ionViewWillEnter Session", this.subscriberChanged);
+    // if choose-plan is initiated from a new subscription
+    let data = history.state.data;
+    console.log("history data ionViewWillEnter", data);
+    if(data && data.newsubscriber){
+      await this.componentService.showLoader();
+      this.subscriberChanged = false;
+      this.orgProfile = undefined;
+      this.newsubscriber = data.newsubscriber;
+      if(this.sessionSubs$?.unsubscribe){
+        // unsubscribe if already subscribed
+        await this.sessionSubs$.unsubscribe();
+      }
+      this.getSessionInfo();
+
+    } else if(this.subscriberChanged){
+      // subscriber changed but no new subscription so back to subscription page
       this.router.navigate(['subscription']);
+      this.subscriberChanged = false;
+      // we received the data so unset the value here
+      this.newsubscriber = undefined;
     }
   }
 
   getSessionInfo(){
+    console.log("ChoosePlanPage getSessionInfo Session", this.subscriberChanged);
     this.sessionSubs$ = this.session.watch().subscribe(value=>{
-       console.log("ChoosePlanPage Session Subscription got", value);
+       console.log("ChoosePlanPage Session Subscription got", value, this.newsubscriber);
        // Re populate the values as required
        if(this.orgProfile
-          && this.orgProfile.subscriberId != value?.orgProfile.subscriberId
+          && this.orgProfile?.subscriberId != value?.orgProfile?.subscriberId
         ){
           this.subscriberChanged = true;
         }
 
-       this.orgProfile = value?.orgProfile;
+       if(!this.newsubscriber){
+         this.orgProfile = value?.orgProfile;
+       } else if(!this.orgProfile && this.newsubscriber && this.newsubscriber == value?.orgProfile?.subscriberId){
+         this.orgProfile = value?.orgProfile;
+       }
+       this.uid = value?.uid;
 
-      //  if(!this.orgProfile || !value){
-      //    // no profile info so go back to profile to login
-      //    this.router.navigate(['profile']);
-      //  }
+       if(this.newsubscriber && this.newsubscriber != this.orgProfile?.subscriberId) {
+         console.log("ChoosePlanPage Session Subscription got matched newsubscriber", value, this.newsubscriber);
+         // till we get the new user profile as part of the session$.allProfiles data
+         let userProfile = value?.allProfiles.filter(p=>p.data.uid==this.uid && p.data.subscriberId==this.newsubscriber);
+         if(userProfile.length > 0){
+           console.log("getUserProfile",userProfile[0], this.allPlans);
+           Storage.set({key: 'userProfile', value: JSON.stringify(userProfile[0].data)});
+           this.session.getSessionInfo(this.newsubscriber);
+           console.log("ChoosePlanPage Session Subscription got matched newsubscriber allPlans", this.allPlans, this.newsubscriber);
+           if(this.allPlans){
+              console.log("Now hide loader");
+             setTimeout(()=>this.componentService.hideLoader(),250);
+           }
+         }
+       } else if(!this.orgProfile || !value){
+         // no profile info so go back to profile to login
+         this.router.navigate(['profile']);
+       }
      });
   }
 
   fetchAllPlans(){
     this.componentService.showLoader();
-    this.allPlans = [];
-    this.planService.getAllPlans().then(
-      function(plans){
-       let allplans = [];
-       plans.forEach(function (plan:any){
-       let id = plan.id;
-       let data = plan.data();
-       let planData = {id,...data};
-       this.allPlans.push(planData);
-       
-       }.bind(this))
-      console.log("fetch all plans",this.allPlans);
-
-
-      this.generalPlans = this.allPlans.filter(p=>p.planType=='general').sort((a,b)=>a.price-b.price);
-      this.componentService.hideLoader();
-      }.bind(this)
-    )
+    this.planService.getAllPlans().then( plans=>{
+      this.allPlans = [];
+      plans.forEach(p=>{
+        console.log("response from Plans", p.id, p.data());
+        let id = p.id;
+        let data = p.data();
+        this.allPlans.push({id,...data});
+      });
+      console.log("fetch all plans",this.allPlans,this.newsubscriber , this.orgProfile?.subscriberId);
+      this.generalPlans = this.allPlans.filter(p=>p.planType=='general' && p.status==true && p.planName!='Free').sort((a,b)=>a.price-b.price);
+      if(!this.newsubscriber || (this.newsubscriber && this.newsubscriber == this.orgProfile?.subscriberId)){
+        setTimeout(()=>this.componentService.hideLoader(),250);
+      }
+    });
 
   }
 
   paymentPage(plan) {
     if (plan.planName !== "Free") {
-      if(this.orgProfile.noOfUserAllowedHas - this.orgProfile.noOfFreeLicenseHas > plan.allowedLicense){
-       this.componentService.presentAlert(`Error`,`Please note that there are ${this.orgProfile.noOfUserAllowedHas - this.orgProfile.noOfFreeLicenseHas} active users. Selected plan allows ${plan.allowedLicense} users. Please select a plan which supports at least ${this.orgProfile.noOfUserAllowedHas - this.orgProfile.noOfFreeLicenseHas} users.`)
+      if(this.orgProfile.noOfUserAllowed - this.orgProfile.noOfFreeLicense > plan.allowedLicense){
+       this.componentService.presentAlert(`Error`,`Please note that there are ${this.orgProfile.noOfUserAllowed - this.orgProfile.noOfFreeLicense} active users. Selected plan allows ${plan.allowedLicense} users. Please select a plan which supports at least ${this.orgProfile.noOfUserAllowed - this.orgProfile.noOfFreeLicense} users.`)
       }
       else{
        this.planService.choosePlan.next(plan);

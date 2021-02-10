@@ -83,6 +83,7 @@ export class ComponentsService {
     }
 
     async hideLoader() {
+       // console.log("this.loader", this.loader);
        (await this.loader)?.dismiss();
         this.loader = null;
     }

@@ -151,6 +151,9 @@ export class PaypalService {
          }
          // let data = {currPlanActiveOrNot,...a};
          return self.currPlanActiveOrNot;
+       } else {
+         self.currPlanActiveOrNot.next(false);
+         return self.currPlanActiveOrNot;
        }
      };
      xhttp.open("GET", environment.paypalInfo.paypalBillingUrl + paypalId, true);

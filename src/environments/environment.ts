@@ -31,14 +31,6 @@ export const environment = {
     // appId: "1:814702150307:web:8d6e1849dceb079d8eb516"
 
       // ========firebase config arnab ===========
-      apiKey: "AIzaSyCeN8pzW6OU7wNRG5LCdfLvHqM3i9S3_eU",
-      authDomain: "ionic-firebase-test-7d6f1.firebaseapp.com",
-      databaseURL: "https://ionic-firebase-test-7d6f1.firebaseio.com",
-      projectId: "ionic-firebase-test-7d6f1",
-      storageBucket: "ionic-firebase-test-7d6f1.appspot.com",
-      messagingSenderId: "479980265024",
-      appId: "1:479980265024:web:f14950916cce201c4ec9a5",
-      measurementId: "G-N0JL3JV17G"
   },
 
   paypalInfo: {
