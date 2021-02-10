@@ -73,9 +73,10 @@ export class SessionService {
         });
         // lets set the userProfile
         let {data,id} = this.getUserProfile(null,allProfiles);
-        console.log("all profile userprofile",data,id);
+        let coordinates = await this.getCurrentPosition();
+        // console.log("all profile userprofile",userProfile);
         // lets patch the allprofiles data for session$
-        this.patch({ uid, userProfile: data, userProfileDocId: id,  allProfiles });
+        this.patch({ uid, coordinates, userProfile: data, userProfileDocId: id, allProfiles });
       });
   }
 
@@ -86,7 +87,7 @@ export class SessionService {
     allProfiles = allProfiles ? allProfiles : sessionInfo?.allProfiles;
     if(sessionInfo?.uid && subscriberId){
       let userProfile = allProfiles.filter(p=>p.data.uid==sessionInfo?.uid && p.data.subscriberId==subscriberId);
-      console.log("getUserProfile userProfile", userProfile);
+      // console.log("getUserProfile userProfile", userProfile);
       return userProfile[0];
     } else {
       return {id: undefined, data: undefined};
@@ -163,7 +164,7 @@ export class SessionService {
               orgProfile: orgProfile ? orgProfile : currentSession?.orgProfile,
               orgPlan : allPlanData[0]?.data,
               userProfile: data,
-              userProfileDocId: id
+              userProfileDocId: id,
             });
         });
     }

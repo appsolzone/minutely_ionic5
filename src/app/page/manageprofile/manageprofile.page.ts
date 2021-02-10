@@ -1,16 +1,27 @@
+import { UploadImageService } from './../../shared/uploadImage/upload-image.service';
+import { ComponentsService } from './../../shared/components/components.service';
 import { async } from '@angular/core/testing';
 import { environment } from './../../../environments/environment';
 
 import { DatabaseService } from 'src/app/shared/database/database.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Plugins } from '@capacitor/core';
+// import { Plugins } from '@capacitor/core';
 import { AuthenticationService } from '../../shared/authentication/authentication.service';
 import { ManageuserService } from '../../shared/manageuser/manageuser.service';
 import { User } from '../../interface/user';
 import { SessionService } from '../../shared/session/session.service';
 import * as moment from 'moment';
 import { SubscriberService } from 'src/app/shared/subscriber/subscriber.service';
+import { ActionSheetController } from '@ionic/angular';
+import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+
+
+
+
+
+
 
 
 
@@ -37,6 +48,10 @@ export class ManageprofilePage implements OnInit {
   emailRegex: string = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$';
   firestore: any;
   sessionInfo: any;
+  photo: SafeResourceUrl;
+  public base64Image: string;
+
+
 
   constructor(
     private router: Router,
@@ -45,6 +60,10 @@ export class ManageprofilePage implements OnInit {
     private session: SessionService,
     private database: DatabaseService,
     private subscriber: SubscriberService,
+    public actionSheetCtrl:ActionSheetController,
+    private sanitizer: DomSanitizer,
+    private common:ComponentsService,
+    private upload: UploadImageService,
 
 
   ) {
@@ -110,6 +129,47 @@ export class ManageprofilePage implements OnInit {
 
 
 
+  async takePicture() {
+    const image = await Plugins.Camera.getPhoto({
+      quality: 100,
+      allowEditing: false,
+      resultType: CameraResultType.DataUrl,
+      source: CameraSource.Camera,
+      height:128,
+      width:128
+    });
+
+    this.photo = this.sanitizer.bypassSecurityTrustResourceUrl(image && (image.dataUrl))
+    console.log('image_dataUrl',image.dataUrl);
+    this.upload.upload_profile_photo(image.dataUrl)
+  }
+
+
+
+  async take_photo() {
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: 'Albums',
+      cssClass: 'my-custom-class',
+      buttons: [
+      {
+        text: 'Capture or Select Image',
+        icon: 'camera',
+
+        handler: () => {
+        this.takePicture();
+        }
+    },
+    {
+        text: 'Cancel',
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }]
+    });
+    await actionSheet.present();
+  }
 
 
 
