@@ -6,6 +6,7 @@ import { SessionService } from 'src/app/shared/session/session.service';
 import { Plugins } from '@capacitor/core';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { Platform } from '@ionic/angular';
+import { CouponService } from 'src/app/shared/coupon/coupon.service';
 const { Storage } = Plugins;
 @Component({
   selector: 'app-choose-plan',
@@ -23,12 +24,17 @@ export class ChoosePlanPage implements OnInit {
   orgProfile: any;
   uid: string;
   newsubscriber: string;
+  //coupons
+  allCoupons: any;
+  haveCoupon: boolean = false;
+  couponCode: string;
   constructor(
       private planService:PlanService,
       private session:SessionService,
       private router:Router,
       private componentService:ComponentsService,
-     // private platform:Platform
+      private couponService:CouponService,
+      private platform:Platform
   ) { }
 
   ngOnInit() {
@@ -37,6 +43,7 @@ export class ChoosePlanPage implements OnInit {
     if(data && data.newsubscriber){
       this.newsubscriber = data.newsubscriber;
     }
+    // this.componentService.hideLoader();
     this.getSessionInfo();
     this.fetchAllPlans();
   }
@@ -61,11 +68,11 @@ export class ChoosePlanPage implements OnInit {
       this.getSessionInfo();
 
     } else if(this.subscriberChanged){
-      // subscriber changed but no new subscription so back to subscription page
-      this.router.navigate(['subscription']);
       this.subscriberChanged = false;
       // we received the data so unset the value here
       this.newsubscriber = undefined;
+      // subscriber changed but no new subscription so back to subscription page
+      this.router.navigate(['subscription']);
     }
   }
 
@@ -121,6 +128,7 @@ export class ChoosePlanPage implements OnInit {
       console.log("fetch all plans",this.allPlans,this.newsubscriber , this.orgProfile?.subscriberId);
       this.generalPlans = this.allPlans.filter(p=>p.planType=='general' && p.status==true && p.planName!='Free').sort((a,b)=>a.price-b.price);
       if(!this.newsubscriber || (this.newsubscriber && this.newsubscriber == this.orgProfile?.subscriberId)){
+        console.log("hide loader now");
         setTimeout(()=>this.componentService.hideLoader(),250);
       }
     });
@@ -135,9 +143,9 @@ export class ChoosePlanPage implements OnInit {
       else{
        this.planService.choosePlan.next(plan);
        this.router.navigateByUrl('subscription/payment');
-        //if (plan.planName === "Free" && this.platform === 'web') {
-        // }else if(plan.planName === "Free" && this.platform === 'mobile'){
-        // }else if(plan.planName === "Free" && this.platform === 'newregistration'){
+        // if (plan.planName === "Free" && this.platform == 'web') {
+        // }else if(plan.planName === "Free" && this.platform == 'mobile'){
+        // }else if(plan.planName === "Free" && this.platform == 'newregistration'){
         // }
       }
     }
@@ -146,8 +154,29 @@ export class ChoosePlanPage implements OnInit {
 
 
 
+    //=========[ coupon ]============
 
-
+    clickCoupon(){
+    this.haveCoupon = true;
+    this.fetchAllCoupons();
+    }
+    cancelCoupon(){
+    this.haveCoupon = false;
+    this.couponCode = '';
+    }
+    fetchAllCoupons(){
+      this.allCoupons = [];
+      this.couponService.fetchAllCoupon().then(res=>{
+         res.forEach(coupon=>{
+           let data = coupon.data();
+           let id = coupon.id;
+           this.allCoupons.push({id,...data})
+         })
+      })
+    }
+   applyCoupon(){
+    this.couponService.applyCoupon(this.couponCode,this.allCoupons,this.allPlans);
+   }
 
 
 }
