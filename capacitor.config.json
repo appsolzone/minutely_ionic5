@@ -1,6 +1,6 @@
 {
-  "appId": "com.debmalya.dev.learnink",
-  "appName": "ionic-learnink",
+  "appId": "dev.rnmm",
+  "appName": "ionic-cubedHR",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

@@ -74,15 +74,19 @@ export class ComponentsService {
 
     //============[ loader ]====================
      async showLoader(message: string = 'Please wait!') {
-        this.loader = await this.loadingController.create({
-          cssClass: 'my-custom-class',
-          message: message,
-        });
+        // console.log("this.loader", message);
+        if(!this.loader){
+          this.loader = await this.loadingController.create({
+            cssClass: 'my-custom-class',
+            message: message,
+          });
 
-        (await this.loader)?.present();
+          (await this.loader)?.present();
+        }
     }
 
-    async hideLoader() {
+    async hideLoader(message: string='Hiding the loader') {
+       // console.log("this.loader", message);
        (await this.loader)?.dismiss();
         this.loader = null;
     }

@@ -117,12 +117,33 @@ ion-note {
 ion-item.selected {
   --color: var(--ion-color-primary);
 }
+.collapsed-menu{
+  
+}
+
+@media (max-width: 991px) {
+  .collapsed-menu{
+    .show-menu{
+      --width: 70px;
+      --max-width: 70px;
+    }
+    ion-menu ion-item{
+      --padding-end: 0;
+    }
+  }
+}
 
 @media (min-width: 992px) {
   ion-split-pane{
     --side-max-width: 20%; //200px;
     --side-min-width: auto;
     // --side-width: 60px;
+  }
+  .collapsed-menu{
+    --side-max-width: 70px;
+    ion-menu ion-item{
+      --padding-end: 0;
+    }
   }
 }
 // @media (min-width: 1200px) {

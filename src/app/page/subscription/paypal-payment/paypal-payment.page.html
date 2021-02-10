@@ -14,7 +14,7 @@
         <ion-col size="12" size-xl="1">
         </ion-col>
         <ion-col>
-          <ion-card mode="ios" class="uniform-card-height">
+          <ion-card mode="ios" class="uniform-card-height" *ngIf="plan">
             <ion-item lines="none" color="transparent" style="background: {{plan?.color}};">
               <h1>
                   <ion-text color="white">{{ plan?.planName }}</ion-text>
