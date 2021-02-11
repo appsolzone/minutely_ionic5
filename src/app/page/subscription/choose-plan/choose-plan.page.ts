@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { IonContent } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Autounsubscribe } from '../../../decorator/autounsubscribe';
 import { PlanService } from 'src/app/shared/plan/plan.service';
@@ -15,6 +16,7 @@ const { Storage } = Plugins;
 })
 @Autounsubscribe()
 export class ChoosePlanPage implements OnInit {
+  @ViewChild(IonContent, { static: false }) content: IonContent;
   // observables
   sessionSubs$;
   getauthStateSubs$;
@@ -178,6 +180,10 @@ export class ChoosePlanPage implements OnInit {
    applyCoupon(){
     this.couponService.applyCoupon(this.couponCode,this.allCoupons,this.allPlans);
    }
+
+   scrollToBottom(){
+    this.content.scrollToBottom(500);
+  }
 
 
 }
