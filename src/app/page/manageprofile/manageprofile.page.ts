@@ -13,7 +13,7 @@ import { User } from '../../interface/user';
 import { SessionService } from '../../shared/session/session.service';
 import * as moment from 'moment';
 import { SubscriberService } from 'src/app/shared/subscriber/subscriber.service';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, Platform } from '@ionic/angular';
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
@@ -64,7 +64,7 @@ export class ManageprofilePage implements OnInit {
     private sanitizer: DomSanitizer,
     private common:ComponentsService,
     private upload: UploadImageService,
-
+    private platform: Platform,
 
   ) {
     this.firestore = this.user.db.frb.firestore;
@@ -134,7 +134,7 @@ export class ManageprofilePage implements OnInit {
       quality: 100,
       allowEditing: false,
       resultType: CameraResultType.DataUrl,
-      source: CameraSource.Camera,
+      // source: source =='camera' ? CameraSource.Camera : CameraSource.Photos,
       height:128,
       width:128
     });
@@ -148,25 +148,25 @@ export class ManageprofilePage implements OnInit {
 
   async take_photo() {
     const actionSheet = await this.actionSheetCtrl.create({
-      header: 'Albums',
+      header: 'Edit profile picture',
       cssClass: 'my-custom-class',
       buttons: [
-      {
-        text: 'Capture or Select Image',
-        icon: 'camera',
-
-        handler: () => {
-        this.takePicture();
-        }
-    },
-    {
-        text: 'Cancel',
-        icon: 'close',
-        role: 'cancel',
-        handler: () => {
-          console.log('Cancel clicked');
-        }
-      }]
+                {
+                  text: 'Select source',
+                  icon: 'person-circle',
+                  handler: () => {
+                  this.takePicture();
+                  }
+                },
+                {
+                  text: 'Cancel',
+                  icon: 'close',
+                  role: 'cancel',
+                  handler: () => {
+                    console.log('Cancel clicked');
+                  }
+                }
+              ],
     });
     await actionSheet.present();
   }
