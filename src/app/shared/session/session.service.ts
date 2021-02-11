@@ -173,9 +173,15 @@ export class SessionService {
 
   // get geolocation
   async getCurrentPosition() {
-    const coordinates = await Geolocation.getCurrentPosition();
-    // console.log('Current', coordinates);
-    return coordinates;
+    try{
+      const coordinates = await Geolocation.getCurrentPosition();
+      // console.log('Current', coordinates);
+      return coordinates;
+    } catch(error){
+      this.componentService.presentAlert("Error","Please note that location can not be determined. Check location service is on and permission is given to the app from settings.");
+      return undefined;
+    }
+
   }
 
 
