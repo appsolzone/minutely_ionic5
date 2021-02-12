@@ -48,7 +48,7 @@ export class PaypalPaymentPage implements OnInit {
   }
 
   ngOnInit(){
-    this.componentService.showLoader();
+   // this.componentService.showLoader();
   }
 
   ngOnDestroy(){
@@ -56,6 +56,7 @@ export class PaypalPaymentPage implements OnInit {
   }
   ionViewWillEnter(){
     if(this.subscriberChanged){
+       this.componentService.hideLoader();
       this.router.navigate(['subscription']);
     }
   }
@@ -80,7 +81,7 @@ export class PaypalPaymentPage implements OnInit {
        res=>{
          if(res){
          this.plan = res;
-         // console.log("Choose Plan asdkfglaks",res);
+          console.log("Choose Plan asdkfglaks",res);
 
          }else{
            this.router.navigate(['subscription/choose-plan'])

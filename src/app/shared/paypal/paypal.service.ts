@@ -151,6 +151,9 @@ export class PaypalService {
          }
          // let data = {currPlanActiveOrNot,...a};
          return self.currPlanActiveOrNot;
+       } else {
+         self.currPlanActiveOrNot.next(false);
+         return self.currPlanActiveOrNot;
        }
      };
      xhttp.open("GET", environment.paypalInfo.paypalBillingUrl + paypalId, true);
@@ -330,6 +333,65 @@ export class PaypalService {
       batch.set(cart,cartObj);
       batch.commit().then(res=>{console.log('storeCancelRecord batch success',res)})
       .catch(err=>{console.log('storeCancelRecord batch error',err)})
+    }
+
+    //===================== Arnab Mitra update====================/
+    checkPaypalPayment(comData: any, userData: any)
+    {
+      let paypalId = comData?.paypalId;
+      if(!paypalId || comData?.subscriptionType=='FREE')
+      {
+        return false;
+      } else {
+        return this.getPaypalStatus(paypalId)
+          .then(async function(res){
+  
+            if(res.status === "ACTIVE" && new Date(res.billing_info.last_payment.time) > new Date(comData.subscriptionEnd.seconds*1000))
+            {
+              let isUpdated = await this.updateSubscriptionEnd(comData,res);
+              return isUpdated;
+            }
+          }.bind(this));
+      }
+    }
+
+
+    getPaypalStatus(paypalId)
+    {
+      const xhttp = new XMLHttpRequest();
+      return new Promise((res, rej) => {
+        xhttp.onreadystatechange = function () {
+          if (this.readyState === 4 && this.status === 200) {
+            let a = JSON.parse(this.responseText);
+            return res(a);
+          }
+        };
+        xhttp.open("GET", environment.paypalInfo.paypalBillingUrl + paypalId, true);
+        xhttp.setRequestHeader("Authorization", environment.paypalInfo.paypalBasicUrl);
+  
+        xhttp.send();
+      });
+    }
+    updateSubscriptionEnd(comData: any,paypalRes)
+    {
+      return new Promise((result, rej) => {
+        if (paypalRes.status === "ACTIVE") {
+          // this.checkPayActive = true;
+          let obj = {subscriptionEnd: this.addDays(new Date(comData.subscriptionEnd.seconds*1000), 31)}
+          this.db.updateDocument(this.db.allCollections.subscribers, comData.subscriberId,obj)
+          .then(() => {
+              // this.checkPayActive = true;
+              return result(true);
+
+            })
+            .catch((err) => {
+              // this.checkPayActive = false;
+              return result(false);
+            });
+        } else {
+          return rej(false);
+        }
+      });
     }
 
 

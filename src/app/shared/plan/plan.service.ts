@@ -27,4 +27,8 @@ export class PlanService {
     return this.db.getAllDocuments(this.db.allCollections.plans);
   }
 
+  addPlan(planObj:any){
+    return this.db.addDocument(this.db.allCollections.plans, planObj);
+  }
+
 }

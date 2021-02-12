@@ -14,6 +14,7 @@ import { appPages } from './shared/app-menu-pages';
 export class AppComponent {
   public selectedIndex: number;
   public appPages = appPages;
+  public isMenubarCollapsed: boolean = false;
   constructor(
     private router: Router,
     private platform: Platform,
