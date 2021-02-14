@@ -59,7 +59,7 @@ export class ChoosePlanPage implements OnInit {
     let data = history.state.data;
     console.log("history data ionViewWillEnter", data);
     if(data && data.newsubscriber){
-      await this.componentService.showLoader();
+      this.componentService.showLoader("Initiating new subscriber session ....");
       this.subscriberChanged = false;
       this.orgProfile = undefined;
       this.newsubscriber = data.newsubscriber;
@@ -114,11 +114,16 @@ export class ChoosePlanPage implements OnInit {
          // no profile info so go back to profile to login
          this.router.navigate(['profile']);
        }
+       // at the end hide any loader if running when we have plan and subscriber id
+       if(this.orgProfile?.subscriberId && this.allPlans){
+         console.log("getSessionInfo got all values let's hide loader now");
+         this.componentService.hideLoader();
+       }
      });
   }
 
   fetchAllPlans(){
-    this.componentService.showLoader();
+    this.componentService.showLoader("Fetching plans...");
     this.planService.getAllPlans().then( plans=>{
       this.allPlans = [];
       plans.forEach(p=>{

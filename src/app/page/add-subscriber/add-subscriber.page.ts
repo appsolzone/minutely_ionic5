@@ -148,7 +148,7 @@ export class AddSubscriberPage implements OnInit {
           console.log('cannnot submit, fill all the fields');
         }
       else{
-        this.componentService.showLoader();
+        this.componentService.showLoader("Configuring details, please wait ....");
         this.register.registerSubscriber(this.userData.uid,
           this.orgProfile.subscriberId.trim().toUpperCase(),
           this.orgProfile.companyName,
@@ -161,7 +161,7 @@ export class AddSubscriberPage implements OnInit {
             // first clear last login info from storage
             await Storage.remove({key: 'userProfile'});
             this.componentService.hideLoader();
-            this.componentService.presentToaster('Success!! Organisation create successfully');
+            this.componentService.presentToaster('Success!! Organisation created successfully');
             this.router.navigate(['subscription/choose-plan'],{state: {data:{newsubscriber: this.orgProfile.subscriberId.trim().toUpperCase()}}});
             // });
 
