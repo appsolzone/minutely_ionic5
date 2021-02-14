@@ -8,7 +8,17 @@
 
 </ion-content> -->
 <!-- <ion-content> -->
-  <ion-row class="ion-no-padding" *ngIf="!userData && signinUi">
+<!-- <ion-toolbar>
+
+</ion-toolbar>
+<ion-button (click)="googleSignup()">Sign in</ion-button>
+  <ion-card>
+    <ion-card-content>
+      {{ userInfo | json}}
+    </ion-card-content>
+  </ion-card> -->
+
+  <ion-row #signinContainer id="signinContainer" class="ion-no-padding" *ngIf="!userData && signinUi">
     <ion-col size="1" class="ion-hide-xl-down">
     </ion-col>
     <ion-col size="12" size-md class="ion-hide-md-down">
@@ -34,7 +44,30 @@
           <ion-icon name="log-in-outline" slot="start"></ion-icon>
           <h2>Sign In</h2>
         </ion-item>
-        <div #firebaseuiauthcontainer id="firebaseuiauthcontainer"></div>
+        <ion-row class="ion-justify-content-center" *ngIf="isMobile && showGooglesignin">
+          <!-- <ion-card class=""> -->
+          <ion-card class="overlay-sigin-button">
+            <ion-card-content class="ion-no-padding">
+              <ion-button (click)="googleSignup()" fill="clear" mode="md" class="ion-item-align">
+                <ion-icon name="logo-google" slot="start"></ion-icon>
+                <ion-note class="ion-padding-start ion-padding-end">
+                  S<ion-text class="ion-text-lowercase">ign in with</ion-text> G<ion-text class="ion-text-lowercase">oogle</ion-text>
+                </ion-note>
+              </ion-button>
+            </ion-card-content>
+          </ion-card>
+        </ion-row>
+        <div #firebaseuiauthcontainer id="firebaseuiauthcontainer" class="signin-container">
+        </div>
+        <ion-row class="ion-justify-content-center" *ngIf="isMobile && showResetButton">
+          <ion-col size="1"></ion-col>
+          <ion-col>
+            <ion-button (click)="resetAuthButtons()" color="tertiary" expand="block" mode="md" class="ion-item-align">
+              Ok
+            </ion-button>
+          </ion-col>
+          <ion-col size="1"></ion-col>
+        </ion-row>
       </div>
     </ion-col>
     <ion-col size="12" size-md class="ion-hide-md-up">
