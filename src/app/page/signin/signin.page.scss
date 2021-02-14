@@ -9,6 +9,16 @@
 .card-look{
 
 }
+.overlay-sigin-button{
+  margin-bottom: -56px;
+  z-index: 99;
+}
+
+.signin-container{
+  // pointer-events: all;
+}
+
+
 .signin-banner{
   background: var(--ion-color-white);
   box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px;

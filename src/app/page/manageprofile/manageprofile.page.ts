@@ -16,6 +16,7 @@ import { SubscriberService } from 'src/app/shared/subscriber/subscriber.service'
 import { ActionSheetController, Platform } from '@ionic/angular';
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import '@codetrix-studio/capacitor-google-auth';
 
 
 
@@ -50,6 +51,7 @@ export class ManageprofilePage implements OnInit {
   sessionInfo: any;
   photo: SafeResourceUrl;
   public base64Image: string;
+  public isMobile: boolean = false;
 
 
 
@@ -67,6 +69,7 @@ export class ManageprofilePage implements OnInit {
     private platform: Platform,
 
   ) {
+    this.isMobile = this.platform.is('mobile') && !this.platform.is('mobileweb');
     this.firestore = this.user.db.frb.firestore;
     this.getauthStateSubs$ = this.auth.authState(this.authStateCallBack.bind(this));
     this.session.watch().subscribe(value=>{
@@ -181,10 +184,17 @@ export class ManageprofilePage implements OnInit {
   ngOnInit() {
 
   }
+
   async signOut(){
+    // this.common.showLoader("Please wait... signout");
     await Storage.remove({key: 'userProfile'});
+    if(this.isMobile){
+      await Plugins.GoogleAuth.signOut();
+    }
     await this.auth.signOut();
     this.session.clear();
+    // this.common.hideLoader();
+    this.common.presentToaster("Signed out successfully. Please sign in again to continue.");
   }
   // cancel add subscriber
   cancelAddSubscriber(checkProfiles:boolean = true){
@@ -218,6 +228,7 @@ export class ManageprofilePage implements OnInit {
         this.updatedProfile = undefined;
 
       }
+      this.common.hideLoader();
   }
 
   incompleteProfile(){
