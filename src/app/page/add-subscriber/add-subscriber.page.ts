@@ -26,10 +26,12 @@ export class AddSubscriberPage implements OnInit {
   getauthStateSubs$;
   public allSubData: any[];
   public userData: any;
+  public maskedEmail: string;
   public orgProfile: Subscriber;
   public subscriberType: string = "new";
   public subscriberExists: boolean = false;
   public alreadyJoined: boolean = false;
+  public verifyEmail: string;
   firestore: any;
 
   constructor(
@@ -74,6 +76,8 @@ export class AddSubscriberPage implements OnInit {
       if(data.userData){
         //console.log("if data.userData && this.userData", data.userData, this.userData);
         this.userData = data.userData;
+        const regex = /(?<=.{1}).(?=[^@]*?@)/g;
+        this.maskedEmail = this.userData.providerData[0].email.replace(regex,'*');
         const {displayName, email, phoneNumber} = this.userData.providerData[0];
         this.orgProfile = {
           subscriberId: '',
@@ -97,6 +101,13 @@ export class AddSubscriberPage implements OnInit {
         // go back to manage profile
         this.router.navigate(['profile']);
       }
+  }
+  ionInputVerifyEmail(){
+    // TBA
+  }
+
+  checkVerifyEmail(e){
+    // TBA
   }
 
   ionInputSubscriberId(){
