@@ -112,7 +112,7 @@
                   <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
                 </ion-button>
                 <ion-button slot="end" color="primary" (click)="submit()"
-                  [disabled]="!orgProfile.subscriberId.trim() || alreadyJoined || (subscriberType=='existing' && !subscriberExists) || (subscriberType=='new' && subscriberExists) || !requiredEmailCheck || !verifyEmail || (userData.providerData[0].email != verifyEmail)"
+                  [disabled]="!orgProfile.subscriberId.trim() || alreadyJoined || (subscriberType=='existing' && !subscriberExists) || (subscriberType=='new' && subscriberExists) || (requiredEmailCheck && (!verifyEmail || (userData.providerData[0].email != verifyEmail)))"
                 >
                   Next
                   <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
