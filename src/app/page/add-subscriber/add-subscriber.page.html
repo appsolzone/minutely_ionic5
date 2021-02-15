@@ -36,11 +36,11 @@
               <ion-list-header lines="none">
                 <ion-label>
                   <p class="ion-text-wrap ion-text-center">{{userData.providerData[0].displayName}}</p>
-                  <p class="ion-text-wrap ion-text-center">{{maskedEmail}}</p>
+                  <p class="ion-text-wrap ion-text-center">{{requiredEmailCheck ? maskedEmail : userData.providerData[0].email}}</p>
                   <h1 class="ion-text-wrap ion-text-center"><small>Let's create your profile</small></h1>
                 </ion-label>
               </ion-list-header>
-              <ion-item lines="inset">
+              <ion-item lines="inset" *ngIf="requiredEmailCheck">
                 <ion-label position="floating">
                   <ion-icon name="mail" class="ion-margin-end"></ion-icon>
                   Verify email address
@@ -48,7 +48,7 @@
                 <ion-input type="email" [(ngModel)]="verifyEmail" debounce=500
                   (ionInput)="ionInputVerifyEmail()" (ionChange)="checkVerifyEmail($event)"></ion-input>
               </ion-item>
-              <ion-item lines="none" *ngIf="!verifyEmail || userData.providerData[0].email != verifyEmail">
+              <ion-item lines="none" *ngIf="requiredEmailCheck && (!verifyEmail || userData.providerData[0].email != verifyEmail)">
                 <ion-text [color]="!verifyEmail ? 'medium' : 'danger'">
                   <p>
                     <small>
@@ -112,7 +112,7 @@
                   <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
                 </ion-button>
                 <ion-button slot="end" color="primary" (click)="submit()"
-                  [disabled]="!orgProfile.subscriberId.trim() || alreadyJoined || (subscriberType=='existing' && !subscriberExists) || (subscriberType=='new' && subscriberExists) || !verifyEmail || (userData.providerData[0].email != verifyEmail)"
+                  [disabled]="!orgProfile.subscriberId.trim() || alreadyJoined || (subscriberType=='existing' && !subscriberExists) || (subscriberType=='new' && subscriberExists) || !requiredEmailCheck || !verifyEmail || (userData.providerData[0].email != verifyEmail)"
                 >
                   Next
                   <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
