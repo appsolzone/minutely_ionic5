@@ -32,6 +32,7 @@ export class AddSubscriberPage implements OnInit {
   public subscriberExists: boolean = false;
   public alreadyJoined: boolean = false;
   public verifyEmail: string;
+  public requiredEmailCheck: boolean = true;
   firestore: any;
 
   constructor(
@@ -74,8 +75,9 @@ export class AddSubscriberPage implements OnInit {
 
   authStateCallBack(data){
       if(data.userData){
-        //console.log("if data.userData && this.userData", data.userData, this.userData);
+        console.log("if data.userData && this.userData", data, data.userData);
         this.userData = data.userData;
+        this.requiredEmailCheck = this.userData.providerData[0].providerId !== 'google.com'; 
         const regex = /(?<=.{1}).(?=[^@]*?@)/g;
         this.maskedEmail = this.userData.providerData[0].email.replace(regex,'*');
         const {displayName, email, phoneNumber} = this.userData.providerData[0];
