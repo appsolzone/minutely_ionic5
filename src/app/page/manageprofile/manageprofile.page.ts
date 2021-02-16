@@ -101,7 +101,8 @@ export class ManageprofilePage implements OnInit {
 
           if(result){
             // // console.log('ok user');
-            this.router.navigate(['attendance']);
+            // this is the default path of the app if logged in successfully and no upgrade is required
+            this.router.navigate(['profile']);
 
 
           }
@@ -267,7 +268,6 @@ export class ManageprofilePage implements OnInit {
     } else {
       this.updatedProfile = {...this.userProfile};
       this.updatedProfile.lastUpdateTimeStamp = this.firestore.FieldValue.serverTimestamp();
-      // this.router.navigate(['tabs/attendance']);
     }
     // console.log('dhdhdhdhd', this.updatedProfile, this.sessionInfo)
 

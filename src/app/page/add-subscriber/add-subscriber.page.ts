@@ -33,6 +33,7 @@ export class AddSubscriberPage implements OnInit {
   public alreadyJoined: boolean = false;
   public verifyEmail: string;
   public requiredEmailCheck: boolean = true;
+  public subsriberIdContainsBlankSpace: boolean = false;
   firestore: any;
 
   constructor(
@@ -77,7 +78,7 @@ export class AddSubscriberPage implements OnInit {
       if(data.userData){
         console.log("if data.userData && this.userData", data, data.userData);
         this.userData = data.userData;
-        this.requiredEmailCheck = this.userData.providerData[0].providerId !== 'google.com'; 
+        this.requiredEmailCheck = this.userData.providerData[0].providerId !== 'google.com';
         const regex = /(?<=.{1}).(?=[^@]*?@)/g;
         this.maskedEmail = this.userData.providerData[0].email.replace(regex,'*');
         const {displayName, email, phoneNumber} = this.userData.providerData[0];
@@ -121,7 +122,13 @@ export class AddSubscriberPage implements OnInit {
   // check subscriber id
   async checkSubscriberId(e){
     console.log('subscriber',this.orgProfile.subscriberId);
+    // check whether it contains blank space
     if(this.orgProfile.subscriberId && this.orgProfile.subscriberId.trim()){
+      this.subsriberIdContainsBlankSpace = this.orgProfile.subscriberId.trim().includes(" ");
+    } else {
+      this.subsriberIdContainsBlankSpace = false;
+    }
+    if(this.orgProfile.subscriberId && this.orgProfile.subscriberId.trim() && !this.subsriberIdContainsBlankSpace){
       this.alreadyJoined = this.allProfiles.filter(o=>o.data.subscriberId==this.orgProfile.subscriberId?.trim().toUpperCase()).length != 0;
       if(this.getSubscriberSubs$?.unsubscribe){
         await this.getSubscriberSubs$.unsubscribe();

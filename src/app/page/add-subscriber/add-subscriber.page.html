@@ -67,15 +67,16 @@
                   (ionInput)="ionInputSubscriberId()" (ionChange)="checkSubscriberId($event)"></ion-input>
               </ion-item>
               <ion-item lines="none">
-                <ion-text [color]="subscriberExists ? 'danger' : 'medium'">
+                <ion-text [color]="subscriberExists || subsriberIdContainsBlankSpace ? 'danger' : 'medium'">
                   <p>
                     <small>
+                      <span *ngIf="subsriberIdContainsBlankSpace">Organisation id can not contain blank space. Please check and try again.</span>
                       <span *ngIf="subscriberType=='new' && subscriberExists">Organisation id is not available.</span>
                       <span *ngIf="subscriberType=='existing' && subscriberExists">
                         <ion-text [color]="alreadyJoined ? 'danger' : 'success'">Organisation id found.{{alreadyJoined ?
                           'You have already joined this organisation' : ''}}</ion-text>
                       </span>
-                      <span *ngIf="subscriberType=='new' || (subscriberType=='existing' && !subscriberExists)">
+                      <span *ngIf="(subscriberType=='new' || (subscriberType=='existing' && !subscriberExists)) && !subsriberIdContainsBlankSpace">
                         {{
                         subscriberType=='existing' ?
                         'Enter the organisation id. If you do not have the organisation id, please check with your
@@ -112,7 +113,7 @@
                   <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
                 </ion-button>
                 <ion-button slot="end" color="primary" (click)="submit()"
-                  [disabled]="!orgProfile.subscriberId.trim() || alreadyJoined || (subscriberType=='existing' && !subscriberExists) || (subscriberType=='new' && subscriberExists) || (requiredEmailCheck && (!verifyEmail || (userData.providerData[0].email != verifyEmail)))"
+                  [disabled]="!orgProfile.subscriberId.trim() || alreadyJoined || subsriberIdContainsBlankSpace || (subscriberType=='existing' && !subscriberExists) || (subscriberType=='new' && subscriberExists) || (requiredEmailCheck && (!verifyEmail || (userData.providerData[0].email != verifyEmail)))"
                 >
                   Next
                   <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>

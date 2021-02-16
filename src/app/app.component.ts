@@ -30,7 +30,7 @@ export class AppComponent {
     });
   }
   ngOnInit() {
-    this.selectedIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'attendance');
+    this.selectedIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'profile');
     // Subscribe route change events for syncing the split pane menu selectors when the screen size changes
     this.router.events.subscribe((event: Event) => {
             // console.log("events", window.location.hash.replace('#',''), event instanceof NavigationStart, event instanceof NavigationEnd);
@@ -43,7 +43,7 @@ export class AppComponent {
                   let tabPath = currentPath.split('/')[1];
                   currentIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === tabPath?.toLowerCase().split('/')[0]);
                 } else {
-                  currentIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'attendance');
+                  currentIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'profile');
                 }
                 if(currentIndex && currentIndex!=-1){
                   appPages[currentIndex].url = currentPath;
@@ -57,7 +57,7 @@ export class AppComponent {
                 if (path !== undefined) {
                   this.selectedIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === path.toLowerCase().split('/')[0]);
                 } else {
-                  this.selectedIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'attendance');
+                  this.selectedIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'profile');
                 }
                 // console.log("changeSelectedIndex NavigationEnd", window.location.hash, path, this.selectedIndex);
             }
