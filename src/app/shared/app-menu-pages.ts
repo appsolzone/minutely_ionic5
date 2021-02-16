@@ -1,26 +1,32 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-
+// new tabs to be added as follows, the order to be defined as per the design
+// {
+//   title: '<title of the tab>',
+//   url: '<router path>',
+//   icon: '<ion-icon name>',
+//   tab: '<tab route>',
+// },
 export const appPages = [
-  {
-    title: 'Attendance',
-    url: 'attendance',
-    icon: 'time',
-    tab: 'attendance',
-  },
-  {
-    title: 'Leaves',
-    url: 'leave',
-    icon: 'cafe',
-    tab: 'leave',
-  },
-  {
-    title: 'Expenses',
-    url: 'expense',
-    icon: 'cash',
-    tab: 'expense',
-  },
+  // {
+  //   title: 'Attendance',
+  //   url: 'attendance',
+  //   icon: 'time',
+  //   tab: 'attendance',
+  // },
+  // {
+  //   title: 'Leaves',
+  //   url: 'leave',
+  //   icon: 'cafe',
+  //   tab: 'leave',
+  // },
+  // {
+  //   title: 'Expenses',
+  //   url: 'expense',
+  //   icon: 'cash',
+  //   tab: 'expense',
+  // },
   {
     title: 'Profile',
     url: 'profile',
@@ -33,12 +39,12 @@ export const appPages = [
     icon: 'notifications',
     tab: 'notification',
   },
-  {
-    title: 'Regions',
-    url: 'region',
-    icon: 'earth',
-    tab: 'region',
-  },
+  // {
+  //   title: 'Regions',
+  //   url: 'region',
+  //   icon: 'earth',
+  //   tab: 'region',
+  // },
   {
     title: 'Organisation',
     url: 'admin',

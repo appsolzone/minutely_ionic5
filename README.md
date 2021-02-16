@@ -1,3 +1,1 @@
-# smevantage
-# hrms_ionic5
-# hrms_ionic5
+# ionic5_common

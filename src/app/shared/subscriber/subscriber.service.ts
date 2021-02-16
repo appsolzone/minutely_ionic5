@@ -50,12 +50,12 @@ export class SubscriberService {
   }
 
   checkOrg(org, userprofile){
-    
+
     return new Promise(async function(res,rej){
-    
+
       // console.log('orgData', org);
       // console.log('userData', userprofile);
-    
+
     const subscriptionEnd = new Date(org?.subscriptionEnd.toMillis());
     const endDate =  new Date(org?.subscriptionEnd.toMillis() + (15 * 24 * 60 * 60 * 1000));
     let loginStart = await this.db.getServerTime(userprofile?.uid);
@@ -97,17 +97,17 @@ export class SubscriberService {
                message = {title:"Renew Subscription",body:"Subscription has ended on " + moment(subscriptionEnd).format('ll') + ". To continue , please renew the subscription from Admin Panel."};
              }
            }
- 
+
            this.common.presentAlert('Warning',message.body)
-           this.router.navigate(['attendance']);
+           this.router.navigate(['profile']);
 
            // this.sfp.defaultAlert(message.title, message.body);
- 
+
           //  console.log('message1', message);
           //  return rej(false);
- 
+
          }
- 
+
          return res(true);
          // this.toUserDashBoard({user: userData, admin: comData});
        } else {
@@ -132,11 +132,11 @@ export class SubscriberService {
            this.router.navigate(['subscription']);
 
 
- 
+
           //  console.log('message2', message);
- 
+
            return rej(false);
- 
+
          }
        }
      }
@@ -146,10 +146,10 @@ export class SubscriberService {
     }
 
 
-    
-  
-   
-  
+
+
+
+
     //--------------- add days 15 days --------------------
     addDays(date, days)
     {
