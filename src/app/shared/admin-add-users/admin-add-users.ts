@@ -124,12 +124,12 @@ export class AdminAddUsersService {
       })
     })
   }
-  batchCondition(userDetails,newUserData,orgProfile,type){
+ async batchCondition(userDetails,newUserData,orgProfile,type){
     console.log('user data',newUserData);
     console.log('org Data',orgProfile);
     if(newUserData.role == "ADMIN"){
       this.componentService.hideLoader();
-      this.componentService.presentAlertConfirm("Warning","Are you sure you want to create another admin user. or select user").then(res =>{
+      await this.componentService.presentAlertConfirm("Warning","Are you sure you want to create another admin user. or select user").then(res =>{
         console.log("alert response",res);
         if(res){this.batchPerform(userDetails,newUserData,orgProfile,type);} 
         else{ this.componentService.hideLoader();}

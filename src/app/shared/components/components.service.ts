@@ -64,13 +64,13 @@ export class ComponentsService {
               text: 'Dismiss',
               role: 'cancel',
               cssClass: 'secondary',
-              handler: (cancel) => {
-                resolve('cancel');
+              handler: () => {
+                resolve(false);
               }
             }, {
               text: 'Ok',
-              handler: (ok) => {
-                resolve('ok');
+              handler: () => {
+                resolve(true);
               }
             }
           ]
