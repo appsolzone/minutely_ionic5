@@ -8,6 +8,10 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
+        path: 'activities',
+        loadChildren: () => import('../page/activities/activities.module').then( m => m.ActivitiesPageModule)
+      },
+      {
         path: 'profile',
         loadChildren: () => import('../page/profile/profile.module').then( m => m.ProfilePageModule)
       },

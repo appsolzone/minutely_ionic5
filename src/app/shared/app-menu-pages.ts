@@ -9,12 +9,12 @@
 //   tab: '<tab route>',
 // },
 export const appPages = [
-  // {
-  //   title: 'Attendance',
-  //   url: 'attendance',
-  //   icon: 'time',
-  //   tab: 'attendance',
-  // },
+  {
+    title: 'Activities',
+    url: 'activities',
+    icon: 'body',
+    tab: 'activities',
+  },
   // {
   //   title: 'Leaves',
   //   url: 'leave',
