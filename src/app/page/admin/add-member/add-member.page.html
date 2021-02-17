@@ -1,0 +1,45 @@
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-title>add-member</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+</ion-content> -->
+<h4 class="primary">
+  Add new member
+</h4>
+<ion-item lines="inset">
+  <ion-icon name="qr-code" class="ion-margin-end"></ion-icon>
+  <ion-label>User Role</ion-label>
+  <ion-select [(ngModel)]="addUserData.role" interface="action-sheet" slot="end">
+    <ion-select-option *ngFor="let role of userRoles" [value]="role">{{ role }}</ion-select-option>
+  </ion-select>
+</ion-item>
+<ion-item lines="inset">
+  <ion-icon name="accessibility-outline" class="ion-margin-end"></ion-icon>
+  <ion-label>Name</ion-label>
+  <ion-input class="ion-text-right" type="text" placeholder="enter user name" [(ngModel)]="addUserData.name" required></ion-input>
+</ion-item>
+<ion-item lines="inset">
+  <ion-icon name="bookmark-outline" class="ion-margin-end"></ion-icon>
+  <ion-label>Position</ion-label>
+  <ion-input class="ion-text-right" type="text" placeholder="user job position" [(ngModel)]="addUserData.jobTitle" required></ion-input>
+</ion-item>
+<ion-item lines="inset">
+  <ion-icon name="mail-outline" class="ion-margin-end"></ion-icon>
+  <ion-label>Email</ion-label>
+  <ion-input class="ion-text-right" type="email" placeholder="email address" [(ngModel)]="addUserData.email" required></ion-input>
+</ion-item>
+<ion-item lines="inset">
+  <ion-icon name="call-outline" class="ion-margin-end"></ion-icon>
+  <ion-label>Phone</ion-label>
+  <ion-input type="tel" class="ion-text-right" type="text" placeholder="contact number" [(ngModel)]="addUserData.phone" required></ion-input>
+</ion-item>
+<ion-item lines="none" class="ion-margin-top">
+  <!-- <ion-button fill="clear" size="default" color="medium" slot="end" (click)="onSkip()">Skip</ion-button> -->
+  <ion-button slot="end" size="default" (click)="onSubmit()">Submit</ion-button>
+</ion-item>
+
+
