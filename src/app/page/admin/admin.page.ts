@@ -45,6 +45,10 @@ export class AdminPage implements OnInit {
     this.fetchAllMembers();
    }
 
+   gotoAddMemberPage(){
+     this.router.navigate(['/admin/add-member']);
+   }
+
 
    getSessionInfo(){
     this.sessionSubs$ = this.session.watch().subscribe(value=>{
@@ -135,7 +139,7 @@ export class AdminPage implements OnInit {
     // present sheet for actions
  async memberManageActionSheet(data) {
     console.log("member current status:",data.status);
-    if(data.email == this.orgProfile.email){
+    if(data.email == this.userProfile.email){
       this.componentService.presentAlert("Error","You can't amend your own access or role details.");
     }else{
       let btns = [];

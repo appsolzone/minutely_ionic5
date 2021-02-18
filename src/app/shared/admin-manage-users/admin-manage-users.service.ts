@@ -8,8 +8,8 @@ import { SendEmailService } from '../send-email/send-email.service';
   providedIn: 'root'
 })
 export class AdminManageUsersService {
-  public newMemberAddRoles:any = ['USER','ADMIN','EXTERNAL'];
-  public incrementStatus:any = ['All','ACTIVE','EXTERNAL','REGISTERED'];
+  public newMemberAddRoles:any = ['USER','ADMIN'];
+  public incrementStatus:any = ['All','ACTIVE','REGISTERED'];
   public decrementStatus:any = ['SUSPENDED','REJECTED','LEAVER']
   constructor(
     private db:DatabaseService,
@@ -36,7 +36,7 @@ export class AdminManageUsersService {
       )
   }
 
-  // User role change ADMIN to USER/EXTERNAL 
+  // User role change ADMIN to USER/EXTERNAL
   changeUserRole(data, newRole)
   {
     return this.db.setDocument(this.db.allCollections.users,data.id,{'role':newRole},true).then(()=>{this.componentService.presentToaster('User role updated')})
@@ -54,7 +54,7 @@ export class AdminManageUsersService {
     })
 
     // update of organization licenses
-    let noOfFreeLicense = 0; 
+    let noOfFreeLicense = 0;
 
     let subRef = this.db.afs.collection(this.db.allCollections.subscribers).doc(orgProfile.subscriberId).ref;
     if(this.decrementStatus.includes(whatToDo) && data.status !== 'REGISTERED')

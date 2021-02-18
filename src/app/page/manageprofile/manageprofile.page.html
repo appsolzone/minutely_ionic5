@@ -71,21 +71,21 @@
             </ion-item>
           </ion-card-header>
           <ion-card-content>
-            <ion-item *ngIf="!editProfile" lines="none">
-            
+            <ion-item  lines="none">
+
 
               <ion-avatar slot="start" (click)="take_photo()" >
-               
-                  <img src="{{userProfile?.picUrl}}" *ngIf="userProfile?.picUrl != ''" >
-                
-                
+
+                  <img src="{{userProfile?.picUrl}}" *ngIf="userProfile?.picUrl" >
+
+
                   <h1 *ngIf="!userProfile?.picUrl">
                     <ion-icon color="primary" slot="icon-only" name="person-circle"
                       [ngStyle]="{'height':'40px','width':'40px'}"  ></ion-icon>
                   </h1>
-                
-                
-                
+
+
+
               </ion-avatar>
               <ion-label color="primary" *ngIf="!allProfiles && !editProfile">
                 <h2 class="ion-text-wrap">We are getting the profile information. Please wait ....</h2>

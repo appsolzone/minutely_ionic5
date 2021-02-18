@@ -5,17 +5,21 @@
 </ion-header>
 
 <ion-content>
-  <ion-row class="wave-background">
+  <ion-row class="height-background">
+    <!-- <ion-col>
+    <ion-row>
     <ion-col size="12" size-xl="1">
-    </ion-col>
+    </ion-col> -->
     <ion-col>
-      <ion-card>
-        <ion-card-header>
-          <ion-item lines="full">
+      <!-- <ion-card>
+        <ion-card-header> -->
+        <ion-searchbar placeholder="search with name or email" [(ngModel)]="textSearch" (ionInput)="filterAllMembers()">
+        </ion-searchbar>
+          <!-- <ion-item lines="full">
             <ion-label slot="start">
-              <p>Active License</p>
-              <h1>{{orgProfile?.noOfUserAllowed -
-                orgProfile?.noOfFreeLicense}}-in-{{orgProfile?.noOfUserAllowed}}</h1>
+              <h1>All member list</h1>
+              <p>{{orgProfile?.noOfUserAllowed -
+                orgProfile?.noOfFreeLicense}}-of-{{orgProfile?.noOfUserAllowed}} licenses are in use</p>
             </ion-label>
             <ion-button color="success" slot="end" fill="solid" size="small" (click)="addMember = !addMember" *ngIf="!addMember">
               <ion-icon name="person-add-outline"></ion-icon> Add user
@@ -23,21 +27,51 @@
             <ion-button color="danger" slot="end" fill="solid" size="small" (click)="addMember = !addMember" *ngIf="addMember">
               <ion-icon name="arrow-back-outline"></ion-icon> Back
             </ion-button>
-          </ion-item>
-          <ion-item lines="full" *ngIf="!addMember">
+          </ion-item> -->
+          <!-- <ion-item lines="full" *ngIf="!addMember">
             <ion-icon name="search-outline"></ion-icon>
             <ion-input placeholder="search with name or email" [(ngModel)]="textSearch" (ionInput)="filterAllMembers()"></ion-input>
             <ion-button fill="outline" slot="end" size="small" (click)="filterMemberActionSheet()">
               <ion-icon name="filter-outline"></ion-icon> {{this.filterCategory}}
             </ion-button>
-          </ion-item>
+          </ion-item> -->
 
-        </ion-card-header>
-        <ion-card-content>
-          <div *ngIf="!addMember">
-          <small color="medium">All member list</small>
-          <ion-item class="ion-no-padding" *ngFor="let member of allMembers">
-            <ion-grid>
+        <!-- </ion-card-header>
+        <ion-card-content> -->
+          <ion-list>
+            <!-- <ion-list-header> -->
+              <ion-item>
+                <ion-label>
+                  <h1>Members</h1>
+                  <p>{{orgProfile?.noOfUserAllowed -
+                    orgProfile?.noOfFreeLicense}}-of-{{orgProfile?.noOfUserAllowed}} licenses are in use</p>
+                </ion-label>
+                <ion-button slot="end" size="small" (click)="gotoAddMemberPage()" class="ion-hide-md-up">
+                  <ion-icon name="person-add" slot="start"></ion-icon>
+                  Add user
+                </ion-button>
+              </ion-item>
+          <!-- </ion-list-header> -->
+          <ion-item *ngFor="let member of allMembers">
+            <ion-avatar [ngStyle]="{'height':'auto','width':'40px'}" slot="start">
+              <img *ngIf="member?.picUrl != ''" src="{{member?.picUrl}}" [ngStyle]="{'height':'40px','width':'40px'}">
+              <ion-icon *ngIf="!member?.picUrl" color="primary" name="person-circle" [ngStyle]="{'height':'40px','width':'40px'}">
+              </ion-icon>
+              <p class="ion-no-margin ion-no-padding ion-text-lowercase ion-text-center"><small><ion-text [color]="member.role == 'ADMIN'?'success':member.role == 'USER'?'medium':'warning'">{{member?.role}}</ion-text></small></p>
+            </ion-avatar>
+            <ion-label>
+              <h3>{{member.name}}</h3>
+              <p>{{member.email}}</p>
+              <p>{{member.jobTitle}}</p>
+            </ion-label>
+            <ion-chip outline=true slot="end" [color]="member.status == 'ACTIVE'?'success':member.status == 'REGISTERED'?'warning':member.status == 'EXTERNAL'?'primary':'danger'">
+              <ion-label class="ion-text-lowercase">{{member.status}}</ion-label>
+            </ion-chip>
+            <ion-button slot="end" fill="clear" (click)="memberManageActionSheet(member)">
+              <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+            </ion-button>
+
+            <!-- <ion-grid>
             <ion-row>
               <ion-col size="2" class="ion-align-self-start">
                 <ion-avatar [ngStyle]="{'height':'40px','width':'40px'}" *ngIf="member?.picUrl != ''">
@@ -47,7 +81,7 @@
                   <ion-icon color="primary" slot="icon-only" name="person-circle" [ngStyle]="{'height':'40px','width':'40px'}">
                   </ion-icon>
                 </h1>
-                <span [color]="member.role == 'ADMIN'?'secondary':member.role == 'USER'?'warning':'primary'">{{member?.role}}</span>
+                <span [color]="member.role == 'ADMIN'?'secondary':member.role == 'USER'?'warning':'primary'"><small>{{member?.role}}</small></span>
               </ion-col>
               <ion-col size="5" class="ion-padding-left">
                 <ion-label>
@@ -67,16 +101,26 @@
               </ion-button>
               </ion-col>
             </ion-row>
-           </ion-grid>
+           </ion-grid> -->
           </ion-item>
-          </div>
+        </ion-list>
           <div *ngIf="addMember">
             <app-add-member></app-add-member>
           </div>
-        </ion-card-content>
-      </ion-card>
+        <!-- </ion-card-content>
+      </ion-card> -->
     </ion-col>
-    <ion-col size="12" size-xl="1">
+    <!-- <ion-col size="12" size-xl="1">
+    </ion-col>
+    </ion-row>
+    </ion-col> -->
+
+    <ion-col class="ion-hide-md-down" >
+      <!-- <ion-row>
+        <ion-col> -->
+          <app-add-member></app-add-member>
+        <!-- </ion-col> -->
+      <!-- </ion-row> -->
     </ion-col>
   </ion-row>
 

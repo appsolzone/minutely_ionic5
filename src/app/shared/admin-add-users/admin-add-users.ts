@@ -7,8 +7,8 @@ import { SendEmailService } from '../send-email/send-email.service';
   providedIn: 'root'
 })
 export class AdminAddUsersService {
-  public newMemberAddRoles:any = ['USER','ADMIN','EXTERNAL'];
-  public membersStatus:any = ['All','ACTIVE','REGISTERED','EXTERNAL','SUSPENDED','REJECTED','LEAVER'];
+  public newMemberAddRoles:any = ['USER','ADMIN'];
+  public membersStatus:any = ['All','ACTIVE','REGISTERED','SUSPENDED','REJECTED','LEAVER'];
   systemGeneratedPassword:any;
   constructor(
     private db:DatabaseService,
@@ -18,7 +18,7 @@ export class AdminAddUsersService {
 
   // new register
   addNewUser(newUserData,orgProfile){
-  this.componentService.showLoader();  
+  this.componentService.showLoader();
   this.systemGeneratedPassword = this.generatePassWord();
   console.log('password',this.systemGeneratedPassword);
 
@@ -31,7 +31,7 @@ export class AdminAddUsersService {
             sId:orgProfile.subscriberId,
             uName:newUserData.email,
             pwd: this.systemGeneratedPassword
-          }).then((sent: any)=>{ 
+          }).then((sent: any)=>{
             // Nothing to do here
           });
           this.componentService.hideLoader();
@@ -105,7 +105,7 @@ export class AdminAddUsersService {
      let queryObj = [{
       field:'subscriberId',
       operator:'==',
-      value:orgProfile.subscriberId   
+      value:orgProfile.subscriberId
      },
       {
         field:'email',
@@ -131,7 +131,7 @@ export class AdminAddUsersService {
       this.componentService.hideLoader();
       await this.componentService.presentAlertConfirm("Warning","Are you sure you want to create another admin user. or select user").then(res =>{
         console.log("alert response",res);
-        if(res){this.batchPerform(userDetails,newUserData,orgProfile,type);} 
+        if(res){this.batchPerform(userDetails,newUserData,orgProfile,type);}
         else{ this.componentService.hideLoader();}
       }).catch(err=>{
         this.componentService.hideLoader();
@@ -142,7 +142,7 @@ export class AdminAddUsersService {
     }
   }
   batchPerform(userDetails,newUserData,orgProfile,type){
-    this.componentService.showLoader();  
+    this.componentService.showLoader();
     console.log('user data',newUserData);
     console.log('org Data',orgProfile);
     let userId = '';
@@ -190,7 +190,7 @@ export class AdminAddUsersService {
       batch.update(subRef,{
         'noOfFreeLicense': this.db.frb.firestore.FieldValue.increment(-1), //this.subscriberData.noOfFreeLicense - 1,
       })
-   
+
 
     batch.commit().then(res =>
       {
