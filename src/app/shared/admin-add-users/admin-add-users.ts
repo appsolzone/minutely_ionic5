@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ComponentsService } from '../components/components.service';
 import { DatabaseService } from '../database/database.service';
+import { RegistrationService } from '../registration/registration.service';
 import { SendEmailService } from '../send-email/send-email.service';
 
 @Injectable({
@@ -8,80 +9,44 @@ import { SendEmailService } from '../send-email/send-email.service';
 })
 export class AdminAddUsersService {
   public newMemberAddRoles:any = ['USER','ADMIN'];
-  public membersStatus:any = ['All','ACTIVE','REGISTERED','SUSPENDED','REJECTED','LEAVER'];
   systemGeneratedPassword:any;
   constructor(
     private db:DatabaseService,
     private componentService:ComponentsService,
-    private sendEmailService:SendEmailService
+    private sendEmailService:SendEmailService,
+    private registerationService:RegistrationService
   ) { }
 
   // new register
   addNewUser(newUserData,orgProfile){
   this.componentService.showLoader();
   this.systemGeneratedPassword = this.generatePassWord();
-  console.log('password',this.systemGeneratedPassword);
 
-  this.db.adminFrb.auth().createUserWithEmailAndPassword(newUserData.email, this.systemGeneratedPassword).then(res =>{
+  return this.db.adminFrb.auth().createUserWithEmailAndPassword(newUserData.email, this.systemGeneratedPassword).then(res =>{
+          console.log("======= first one ========");
+          if(res.user.uid){
           this.db.SendAdminAuthVerificationMail();
-          this.sendEmailService.sendCustomEmail(this.sendEmailService.emailActionPath,{
-            toEmail:newUserData.email,
-            toName: newUserData.name,
-            orgName:orgProfile.companyName,
-            sId:orgProfile.subscriberId,
-            uName:newUserData.email,
-            pwd: this.systemGeneratedPassword
-          }).then((sent: any)=>{
-            // Nothing to do here
-          });
-          this.componentService.hideLoader();
+          this.sendNewUserEmail(newUserData,orgProfile); 
           // data collect and insert
-          this.batchCondition(res,newUserData,orgProfile,"two");
+          return this.transitionCondition(res,newUserData,orgProfile,"two");          
+          }
         }).catch(err =>{
           // user create failed
           if(err.code == "auth/email-already-in-use"){ // email already exists
-            this.checkIfUserExitsInThisOrg(newUserData,orgProfile).then(res =>{
+            this.checkIfUserExitsInThisOrg(newUserData,orgProfile)
+            .then(function(res){
               if(res.length == 1){
-                this.componentService.hideLoader();
-                this.componentService.presentAlert("Error","The user exists for the organisation. Please check member list to take necessary action");
+                return this.errorAlert("The user exists for the organisation. Please check member list to take necessary action");
               }else{
-               let queryObj = [{
-                  field:'email',
-                  operator:'==',
-                  value:newUserData.email
-                }]
-                this.db.
-                getAllDocumentsByQuery(this.db.allCollections.useruids,queryObj)
-                  .then(function(querySnapshot){
-                    let userDetails= {user: { uid: null }};
-                    querySnapshot.forEach(function(doc){
-                      Object.assign(userDetails,{'id': doc.id, 'data': doc.data(), 'user': doc.data()})
-                    })
-
-                    console.log("user details we get",userDetails);
-
-                    if(userDetails.user.uid){
-                      this.systemGeneratedPassword = 'Please use your current password for the email mentioned above';
-                      this.batchCondition(userDetails,newUserData,orgProfile,"two");
-                    } else {
-                      this.componentService.presentAlert("Error","The user can not be added. Please try again. If the problem persists please request the user to Sign up using his/her credentials.");
-                      this.componentService.hideLoader();
-                    }
-                  }.bind(this)).catch(function(err){
-                    console.log(err);
-                    this.componentService.presentAlert("Error","The user can not be added. Please try again. If the problem persists please request the user to Sign up using his/her credentials.");
-                    this.componentService.hideLoader();
-                    // reject(err);
-                  }.bind(this));
+                return this.checkInUseruidsColl(newUserData,orgProfile);
               }
-            }).catch(err =>{
-              this.componentService.hideLoader();
-              this.componentService.presentAlert("Error",err);
+            }.bind(this))
+            .catch(err =>{
+             return this.errorAlert(err);
             })
-          }else{ // if email not exits
-            this.componentService.hideLoader();
-            this.componentService.presentAlert("Error",err);
-          }
+            }else{ // if email not exits
+              return this.errorAlert(err);
+            }
         })
   }
   generatePassWord(){
@@ -102,6 +67,7 @@ export class AdminAddUsersService {
   }
 
   checkIfUserExitsInThisOrg(newUserData,orgProfile): Promise<any>{
+    console.log("======= checkIfUserExitsInThisOrg ========");  
      let queryObj = [{
       field:'subscriberId',
       operator:'==',
@@ -124,93 +90,99 @@ export class AdminAddUsersService {
       })
     })
   }
- async batchCondition(userDetails,newUserData,orgProfile,type){
-    console.log('user data',newUserData);
-    console.log('org Data',orgProfile);
-    if(newUserData.role == "ADMIN"){
-      this.componentService.hideLoader();
-      await this.componentService.presentAlertConfirm("Warning","Are you sure you want to create another admin user. or select user").then(res =>{
-        console.log("alert response",res);
-        if(res){this.batchPerform(userDetails,newUserData,orgProfile,type);}
-        else{ this.componentService.hideLoader();}
-      }).catch(err=>{
-        this.componentService.hideLoader();
-      })
-    }else{
-      this.componentService.hideLoader();
-      this.batchPerform(userDetails,newUserData,orgProfile,type);
-    }
-  }
-  batchPerform(userDetails,newUserData,orgProfile,type){
-    this.componentService.showLoader();
-    console.log('user data',newUserData);
-    console.log('org Data',orgProfile);
-    let userId = '';
+
+
+ async transitionCondition(userDetails,newUserData,orgProfile,type){
+  console.log("======= transitionCondition ========"); 
+  this.componentService.hideLoader();
+   let userId = '';
     if(type == "one"){
       userId = userDetails.data.uid;
     }else if(type == "two"){
       userId = userDetails.user.uid;
-
     }
-    let batch = this.db.afs.firestore.batch();
-    const userAdd = this.db.afs.collection(this.db.allCollections.users).doc().ref;
-    batch.set(userAdd,{
-      'email': newUserData.email,
-      'isExternal': newUserData.role=="EXTERNAL" ? true : false,
-      'jobTitle': newUserData.jobTitle,
-      'name': newUserData.name,
-      'phoneNumber': newUserData.phone,
-      'picUrl': "",
-      'role': newUserData.role,
-      'status':'ACTIVE',
-      'subscriberId': orgProfile.subscriberId,
-      'uid': userId,
-      'userCreationTimeStamp': this.db.frb.firestore.FieldValue.serverTimestamp(),
-      'address':'',
-      'fcm':'',
-      'lastUpdateTimeStamp':this.db.frb.firestore.FieldValue.serverTimestamp(),
-
-    })
-
-    // add to userids collection for lookup
-    const useruids = this.db.afs.collection(this.db.allCollections.useruids).doc(userId).ref;
-    batch.set(useruids,{ uid: userId, email:newUserData.email });
-
-    // add to users notification
-    const userNotification = this.db.afs.collection(this.db.allCollections.notifications).doc(userId).ref;
-    batch.set(userNotification,{
-      uid: userId,
-      name:newUserData.name,
-      totalAlerts: 0,
-      totalAlertsUnread: 0
-    });
-
-    // update of organization licenses
-      let subRef = this.db.afs.collection(this.db.allCollections.subscribers).doc(orgProfile.subscriberId).ref;
-      batch.update(subRef,{
-        'noOfFreeLicense': this.db.frb.firestore.FieldValue.increment(-1), //this.subscriberData.noOfFreeLicense - 1,
-      })
-
-
-    batch.commit().then(res =>
+    return await this.componentService.presentAlertConfirm(
+      "Warning",`Are you sure you want to register ${newUserData.name} in this organisation as ${newUserData.role}`
+      )
+     .then(async function(res:any){
+      console.log("======= presentAlertConfirm ========");  
+      if(res){
+        this.componentService.showLoader();
+        await this.registerationService.joinSubscriber(userId,orgProfile.subscriberId, newUserData.name,newUserData.email,newUserData);
+        return true;
+        }
+     }.bind(this))
+     .then(function(res)
       {
-        this.componentService.hideLoader();
-        this.componentService.presentToaster('New User added successfully');
-         // send email to the user
-         this.sendEmailService.sendCustomEmail(this.sendEmailService.emailActionPath,{
-          toEmail: newUserData.email,
-          toName: newUserData.name,
-          orgName: orgProfile.subscriberId,
-          sId: orgProfile.subscriberId,
-          uName: newUserData.name,
-          pwd: this.systemGeneratedPassword
-        }).then(()=>
-        {
-          // Nothing to do here
-        })
-      }).catch(err =>{
-      this.componentService.hideLoader();
-      this.componentService.presentAlert("Error",err);
+        console.log("======= presentAlertConfirm ========"); 
+        if(res){
+        let dataObj= {newUserData:{...newUserData},orgProfile:{...orgProfile}};
+        return this.successAlert('New User added successfully',true,dataObj);
+        }
+      }.bind(this))  
+      .catch(err=>{
+        return this.errorAlert(err);
     })
+
+  }
+
+  checkInUseruidsColl(newUserData,orgProfile){
+   console.log("======= checkInUseruidsColl ========");  
+   let queryObj = [{
+      field:'email',
+      operator:'==',
+      value:newUserData.email
+    }]
+    return this.db.
+    getAllDocumentsByQuery(this.db.allCollections.useruids,queryObj)
+      .then(function(querySnapshot){
+        let userDetails= {user: { uid: null }};
+        querySnapshot.forEach(function(doc){
+          console.log("user uid data",doc.data());
+          Object.assign(userDetails,{'id': doc.id, 'data': doc.data(), 'user': doc.data()})
+        })
+
+        console.log("user details we get",userDetails);
+
+        if(userDetails.user.uid){
+          this.systemGeneratedPassword = 'Please use your current password for the email mentioned above';
+          return this.transitionCondition(userDetails,newUserData,orgProfile,"two");
+        } else {
+        return this.errorAlert("The user can not be added. Please try again. If the problem persists please request the user to Sign up using his/her credentials.");
+        }
+      }.bind(this))
+      .catch(function(err){
+        console.log(err);
+        return this.errorAlert("The user can not be added. Please try again. If the problem persists please request the user to Sign up using his/her credentials.");
+      }.bind(this));
+  }
+
+
+  //error alert
+  errorAlert(err){
+  this.componentService.hideLoader();
+  this.componentService.presentAlert('Error',err);
+  return false;
+  }
+
+  //success alert
+  successAlert(msg,sendMail:boolean=false,dataObj?:any){
+  this.componentService.hideLoader();
+  this.componentService.presentToaster(msg);
+  if(sendMail)this.sendNewUserEmail(dataObj.newUserData,dataObj.orgProfile); 
+  return true;
+  }
+
+  sendNewUserEmail(newUserData,orgProfile){
+    this.sendEmailService.sendCustomEmail(this.sendEmailService.emailActionPath,{
+      toEmail:newUserData.email,
+      toName: newUserData.name,
+      orgName:orgProfile.companyName,
+      sId:orgProfile.subscriberId,
+      uName:newUserData.email,
+      pwd: this.systemGeneratedPassword
+    }).then((sent: any)=>{
+      // Nothing to do here
+    });
   }
 }

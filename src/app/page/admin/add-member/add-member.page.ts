@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { User } from 'src/app/interface/user';
 import { AdminAddUsersService } from 'src/app/shared/admin-add-users/admin-add-users';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { ManageuserService } from 'src/app/shared/manageuser/manageuser.service';
 import { SessionService } from 'src/app/shared/session/session.service';
 
 @Component({
@@ -27,11 +28,11 @@ export class AddMemberPage implements OnInit {
     private session:SessionService,
     private componentService:ComponentsService,
     private router:Router,
-    public AdminAddService:AdminAddUsersService
+    public AdminAddService:AdminAddUsersService,
+    public manageUserService:ManageuserService
   ) { 
-    this.addUserData = {role:'',name:"",jobTitle:"",email:"",phone:''};
+    this.addUserData = this.manageUserService.newUser;
     this.userRoles = this.AdminAddService.newMemberAddRoles;
-    console.log(this.userRoles);
   }
 
   ngOnInit() {
@@ -40,11 +41,9 @@ export class AddMemberPage implements OnInit {
   }
 
   //reset function
-  // ngOnChanges(){
-  //   if(this.mood){
-  //   this.addUserData = {role:'',name:"",jobTitle:"",email:"",phone:''};
-  //   };
-  // }
+  ngOnChanges(){
+
+  }
 
    ionViewWillEnter(){
      //this.today = new Date();
@@ -65,9 +64,8 @@ export class AddMemberPage implements OnInit {
   onSubmit(){
     if(this.orgProfile.noOfFreeLicense>0){
       if(this.addUserData.name !== '' && this.addUserData.email !== ''&& this.addUserData.role !== '' && this.addUserData.jobtitle !== '' && this.addUserData.phone !== ''){
-       console.log("this add user data",this.addUserData);
-       console.log("org profile from comp",this.orgProfile);
-       this.AdminAddService.addNewUser(this.addUserData,this.orgProfile);
+      let result = this.AdminAddService.addNewUser(this.addUserData,this.orgProfile);
+      if(result) this.addUserData = this.manageUserService.newUser;
      }else{
       this.componentService.presentAlert("Error","Please fill all input field.");
      }
