@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ComponentsService } from '../components/components.service';
 import { DatabaseService } from '../database/database.service';
+import { ManageuserService } from '../manageuser/manageuser.service';
 import { RegistrationService } from '../registration/registration.service';
 import { SendEmailService } from '../send-email/send-email.service';
 
@@ -10,12 +11,14 @@ import { SendEmailService } from '../send-email/send-email.service';
 export class AdminAddUsersService {
   public newMemberAddRoles:any = ['USER','ADMIN'];
   systemGeneratedPassword:any;
+  userDataForm:any;
   constructor(
     private db:DatabaseService,
     private componentService:ComponentsService,
     private sendEmailService:SendEmailService,
-    private registerationService:RegistrationService
-  ) { }
+    private registerationService:RegistrationService,
+    private manageUserService:ManageuserService
+  ) {this.userDataForm = this.manageUserService.newUser}
 
   // new register
   addNewUser(newUserData,orgProfile){
@@ -36,7 +39,7 @@ export class AdminAddUsersService {
             this.checkIfUserExitsInThisOrg(newUserData,orgProfile)
             .then(function(res){
               if(res.length == 1){
-                return this.errorAlert("The user exists for the organisation. Please check member list to take necessary action");
+                return this.errorAlert('already-exist-user');
               }else{
                 return this.checkInUseruidsColl(newUserData,orgProfile);
               }
@@ -148,29 +151,38 @@ export class AdminAddUsersService {
           this.systemGeneratedPassword = 'Please use your current password for the email mentioned above';
           return this.transitionCondition(userDetails,newUserData,orgProfile,"two");
         } else {
-        return this.errorAlert("The user can not be added. Please try again. If the problem persists please request the user to Sign up using his/her credentials.");
+        return this.errorAlert('auth-table-error');
         }
       }.bind(this))
       .catch(function(err){
         console.log(err);
-        return this.errorAlert("The user can not be added. Please try again. If the problem persists please request the user to Sign up using his/her credentials.");
+        return this.errorAlert('auth-table-error');
       }.bind(this));
   }
 
 
   //error alert
   errorAlert(err){
+  let errorMsg = ''
+  if(err == 'auth-table-error'){
+    errorMsg = "The user can not be added. Please try again. If the problem persists please request the user to Sign up using his/her credentials.";
+  }else if(err == 'already-exist-user'){
+    errorMsg = "The user exists for the organisation. Please check member list to take necessary action";   
+  }else{
+    errorMsg = err;  
+  }
+
   this.componentService.hideLoader();
-  this.componentService.presentAlert('Error',err);
+  this.componentService.presentAlert('Error',errorMsg);
   return false;
   }
 
   //success alert
   successAlert(msg,sendMail:boolean=false,dataObj?:any){
-  this.componentService.hideLoader();
-  this.componentService.presentToaster(msg);
-  if(sendMail)this.sendNewUserEmail(dataObj.newUserData,dataObj.orgProfile); 
-  return true;
+    this.componentService.hideLoader();
+    this.componentService.presentToaster(msg);
+    if(sendMail)this.sendNewUserEmail(dataObj.newUserData,dataObj.orgProfile); 
+    return true;
   }
 
   sendNewUserEmail(newUserData,orgProfile){

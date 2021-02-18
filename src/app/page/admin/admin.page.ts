@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActionSheetController } from '@ionic/angular';
 import { map } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { SessionService } from 'src/app/shared/session/session.service';
   templateUrl: './admin.page.html',
   styleUrls: ['./admin.page.scss'],
 })
-export class AdminPage implements OnInit {
+export class AdminPage implements OnInit,OnChanges {
 
   // observables
   sessionSubs$;
@@ -42,7 +42,9 @@ export class AdminPage implements OnInit {
     // get session info
     this.getSessionInfo();
   }
+  ngOnChanges(){
 
+  }
    ionViewWillEnter(){
     this.fetchAllMembers();
    }
@@ -64,7 +66,7 @@ export class AdminPage implements OnInit {
        if(this.userProfile){
          // Nothing to do just display details
        } else {
-         // this.router.navigate(['profile']);
+          this.router.navigate(['profile']);
        }
      });
   }
