@@ -116,12 +116,14 @@ export class SubscriberService {
          if(userprofile.role == "ADMIN"){
            // this.renewNow({'user': userprofile, 'org': org});
           //  console.log('reneeew');
+          this.common.presentAlert('Error','subscription ended');
+
           this.router.navigate(['subscription']);
 
            return rej(false);
          }else{
            // this.loader = false;
-           this.db.user.loginStarted = false;
+           
            if(org.subscriptionType == "FREE"){
              message = {title:"Package expiry", body: "Free trial period has ended on " + moment(subscriptionEnd).format('ll') + ". To continue , please contact your admin to upgrade the subscription. Contact your admin   "  };
            } else {

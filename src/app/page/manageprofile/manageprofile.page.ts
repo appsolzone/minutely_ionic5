@@ -89,47 +89,64 @@ export class ManageprofilePage implements OnInit {
       // // console.log("subscription end check", this.sessionInfo?.orgProfile?.subscriptionEnd);
       // // console.log("userProfile status check", this.sessionInfo?.userProfile?.status);
 
-
-      this.subscriber.checkOrg(this.sessionInfo?.orgProfile, this.sessionInfo?.userProfile)
-
-      .then((res)=>{
-
-        if(res){
-        // console.log('first function', res);
-
-        this.user.checkUser(this.sessionInfo?.userProfile).then((result)=>{
-
-          if(result){
-            // // console.log('ok user');
-            // this is the default path of the app if logged in successfully and no upgrade is required
-            this.router.navigate(['profile']);
-
-
-          }
-          else{
-            // // console.log('no user');
-            this.router.navigate(['profile']);
-
-          }
-        }).catch((err)=>{
-         // // console.log('cant get user');
-          this.router.navigate(['profile']);
-
-        })
-
-        }
-
-      }).catch((gg)=>{
-        // console.log('erorssssss', gg);
-      })
+      // console.log('check_user',this.sessionInfo?.orgProfile,this.sessionInfo?.userProfile )
+    
 
 
 
 
 
     });
+    
   }
 
+
+
+  performPostLoginChecks(){
+
+    // if(this.sessionInfo?.orgProfile == undefined || this.sessionInfo?.userProfile == undefined){
+    //   console.log('data undefined, nothing to do ');
+    //   this.common.showLoader('Checking profile information');
+    // }
+    // else{
+      
+    // console.log('ghhhhhhhhhghghghghhghghghghghghghg');
+    
+    this.subscriber.checkOrg(this.sessionInfo?.orgProfile, this.sessionInfo?.userProfile)
+
+    .then((res)=>{
+
+      if(res){
+      console.log('first function', res);
+
+      this.user.checkUser(this.sessionInfo?.userProfile).then((result)=>{
+
+        if(result){
+          console.log('ok user');
+          // this is the default path of the app if logged in successfully and no upgrade is required
+          this.router.navigate(['profile']);
+
+
+        }
+      }).catch((err)=>{
+       console.log('cant get user');
+        //this.router.navigate(['profile']);
+        this.common.presentAlert('Error','Your account is inactive, Please contact with the admin');
+      this.signOut();
+      this.addSubscriber = false;
+      })
+
+      }
+
+    }).catch((gg)=>{
+      // console.log('erorssssss', gg);
+    })
+
+    this.common.hideLoader();
+
+  // }
+
+  }
 
 
 
@@ -234,6 +251,7 @@ export class ManageprofilePage implements OnInit {
 
   incompleteProfile(){
     // if userData is incomplete or Data does not exist activate edit mode
+    this.performPostLoginChecks();
     if(this.userData &&
        (
          !this.userProfile ||
