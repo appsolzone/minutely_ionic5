@@ -70,6 +70,8 @@ export class SubscriberService {
           text: 'Okay',
           handler: () => {
             console.log('Confirm Okay');
+          this.router.navigate([this.appPages[3].url]);
+
             // this.toPayment({payment: org.paypalId, sid: userProfile.subscriberId}); 
 
           }
