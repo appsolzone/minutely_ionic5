@@ -1,3 +1,4 @@
+import { appPages } from './../../shared/app-menu-pages';
 import { UploadImageService } from './../../shared/uploadImage/upload-image.service';
 import { ComponentsService } from './../../shared/components/components.service';
 import { async } from '@angular/core/testing';
@@ -28,6 +29,7 @@ import '@codetrix-studio/capacitor-google-auth';
 
 
 
+
 const { Storage } = Plugins;
 
 @Component({
@@ -38,6 +40,7 @@ const { Storage } = Plugins;
 export class ManageprofilePage implements OnInit {
   // Observable
   getauthStateSubs$;
+  public appPages = appPages;
   signinUi: any;
   userData: any;
   id: string;
@@ -124,7 +127,8 @@ export class ManageprofilePage implements OnInit {
         if(result){
           console.log('ok user');
           // this is the default path of the app if logged in successfully and no upgrade is required
-          this.router.navigate(['profile']);
+        this.router.navigate([this.appPages[0].url]);
+
 
 
         }
@@ -150,47 +154,13 @@ export class ManageprofilePage implements OnInit {
 
 
 
-  async takePicture() {
-    const image = await Plugins.Camera.getPhoto({
-      quality: 100,
-      allowEditing: false,
-      resultType: CameraResultType.DataUrl,
-      // source: source =='camera' ? CameraSource.Camera : CameraSource.Photos,
-      height:128,
-      width:128
-    });
-
-    this.photo = this.sanitizer.bypassSecurityTrustResourceUrl(image && (image.dataUrl))
-    console.log('image_dataUrl',image.dataUrl);
-    this.upload.upload_profile_photo(image.dataUrl)
+  take_photo() {
+    this.upload.take_photo();
   }
 
 
 
-  async take_photo() {
-    const actionSheet = await this.actionSheetCtrl.create({
-      header: 'Edit profile picture',
-      cssClass: 'my-custom-class',
-      buttons: [
-                {
-                  text: 'Select source',
-                  icon: 'person-circle',
-                  handler: () => {
-                  this.takePicture();
-                  }
-                },
-                {
-                  text: 'Cancel',
-                  icon: 'close',
-                  role: 'cancel',
-                  handler: () => {
-                    console.log('Cancel clicked');
-                  }
-                }
-              ],
-    });
-    await actionSheet.present();
-  }
+ 
 
 
 
