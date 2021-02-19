@@ -1,3 +1,5 @@
+
+
 import { appPages } from './../app-menu-pages';
 import { PaypalService } from 'src/app/shared/paypal/paypal.service';
 import { Router } from '@angular/router';
@@ -8,6 +10,9 @@ import { Subscriber } from '../../interface/subscriber';
 import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
 import { AlertController } from '@ionic/angular';
+
+
+
 
 
 
@@ -43,44 +48,15 @@ export class SubscriberService {
     public common: ComponentsService,
     public router: Router,
     public paypal: PaypalService,
-    public alertController: AlertController
+    public alertController: AlertController,
+    
+    
   ) {
     // TBA
   }
-  async renewNow(userProfile, org) {
-    console.log('my_org',org)
-    const alert = await this.alertController.create({
-      header: ['Free','FREE'].includes(org.subscriptionType) ? 'Upgrade Plan' : 'Renew Subscription',
-      
-      cssClass: 'my-custom-class',
-      
-      message: 'Your ' + (['Free','FREE'].includes(org.subscriptionType) ? 'trial period' : 'subscription') +
-              ' has ended on ' + moment(org.subscriptionEnd.seconds*1000).format('ll') +
-              ', please ' + (['Free','FREE'].includes(org.subscriptionType) ? 'upgrade' : 'renew') +
-              ' your subscription now.',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-            console.log('Confirm Cancel: blah');
-          }
-        }, {
-          text: 'Okay',
-          handler: () => {
-            console.log('Confirm Okay');
-          this.router.navigate([this.appPages[3].url]);
 
-            // this.toPayment({payment: org.paypalId, sid: userProfile.subscriberId}); 
 
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
+  
   getSubscriber(subscriberId:string){
     let queryObj = subscriberId ? [{field: 'subscriberId',operator: '==', value: subscriberId}] : [];
     return this.db.getAllDocumentsSnapshotByQuery(this.db.allCollections.subscribers, queryObj);
@@ -165,8 +141,9 @@ export class SubscriberService {
         
          if(userprofile.role == "ADMIN"){
           console.log('reneeew', org);
+          return rej(false);
 
-           this.renewNow(userprofile, org);
+
           // this.common.presentAlert('Error','subscription ended');
 
         this.router.navigate([this.appPages[3].url]);

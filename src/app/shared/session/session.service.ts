@@ -9,6 +9,7 @@ import { SubscriberService } from '../subscriber/subscriber.service';
 // import { User } from '../../../interface/user';
 import { PlanService } from '../plan/plan.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { Platform } from '@ionic/angular';
 
 const { Storage, Geolocation, Network } = Plugins;
 
@@ -23,14 +24,19 @@ export class SessionService {
   getPlanSubs$;
   // network handler
   handler;
+  public isMobile: boolean = false;
+
 
   constructor(
     private auth: AuthenticationService,
     private user: ManageuserService,
     private subscriber: SubscriberService,
     private plan: PlanService,
-    private componentService:ComponentsService
+    private componentService:ComponentsService,
+    private platform: Platform,
   ) {
+    this.isMobile = this.platform.is('mobile') && !this.platform.is('mobileweb');
+
     // initialise
     this.session$.next(undefined);
     // Get the current network status
@@ -182,6 +188,18 @@ export class SessionService {
       return undefined;
     }
 
+  }
+
+  async signOut(){
+    // this.common.showLoader("Please wait... signout");
+    await Storage.remove({key: 'userProfile'});
+    if(this.isMobile){
+      await Plugins.GoogleAuth.signOut();
+    }
+    await this.auth.signOut();
+    this.clear();
+    // this.common.hideLoader();
+    this.componentService.presentToaster("Signed out successfully. Please sign in again to continue.");
   }
 
 

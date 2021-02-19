@@ -14,7 +14,7 @@ import { User } from '../../interface/user';
 import { SessionService } from '../../shared/session/session.service';
 import * as moment from 'moment';
 import { SubscriberService } from 'src/app/shared/subscriber/subscriber.service';
-import { ActionSheetController, Platform } from '@ionic/angular';
+import { ActionSheetController, AlertController, Platform } from '@ionic/angular';
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import '@codetrix-studio/capacitor-google-auth';
@@ -30,7 +30,9 @@ import '@codetrix-studio/capacitor-google-auth';
 
 
 
+
 const { Storage } = Plugins;
+
 
 @Component({
   selector: 'app-manageprofile',
@@ -55,6 +57,7 @@ export class ManageprofilePage implements OnInit {
   photo: SafeResourceUrl;
   public base64Image: string;
   public isMobile: boolean = false;
+  
 
 
 
@@ -70,6 +73,8 @@ export class ManageprofilePage implements OnInit {
     private common:ComponentsService,
     private upload: UploadImageService,
     private platform: Platform,
+    public alertController: AlertController,
+
 
   ) {
     this.isMobile = this.platform.is('mobile') && !this.platform.is('mobileweb');
@@ -144,6 +149,8 @@ export class ManageprofilePage implements OnInit {
 
     }).catch((gg)=>{
       // console.log('erorssssss', gg);
+      this.renewNow(this.sessionInfo?.userProfile, this.sessionInfo?.orgProfile);
+
     })
 
     this.common.hideLoader();
@@ -153,6 +160,42 @@ export class ManageprofilePage implements OnInit {
   }
 
 
+
+  async renewNow(userProfile, org) {
+    console.log('my_org',org)
+    const alert = await this.alertController.create({
+      header: ['Free','FREE'].includes(org.subscriptionType) ? 'Upgrade Plan' : 'Renew Subscription',
+      
+      cssClass: 'my-custom-class',
+      
+      message: 'Your ' + (['Free','FREE'].includes(org.subscriptionType) ? 'trial period' : 'subscription') +
+              ' has ended on ' + moment(org.subscriptionEnd.seconds*1000).format('ll') +
+              ', please ' + (['Free','FREE'].includes(org.subscriptionType) ? 'upgrade' : 'renew') +
+              ' your subscription now.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            // console.log('Confirm Cancel: blah');
+            this.signOut()
+          }
+        }, {
+          text: 'Okay',
+          handler: () => {
+            console.log('Confirm Okay');
+          this.router.navigate([this.appPages[3].url]);
+
+            // this.toPayment({payment: org.paypalId, sid: userProfile.subscriberId}); 
+
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
 
   take_photo() {
     this.upload.take_photo();
