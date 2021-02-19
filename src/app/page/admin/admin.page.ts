@@ -91,15 +91,21 @@ export class AdminPage implements OnInit,OnChanges {
   filterAllMembers(){
       console.log("calling",this.filterCategory);
       this.allMembers = this.allMembersCopy.filter((item) => {
-      if(this.filterCategory == "others"){
-        return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 && (item.status != "ACTIVE" && item.status != "REGISTERED" );
-      }else if(this.filterCategory == "active"){
-        return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 && item.status == "ACTIVE";
-      }else if(this.filterCategory == "new"){
-        return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 && item.status == "REGISTERED";
-      }else{
-        return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1;
-      }
+      // if(this.filterCategory == "others"){
+      //   return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 && (item.status != "ACTIVE" && item.status != "REGISTERED" );
+      // }else if(this.filterCategory == "active"){
+      //   return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 && item.status == "ACTIVE";
+      // }else if(this.filterCategory == "new"){
+      //   return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 && item.status == "REGISTERED";
+      // }else{
+        return (
+                item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 ||
+                item.email.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 ||
+                item.status.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 ||
+                item.role.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 ||
+                item.jobTitle.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1
+              );
+      // }
     });
     console.log('after filter all members',this.allMembers)
     }
@@ -161,7 +167,7 @@ export class AdminPage implements OnInit,OnChanges {
 
         if(data.role=='USER'){
           btns.push({ text: 'Assign Admin Role', handler: () => { this.adminManageUserServ.changeUserRole( data, 'ADMIN' ); } });
-          btns.push({ text: 'Approve external access', handler: () => { this.adminManageUserServ.changeUserRole( data, 'EXTERNAL'); } });
+          // btns.push({ text: 'Approve external access', handler: () => { this.adminManageUserServ.changeUserRole( data, 'EXTERNAL'); } });
         } else {
           btns.push({ text: 'Assign User Role', handler: () => { this.adminManageUserServ.changeUserRole( data, 'USER' ); } });
         }
@@ -176,7 +182,7 @@ export class AdminPage implements OnInit,OnChanges {
       }else if(data.status == 'SUSPENDED' || data.status == 'LEAVER'){ // when user already suspended
         if (this.orgProfile.noOfFreeLicense > 0)
           btns.push({ text: 'Re-activate access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'ACTIVE',this.orgProfile ); } });
-          btns.push({ text: 'Approve external access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'EXTERNAL',this.orgProfile ); } });
+          // btns.push({ text: 'Approve external access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'EXTERNAL',this.orgProfile ); } });
       }else if(data.status == 'EXTERNAL'){ // when user is rejected
         btns.push({ text: 'Suspend access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'SUSPENDED',this.orgProfile ); } });
         btns.push({ text: 'Approve access', handler: () =>{ this.adminManageUserServ.changeUserRole( data, 'USER'); } });

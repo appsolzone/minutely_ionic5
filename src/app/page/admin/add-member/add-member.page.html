@@ -22,7 +22,7 @@
       <ion-label>
         <ion-icon name="people"></ion-icon>
       </ion-label>
-      <ion-select [(ngModel)]="addUserData.role" interface="popover" slot="end">
+      <ion-select [(ngModel)]="addUserData.role" interface="popover" slot="end" placeholder="Select a role">
         <ion-select-option *ngFor="let role of userRoles" [value]="role">{{ role }}</ion-select-option>
       </ion-select>
     </ion-item>
@@ -43,7 +43,7 @@
       <ion-input type="tel" class="ion-text-right" type="text" placeholder="Please enter contact number" [(ngModel)]="addUserData.phoneNumber" required></ion-input>
     </ion-item>
     <ion-item lines="none" class="ion-margin-top">
-      <!-- <ion-button fill="clear" size="default" color="medium" slot="end" (click)="onSkip()">Skip</ion-button> -->
+      <ion-button fill="clear" size="default" color="medium" slot="end" (click)="resetAddUserForm()">Clear</ion-button>
       <ion-button slot="end" size="default" (click)="onSubmit()">Submit</ion-button>
     </ion-item>
   </ion-list>

@@ -21,7 +21,7 @@ export class AddMemberPage implements OnInit,OnChanges {
   allProfiles: any[];
   userProfile: User;
   orgProfile:any =null;
-  
+
   addUserData:any;
   userRoles:any;
   constructor(
@@ -30,9 +30,9 @@ export class AddMemberPage implements OnInit,OnChanges {
     private router:Router,
     public AdminAddService:AdminAddUsersService,
     public manageUserService:ManageuserService
-  ) { 
+  ) {
     this.userRoles = this.AdminAddService.newMemberAddRoles;
-    this.addUserData = this.manageUserService.newUser;
+    this.addUserData = {...this.manageUserService.newUser};
   }
 
   ngOnInit() {
@@ -46,7 +46,7 @@ export class AddMemberPage implements OnInit,OnChanges {
   }
 
    ionViewWillEnter(){
-     
+
    }
     getSessionInfo(){
     this.sessionSubs$ = this.session.watch().subscribe(value=>{
@@ -61,16 +61,20 @@ export class AddMemberPage implements OnInit,OnChanges {
        }
      });
   }
+
+  resetAddUserForm(){
+    this.addUserData = {...this.manageUserService.newUser};
+  }
   async onSubmit(){
     if(this.orgProfile.noOfFreeLicense>0){
       if(this.addUserData.name !== '' && this.addUserData.email !== ''&& this.addUserData.role !== '' && this.addUserData.jobtitle !== '' && this.addUserData.phone !== ''){
       await this.AdminAddService.addNewUser(this.addUserData,this.orgProfile);
-      this.addUserData = this.manageUserService.newUser;
+      this.addUserData = {...this.manageUserService.newUser};
      }else{
       this.componentService.presentAlert("Error","Please fill all input field.");
      }
     }else {
-      this.componentService.presentAlert("Error","No free licence available. You can only add external users now. Please buy additional lincece to add new ACTIVE users.");
+      this.componentService.presentAlert("Error","No free licence available. Please upgrade plan to add new ACTIVE users.");
     }
 }
 

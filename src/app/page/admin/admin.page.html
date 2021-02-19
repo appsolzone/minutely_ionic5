@@ -13,7 +13,11 @@
     <ion-col>
       <!-- <ion-card>
         <ion-card-header> -->
-        <ion-searchbar placeholder="search with name or email" [(ngModel)]="textSearch" (ionInput)="filterAllMembers()">
+        <ion-searchbar
+          placeholder="Search by name, email, status or role"
+          [(ngModel)]="textSearch"
+          (ionChange)="filterAllMembers()"
+          (ionClear)="filterAllMembers()">
         </ion-searchbar>
           <!-- <ion-item lines="full">
             <ion-label slot="start">
