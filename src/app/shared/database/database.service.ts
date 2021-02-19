@@ -4,6 +4,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import firebase from "firebase/app";
 import { map, take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment.prod';
+import { TextsearchService } from '../textsearch/textsearch.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,7 @@ export class DatabaseService {
   public adminFrb: any = firebase.initializeApp(environment.firebaseConfig,"admin");
   constructor(
     public afs: AngularFirestore,
+    public txtsearch: TextsearchService,
   ) {
     // TBA
   }
@@ -42,9 +44,9 @@ export class DatabaseService {
   getAllDocuments(collection:string){
     return this.afs.collection(collection).ref.get();
   }
-  getAllDocumentsByQuery(collection:string, queryObj:any[]=[]){
+  getAllDocumentsByQuery(collection:string, queryObj:any[]=[], textSearchObj: any = null){
     return this.afs.collection(collection,
-                               ref=>this.buildQuery(ref,queryObj)
+                               ref=>this.buildQuery(ref,queryObj, textSearchObj)
                              )
                     .get()
                     .toPromise();
@@ -56,14 +58,19 @@ export class DatabaseService {
   getAllDocumentsSnapshot(collection:string){
     return this.afs.collection(collection).snapshotChanges();
   }
-  getAllDocumentsSnapshotByQuery(collection:string, queryObj:any[]=[]){
+  getAllDocumentsSnapshotByQuery(collection:string, queryObj:any[]=[], textSearchObj: any = null){
     return this.afs.collection(collection,
-                               ref=>this.buildQuery(ref,queryObj)
+                               ref=>this.buildQuery(ref,queryObj, textSearchObj)
                              )
                     .snapshotChanges();
   }
-  buildQuery(ref,queryObj:any[]=[]){
+  buildQuery(ref,queryObj:any[]=[], textSearchObj: any = null){
     queryObj.forEach(q=>{ref=ref.where(q.field,q.operator,q.value);});
+    if(textSearchObj){
+      // now build additional query elements using textsearch
+      const { seachField, text, searchOption } = textSearchObj;
+      ref = this.txtsearch.getSearchMapQuery(ref, seachField, text, searchOption);
+    }
     return ref;
   }
   // Update
@@ -100,7 +107,7 @@ export class DatabaseService {
       return data;
     });
   }
-  
+
   SendAdminAuthVerificationMail() {
     return this.adminFrb.auth().currentUser.sendEmailVerification()
     .then(() => {
