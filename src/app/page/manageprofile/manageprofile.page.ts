@@ -124,7 +124,7 @@ export class ManageprofilePage implements OnInit {
                     {
                       text: 'Dismiss',
                       role: 'cancel',
-                      cssClass: 'secondary',
+                      cssClass: '',
                       handler: ()=>this.onDismissClick(instruction)
                     }
                   ];
@@ -132,7 +132,7 @@ export class ManageprofilePage implements OnInit {
             buttons.push({
                           text: ['Free','FREE'].includes(org.subscriptionType) ? 'Upgrade' : 'Renew',
                           role: '',
-                          cssClass: '',
+                          cssClass: 'alert-button-selected',
                           handler: ()=>this.onUpgradeClick()
                         }
                       );
