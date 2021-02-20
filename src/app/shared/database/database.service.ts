@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import firebase from "firebase/app";
 import { map, take } from 'rxjs/operators';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DatabaseService {
-   public frb: any = firebase;
+  public frb: any = firebase;
   public allCollections = {
     users: 'users',
     subscribers: 'subscribers',
@@ -19,7 +20,9 @@ export class DatabaseService {
     transactions:'transactions',
     coupons:"coupons"
   };
-
+  // Admin instance of firebase to create new users, this is to avoid messing up the
+  // auth token post user creation for the .currentUser data
+  public adminFrb: any = firebase.initializeApp(environment.firebaseConfig,"admin");
   constructor(
     public afs: AngularFirestore,
   ) {
@@ -95,6 +98,15 @@ export class DatabaseService {
     .then(function(snapshot) {
       var data = snapshot.val();
       return data;
+    });
+  }
+  
+  SendAdminAuthVerificationMail() {
+    return this.adminFrb.auth().currentUser.sendEmailVerification()
+    .then(() => {
+      return true;
+    }).catch(()=>{
+      return false;
     });
   }
 }
