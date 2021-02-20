@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActionSheetController } from '@ionic/angular';
+import { map } from 'rxjs/operators';
 import { User } from 'src/app/interface/user';
-import { AdminManageUsersService } from 'src/app/shared/admin-manage-users/admin-manage-users.service';
+
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { ManageuserService } from 'src/app/shared/manageuser/manageuser.service';
 import { SessionService } from 'src/app/shared/session/session.service';
 
 @Component({
@@ -11,7 +13,7 @@ import { SessionService } from 'src/app/shared/session/session.service';
   templateUrl: './admin.page.html',
   styleUrls: ['./admin.page.scss'],
 })
-export class AdminPage implements OnInit {
+export class AdminPage implements OnInit,OnChanges {
 
   // observables
   sessionSubs$;
@@ -32,7 +34,7 @@ export class AdminPage implements OnInit {
     private session:SessionService,
     private componentService:ComponentsService,
     private router:Router,
-    private adminManageUserServ:AdminManageUsersService,
+    private adminManageUserServ:ManageuserService,
     public actionSheetController: ActionSheetController
   ) { }
 
@@ -40,7 +42,9 @@ export class AdminPage implements OnInit {
     // get session info
     this.getSessionInfo();
   }
+  ngOnChanges(){
 
+  }
    ionViewWillEnter(){
     this.fetchAllMembers();
    }
@@ -62,13 +66,21 @@ export class AdminPage implements OnInit {
        if(this.userProfile){
          // Nothing to do just display details
        } else {
-         this.router.navigate(['profile']);
+          this.router.navigate(['profile']);
        }
      });
   }
 
   fetchAllMembers(){
-    this.fetchAllMembers$ = this.adminManageUserServ.fetchAllUsers(this.orgProfile).subscribe((data)=>{
+    this.fetchAllMembers$ = this.adminManageUserServ.fetchAllUsers(this.orgProfile)
+    .pipe(
+        map((actions: any[]) => actions.map((a: any) => {
+          const data = a.payload.doc.data();
+          const id = a.payload.doc.id;
+          return { id, ...data };
+        }))
+      )
+    .subscribe((data)=>{
     this.allMembers = data;
     this.allMembersCopy = data;
     console.log("all members list",this.allMembers);
@@ -79,15 +91,21 @@ export class AdminPage implements OnInit {
   filterAllMembers(){
       console.log("calling",this.filterCategory);
       this.allMembers = this.allMembersCopy.filter((item) => {
-      if(this.filterCategory == "others"){
-        return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 && (item.status != "ACTIVE" && item.status != "REGISTERED" );
-      }else if(this.filterCategory == "active"){
-        return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 && item.status == "ACTIVE";
-      }else if(this.filterCategory == "new"){
-        return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 && item.status == "REGISTERED";
-      }else{
-        return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1;
-      }
+      // if(this.filterCategory == "others"){
+      //   return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 && (item.status != "ACTIVE" && item.status != "REGISTERED" );
+      // }else if(this.filterCategory == "active"){
+      //   return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 && item.status == "ACTIVE";
+      // }else if(this.filterCategory == "new"){
+      //   return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 && item.status == "REGISTERED";
+      // }else{
+        return (
+                item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 ||
+                item.email.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 ||
+                item.status.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 ||
+                item.role.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 ||
+                item.jobTitle.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1
+              );
+      // }
     });
     console.log('after filter all members',this.allMembers)
     }
@@ -143,41 +161,34 @@ export class AdminPage implements OnInit {
       this.componentService.presentAlert("Error","You can't amend your own access or role details.");
     }else{
       let btns = [];
-      // decide buttons
-      // if(data.status != 'SUSPENDED' || data.status != 'LEAVER' || data.status != 'EXTERNAL'|| data.status != 'REGISTERED'){
-      //   btns.push({ text: 'Approve external access', handler: () => { this.adminManageUserServ.changeUserRole( data, 'EXTERNAL'); } });
-      // }else{
-      //   btns.push({ text: 'Approve external access', handler: () => { this.adminManageUserServ.batchPerform( data, 'EXTERNAL',this.orgProfile); } });
-      // }
-
       if(data.status == 'ACTIVE'){ // when user is active
-        btns.push({ text: 'Suspend access', handler: () => { this.adminManageUserServ.batchPerform( data, 'SUSPENDED', this.orgProfile ); } });
-        btns.push({ text: 'Mark as leaver', handler: () => { this.adminManageUserServ.batchPerform( data, 'LEAVER',this.orgProfile ); } });
+        btns.push({ text: 'Suspend access', handler: () => { this.adminManageUserServ.userDataUpdateTransection( data, 'SUSPENDED', this.orgProfile ); } });
+        btns.push({ text: 'Mark as leaver', handler: () => { this.adminManageUserServ.userDataUpdateTransection( data, 'LEAVER',this.orgProfile ); } });
 
         if(data.role=='USER'){
           btns.push({ text: 'Assign Admin Role', handler: () => { this.adminManageUserServ.changeUserRole( data, 'ADMIN' ); } });
-          btns.push({ text: 'Approve external access', handler: () => { this.adminManageUserServ.changeUserRole( data, 'EXTERNAL'); } });
+          // btns.push({ text: 'Approve external access', handler: () => { this.adminManageUserServ.changeUserRole( data, 'EXTERNAL'); } });
         } else {
           btns.push({ text: 'Assign User Role', handler: () => { this.adminManageUserServ.changeUserRole( data, 'USER' ); } });
         }
       }else if(data.status == 'REJECTED'){ // when user is rejected
         if (this.orgProfile.noOfFreeLicense > 0)
-          btns.push({ text: 'Approve access', handler: () =>{ this.adminManageUserServ.batchPerform( data, 'ACTIVE',this.orgProfile ); } });
+          btns.push({ text: 'Approve access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'ACTIVE',this.orgProfile ); } });
       }else if(data.status == 'REGISTERED'){ // when user is just registered
         btns.push({ text: 'Reject request', handler: () => { this.adminManageUserServ.changeUserRole( data, 'REJECTED'); } });
         if (this.orgProfile.noOfFreeLicense > 0)
-          btns.push({ text: 'Approve access', handler: () =>{ this.adminManageUserServ.batchPerform( data, 'ACTIVE',this.orgProfile ); } });
+          btns.push({ text: 'Approve access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'ACTIVE',this.orgProfile ); } });
 
       }else if(data.status == 'SUSPENDED' || data.status == 'LEAVER'){ // when user already suspended
         if (this.orgProfile.noOfFreeLicense > 0)
-          btns.push({ text: 'Re-activate access', handler: () =>{ this.adminManageUserServ.batchPerform( data, 'ACTIVE',this.orgProfile ); } });
-          btns.push({ text: 'Approve external access', handler: () =>{ this.adminManageUserServ.batchPerform( data, 'EXTERNAL',this.orgProfile ); } });
+          btns.push({ text: 'Re-activate access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'ACTIVE',this.orgProfile ); } });
+          // btns.push({ text: 'Approve external access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'EXTERNAL',this.orgProfile ); } });
       }else if(data.status == 'EXTERNAL'){ // when user is rejected
-        btns.push({ text: 'Suspend access', handler: () =>{ this.adminManageUserServ.batchPerform( data, 'SUSPENDED',this.orgProfile ); } });
+        btns.push({ text: 'Suspend access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'SUSPENDED',this.orgProfile ); } });
         btns.push({ text: 'Approve access', handler: () =>{ this.adminManageUserServ.changeUserRole( data, 'USER'); } });
       }else{ // when user left the organization
         if (this.orgProfile.noOfFreeLicense > 0)
-          btns.push({ text: 'Approve access', handler: () =>{ this.adminManageUserServ.batchPerform( data, 'ACTIVE',this.orgProfile ); } });
+          btns.push({ text: 'Approve access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'ACTIVE',this.orgProfile ); } });
       }
       // default button
       btns.push({ text: 'Cancel', role: 'cancel', handler: () => {  } });
