@@ -36,7 +36,7 @@ export class ManageuserService {
 
   checkUser(user: any){
     if(user?.status != 'ACTIVE'){
-      return {userStatus: user?.status, title: 'Invalid status', body: 'Your account is inactive, Please contact the administrator'};
+      return {userStatus: user?.status, title: 'No access', body: 'Your account seems to be inactive, Please contact the administrator'};
     }
     else{
       return {userStatus: user?.status, title: 'Welcome', body: 'Welcome back, ' + user?.name };

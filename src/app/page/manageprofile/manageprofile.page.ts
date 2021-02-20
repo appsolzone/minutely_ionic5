@@ -103,7 +103,15 @@ export class ManageprofilePage implements OnInit {
       this.renewNow(this.sessionInfo?.userProfile, this.sessionInfo?.orgProfile, validationResponse);
     } else {
       const {title, body } = validationResponse;
-      this.common.presentAlert(title,body);
+      let buttons: any[] = [
+                      {
+                        text: 'Dismiss',
+                        role: 'cancel',
+                        cssClass: '',
+                        handler: ()=>{}
+                      }
+                    ];
+      this.common.presentAlert(title,body, buttons);
       // should we signout the user or redirect for select profile
       // this.signOut();
       this.userProfile = null;
@@ -111,7 +119,7 @@ export class ManageprofilePage implements OnInit {
       this.addSubscriber = false;
     }
     // hide the loader now
-    this.common.hideLoader();
+    setTimeout(()=>this.common.hideLoader(),100);
 
   }
 
