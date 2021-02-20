@@ -16,10 +16,10 @@ export const appPages = [
     tab: 'activities',
   },
   // {
-  //   title: 'Leaves',
-  //   url: 'leave',
-  //   icon: 'cafe',
-  //   tab: 'leave',
+  //   title: 'List',
+  //   url: 'activitysearch',
+  //   icon: 'list',
+  //   tab: 'activitysearch',
   // },
   // {
   //   title: 'Expenses',

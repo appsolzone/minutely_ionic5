@@ -1,9 +1,21 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar>
     <ion-title>activities</ion-title>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
 <ion-content>
-
+  <ion-toolbar color="warning">
+    <ion-buttons slot="start" class="ion-hide-lg-up">
+      <ion-button routerDirection="forward" (click)="openSearchActivities()">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end" class="ion-hide-lg-down">
+      <ion-button routerDirection="forward" (click)="openSearchActivities()">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Activities</ion-title>
+  </ion-toolbar>
 </ion-content>

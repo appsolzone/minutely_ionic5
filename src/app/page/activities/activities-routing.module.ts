@@ -7,7 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: ActivitiesPage
-  }
+  },
+  {
+    path: 'activity-search',
+    loadChildren: () => import('./activity-search/activity-search.module').then( m => m.ActivitySearchPageModule)
+  },
 ];
 
 @NgModule({
