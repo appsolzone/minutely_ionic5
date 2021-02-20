@@ -191,6 +191,7 @@ export class ManageprofilePage implements OnInit {
     }
     await this.auth.signOut();
     this.sessionInfo = null;
+    this.appPages.forEach(p=>p.disabled=(!['profile'].includes(p.tab)));
     this.session.clear();
     // this.common.hideLoader();
     this.common.presentToaster("Signed out successfully. Please sign in again to continue.");
