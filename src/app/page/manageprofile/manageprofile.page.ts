@@ -144,18 +144,21 @@ export class ManageprofilePage implements OnInit {
   onDismissClick(instruction){
       // console.log('Confirm Cancel: blah');
       if(instruction.subsStatus!='renew'){
-      // do nothing
+      // So enable all the menu items for navigation
+        this.appPages.forEach(p=>p.disabled=false);
         this.router.navigate([this.appPages[0].url]);
       } else {
         // should we signout the user or redirect for select profile
         // this.signOut();
-        this.userProfile = null;
+        // this.userProfile = null;
         this.addSubscriber = false;
+        this.appPages.forEach(p=>p.disabled=(!['profile','subscription'].includes(p.tab)));
         this.router.navigate(['profile']);
       }
   }
 
   onUpgradeClick(){
+    this.appPages.forEach(p=>p.disabled=(!['profile','subscription'].includes(p.tab)));
     this.router.navigate(['subscription']);
   }
 
