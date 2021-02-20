@@ -3,7 +3,6 @@ import { UploadImageService } from './../../shared/uploadImage/upload-image.serv
 import { ComponentsService } from './../../shared/components/components.service';
 import { async } from '@angular/core/testing';
 import { environment } from './../../../environments/environment';
-
 import { DatabaseService } from 'src/app/shared/database/database.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -14,22 +13,10 @@ import { User } from '../../interface/user';
 import { SessionService } from '../../shared/session/session.service';
 import * as moment from 'moment';
 import { SubscriberService } from 'src/app/shared/subscriber/subscriber.service';
-import { ActionSheetController, AlertController, Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import '@codetrix-studio/capacitor-google-auth';
-
-
-
-
-
-
-
-
-
-
-
-
 
 const { Storage } = Plugins;
 
@@ -57,7 +44,7 @@ export class ManageprofilePage implements OnInit {
   photo: SafeResourceUrl;
   public base64Image: string;
   public isMobile: boolean = false;
-  
+
 
 
 
@@ -68,14 +55,10 @@ export class ManageprofilePage implements OnInit {
     private session: SessionService,
     private database: DatabaseService,
     private subscriber: SubscriberService,
-    public actionSheetCtrl:ActionSheetController,
     private sanitizer: DomSanitizer,
     private common:ComponentsService,
     private upload: UploadImageService,
     private platform: Platform,
-    public alertController: AlertController,
-
-
   ) {
     this.isMobile = this.platform.is('mobile') && !this.platform.is('mobileweb');
     this.firestore = this.user.db.frb.firestore;
@@ -94,127 +77,92 @@ export class ManageprofilePage implements OnInit {
           this.getLastSignInProfile();
         }
       }
-      // // console.log("subscription end check", this.sessionInfo?.orgProfile?.subscriptionEnd);
-      // // console.log("userProfile status check", this.sessionInfo?.userProfile?.status);
-
+      // console.log("subscription end check", this.sessionInfo?.orgProfile?.subscriptionEnd);
+      // console.log("userProfile status check", this.sessionInfo?.userProfile?.status);
       // console.log('check_user',this.sessionInfo?.orgProfile,this.sessionInfo?.userProfile )
-    
-
-
-
-
-
+      if(this.sessionInfo && this.sessionInfo.userProfile && this.sessionInfo.orgProfile &&
+         this.sessionInfo?.userProfile?.subscriberId == this.sessionInfo?.orgProfile?.subscriberId
+       ){
+        this.performPostLoginChecks();
+      }
     });
-    
+
   }
 
 
 
-  performPostLoginChecks(){
-
-    // if(this.sessionInfo?.orgProfile == undefined || this.sessionInfo?.userProfile == undefined){
-    //   console.log('data undefined, nothing to do ');
-    //   this.common.showLoader('Checking profile information');
-    // }
-    // else{
-      
-    // console.log('ghhhhhhhhhghghghghhghghghghghghghg');
-    
-    this.subscriber.checkOrg(this.sessionInfo?.orgProfile, this.sessionInfo?.userProfile)
-
-    .then((res)=>{
-
-      if(res){
-      console.log('first function', res);
-
-      this.user.checkUser(this.sessionInfo?.userProfile).then((result)=>{
-
-        if(result){
-          console.log('ok user');
-          // this is the default path of the app if logged in successfully and no upgrade is required
-        this.router.navigate([this.appPages[0].url]);
-
-
-
-        }
-      }).catch((err)=>{
-       console.log('cant get user');
-        //this.router.navigate(['profile']);
-        this.common.presentAlert('Error','Your account is inactive, Please contact with the admin');
-      this.signOut();
+  async performPostLoginChecks(){
+    this.common.showLoader("Checking details, please wait...");
+    // first check whether the user is active or not
+    let validationResponse:any ={};
+    validationResponse = this.user.checkUser(this.sessionInfo?.userProfile);
+    if(validationResponse.userStatus == 'ACTIVE'){
+      // since the user is active, perform subscription validation
+      validationResponse = await this.subscriber.checkOrg(this.sessionInfo?.orgProfile, this.sessionInfo?.userProfile);
+      console.log("validationResponse",validationResponse);
+      this.renewNow(this.sessionInfo?.userProfile, this.sessionInfo?.orgProfile, validationResponse);
+    } else {
+      const {title, body } = validationResponse;
+      this.common.presentAlert(title,body);
+      // should we signout the user or redirect for select profile
+      // this.signOut();
+      this.userProfile = null;
       this.addSubscriber = false;
-      })
-
-      }
-
-    }).catch((gg)=>{
-      // console.log('erorssssss', gg);
-      this.renewNow(this.sessionInfo?.userProfile, this.sessionInfo?.orgProfile);
-
-    })
-
+    }
+    // hide the loader now
     this.common.hideLoader();
 
-  // }
+  }
+
+  ngOnInit() {
 
   }
 
-
-
-  async renewNow(userProfile, org) {
+  async renewNow(userProfile, org, instruction: any=null) {
     console.log('my_org',org)
-    const alert = await this.alertController.create({
-      header: ['Free','FREE'].includes(org.subscriptionType) ? 'Upgrade Plan' : 'Renew Subscription',
-      
-      cssClass: 'my-custom-class',
-      
-      message: 'Your ' + (['Free','FREE'].includes(org.subscriptionType) ? 'trial period' : 'subscription') +
-              ' has ended on ' + moment(org.subscriptionEnd.seconds*1000).format('ll') +
-              ', please ' + (['Free','FREE'].includes(org.subscriptionType) ? 'upgrade' : 'renew') +
-              ' your subscription now.',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-            // console.log('Confirm Cancel: blah');
-            this.signOut()
-          }
-        }, {
-          text: 'Okay',
-          handler: () => {
-            console.log('Confirm Okay');
-          this.router.navigate([this.appPages[3].url]);
+    let buttons: any[] = [
+                    {
+                      text: 'Dismiss',
+                      role: 'cancel',
+                      cssClass: 'secondary',
+                      handler: ()=>this.onDismissClick(instruction)
+                    }
+                  ];
+    if(userProfile.role=='ADMIN' && instruction.subsStatus != 'valid'){
+            buttons.push({
+                          text: ['Free','FREE'].includes(org.subscriptionType) ? 'Upgrade' : 'Renew',
+                          role: '',
+                          cssClass: '',
+                          handler: ()=>this.onUpgradeClick()
+                        }
+                      );
+    }
 
-            // this.toPayment({payment: org.paypalId, sid: userProfile.subscriberId}); 
+    await this.common.presentAlert(instruction.title,instruction.body ,buttons);
+  }
 
-          }
-        }
-      ]
-    });
+  onDismissClick(instruction){
+      // console.log('Confirm Cancel: blah');
+      if(instruction.subsStatus!='renew'){
+      // do nothing
+        this.router.navigate([this.appPages[0].url]);
+      } else {
+        // should we signout the user or redirect for select profile
+        // this.signOut();
+        this.userProfile = null;
+        this.addSubscriber = false;
+        this.router.navigate(['profile']);
+      }
+  }
 
-    await alert.present();
+  onUpgradeClick(){
+    this.router.navigate(['subscription']);
   }
 
   take_photo() {
     this.upload.take_photo();
   }
 
-
-
- 
-
-
-
-
-
-
-
-
-  ngOnInit() {
-
-  }
 
   async signOut(){
     // this.common.showLoader("Please wait... signout");
@@ -223,6 +171,7 @@ export class ManageprofilePage implements OnInit {
       await Plugins.GoogleAuth.signOut();
     }
     await this.auth.signOut();
+    this.sessionInfo = null;
     this.session.clear();
     // this.common.hideLoader();
     this.common.presentToaster("Signed out successfully. Please sign in again to continue.");
@@ -264,7 +213,6 @@ export class ManageprofilePage implements OnInit {
 
   incompleteProfile(){
     // if userData is incomplete or Data does not exist activate edit mode
-    this.performPostLoginChecks();
     if(this.userData &&
        (
          !this.userProfile ||

@@ -34,20 +34,12 @@ export class ManageuserService {
     return this.db.setDocument(this.db.allCollections.users, docId, userProfile);
   }
 
-  checkUser(user){
-    return new Promise((res,rej)=>{
-    
+  checkUser(user: any){
     if(user?.status != 'ACTIVE'){
-
-      console.log('not active user');
-      return rej(false);
+      return {userStatus: user?.status, title: 'Invalid status', body: 'Your account is inactive, Please contact the administrator'};
     }
     else{
-      console.log('active user');
-
-      return res(true);
+      return {userStatus: user?.status, title: 'Welcome', body: 'Welcome back, ' + user?.name };
     }
-
-    })
-    }
+  }
 }

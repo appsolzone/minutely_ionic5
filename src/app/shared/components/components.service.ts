@@ -18,9 +18,9 @@ export class ComponentsService {
   //this.componentService.presentAlert('Warning','message');
   //this.componentService.presentAlert('Alert','message');
 
-    async presentAlert(header,message,callBack?:any) {
- 
-    let buttons:any = {
+    async presentAlert(header,message,buttons?:any) {
+
+    let defaultDuttons:any = {
       Success:[
          {
           text: 'Ok',
@@ -48,10 +48,10 @@ export class ComponentsService {
       header: header,
       //subHeader: subtitle,
       message: message,
-      buttons:buttons[header],
+      buttons:buttons ? buttons : defaultDuttons[header],
     });
 
-    (await alert).present(); 
+    (await alert).present();
 
   }
   presentAlertConfirm(header,message){
