@@ -107,6 +107,7 @@ export class ManageprofilePage implements OnInit {
       // should we signout the user or redirect for select profile
       // this.signOut();
       this.userProfile = null;
+      this.appPages.forEach(p=>p.disabled=(!['profile'].includes(p.tab)));
       this.addSubscriber = false;
     }
     // hide the loader now
