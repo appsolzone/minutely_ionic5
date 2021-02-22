@@ -1,0 +1,92 @@
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-title>signin</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+</ion-content> -->
+<!-- <ion-content> -->
+<!-- <ion-toolbar>
+
+</ion-toolbar>
+<ion-button (click)="googleSignup()">Sign in</ion-button>
+  <ion-card>
+    <ion-card-content>
+      {{ userInfo | json}}
+    </ion-card-content>
+  </ion-card> -->
+
+  <ion-row #signinContainer id="signinContainer" class="ion-no-padding" *ngIf="!userData && signinUi">
+    <ion-col size="1" class="ion-hide-xl-down">
+    </ion-col>
+    <ion-col size="12" size-md class="ion-hide-md-down">
+      <ion-card color="" class="ion-no-border">
+        <ion-card-header>
+          <ion-item color="transparent">
+            <ion-icon size="large" slot="start" name="cube"></ion-icon>
+            <ion-label><h1 class="ion-text-end">CubedHR</h1></ion-label>
+          </ion-item>
+        </ion-card-header>
+        <ion-card-content>
+          <!-- <div item-content padding-top> -->
+            <p class="ion-padding">
+              {{signInWelcomeTxt}}
+            </p>
+          <!-- </div> -->
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+    <ion-col size="12" size-md>
+      <div class="ion-margin  ion-padding-bottom signin-banner">
+        <ion-item lines="full">
+          <ion-icon name="log-in-outline" slot="start"></ion-icon>
+          <h2>Sign In</h2>
+        </ion-item>
+        <ion-row class="ion-justify-content-center" *ngIf="isMobile && showGooglesignin">
+          <!-- <ion-card class=""> -->
+          <ion-card class="overlay-sigin-button">
+            <ion-card-content class="ion-no-padding">
+              <ion-button (click)="googleSignup()" fill="clear" mode="md" class="ion-item-align">
+                <ion-icon name="logo-google" slot="start"></ion-icon>
+                <ion-note class="ion-padding-start ion-padding-end">
+                  S<ion-text class="ion-text-lowercase">ign in with</ion-text> G<ion-text class="ion-text-lowercase">oogle</ion-text>
+                </ion-note>
+              </ion-button>
+            </ion-card-content>
+          </ion-card>
+        </ion-row>
+        <div #firebaseuiauthcontainer id="firebaseuiauthcontainer" class="signin-container">
+        </div>
+        <ion-row class="ion-justify-content-center" *ngIf="isMobile && showResetButton">
+          <ion-col size="1"></ion-col>
+          <ion-col>
+            <ion-button (click)="resetAuthButtons()" color="tertiary" expand="block" mode="md" class="ion-item-align">
+              Ok
+            </ion-button>
+          </ion-col>
+          <ion-col size="1"></ion-col>
+        </ion-row>
+      </div>
+    </ion-col>
+    <ion-col size="12" size-md class="ion-hide-md-up">
+      <ion-card color="">
+        <ion-card-header>
+          <ion-item color="transparent">
+            <ion-icon size="large" slot="start" name="cube"></ion-icon>
+            <ion-label><h1 class="ion-text-end">CubedHR</h1></ion-label>
+          </ion-item>
+        </ion-card-header>
+        <ion-card-content>
+          <!-- <div item-content padding-top> -->
+            <p class="ion-padding">
+              {{signInWelcomeTxt}}
+            </p>
+          <!-- </div> -->
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+    <ion-col size="1" class="ion-hide-xl-down">
+    </ion-col>
+  </ion-row>
