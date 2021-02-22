@@ -79,9 +79,9 @@ export class AddSubscriberPage implements OnInit {
         console.log("if data.userData && this.userData", data, data.userData);
         this.userData = data.userData;
         this.requiredEmailCheck = this.userData.providerData[0].providerId !== 'google.com';
-        const regex = /.(?=[^@]*?@)/g;
-        this.maskedEmail = this.userData.providerData[0].email.replace(regex,'*');
+        const regex = /.(?=[^@]*?@)/g; // /(?<=.{1}).(?=[^@]*?@)/g;
         const {displayName, email, phoneNumber} = this.userData.providerData[0];
+        this.maskedEmail = email.replace(regex,'*');
         this.orgProfile = {
           subscriberId: '',
           companyName: '',

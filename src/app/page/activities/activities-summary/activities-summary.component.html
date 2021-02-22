@@ -1,0 +1,38 @@
+<ion-card color="light">
+  <ion-item lines="none">
+    <ion-label><ion-icon name="calendar" color="medium"></ion-icon> Select month</ion-label>
+    <ion-datetime displayFormat="MMM YYYY" [(ngModel)]="selectedMonth" (ionChange)="getUserSummary()"></ion-datetime>
+  </ion-item>
+
+<ion-row class="ion-no-padding">
+  <ion-col>
+    <!-- <ion-card> -->
+      <ion-item  lines="none">
+        <ion-avatar slot="start">
+          <ion-icon name="bicycle" color="green"></ion-icon>
+        </ion-avatar>
+        <ion-label>
+          <h1>{{avgEffort.toFixed(2)}}<small> hr</small></h1>
+          <p>avg effort/day</p>
+        </ion-label>
+      </ion-item>
+    <!-- </ion-card> -->
+  </ion-col>
+  <ion-col>
+    <!-- <ion-card> -->
+      <ion-item lines="none">
+        <ion-avatar slot="start">
+          <ion-icon name="cash" color="danger"></ion-icon>
+        </ion-avatar>
+        <ion-label>
+          <h1>{{monthlyBillingAmount}}</h1>
+          <p>billable $</p>
+        </ion-label>
+      </ion-item>
+    <!-- </ion-card> -->
+  </ion-col>
+</ion-row>
+<ion-card>
+  <app-bargraph [graphY]="graphY"></app-bargraph>
+</ion-card>
+</ion-card>

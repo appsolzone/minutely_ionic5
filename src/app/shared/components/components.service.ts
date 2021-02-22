@@ -18,8 +18,9 @@ export class ComponentsService {
   //this.componentService.presentAlert('Warning','message');
   //this.componentService.presentAlert('Alert','message');
 
-    async presentAlert(header,message) {
-    let buttons:any = {
+    async presentAlert(header,message,buttons?:any) {
+
+    let defaultDuttons:any = {
       Success:[
          {
           text: 'Ok',
@@ -39,23 +40,6 @@ export class ComponentsService {
             console.log('Confirm Ok');
           }
         }
-      ],
-      Warning:[
-         {
-          text: 'Dismiss',
-          role: 'cancel',
-          cssClass: 'cancel-button',
-          handler: () => {
-           console.log('Confirm Cancel');
-          }
-        }, {
-          text: 'Ok',
-          role: 'ok',
-          cssClass: 'ok-button',
-          handler: () => {
-            console.log('Confirm Ok');
-          }
-        }
       ]
     }
 
@@ -64,12 +48,36 @@ export class ComponentsService {
       header: header,
       //subHeader: subtitle,
       message: message,
-      buttons:buttons[header],
+      buttons:buttons ? buttons : defaultDuttons[header],
     });
 
     (await alert).present();
-  }
 
+  }
+  presentAlertConfirm(header,message){
+  return new Promise(async (resolve) => {
+        const alert = await this.alertController.create({
+          header: header,
+          message: message,
+          buttons: [
+            {
+              text: 'Dismiss',
+              role: 'cancel',
+              cssClass: 'secondary',
+              handler: () => {
+                resolve(false);
+              }
+            }, {
+              text: 'Ok',
+              handler: () => {
+                resolve(true);
+              }
+            }
+          ]
+        });
+        alert.present();
+      });
+  }
 
 
     //============[ loader ]====================

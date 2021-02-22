@@ -1,0 +1,97 @@
+<ion-row>
+  <ion-searchbar
+    [(ngModel)]="searchText"
+    (onClear)="onClear($event)"
+    (ionChange)="ionChange($event)"
+  >
+  </ion-searchbar>
+  <ion-toolbar mode="ios">
+    <ion-segment *ngIf="!searchText?.trim()" [value]="options.calendarOptions.pickMode" (ionChange)="calendarOptionsChanged($event)">
+      <!-- (ionChange)="calendarOptionsChanged($event)"> -->
+      <ion-segment-button value="single">
+        <ion-label>Single Date</ion-label>
+      </ion-segment-button>
+      <!-- <ion-segment-button value="multi">
+        <ion-label>Multiple Dates</ion-label>
+      </ion-segment-button> -->
+      <ion-segment-button value="range">
+        <ion-label>Date Range</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+    <ion-segment *ngIf="searchText?.trim()" [value]="searchMode" (ionChange)="SearchOptionsChanged($event)" color="primary">
+      <!-- (ionChange)="calendarOptionsChanged($event)"> -->
+      <ion-segment-button value="all">
+        <ion-label>Match all search keywords</ion-label>
+      </ion-segment-button>
+      <!-- <ion-segment-button value="multi">
+        <ion-label>Multiple Dates</ion-label>
+      </ion-segment-button> -->
+      <ion-segment-button value="any">
+        <ion-label>Match any search keywords</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+  <ion-calendar
+    *ngIf="!searchText?.trim()"
+    [options]="options.calendarOptions"
+    (select)="onSelect($event)"
+    (selectStart)="onSelectStart($event)"
+    (selectEnd)="onSelectEnd($event)"
+    (monthChange)="monthChanges($event)"
+    >
+  </ion-calendar>
+  <ion-col>
+  <ion-list *ngFor="let data of allDates; let i = index">
+    <ion-item-divider color="dark" detail-push>
+      <ion-label>{{data}}</ion-label>
+    </ion-item-divider>
+    <ion-item *ngFor="let details of viewResult[data]">
+      <ion-label>
+        <!-- <ion-row> -->
+          <ion-chip color="success">
+            <ion-icon name="time-outline"></ion-icon>
+            <ion-label>{{details.data.startTime | date : 'mediumTime'}}</ion-label>
+          </ion-chip>
+          <ion-chip color="primary">
+            <ion-icon name="stopwatch-outline"></ion-icon>
+            <ion-label>{{details.data.endTime ? (details.data.endTime | date : 'mediumTime') : 'Ongoing'}}</ion-label>
+          </ion-chip>
+          <ion-chip color="transparenet" class="ion-float-end" (click)="toSearchActivity(data)">
+            <ion-icon name="ellipsis-horizontal"></ion-icon>
+          </ion-chip>
+        <!-- </ion-row> -->
+        <h1><small><ion-icon name="bookmark-outline" size="small"></ion-icon> {{details.data.project.title}}</small></h1>
+        <p><ion-icon name="body-outline" ></ion-icon> {{details.data.name}}</p>
+        <ion-row>
+          <ion-chip color="transparent">
+            <ion-icon name="time-outline" color="medium"></ion-icon>
+            <ion-label>{{details.data.effort!=null ? details.data.effort.toFixed(2)+' hr ' : 'Ongoing'}}</ion-label>
+          </ion-chip>
+          <ion-chip color="transparent">
+            <ion-icon name="cash-outline" color="medium"></ion-icon>
+            <ion-label>$ {{details.data.billingAmount!=null ? details.data.billingAmount.toFixed(2) : 'Ongoing'}}</ion-label>
+          </ion-chip>
+          <!-- <ion-col>
+            <p class="ion-text-wrap"><ion-icon name="timer-outline" slot="start"></ion-icon> {{details.data.effort!=null ? details.data.effort.toFixed(2)+' hr ' : 'Ongoing'}}</p>
+          </ion-col>
+          <ion-col>
+            <p class="ion-text-wrap"><ion-icon name="cash-outline" slot="start"></ion-icon> $ {{details.data.billingAmount!=null ? details.data.billingAmount.toFixed(2) : 'Ongoing'}}</p>
+          </ion-col> -->
+        </ion-row>
+      </ion-label>
+    </ion-item>
+
+        <!-- <h3><ion-icon name="body-outline"></ion-icon> {{details.data.name}}</h3>
+        <ion-row>
+          <ion-col>
+            <ion-icon name="timer-outline"></ion-icon> {{details.data.effort!=null ? details.data.effort.toFixed(2)+' hr ' : 'Ongoing'}}
+          </ion-col>
+          <ion-col>
+            <ion-icon name="cash-outline"></ion-icon> $ {{details.data.billingAmount!=null ? details.data.billingAmount.toFixed(2) : 'Ongoing'}}
+          </ion-col>
+        </ion-row>
+      </ion-label>
+    </ion-item> -->
+  </ion-list>
+</ion-col>
+</ion-row>

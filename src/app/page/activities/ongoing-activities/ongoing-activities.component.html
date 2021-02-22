@@ -1,0 +1,81 @@
+<ion-card *ngFor="let task of allTasks; let i=index;">
+  <ion-item-divider [color]="task?.data?.status=='ACTIVE' ? 'secondary' : 'warning'">
+      <ion-label><h2>{{task?.data?.project.title}}</h2></ion-label>
+      <ion-buttons slot="end">
+        <ion-button
+        *ngIf="task?.data?.status=='ACTIVE'"
+        (click)="actionOnClickActivity(task, i,'PAUSE')">
+            <ion-icon [name]="enableEffortEditing ? 'checkmark-done' : 'pause'" ></ion-icon>
+          <!-- PAUSE -->
+        </ion-button>
+        <ion-button
+        *ngIf="task?.data?.status!='ACTIVE' && newTask?.activetask?.data?.length==0"
+        (click)="actionOnClickActivity(task, i,'RESUME')">
+            <ion-icon name="play" ></ion-icon>
+          <!-- RESUME -->
+        </ion-button>
+        <ion-button  (click)="actionOnClickActivity(task, i, 'COMPLETE')">
+            <ion-icon name="checkmark-done" ></ion-icon>
+          <!-- COMPLETE -->
+        </ion-button>
+      </ion-buttons>
+  </ion-item-divider>
+  <ion-item lines="none">
+    <ion-label>
+      <ion-chip [color]="task?.data?.status=='ACTIVE' ? 'primary' : ''">
+        <ion-icon name="stopwatch-outline"></ion-icon>
+        <ion-label>
+          {{
+            (task?.data?.status == 'ACTIVE' ?
+            (task?.data?.startTime ? task?.data?.startTime : 'Not known')
+            :
+            (task?.data?.endTime ? task?.data?.endTime : 'Not known'))
+           | date:'medium'
+         }}
+       </ion-label>
+     </ion-chip>
+     <ion-chip color="transparenet" class="ion-float-end" (click)="toSearchActivity(task)">
+       <ion-icon name="ellipsis-horizontal"></ion-icon>
+     </ion-chip>
+     <p [class]="'ion-padding-start ' + (task?.data?.status!='ACTIVE' ? ' ion-padding-bottom' : '')">{{task?.data?.name}}</p>
+     </ion-label>
+  </ion-item>
+  <ion-item lines="none" *ngIf="task?.data?.status=='ACTIVE'">
+       <ion-row class="ion-padding-bottom ion-align-items-center">
+         <ion-col class="ion-no-padding ion-margin-top">
+           <!-- <ion-item lines="none" class="ion-no-padding"> -->
+             <ion-buttons class="ion-justify-content-center">
+               <ion-button *ngIf="!enableEffortEditing"><ion-icon name="timer-outline" color="dark"></ion-icon></ion-button>
+               <ion-button *ngIf="!enableEffortEditing" disabled class="ion-hide-md-down"><ion-icon name="shuffle" color="green"></ion-icon></ion-button>
+               <ion-button *ngIf="enableEffortEditing" (click)="actionCancelEditEffort()"><ion-icon name="play" color="danger"></ion-icon></ion-button>
+               <ion-button *ngIf="enableEffortEditing" (click)="actionOnClickActivity(task, i,'PAUSE')"><ion-icon name="checkmark-done" color="success"></ion-icon></ion-button>
+             </ion-buttons>
+           <!-- </ion-item> -->
+         </ion-col>
+         <ion-col>
+           <ion-item>
+             <ion-label position="stacked">
+               Hour
+             </ion-label>
+             <ion-input type="number" min=0 max=12 default=0 [(ngModel)]="hour" [disabled]="!enableEffortEditing"></ion-input>
+           </ion-item>
+         </ion-col>
+         <ion-col>
+           <ion-item>
+             <ion-label position="stacked">
+               Min
+             </ion-label>
+             <ion-input type="number" min=0 max=60 default=0 [(ngModel)]="minute" [disabled]="!enableEffortEditing"></ion-input>
+           </ion-item>
+         </ion-col>
+         <ion-col>
+           <ion-item>
+             <ion-label position="stacked">
+               Sec
+             </ion-label>
+             <ion-input type="number" min=0 max=60 default=0 [(ngModel)]="sec" [disabled]="!enableEffortEditing"></ion-input>
+           </ion-item>
+         </ion-col>
+       </ion-row>
+   </ion-item>
+</ion-card>

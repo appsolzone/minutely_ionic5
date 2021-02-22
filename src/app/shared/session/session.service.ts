@@ -42,7 +42,7 @@ export class SessionService {
       if(!this.peek().networkStatus.connected){
         componentService.showLoader("Please check network connection, you are currently offline.");
       } else {
-        componentService.hideLoader();
+        setTimeout(()=>componentService.hideLoader(),300);
       }
     });
   }

@@ -1,8 +1,6 @@
 import { DatabaseService } from '../database/database.service';
 import { Injectable } from '@angular/core';
-import * as moment from 'moment';
-import { User } from '../../interface/user';
-import { Subscriber } from '../../interface/subscriber';
+
 import { ManageuserService } from '../manageuser/manageuser.service';
 import { SubscriberService } from '../subscriber/subscriber.service';
 
@@ -79,9 +77,8 @@ export class RegistrationService {
     }); // end of runTransaction
   }
 
-  joinSubscriber(uId:string, sId:string, name:string, email:string)
+  joinSubscriber(uId:string, sId:string, name:string, email:string,userOnbordData:any=undefined)
   {
-
       const subscriberRef = this.db.afs.firestore.collection(this.db.allCollections.subscribers).doc(sId);
       const userRef = this.db.afs.firestore.collection(this.db.allCollections.users).doc();
       const notificationRef = this.db.afs.firestore.collection(this.db.allCollections.notifications).doc(uId);
@@ -99,10 +96,18 @@ export class RegistrationService {
                                        email: email,
                                        subscriberId: sId,
                                        // address: address,
-                                       role: 'USER',
-                                       status: 'REGISTERED'
+                                       role: userOnbordData !== undefined? userOnbordData. role:'USER',
+                                       status: userOnbordData !== undefined? 'ACTIVE': 'REGISTERED'
                                      }
                                    );
+           // during admin user onboard                        
+           if(userOnbordData !== undefined){
+           let subsUpdateObj = {
+              'noOfFreeLicense': this.db.frb.firestore.FieldValue.increment(-1),
+              }  
+           this.db.setTransactDocument(transaction, subscriberRef,subsUpdateObj,true);             
+           }
+
            this.db.setTransactDocument(transaction, userRef, newUser);
            // add user to useruids list
            let newuseruids = {uid: uId,email: email};

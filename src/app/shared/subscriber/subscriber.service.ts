@@ -1,3 +1,4 @@
+import { appPages } from './../app-menu-pages';
 import { PaypalService } from 'src/app/shared/paypal/paypal.service';
 import { Router } from '@angular/router';
 import { ComponentsService } from './../components/components.service';
@@ -6,14 +7,14 @@ import { DatabaseService } from '../database/database.service';
 import { Subscriber } from '../../interface/subscriber';
 import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
-
-
-
+import { AlertController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SubscriberService {
+  public appPages =appPages;
+  public adminEmail : any;
   public newSubscriber = {
                         subscriberId: '',
                         companyName: '',
@@ -37,10 +38,16 @@ export class SubscriberService {
     public db: DatabaseService,
     public common: ComponentsService,
     public router: Router,
-    public paypal: PaypalService
+    public paypal: PaypalService,
+    public alertController: AlertController,
+
+
   ) {
     // TBA
   }
+
+
+
   getSubscriber(subscriberId:string){
     let queryObj = subscriberId ? [{field: 'subscriberId',operator: '==', value: subscriberId}] : [];
     return this.db.getAllDocumentsSnapshotByQuery(this.db.allCollections.subscribers, queryObj);
@@ -49,16 +56,11 @@ export class SubscriberService {
     return this.db.setDocument(this.db.allCollections.subscribers, docId, subscriber);
   }
 
-  checkOrg(org, userprofile){
-
-    return new Promise(async function(res,rej){
-
-      // console.log('orgData', org);
-      // console.log('userData', userprofile);
-
+  async checkOrg(org, userProfile){
+    // compare the subscription end date with the server time to ensure subscription is valid
     const subscriptionEnd = new Date(org?.subscriptionEnd.toMillis());
     const endDate =  new Date(org?.subscriptionEnd.toMillis() + (15 * 24 * 60 * 60 * 1000));
-    let loginStart = await this.db.getServerTime(userprofile?.uid);
+    let loginStart = await this.db.getServerTime(userProfile?.uid);
     const toDay = new Date(loginStart?.serverTime);
     let subsStatus = toDay > endDate ?
                      'renew'
@@ -69,90 +71,56 @@ export class SubscriberService {
                        :
                        'valid'
                      );
-    let message = {title:'',body:''};
+    let message: any = {title:'',body:''};
 
-    console.log('subsStatus', subsStatus);
+    // check if there is any payment initiated which has not been updated due to any failure,
+    // or any auto renewal payment received before proceeding further
+    let isAutoRenewed = await this.paypal.checkPaypalPayment(org, userProfile);
+    if(isAutoRenewed){
+       // valid subscription
+       return {subsStatus: subsStatus, userStatus: userProfile?.status, title: 'Welcome', body: 'Welcome back, ' + userProfile?.name };
+    } else{
+      this.adminEmail = org?.email;
 
-     let isAutoRenewed = await this.paypal.checkPaypalPayment(org, userprofile);
-    //  let isAutoRenewed = false;
-
-
-
-     if(isAutoRenewed){
-       // this.toUserDashBoard({user:userData, admin: comData});
-       return res(true);
-     } else{
-       if(['valid','grace'].includes(subsStatus)){ // checking expiring date
+      if(['valid','grace'].includes(subsStatus)){ // checking expiring date
          if(subsStatus=='grace') {
-           if(org.subscriptionType == "FREE"){
-             if(userprofile.role != "ADMIN"){
-               message = {title:"Trial Period",body:"Currently you are enjoying the FREE trial period. Please contact your admin to upgrade the subscription. Contact your admin at   " + this.adminUser.email};
+           if(org.subscriptionType.toUpperCase() == "FREE"){
+             if(userProfile.role != "ADMIN"){
+               message = {title:"Trial Period",body:"Currently you are enjoying the FREE trial period. Please contact your admin to upgrade the subscription. Contact your admin at   " + this.adminEmail};
              } else {
-               message = {title:"Trial Period",body:"Currently you are enjoying the FREE trial period. Please upgrade the subscription from Admin Panel."};
+               message = {title:"Trial Period",body:"Currently you are enjoying the FREE trial period. Please upgrade the subscription from subscription panel."};
              }
            } else {
-             if(userprofile.role != "ADMIN"){
-               message = {title:"Renew Subscription",body:"Subscription has ended on " + moment(subscriptionEnd).format('ll') + ". To continue , please contact your admin to renew the subscription. Contact your admin at   " + this.adminUser.email};
+             if(userProfile.role != "ADMIN"){
+               message = {title:"Renew Subscription",body:"Subscription has ended on " + moment(subscriptionEnd).format('ll') + ". To continue , please contact your admin to renew the subscription. Contact your admin at   " + this.adminEmail};
              } else {
-               message = {title:"Renew Subscription",body:"Subscription has ended on " + moment(subscriptionEnd).format('ll') + ". To continue , please renew the subscription from Admin Panel."};
+               message = {title: org.subscriptionType.toUpperCase() == "FREE" ? 'Upgrade Plan' : 'Renew Subscription',
+                          body:"Subscription has ended on " + moment(subscriptionEnd).format('ll') + ". To continue , please renew the subscription from subscription Panel."};
              }
            }
-
-           this.common.presentAlert('Warning',message.body)
-           this.router.navigate(['profile']);
-
-           // this.sfp.defaultAlert(message.title, message.body);
-
-          //  console.log('message1', message);
-          //  return rej(false);
-
-         }
-
-         return res(true);
-         // this.toUserDashBoard({user: userData, admin: comData});
-       } else {
-         // this.loader = false;
-        //  this.db.user.loginStarted = false;
-         if(userprofile.role == "ADMIN"){
-           // this.renewNow({'user': userprofile, 'org': org});
-          //  console.log('reneeew');
-          this.router.navigate(['subscription']);
-
-           return rej(false);
-         }else{
-           // this.loader = false;
-           this.db.user.loginStarted = false;
-           if(org.subscriptionType == "FREE"){
-             message = {title:"Package expiry", body: "Free trial period has ended on " + moment(subscriptionEnd).format('ll') + ". To continue , please contact your admin to upgrade the subscription. Contact your admin   "  };
-           } else {
-             message = {title:"Package expiry", body: "Subscription has ended on " + moment(subscriptionEnd).format('ll') + ". To continue , please contact your admin to renew the subscription. Contact your admin  " };
+         } else {
+           message = {subsStatus: subsStatus, userStatus: userProfile?.status, title: 'Welcome', body: 'Welcome back, ' + userProfile?.name };
+           if(org.subscriptionType.toUpperCase() == "FREE"){
+             if(userProfile.role != "ADMIN"){
+               message.body += " Currently you are enjoying the FREE trial. Please contact your admin " + this.adminEmail + " to upgrade the subscription.";
+             } else {
+               message.body += " Currently you are enjoying the FREE trial. Please upgrade the subscription from subscription panel.";
+             }
            }
-           // this.sfp.defaultAlert(message.title, message.body);
-           this.common.presentAlert('Error',message.body)
-           this.router.navigate(['subscription']);
-
-
-
-          //  console.log('message2', message);
-
-           return rej(false);
-
          }
-       }
-     }
-
-
-    }.bind(this))
+         return {subsStatus, ...message};
+      } else { // Subscription expired need to prompt renew
+        message = {
+                    title: org.subscriptionType.toUpperCase() == "FREE" ? 'Upgrade Plan' : 'Renew Subscription',
+                    body: 'Your ' + (['Free','FREE'].includes(org.subscriptionType) ? 'trial period' : 'subscription') +
+                          ' has ended on ' + moment(org.subscriptionEnd.seconds*1000).format('ll') +
+                          ', please ' + (userProfile.role=='ADMIN' ? '' : ('request your system administrator ' + org.email + ' to ')) +
+                          (['Free','FREE'].includes(org.subscriptionType) ? 'upgrade' : 'renew') +
+                          ' the subscription now.'
+                  };
+        return {subsStatus, ...message};
+      }
     }
+  }
 
-
-
-
-
-
-    //--------------- add days 15 days --------------------
-    addDays(date, days)
-    {
-      return new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
-    }
 }

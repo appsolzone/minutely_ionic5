@@ -7,7 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: AdminPage
+  },  {
+    path: 'add-member',
+    loadChildren: () => import('./add-member/add-member.module').then( m => m.AddMemberPageModule)
   }
+
 ];
 
 @NgModule({

@@ -10,7 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'activity-search',
-    loadChildren: () => import('./activity-search/activity-search.module').then( m => m.ActivitySearchPageModule)
+    loadChildren: () => import('./activity-search-mobile/activity-search-mobile.module').then( m => m.ActivitySearchMobilePageModule)
   },
 ];
 

@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { ActivitySearchPage } from './activity-search.page';
+import { ActivitySearchComponent } from './activity-search.component';
 
-describe('ActivitySearchPage', () => {
-  let component: ActivitySearchPage;
-  let fixture: ComponentFixture<ActivitySearchPage>;
+describe('ActivitySearchComponent', () => {
+  let component: ActivitySearchComponent;
+  let fixture: ComponentFixture<ActivitySearchComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ActivitySearchPage ],
+      declarations: [ ActivitySearchComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ActivitySearchPage);
+    fixture = TestBed.createComponent(ActivitySearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

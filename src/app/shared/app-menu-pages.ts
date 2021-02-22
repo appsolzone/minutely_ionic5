@@ -14,6 +14,7 @@ export const appPages = [
     url: 'activities',
     icon: 'body',
     tab: 'activities',
+    disabled: true,
   },
   // {
   //   title: 'List',
@@ -32,12 +33,14 @@ export const appPages = [
     url: 'profile',
     icon: 'person-circle',
     tab: 'profile',
+    disabled: false,
   },
   {
     title: 'Ntification',
     url: 'notification',
     icon: 'notifications',
     tab: 'notification',
+    disabled: true,
   },
   // {
   //   title: 'Regions',
@@ -50,12 +53,14 @@ export const appPages = [
     url: 'admin',
     icon: 'people',
     tab: 'admin',
+    disabled: true,
   },
   {
     title: 'Subscription',
     url: 'subscription',
     icon: 'card',
     tab: 'subscription',
+    disabled: false,
   },
 ];
 

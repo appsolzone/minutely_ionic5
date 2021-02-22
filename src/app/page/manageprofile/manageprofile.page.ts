@@ -1,8 +1,8 @@
+import { appPages } from './../../shared/app-menu-pages';
 import { UploadImageService } from './../../shared/uploadImage/upload-image.service';
 import { ComponentsService } from './../../shared/components/components.service';
 import { async } from '@angular/core/testing';
 import { environment } from './../../../environments/environment';
-
 import { DatabaseService } from 'src/app/shared/database/database.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -13,22 +13,13 @@ import { User } from '../../interface/user';
 import { SessionService } from '../../shared/session/session.service';
 import * as moment from 'moment';
 import { SubscriberService } from 'src/app/shared/subscriber/subscriber.service';
-import { ActionSheetController, Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import '@codetrix-studio/capacitor-google-auth';
 
-
-
-
-
-
-
-
-
-
-
 const { Storage } = Plugins;
+
 
 @Component({
   selector: 'app-manageprofile',
@@ -38,6 +29,7 @@ const { Storage } = Plugins;
 export class ManageprofilePage implements OnInit {
   // Observable
   getauthStateSubs$;
+  public appPages = appPages;
   signinUi: any;
   userData: any;
   id: string;
@@ -55,6 +47,7 @@ export class ManageprofilePage implements OnInit {
 
 
 
+
   constructor(
     private router: Router,
     private auth: AuthenticationService,
@@ -62,12 +55,10 @@ export class ManageprofilePage implements OnInit {
     private session: SessionService,
     private database: DatabaseService,
     private subscriber: SubscriberService,
-    public actionSheetCtrl:ActionSheetController,
     private sanitizer: DomSanitizer,
     private common:ComponentsService,
     private upload: UploadImageService,
     private platform: Platform,
-
   ) {
     this.isMobile = this.platform.is('mobile') && !this.platform.is('mobileweb');
     this.firestore = this.user.db.frb.firestore;
@@ -86,93 +77,50 @@ export class ManageprofilePage implements OnInit {
           this.getLastSignInProfile();
         }
       }
-      // // console.log("subscription end check", this.sessionInfo?.orgProfile?.subscriptionEnd);
-      // // console.log("userProfile status check", this.sessionInfo?.userProfile?.status);
-
-
-      this.subscriber.checkOrg(this.sessionInfo?.orgProfile, this.sessionInfo?.userProfile)
-
-      .then((res)=>{
-
-        if(res){
-        // console.log('first function', res);
-
-        this.user.checkUser(this.sessionInfo?.userProfile).then((result)=>{
-
-          if(result){
-            // // console.log('ok user');
-            // this is the default path of the app if logged in successfully and no upgrade is required
-            this.router.navigate(['profile']);
-
-
-          }
-          else{
-            // // console.log('no user');
-            this.router.navigate(['profile']);
-
-          }
-        }).catch((err)=>{
-         // // console.log('cant get user');
-          this.router.navigate(['profile']);
-
-        })
-
-        }
-
-      }).catch((gg)=>{
-        // console.log('erorssssss', gg);
-      })
-
-
-
-
-
+      // console.log("subscription end check", this.sessionInfo?.orgProfile?.subscriptionEnd);
+      // console.log("userProfile status check", this.sessionInfo?.userProfile?.status);
+      // console.log('check_user',this.sessionInfo?.orgProfile,this.sessionInfo?.userProfile )
+      if(this.sessionInfo && this.sessionInfo.userProfile && this.sessionInfo.orgProfile &&
+         this.sessionInfo?.userProfile?.subscriberId == this.sessionInfo?.orgProfile?.subscriberId
+       ){
+        this.performPostLoginChecks();
+      }
     });
+
   }
 
 
 
+  async performPostLoginChecks(){
+    this.common.showLoader("Checking details, please wait...");
+    // first check whether the user is active or not
+    let validationResponse:any ={};
+    validationResponse = this.user.checkUser(this.sessionInfo?.userProfile);
+    if(validationResponse.userStatus == 'ACTIVE'){
+      // since the user is active, perform subscription validation
+      validationResponse = await this.subscriber.checkOrg(this.sessionInfo?.orgProfile, this.sessionInfo?.userProfile);
+      console.log("validationResponse",validationResponse);
+      this.renewNow(this.sessionInfo?.userProfile, this.sessionInfo?.orgProfile, validationResponse);
+    } else {
+      const {title, body } = validationResponse;
+      let buttons: any[] = [
+                      {
+                        text: 'Dismiss',
+                        role: 'cancel',
+                        cssClass: '',
+                        handler: ()=>{}
+                      }
+                    ];
+      this.common.presentAlert(title,body, buttons);
+      // should we signout the user or redirect for select profile
+      // this.signOut();
+      this.userProfile = null;
+      this.appPages.forEach(p=>p.disabled=(!['profile'].includes(p.tab)));
+      this.addSubscriber = false;
+    }
+    // hide the loader now
+    setTimeout(()=>this.common.hideLoader(),100);
 
-  async takePicture() {
-    const image = await Plugins.Camera.getPhoto({
-      quality: 100,
-      allowEditing: false,
-      resultType: CameraResultType.DataUrl,
-      // source: source =='camera' ? CameraSource.Camera : CameraSource.Photos,
-      height:128,
-      width:128
-    });
-
-    this.photo = this.sanitizer.bypassSecurityTrustResourceUrl(image && (image.dataUrl))
-    console.log('image_dataUrl',image.dataUrl);
-    this.upload.upload_profile_photo(image.dataUrl)
-  }
-
-
-
-  async take_photo() {
-    const actionSheet = await this.actionSheetCtrl.create({
-      header: 'Edit profile picture',
-      cssClass: 'my-custom-class',
-      buttons: [
-                {
-                  text: 'Select source',
-                  icon: 'person-circle',
-                  handler: () => {
-                  this.takePicture();
-                  }
-                },
-                {
-                  text: 'Cancel',
-                  icon: 'close',
-                  role: 'cancel',
-                  handler: () => {
-                    console.log('Cancel clicked');
-                  }
-                }
-              ],
-    });
-    await actionSheet.present();
   }
 
 
@@ -186,6 +134,55 @@ export class ManageprofilePage implements OnInit {
 
   }
 
+  async renewNow(userProfile, org, instruction: any=null) {
+    console.log('my_org',org)
+    let buttons: any[] = [
+                    {
+                      text: 'Dismiss',
+                      role: 'cancel',
+                      cssClass: '',
+                      handler: ()=>this.onDismissClick(instruction)
+                    }
+                  ];
+    if(userProfile.role=='ADMIN' && instruction.subsStatus != 'valid'){
+            buttons.push({
+                          text: ['Free','FREE'].includes(org.subscriptionType) ? 'Upgrade' : 'Renew',
+                          role: '',
+                          cssClass: 'alert-button-selected',
+                          handler: ()=>this.onUpgradeClick()
+                        }
+                      );
+    }
+
+    await this.common.presentAlert(instruction.title,instruction.body ,buttons);
+  }
+
+  onDismissClick(instruction){
+      // console.log('Confirm Cancel: blah');
+      if(instruction.subsStatus!='renew'){
+      // So enable all the menu items for navigation
+        this.appPages.forEach(p=>p.disabled=false);
+        this.router.navigate([this.appPages[0].url]);
+      } else {
+        // should we signout the user or redirect for select profile
+        // this.signOut();
+        // this.userProfile = null;
+        this.addSubscriber = false;
+        this.appPages.forEach(p=>p.disabled=(!['profile','subscription'].includes(p.tab)));
+        this.router.navigate(['profile']);
+      }
+  }
+
+  onUpgradeClick(){
+    this.appPages.forEach(p=>p.disabled=(!['profile','subscription'].includes(p.tab)));
+    this.router.navigate(['subscription']);
+  }
+
+  take_photo() {
+    this.upload.take_photo();
+  }
+
+
   async signOut(){
     // this.common.showLoader("Please wait... signout");
     await Storage.remove({key: 'userProfile'});
@@ -193,6 +190,8 @@ export class ManageprofilePage implements OnInit {
       await Plugins.GoogleAuth.signOut();
     }
     await this.auth.signOut();
+    this.sessionInfo = null;
+    this.appPages.forEach(p=>p.disabled=(!['profile'].includes(p.tab)));
     this.session.clear();
     // this.common.hideLoader();
     this.common.presentToaster("Signed out successfully. Please sign in again to continue.");
