@@ -16,6 +16,13 @@ export const appPages = [
     tab: 'activities',
     disabled: true,
   },
+  {
+    title: 'Timesheet',
+    url: 'timesheet',
+    icon: 'calendar',
+    tab: 'timesheet',
+    disabled: true,
+  },
   // {
   //   title: 'List',
   //   url: 'activitysearch',

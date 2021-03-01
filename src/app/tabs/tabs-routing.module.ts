@@ -10,7 +10,7 @@ const routes: Routes = [
       {
         path: 'activities',
         loadChildren: () => import('../page/activities/activities.module').then( m => m.ActivitiesPageModule)
-      },      
+      },
       {
         path: 'profile',
         loadChildren: () => import('../page/profile/profile.module').then( m => m.ProfilePageModule)
@@ -26,6 +26,10 @@ const routes: Routes = [
         {
         path: 'subscription',
         loadChildren: () => import('../page/subscription/subscription.module').then( m => m.SubscriptionPageModule)
+      },
+      {
+        path: 'timesheet',
+        loadChildren: () => import('../page/timesheet/timesheet/timesheet.module').then( m => m.TimesheetPageModule)
       },
       {
         path: '',

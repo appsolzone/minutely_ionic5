@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar class="ion-padding-end">
+    <ion-title>Timesheet</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-toolbar color="transparent">
+    <ion-button (click)="gotoTimeSheet()" color="green" slot="end" class="ion-padding-end ion-margin-end">
+      Fill timesheet
+      <ion-icon slot="end" name="calendar"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+  <app-activities-summary fullWidth="true"></app-activities-summary>
+</ion-content>

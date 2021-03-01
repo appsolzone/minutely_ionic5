@@ -1,10 +1,11 @@
-import { Component, NgModule, OnInit } from '@angular/core';
+import { Component, NgModule, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { Autounsubscribe } from '../../../decorator/autounsubscribe';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { ActivityService } from 'src/app/shared/activity/activity.service';
 import { CalendarService } from 'src/app/shared/calendar/calendar.service';
+import { GraphService } from 'src/app/shared/graph/graph.service';
 
 @Component({
   selector: 'app-activities-summary',
@@ -13,17 +14,27 @@ import { CalendarService } from 'src/app/shared/calendar/calendar.service';
 })
 @Autounsubscribe()
 export class ActivitiesSummaryComponent implements OnInit {
+  @Input() fullWidth: boolean = false;
   // observables
   sessionSubs$;
   activitySummarySubs$;
   public sessionInfo: any;
   public selectedMonth: string = moment().format('YYYY-MM-DD');
+  public totalEffort = 0;
   public avgEffort = 0;
   public monthlyBillingAmount = 0;
+  public graphMode: string = "efforts";
+  public graphData: any;
   public graphY:any = {
       icon: 'stats-chart',
       title: 'Daily activities for ' + moment().format('MMM, YYYY'),
-      maxValue: 1,
+      // maxValue: 1,
+      // data: [],
+    };
+  public graphX:any = {
+      icon: 'bookmark-outline',
+      title: 'Project activities for ' + moment().format('MMM, YYYY'),
+      // maxValue: 1,
       // data: [],
     };
 
@@ -31,6 +42,7 @@ export class ActivitiesSummaryComponent implements OnInit {
     private router:Router,
     private session: SessionService,
     private activity: ActivityService,
+    private graph: GraphService,
   ) {
     this.sessionSubs$ = this.session.watch().subscribe(value=>{
       // console.log("Session Subscription got", value);
@@ -39,7 +51,13 @@ export class ActivitiesSummaryComponent implements OnInit {
         this.graphY = {
             icon: 'stats-chart',
             title: 'Daily activities for ' + moment().format('MMM, YYYY'),
-            maxValue: 1,
+            // maxValue: 1,
+            // data: [],
+          };
+        this.graphX = {
+            icon: 'bookmark-outline',
+            title: 'Project activities for ' + moment().format('MMM, YYYY'),
+            // maxValue: 1,
             // data: [],
           };
       }
@@ -84,69 +102,25 @@ export class ActivitiesSummaryComponent implements OnInit {
                                   return {id, ...data};
                                 });
                                 // console.log("summary", allSummeries, yearMonth, queryObj);
-                                this.processUserSummary(allSummeries);
+                                this.graphData = this.graph.processUserSummary(allSummeries, this.selectedMonth);
+                                this.totalEffort = this.graphData.totalEffort;
+                                this.avgEffort = this.graphData.avgEffort;
+                                // if its a large value represent differently
+                                this.monthlyBillingAmount = this.graphData.monthlyBillingAmount;
+                                let lgraphX = this.graphMode=='efforts' ? this.graphData.graphX : this.graphData.graphX$;
+                                let lgraphY = this.graphMode=='efforts' ? this.graphData.graphY : this.graphData.graphY$;
+                                this.graphX = {...lgraphX, icon: 'bookmark-outline', title: 'Project ' + this.graphMode + ' for ' + moment(this.selectedMonth).format('MMM, YYYY')};
+                                this.graphY = {...lgraphY, icon: 'stats-chart', title: 'Daily ' + this.graphMode + ' for ' + moment(this.selectedMonth).format('MMM, YYYY'), xAxisFrequency: 7};
                               });
     }
   }
 
-  // callback function to process user summary data
-  processUserSummary(summeriesArray){
-    let summeries = summeriesArray ? summeriesArray[0] : null;
-    let effort = summeries ? summeries.effort : 0;
-    let billingAmount = summeries ? summeries.billingAmount : 0;
-    let noofdays: number = parseInt(moment(this.selectedMonth).endOf('month').format('DD'));
-
-    this.avgEffort = effort/noofdays;
-    // if its a large value represent differently
-    this.monthlyBillingAmount = billingAmount >= 1000000 ?
-                                (billingAmount/1000000).toFixed(1) + ' M'
-                                :
-                                billingAmount >= 1000 ?
-                                (billingAmount/1000).toFixed(1) + ' K'
-                                :
-                                (billingAmount).toFixed(1);
-
-    let graphY: any={
-        icon: 'stats-chart',
-        title: 'Daily activities for ' + moment(this.selectedMonth).format('MMM, YYYY'),
-        maxValue: 1,
-        data: [],
-      };
-
-    if(summeries){
-      let efforts = summeries && summeries.details ? Object.keys(summeries.details).map(d=>summeries.details[d].effort) : [];
-      graphY.maxValue = efforts.length > 0 ? Math.max(...efforts) : 1;
-      graphY.maxValue = graphY.maxValue.toFixed(1)*1;
-      let startDate = moment(this.selectedMonth).startOf('month');
-      while(startDate<=moment(this.selectedMonth).endOf('month')){
-        // loop through the days
-        let day = moment(startDate).format('YYYYMMDD');
-        let dataObj = {};
-        if(summeries.details[day]){
-          dataObj = {
-            label: moment(startDate).format('DD'),
-            lavelValue: '',
-            stack: [{cssClass: 'warning', height: (summeries.details[day].effort*100/graphY.maxValue)}]
-          }
-        } else {
-          dataObj = {
-            label: moment(startDate).format('DD'),
-            lavelValue: '',
-            stack: [{cssClass: 'warning', height: 0}]
-          }
-        }
-        graphY.data.push(dataObj);
-
-        startDate = moment(startDate).add(1,'day');
-      }
-
-      // this.graphY = graphY;
-      // this.graphY.xAxisFrequency = Math.floor(this.graphY.data.length/4);
-    }
-    this.graphY = graphY;
-    this.graphY.xAxisFrequency = Math.floor(this.graphY.data.length/4);
-    // console.log("graphY", this.graphY);
-
+  graphModeChanged(e){
+    this.graphMode = e.detail.value;
+    let lgraphX = this.graphMode=='efforts' ? this.graphData.graphX : this.graphData.graphX$;
+    let lgraphY = this.graphMode=='efforts' ? this.graphData.graphY : this.graphData.graphY$;
+    this.graphX = { ...lgraphX, icon: 'bookmark-outline', title: 'Project ' + this.graphMode + ' for ' + moment(this.selectedMonth).format('MMM, YYYY')};
+    this.graphY = { ...lgraphY, icon: 'stats-chart', title: 'Daily ' + this.graphMode + ' for ' + moment(this.selectedMonth).format('MMM, YYYY'), xAxisFrequency: 7};
   }
 
 }

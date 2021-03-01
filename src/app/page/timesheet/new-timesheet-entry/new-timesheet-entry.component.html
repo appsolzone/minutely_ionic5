@@ -1,0 +1,138 @@
+<ion-row class="">
+  <ion-toolbar mode="ios" color="light">
+    <ion-item lines="none" class="">
+      <ion-icon name="accessibility" color="primary" slot="start"></ion-icon>
+      <ion-label><h1><small>Add new timesheet entry</small></h1></ion-label>
+    </ion-item>
+  </ion-toolbar>
+  <ion-col size="12" size-md="6">
+    <ion-item lines="inset" class="">
+      <ion-label position="floating">
+        <ion-icon name="bookmark-outline"></ion-icon>
+        Project Name
+      </ion-label>
+      <ion-input #project id="project" type="text" [(ngModel)]="newTask.searchTitle" color="medium"
+      (ionChange)="onSearchProject()"></ion-input>
+    </ion-item>
+
+    <ion-list>
+      <ion-radio-group [(ngModel)]="newTask.taskProject" *ngIf="!newTask.taskProject.title && newTask.searchTitle.length >=3"
+        (ngModelChange)="onSearchActivity()">
+        <ion-list-header  class="ion-no-padding">
+          <ion-segment mode="ios" [value]="searchModeProject" (ionChange)="projectSearchOptionsChanged($event)" color="primary">
+            <ion-segment-button value="all">
+              <ion-label>Match all keywords</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="any">
+              <ion-label>Match any keyword</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+        </ion-list-header>
+        <ion-item *ngFor="let project of searchedprojects;">
+          <ion-label>{{project.title}}</ion-label>
+          <ion-radio [value]="project"></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+      <ion-item *ngIf="newTask.taskProject.title">
+        <ion-label>{{newTask.taskProject.title}}</ion-label>
+        <ion-icon name="checkbox" color="primary" slot="end"></ion-icon>
+      </ion-item>
+    </ion-list>
+
+
+    <ion-item  lines="inset" class="">
+      <ion-label position="floating">
+        <ion-icon name="body-outline"></ion-icon>
+        Activity Name
+      </ion-label>
+      <ion-input type="text" debounce="300" [(ngModel)]="newTask.taskName" color="medium"
+      (ionChange)="onSearchActivity()"></ion-input>
+    </ion-item>
+
+    <ion-list>
+      <ion-radio-group [(ngModel)]="newTask.activity" *ngIf="!newTask.activity.name && newTask.taskName.length >=3">
+        <ion-list-header  class="ion-no-padding">
+          <ion-segment mode="ios" [value]="searchModeActivity" (ionChange)="activitySearchOptionsChanged($event)" color="primary">
+            <ion-segment-button value="all">
+              <ion-label>Match all keywords</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="any">
+              <ion-label>Match any keyword</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+        </ion-list-header>
+        <ion-item *ngFor="let act of searchedactivities;">
+          <ion-label>{{act.name}}</ion-label>
+          <ion-radio [value]="act"></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+      <ion-item *ngIf="newTask.activity.name">
+        <ion-label>{{newTask.activity.name}}</ion-label>
+        <ion-icon name="checkbox" color="primary" slot="end"></ion-icon>
+      </ion-item>
+    </ion-list>
+    <ion-item  lines="inset" class="ion-padding-bottom">
+      <ion-label class="label">
+        <ion-icon name="cash"></ion-icon>
+        Hourly Rate ($)
+      </ion-label>
+      <ion-input class="ion-text-end" type="number" placeholder="Hourly rate" [(ngModel)]="newTask.hourlyRate"></ion-input>
+    </ion-item>
+  </ion-col>
+  <ion-col size="12"  size-md="6" class="ion-no-padding">
+    <ion-row>
+      <ion-col size="12" *ngFor="let day of weekDays; let i=index;">
+        <ion-row class="ion-align-items-center">
+          <ion-col>
+            <ion-item class="ion-no-padding ion-no-margin" lines="none">
+              <!-- <ion-label position="stacked" class="ion-padding-start">{{day.medium}}</ion-label>
+              <ion-input type="number" min="0" max="24" class="ion-no-padding ion-no-margin ion-text-center"
+                [(ngModel)]="wdEntry.efforts[day.medium]" (ionChange)="wdEntry.billingAmount[day.medium]=wdEntry.efforts[day.medium]*newTask.hourlyRate"
+                >
+              </ion-input> -->
+              <ion-label class="ion-padding-start ion-align-items-center ion-text-center">
+                <h1><small>{{day.medium}}</small></h1>
+                <p>{{day.weekDate| date : 'd MMM'}}</p>
+              </ion-label>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item class="ion-no-padding ion-no-margin" color="">
+              <ion-label position="stacked" class="ion-padding-start  ion-text-center">Start</ion-label>
+              <ion-datetime displayFormat="HH:mm" class="ion-text-center" [(ngModel)]="day.start" [min]="day.min" [max]="day.finish && day.finish != day.start ? day.finish : day.max" (ionChange)="startFinishChange(i)"
+                >
+              </ion-datetime>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item class="ion-no-padding ion-no-margin" color="">
+              <ion-label position="stacked" class="ion-padding-start ion-text-center">Finish</ion-label>
+              <ion-datetime displayFormat="HH:mm" class="ion-text-center" [(ngModel)]="day.finish" [min]="day.start ? day.start : day.min" [max]="day.max"  (ionChange)="startFinishChange(i)"
+                >
+              </ion-datetime>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item class="ion-no-padding ion-no-margin">
+              <ion-label position="stacked" class="ion-padding-start  ion-text-center">Effort</ion-label>
+              <ion-input type="number" min="0" max="24" class="ion-text-center ion-align-items-baseline"
+                [value]="wdEntry.efforts[day.medium].toFixed(2)" readonly color="primary" readonly
+                >
+              </ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+      <ion-col size="12">
+        <ion-item class="ion-padding-bottom ion-padding-end" lines="none">
+          <ion-button slot="end" fill="clear" color="medium" (click)="clickCancel()">
+            Cancel
+          </ion-button>
+          <ion-button slot="end" (click)="saveData()">
+            {{ wdEntryDataIndex != null ? 'Update' : 'Add' }}
+          </ion-button>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-col>
+</ion-row>

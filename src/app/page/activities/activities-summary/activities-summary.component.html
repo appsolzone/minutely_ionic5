@@ -12,8 +12,34 @@
           <ion-icon name="bicycle" color="green"></ion-icon>
         </ion-avatar>
         <ion-label>
-          <h1>{{avgEffort.toFixed(2)}}<small> hr</small></h1>
+          <h1>{{avgEffort?.toFixed(2)}}<small> hr</small></h1>
           <p>avg effort/day</p>
+        </ion-label>
+      </ion-item>
+    <!-- </ion-card> -->
+  </ion-col>
+  <ion-col>
+    <!-- <ion-card> -->
+      <ion-item  lines="none">
+        <ion-avatar slot="start">
+          <ion-icon name="body" color="green"></ion-icon>
+        </ion-avatar>
+        <ion-label>
+          <h1>{{totalEffort?.toFixed(2)}}<small> hr</small></h1>
+          <p>total effort</p>
+        </ion-label>
+      </ion-item>
+    <!-- </ion-card> -->
+  </ion-col>
+  <ion-col>
+    <!-- <ion-card> -->
+      <ion-item lines="none">
+        <ion-avatar slot="start">
+          <ion-icon name="bookmark" color="green"></ion-icon>
+        </ion-avatar>
+        <ion-label>
+          <h1>{{graphX?.data?.length}}</h1>
+          <p>projects</p>
         </ion-label>
       </ion-item>
     <!-- </ion-card> -->
@@ -32,7 +58,27 @@
     <!-- </ion-card> -->
   </ion-col>
 </ion-row>
-<ion-card>
-  <app-bargraph [graphY]="graphY"></app-bargraph>
-</ion-card>
+<ion-row>
+  <ion-toolbar mode="ios">
+    <ion-segment [value]="graphMode" (ionChange)="graphModeChanged($event)">
+      <!-- (ionChange)="calendarOptionsChanged($event)"> -->
+      <ion-segment-button value="efforts">
+        <ion-label class="ion-padding-start ion-padding-end">View efforts </ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="billing ammounts">
+        <ion-label class="ion-padding-start ion-padding-end">View billing amounts </ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+  <ion-col size="12" [sizeMd]="fullWidth ? '6' : '12'">
+    <ion-toolbar>
+      <app-bargraph [graphX]="graphX"></app-bargraph>
+    </ion-toolbar>
+  </ion-col>
+  <ion-col size="12" [sizeMd]="fullWidth ? '6' : '12'">
+    <ion-toolbar>
+      <app-bargraph [graphY]="graphY"></app-bargraph>
+    </ion-toolbar>
+  </ion-col>
+</ion-row>
 </ion-card>

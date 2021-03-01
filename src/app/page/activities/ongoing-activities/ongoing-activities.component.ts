@@ -5,6 +5,7 @@ import { Autounsubscribe } from '../../../decorator/autounsubscribe';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { ActivityService } from 'src/app/shared/activity/activity.service';
 import { CalendarService } from 'src/app/shared/calendar/calendar.service';
+import { ComponentsService } from '../../../shared/components/components.service';
 
 @Component({
   selector: 'app-ongoing-activities',
@@ -23,6 +24,7 @@ export class OngoingActivitiesComponent implements OnInit {
   public sec: number = 0;
   public enableEffortEditing: boolean = false;
   public allTasks: any[] = [];
+  public showCreateActivity: boolean = false;
   public newTask: any = {
                           activeTask: [],
                           createTask: false,
@@ -41,6 +43,7 @@ export class OngoingActivitiesComponent implements OnInit {
     private session: SessionService,
     private activity: ActivityService,
     private cal: CalendarService,
+    private common:ComponentsService,
   ) {
     this.sessionSubs$ = this.session.watch().subscribe(value=>{
       // console.log("Session Subscription got", value);
@@ -125,6 +128,8 @@ export class OngoingActivitiesComponent implements OnInit {
                               this.allTasks = allActivities.sort((a,b)=>(a.data.status=='ACTIVE' ? 0 : 1 )-(b.data.status=='ACTIVE' ? 0 : 1 ));
                               this.newTask.activeTask= this.allTasks.filter(t=>t.data.status=='ACTIVE');
 
+                              console.log("this.newTask.activeTask", this.newTask.activeTask, this.allTasks);
+
                               if(this.newTask.activeTask.length > 0){
                                 if(this.timer){
                                   await clearInterval(this.timer);
@@ -148,6 +153,121 @@ export class OngoingActivitiesComponent implements OnInit {
       }
     }
 
+  }
+
+  async actionOnClickActivity(task,idx, event){
+    let title="Confirm";
+    let body = "Are you sure you want to " + event + " the activity '" + task?.data?.project.title + "' ?"
+    let buttons: any[] = [
+                    {
+                      text: 'Dismiss',
+                      role: 'cancel',
+                      cssClass: '',
+                      handler: ()=>{}
+                    },
+                    {
+                      text: 'Continue',
+                      role: '',
+                      cssClass: 'alert-button-selected',
+                      handler: ()=>this.proceedOnClickActivity(task,idx, event)
+                    }
+                  ];
+
+    await this.common.presentAlert(title,body ,buttons);
+  }
+
+  async proceedOnClickActivity(task,idx, event){
+    this.common.showLoader("Processing activity '" + task?.data?.project.title + "'");
+    let actionValidated = true;
+    // let endTime = new Date(data.startTime.seconds*1000 + (this.hour * 60 * 60 + this.minute * 60 + this.sec * 1) * 1000);
+    let endTime = new Date(task.data.startTime.getTime() + (this.hour * 60 * 60 + this.minute * 60 + this.sec * 1) * 1000);
+    // Check if the event is pause/complete
+    actionValidated = await this.validateActivityEffort(task.data, event);
+    if(actionValidated) {
+        this.enableEffortEditing = false;
+        // pick location
+        // await this.checkGPS().then(async () => {
+        // create new activity
+        // get location data
+          let coordinates = await this.session.getCurrentPosition();
+          if(coordinates){
+            task.data.locationComplete = (task.data.status == 'PAUSE' && event=='COMPLETE') ?
+                                    task.data.locationComplete
+                                    : {
+                                        latitude: coordinates.coords.latitude,
+                                        longitude: coordinates.coords.longitude,
+                                        altitude: coordinates.coords.altitude,
+                                        accuracy: coordinates.coords.accuracy,
+                                        altitudeAccuracy: coordinates.coords.altitudeAccuracy,
+                                        heading: coordinates.coords.heading,
+                                        speed: coordinates.coords.speed,
+                                      };
+            task.data.effort = this.hour*1 + this.minute/60;
+            task.data.billingAmount = task.data.effort * task.data.rate;
+            task.data.endTime = new Date(endTime) , //new Date(moment().valueOf() - this.session.admin.timeOffset); // firebase.firestore.FieldValue.serverTimestamp(),
+            await this.activity.logActivitySummary(event, task , this.sessionInfo, null);
+          }
+          // console.log("new end date time", data.startTime, endTime, moment(endTime).format('ll'), new Date(endTime))
+          setTimeout(()=>this.common.hideLoader(),300);
+        // }).catch(err => {
+        //   this.session.user.loader = false;
+        //   this.sfp.defaultAlert("Couldn't get location","When getting location there was some error. please retry.");
+        // })
+    }
+    setTimeout(()=>this.common.hideLoader(),300);
+  }
+
+  actionCancelEditEffort(){
+    if(this.timer){
+      clearInterval(this.timer);
+    }
+    this.timer = setInterval(()=>{this.timeTicking();}, 1000);
+    this.enableEffortEditing = false;
+  }
+
+  async validateActivityEffort(data,event){
+    let actionValidated = true;
+    // Check if the event is pause/complete
+    if(data.status == 'ACTIVE' && ['PAUSE','COMPLETE'].includes(event)){
+      let endTime = new Date(data.startTime.getTime() + (this.hour * 60 * 60 + this.minute * 60 + this.sec * 1) * 1000);
+      // check whether effort corossed 12 hrs or date changed
+      if(this.timer){
+        clearInterval(this.timer);
+      }
+      if(
+        // not same day
+        moment(data.startTime).format('YYYYMMDD') != moment(endTime).format('YYYYMMDD') ||
+        this.hour >= 24
+      ) {
+        this.enableEffortEditing = true;
+        actionValidated = false;
+        let title="Warning";
+        let body = "The effort for the activity either continued across more than 1 day or is more than 24 hr. Please check and amend the effort.";
+        let buttons: any[] = [
+                        {
+                          text: 'Dismiss',
+                          role: 'cancel',
+                          cssClass: '',
+                          handler: ()=>{}
+                        },
+                      ];
+
+        await this.common.presentAlert(title,body ,buttons);
+      }
+    }
+    return actionValidated;
+  }
+
+  startNewActivity(){
+    this.showCreateActivity = !this.showCreateActivity;
+  }
+
+  gotoTimeSheet(){
+    this.router.navigate(['/timesheet/fill-timesheet']);
+  }
+
+  toSearchActivity(task){
+    // TBA
   }
 
 }

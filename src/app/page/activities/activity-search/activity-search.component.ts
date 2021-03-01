@@ -167,4 +167,8 @@ export class ActivitySearchComponent implements OnInit {
 
   }
 
+  toSearchActivity(data){
+    // TBA
+  }
+
 }

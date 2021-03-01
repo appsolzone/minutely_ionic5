@@ -10,13 +10,15 @@ import { ActivitiesPage } from './activities.page';
 
 import { CalendarModule } from 'ion2-calendar';
 
-import { ActivitySearchComponent } from './activity-search/activity-search.component';
+import { ActivitySearchModule } from './activity-search/activity-search.module';
 
 import { OngoingActivitiesComponent } from './ongoing-activities/ongoing-activities.component';
 
-import { ActivitiesSummaryComponent } from './activities-summary/activities-summary.component';
+import { ActivitiesSummaryModule } from './activities-summary/activities-summary.module';
 
-import { BargraphComponent } from '../bargraph/bargraph.component';
+import { StartActivityComponent } from './start-activity/start-activity.component';
+
+
 
 @NgModule({
   imports: [
@@ -25,13 +27,13 @@ import { BargraphComponent } from '../bargraph/bargraph.component';
     IonicModule,
     ActivitiesPageRoutingModule,
     CalendarModule,
+    ActivitySearchModule,
+    ActivitiesSummaryModule
   ],
   declarations: [
     ActivitiesPage,
     OngoingActivitiesComponent,
-    ActivitiesSummaryComponent,
-    ActivitySearchComponent,
-    BargraphComponent
+    StartActivityComponent,
   ]
 })
 export class ActivitiesPageModule {}

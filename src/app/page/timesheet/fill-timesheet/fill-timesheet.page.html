@@ -1,0 +1,128 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/timesheet"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Fill timesheet</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row class="wave-background">
+    <ion-col size="12" size-md="6">
+      <ion-toolbar>
+        <!-- <ion-card-header> -->
+          <ion-item lines="inset">
+            <ion-label>
+              <h1>Select the week</h1>
+            </ion-label>
+          </ion-item>
+        <!-- </ion-card-header> -->
+        <ion-card-content>
+          <p>
+            Please select the week to view, edit and submit timesheet.
+          </p>
+          <p>
+            View existing entries.
+          </p>
+          <p>
+            Add new activities as required.
+          </p>
+          <p>
+            Review and submit timesheet.
+          </p>
+        </ion-card-content>
+      </ion-toolbar>
+    </ion-col>
+    <ion-col size="12" size-md="6">
+      <!-- <ion-card> -->
+        <ion-calendar
+          [options]="options.calendarOptions"
+          (select)="onSelect($event)"
+          >
+        </ion-calendar>
+      <!-- </ion-card> -->
+    </ion-col>
+    <ion-col size="12" class="ion-no-padding">
+      <ion-toolbar color="light" class="ion-padding-start">
+        <ion-label *ngIf="dateRange.startDate">Timesheet entries for the week {{dateRange.startDate| date : 'd'}} to {{dateRange.endDate| date : 'mediumDate'}}</ion-label>
+        <ion-label *ngIf="!dateRange.startDate">Select the week for timesheet entries</ion-label>
+      </ion-toolbar>
+      <ion-row *ngFor="let ts of timeSheetData" class="ion-align-items-center">
+        <ion-col size="12" size-md="6">
+          <ion-item lines="none" color="">
+            <ion-icon name="accessibility-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h2>{{ts.project.title}}</h2>
+              <p>{{ts.activity.name}}</p>
+            </ion-label>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12"  size-md="6" class="ion-no-padding">
+          <ion-row>
+            <ion-col *ngFor="let day of weekDays; let i=index;">
+              <ion-item class="ion-no-padding ion-no-margin" color="">
+                <ion-label position="stacked" class="ion-padding-start">{{day.short}}</ion-label>
+                <ion-input type="number" min="0" max="24" class="ion-no-padding ion-no-margin ion-text-center"
+                  [value]="ts.efforts[day.medium]?.toFixed(1)" readonly [color]="ts.efforts[day.medium]==0 ? 'medium' : ''"
+                  >
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngFor="let nts of newTimeSheetData; let t=index;" class="ion-align-items-center">
+        <ion-col size="12" size-md="6">
+          <ion-item lines="none" color="">
+            <ion-icon name="accessibility" slot="start" color="primary"></ion-icon>
+            <ion-label>
+              <h2><ion-text color="primary">{{nts.project.title}}</ion-text></h2>
+              <p><ion-text color="primary">{{nts.activity.name}}</ion-text></p>
+            </ion-label>
+            <ion-buttons slot="end">
+              <ion-button slot="icon-only" color="tertiary" (click)="editActivity(nts, t)"><ion-icon name="create-outline"></ion-icon></ion-button>
+              <ion-button slot="icon-only" color="danger" (click)="removeActivity(t)"><ion-icon name="trash-outline"></ion-icon></ion-button>
+            </ion-buttons>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12"  size-md="6" class="ion-no-padding">
+          <ion-row>
+            <ion-col *ngFor="let day of weekDays; let i=index;">
+              <ion-item class="ion-no-padding ion-no-margin" color="">
+                <ion-label position="stacked" class="ion-padding-start" color="primary">{{day.short}}</ion-label>
+                <ion-input type="number" min="0" max="24" class="ion-no-padding ion-no-margin ion-text-center"
+                  [value]="nts.efforts[day.medium].toFixed(1)" color="primary" readonly="true"
+                  >
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-align-items-center" *ngIf="!addNewActivity && dateRange.startDate">
+        <ion-col size="12" size-md="6">
+          <ion-item button="true" lines="none" color="" (click)="addNewActivityData()" detail="false">
+            <ion-icon name="add-circle-outline" slot="start" color="primary"></ion-icon>
+            <ion-label>
+              <h2><ion-text color="primary">Add new activity</ion-text></h2>
+            </ion-label>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12" size-md="6" *ngIf="newTimeSheetData.length>0">
+          <ion-item lines="none" color="">
+            <ion-button slot="end" color="green" (click)="saveTimesheet()">Save timesheet</ion-button>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <app-new-timesheet-entry *ngIf="addNewActivity"
+        [sessionInfo]="sessionInfo"
+        [dateRange]="dateRange"
+        [wdEntryData]="wdEntryData"
+        [wdEntryDataIndex]="wdEntryDataIndex"
+        [newTimeSheetData]="newTimeSheetData"
+        [addNewActivityData]="addNewActivityData.bind(this)">
+      </app-new-timesheet-entry>
+    </ion-col>
+  </ion-row>
+</ion-content>

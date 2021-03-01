@@ -1,16 +1,5 @@
-<!-- <ion-header>
-  <ion-toolbar>
-    <ion-title>activities</ion-title>
-  </ion-toolbar>
-</ion-header> -->
-
-<ion-content>
-  <ion-toolbar color="warning" class="ion-padding-end">
-    <ion-buttons slot="start" class="ion-hide-md-up">
-      <ion-button routerDirection="forward" (click)="openSearchActivities()">
-        <ion-icon slot="icon-only" name="search"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+<ion-header class="ion-hide-md-down">
+  <ion-toolbar class="ion-padding-end">
     <ion-buttons slot="end" class="ion-hide-md-down ion-padding-end ion-margin-end">
       <ion-button *ngIf="!showActivitySearch" (click)="showActivitySearch=!showActivitySearch">
         <ion-icon slot="icon-only" name="search"></ion-icon>
@@ -21,20 +10,33 @@
     </ion-buttons>
     <ion-title>Activities</ion-title>
   </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-header class="ion-hide-md-up">
+  <ion-toolbar>
+    <ion-buttons slot="start" class="ion-hide-md-up">
+      <ion-button routerDirection="forward" (click)="openSearchActivities()">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Activities</ion-title>
+  </ion-toolbar>
+</ion-header>
   <ion-row>
-    <ion-col class="wave-background">
+    <ion-col [size]="showActivitySearch ? '6' : '12'" class="wave-background">
       <ion-row>
-        <ion-col>
+        <ion-col size="12" [sizeMd]="showActivitySearch ? '12' : '6'">
           <app-ongoing-activities>
           </app-ongoing-activities>
         </ion-col>
-        <ion-col>
+        <ion-col size="12" [sizeMd]="showActivitySearch ? '12' : '6'">
           <app-activities-summary>
           </app-activities-summary>
         </ion-col>
       </ion-row>
     </ion-col>
-    <ion-col size="12" size-md="6" *ngIf="showActivitySearch">
+    <ion-col size="6" *ngIf="showActivitySearch">
       <app-activity-search></app-activity-search>
     </ion-col>
   </ion-row>

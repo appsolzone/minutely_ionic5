@@ -4,13 +4,12 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { CalendarModule } from 'ion2-calendar';
 
 import { ActivitySearchMobilePageRoutingModule } from './activity-search-mobile-routing.module';
 
 import { ActivitySearchMobilePage } from './activity-search-mobile.page';
 
-import { ActivitySearchComponent } from '../activity-search/activity-search.component';
+import { ActivitySearchModule } from '../activity-search/activity-search.module';
 
 @NgModule({
   imports: [
@@ -18,11 +17,10 @@ import { ActivitySearchComponent } from '../activity-search/activity-search.comp
     FormsModule,
     IonicModule,
     ActivitySearchMobilePageRoutingModule,
-    CalendarModule,
+    ActivitySearchModule,
   ],
   declarations: [
     ActivitySearchMobilePage,
-    ActivitySearchComponent
   ]
 })
 export class ActivitySearchMobilePageModule {}

@@ -178,7 +178,7 @@ export class SessionService {
       // console.log('Current', coordinates);
       return coordinates;
     } catch(error){
-      this.componentService.presentAlert("Error","Please note that location can not be determined. Check location service is on and permission is given to the app from settings.");
+      // this.componentService.presentAlert("Error","Please note that location can not be determined. Check location service is on and permission is given to the app from settings.");
       return undefined;
     }
 

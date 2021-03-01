@@ -4,22 +4,22 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { NotificationPageRoutingModule } from './notification-routing.module';
+import { BargraphModule } from '../../bargraph/bargraph.module';
 
-import { NotificationPage } from './notification.page';
-
-import { BargraphModule } from '../bargraph/bargraph.module';
+import { ActivitiesSummaryComponent } from './activities-summary.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    NotificationPageRoutingModule,
     BargraphModule,
   ],
   declarations: [
-    NotificationPage,
+    ActivitiesSummaryComponent
+  ],
+  exports: [
+    ActivitiesSummaryComponent,
   ]
 })
-export class NotificationPageModule {}
+export class ActivitiesSummaryModule {}

@@ -27,7 +27,7 @@
         <ion-label>Multiple Dates</ion-label>
       </ion-segment-button> -->
       <ion-segment-button value="any">
-        <ion-label>Match any search keywords</ion-label>
+        <ion-label>Match any search keyword</ion-label>
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
@@ -41,10 +41,28 @@
     >
   </ion-calendar>
   <ion-col>
+  <ion-toolbar *ngIf="!allDates || allDates?.length==0">
+    <ion-item>
+      <ion-label>
+        <h1>Search activities</h1>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label class="ion-text-wrap">
+        <p>To search activities by date, select <b>a date</b> or <b>a date range</b>.</p>
+        <p>To search activities by <b>keywords</b>, enter one or more keywords.
+        Widen the search results by choosing <b>match any keyword</b> option.</p>
+      </ion-label>
+    </ion-item>
+  </ion-toolbar>
   <ion-list *ngFor="let data of allDates; let i = index">
-    <ion-item-divider color="dark" detail-push>
-      <ion-label>{{data}}</ion-label>
-    </ion-item-divider>
+    <ion-header mode="ios">
+      <ion-toolbar color="light">
+        <ion-item color="transparent" lines="none">
+          <ion-label>{{data}}</ion-label>
+        </ion-item>
+      </ion-toolbar>
+    </ion-header>
     <ion-item *ngFor="let details of viewResult[data]">
       <ion-label>
         <!-- <ion-row> -->
