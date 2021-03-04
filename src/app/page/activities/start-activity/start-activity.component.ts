@@ -116,7 +116,7 @@ export class StartActivityComponent implements OnInit {
           let activityObj = {
               project: this.newTask.taskProject.projectId ? {projectId: this.newTask.taskProject.projectId, title: this.newTask.taskProject.title} : {title: this.newTask.searchTitle},
               activityId: this.newTask.activity.activityId ? this.newTask.activity.activityId : null,
-              name: this.newTask.taskName,
+              name: this.newTask.activity.name ? this.newTask.activity.name : this.newTask.taskName,
               rate: this.newTask.hourlyRate*1, //forcing the number data type here
               locationStart: locationStart,
               locationComplete: {},

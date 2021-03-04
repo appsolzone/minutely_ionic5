@@ -32,6 +32,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/timesheet/timesheet/timesheet.module').then( m => m.TimesheetPageModule)
       },
       {
+        path: 'projects',
+        loadChildren: () => import('../page/projects/projects.module').then( m => m.ProjectsPageModule)
+      },
+      {
         path: '',
         redirectTo: 'profile',
         pathMatch: 'full'
