@@ -29,7 +29,7 @@
                 </ion-chip>
                 <ion-chip color="primary">
                   <ion-icon name="calendar"></ion-icon>
-                  <ion-label>{{selectedProject?.data?.closureDate ? (project.data.closureDate | date : 'mediumDate') : 'Ongoing'}}</ion-label>
+                  <ion-label>{{selectedProject?.data?.closureDate ? (selectedProject.data.closureDate | date : 'mediumDate') : 'Ongoing'}}</ion-label>
                 </ion-chip>
               </ion-label>
             </ion-item>
