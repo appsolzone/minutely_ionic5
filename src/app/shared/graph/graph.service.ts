@@ -49,12 +49,12 @@ export class GraphService {
     if(summeries){
       let efforts = summeries && summeries.details ? Object.keys(summeries.details).map(d=>summeries.details[d].effort) : [];
       graphY.maxValue = efforts.length > 0 ? Math.max(...efforts) : 1;
-      graphY.maxValue = graphY.maxValue.toFixed(1)*1;
+      graphY.maxValue = Math.ceil(graphY.maxValue.toFixed(1)*1);
       graphX.maxValue = effort!=0 ? effort : 1;
       // now get the billable amounts
       let bills$ = summeries && summeries.details ? Object.keys(summeries.details).map(d=>summeries.details[d].billingAmount) : [];
       graphY$.maxValue = bills$.length > 0 ? Math.max(...bills$) : 1;
-      graphY$.maxValue = graphY$.maxValue.toFixed(1)*1;
+      graphY$.maxValue = Math.ceil(graphY$.maxValue.toFixed(1)*1);
       graphX$.maxValue = billingAmount!=0 ? billingAmount : 1;
 
       let startDate = moment(selectedMonth).startOf('month');
@@ -172,12 +172,12 @@ export class GraphService {
     // Graph:{graphXEffort, graphXCost, graphYEffort, graphYCost}
 
     let graph: any = {
-          graphY: { ...this.graphY, data: [], icon: 'stats-chart', title: 'Monthly efforts for the project', },
-          graphX: { ...this.graphX, data: [], icon: 'body', title: 'Efforts for project activities', },
-          graphY$: { ...this.graphY, data: [], icon: 'stats-chart', title: 'Monthly billing amounts for the project', },
-          graphX$: { ...this.graphX, data: [], icon: 'body', title: 'Project costs for the activities', },
-          graphCombinedX: { ...this.graphX, data: [], icon: 'body', title: 'Yearly efforts for project activities', },
-          graphCombinedX$: { ...this.graphX, data: [], icon: 'body', title: 'Yearly cost for the project', },
+          graphY: { ...this.graphY, data: [], icon: 'stats-chart', title: 'Monthly efforts for the project (in hr)', },
+          graphX: { ...this.graphX, data: [], icon: 'body', title: 'Efforts for project activities (in hr)', },
+          graphY$: { ...this.graphY, data: [], icon: 'stats-chart', title: 'Monthly billing amounts for the project (in $)', },
+          graphX$: { ...this.graphX, data: [], icon: 'body', title: 'Project costs for the activities (in $)', },
+          graphCombinedX: { ...this.graphX, data: [], icon: 'body', title: 'Yearly efforts for project activities (in hr)', },
+          graphCombinedX$: { ...this.graphX, data: [], icon: 'body', title: 'Yearly cost for the project (in $)', },
         };
     // Lets get the max values
     let efforts = [];
@@ -206,11 +206,11 @@ export class GraphService {
                   }
                 });
     graph.graphY.maxValue = efforts.length > 0 ? Math.max(...efforts) : 1;
-    graph.graphY.maxValue = graph.graphY.maxValue.toFixed(1)*1;
+    graph.graphY.maxValue = Math.ceil(graph.graphY.maxValue.toFixed(1)*1);
     graph.graphX.maxValue = Object.keys(combinedX).length > 0 ? Math.max(...Object.keys(combinedX).map(e=>combinedX[e])) : 1;
     // now get the billable amounts
     graph.graphY$.maxValue = bills$.length > 0 ? Math.max(...bills$) : 1;
-    graph.graphY$.maxValue = graph.graphY$.maxValue.toFixed(1)*1;
+    graph.graphY$.maxValue = Math.ceil(graph.graphY$.maxValue.toFixed(1)*1);
     graph.graphX$.maxValue = Object.keys(combinedX$).length > 0 ? Math.max(...Object.keys(combinedX$).map(e=>combinedX$[e])) : 1;
 
     graph.graphY.xAxisFrequency = years.length == 1 ? 3 : years.length <= 3 ? 6 : 12; //Math.floor(this.graphY.data.length/4);
@@ -343,14 +343,16 @@ export class GraphService {
         if(summeries.months[month]){
           let activity = summeries.months[month];
           dataObj = {
-            label: moment(startDate).format('MM'),
+            label: moment(startDate).format('MMM'),
+            month: moment(startDate).format('MM'),
             labelValue: '',
             stack: []
           };
           let cumTotalheight = 0;
           // billing amount related values
           dataObj$ = {
-            label: moment(startDate).format('MM'),
+            label: moment(startDate).format('MMM'),
+            month: moment(startDate).format('MM'),
             labelValue: '',
             stack: []
           };
@@ -368,13 +370,15 @@ export class GraphService {
           combinedXdataObj$.labelValue += (activity.billingAmount);
         } else {
           dataObj = {
-            label: moment(startDate).format('MM'),
+            label: moment(startDate).format('MMM'),
+            month: moment(startDate).format('MM'),
             lavelValue: '',
             stack: [{cssClass: yearstackCssClass, height: 0}]
           }
           // billing amount
           dataObj$ = {
-            label: moment(startDate).format('MM'),
+            label: moment(startDate).format('MMM'),
+            month: moment(startDate).format('MM'),
             lavelValue: '',
             stack: [{cssClass: yearstackCssClass, height: 0}]
           }

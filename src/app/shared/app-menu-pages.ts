@@ -24,7 +24,7 @@ export const appPages = [
     disabled: true,
   },
   {
-    title: 'Project',
+    title: 'Projects',
     url: 'projects',
     icon: 'bookmark',
     tab: 'projects',
@@ -50,7 +50,7 @@ export const appPages = [
     disabled: false,
   },
   {
-    title: 'Ntification',
+    title: 'Alerts',
     url: 'notification',
     icon: 'notifications',
     tab: 'notification',

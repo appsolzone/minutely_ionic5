@@ -119,8 +119,8 @@ export class ActivitiesSummaryComponent implements OnInit {
     this.graphMode = e.detail.value;
     let lgraphX = this.graphMode=='efforts' ? this.graphData.graphX : this.graphData.graphX$;
     let lgraphY = this.graphMode=='efforts' ? this.graphData.graphY : this.graphData.graphY$;
-    this.graphX = { ...lgraphX, icon: 'bookmark-outline', title: 'Project ' + this.graphMode + ' for ' + moment(this.selectedMonth).format('MMM, YYYY')};
-    this.graphY = { ...lgraphY, icon: 'stats-chart', title: 'Daily ' + this.graphMode + ' for ' + moment(this.selectedMonth).format('MMM, YYYY'), xAxisFrequency: 7};
+    this.graphX = { ...lgraphX, icon: 'bookmark-outline', title: 'Project ' + this.graphMode + ' for ' + moment(this.selectedMonth).format('MMM, YYYY') + (this.graphMode=='efforts' ? ' (in hr)' : ' (in $)')};
+    this.graphY = { ...lgraphY, icon: 'stats-chart', title: 'Daily ' + this.graphMode + ' for ' + moment(this.selectedMonth).format('MMM, YYYY')  + (this.graphMode=='efforts' ? ' (in hr)' : ' (in $)'), xAxisFrequency: 7};
   }
 
 }

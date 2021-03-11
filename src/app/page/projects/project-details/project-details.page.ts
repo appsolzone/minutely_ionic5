@@ -64,9 +64,9 @@ export class ProjectDetailsPage implements OnInit {
 
   ionViewWillEnter(){
     let newSelectedProject = window.history.state.project;
-    if(!newSelectedProject){
+    if(!newSelectedProject && !this.selectedProject){
       this.router.navigate(['projects']);
-    } else if(!this.selectedProject || newSelectedProject.projectId != this.selectedProject?.projectId){
+    } else if(!this.selectedProject || newSelectedProject?.projectId != this.selectedProject?.projectId){
       this.selectedProject = newSelectedProject;
       this.getProject();
     }

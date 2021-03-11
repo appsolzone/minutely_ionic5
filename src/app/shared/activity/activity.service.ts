@@ -241,15 +241,51 @@ export class ActivityService {
       let month = moment(startTime).format('MM');
       let docId = subscriberId+uid+yearMonth;
       // console.log("docId", docId, startTime, yearMonth, day);
-      let userSumRef = this.db.afs.collection(this.db.allCollections.userSummary).doc(docId).ref;
+      let userSumRef = await this.db.afs.collection(this.db.allCollections.userSummary).doc(docId).ref;
+
+      let projectsRef = await this.db.afs.collection(this.db.allCollections.projects).doc(subscriberId+activity.project.projectId).ref;
 
       let projectYearlySummary = await this.db.afs.collection(this.db.allCollections.projectSummary).doc(subscriberId+"_"+activity.project.projectId+"_"+year).ref;
       return this.db.afs.firestore.runTransaction((transaction)=>{
         // This code may get re-run multiple times if there are conflicts.
-        return transaction.get(userSumRef).then(async (sfDoc)=>{
-          let userSummary = sfDoc.data();
+        return transaction.get(projectYearlySummary).then(async (sfDoc)=>{
 
-          if(!sfDoc.exists){
+          // project summary
+          // ! get the item information
+          // console.log(activity);
+
+          let projectSummary = sfDoc.data();
+          if(!projectSummary){
+            projectSummary = {
+              subscriberId: subscriberId,
+              projectId: activity.project.projectId, // need to check here
+              title: activity.project.title, // need to check here
+              year: year, //moment().format("YYYY"),
+              effort: 0,
+              billingAmount: 0,
+              months: {[month]: {effort:0, billingAmount:0}},
+              activities: {[activity.activityId]: {name: activity.name, effort:0, billingAmount: 0}}
+            };
+          } else{
+            if(!projectSummary.months[month]){
+              projectSummary.months[month] = {effort:0, billingAmount:0};
+            }
+            if(!projectSummary.activities[activity.activityId]){
+              projectSummary.activities[activity.activityId] = {name: activity.name, effort:0, billingAmount: 0};
+            }
+
+          }
+          projectSummary.billingAmount += activity.billingAmount;
+          projectSummary.effort += activity.effort;
+          projectSummary.months[month].billingAmount += activity.billingAmount;
+          projectSummary.months[month].effort += activity.effort;
+          projectSummary.activities[activity.activityId].billingAmount += activity.billingAmount;
+          projectSummary.activities[activity.activityId].effort += activity.effort;
+
+          const smDoc = await transaction.get(userSumRef);
+          let userSummary = smDoc.data();
+
+          if(!smDoc.exists){
             // no document exist so initialise one here
             userSummary = {subscriberId, uid, name, picUrl,yearMonth,year,month,
                                effort:0, billingAmount:0,
@@ -287,38 +323,11 @@ export class ActivityService {
             Object.assign(userSummary.details[day],activityObj)
           }
 
-          // project summary
-          // ! get the item information
-          // console.log(activity);
-          const smDoc = await transaction.get(projectYearlySummary);
-
-          let projectSummary = smDoc.data();
-          if(!projectSummary){
-            projectSummary = {
-              subscriberId: subscriberId,
-              projectId: activity.project.projectId, // need to check here
-              title: activity.project.title, // need to check here
-              year: year, //moment().format("YYYY"),
-              effort: 0,
-              billingAmount: 0,
-              months: {[month]: {effort:0, billingAmount:0}},
-              activities: {[activity.activityId]: {name: activity.name, effort:0, billingAmount: 0}}
-            };
-          } else{
-            if(!projectSummary.months[month]){
-              projectSummary.months[month] = {effort:0, billingAmount:0};
-            }
-            if(!projectSummary.activities[activity.activityId]){
-              projectSummary.activities[activity.activityId] = {name: activity.name, effort:0, billingAmount: 0};
-            }
-
-          }
-          projectSummary.billingAmount += activity.billingAmount;
-          projectSummary.effort += activity.effort;
-          projectSummary.months[month].billingAmount += activity.billingAmount;
-          projectSummary.months[month].effort += activity.effort;
-          projectSummary.activities[activity.activityId].billingAmount += activity.billingAmount;
-          projectSummary.activities[activity.activityId].effort += activity.effort;
+          const prjDoc = await transaction.get(projectsRef);
+          let projectData = prjDoc.data();
+          // projectData effort is zero if the billing is zero, which means its non billable effort - ON HOLD
+          projectData.totalEffort += activity.effort; //(activity.billingAmount==0 ? 0 : activity.effort);
+          projectData.totalBillableAmount +=activity.billingAmount;
 
 
           let actRef = id ?
@@ -331,6 +340,8 @@ export class ActivityService {
 
           // now set the augmented user summary data
           transaction.set(userSumRef,userSummary,{merge: true});
+          // now set the augmented projects actual data
+          transaction.set(projectsRef,projectData,{merge: true});
           // set yearly project summary
           transaction.set(projectYearlySummary,projectSummary,{merge: true});
         });

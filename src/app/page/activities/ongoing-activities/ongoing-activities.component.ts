@@ -157,7 +157,7 @@ export class OngoingActivitiesComponent implements OnInit {
 
   async actionOnClickActivity(task,idx, event){
     let title="Confirm";
-    let body = "Are you sure you want to " + event + " the activity '" + task?.data?.project.title + "' ?"
+    let body = "Are you sure you want to " + event + " the activity '" + task?.data?.name + "' ?"
     let buttons: any[] = [
                     {
                       text: 'Dismiss',
@@ -242,7 +242,8 @@ export class OngoingActivitiesComponent implements OnInit {
         this.enableEffortEditing = true;
         actionValidated = false;
         let title="Warning";
-        let body = "The effort for the activity either continued across more than 1 day or is more than 24 hr. Please check and amend the effort.";
+        let body = "The duration of the activity is more than 24 hours or activity end time is beyond 12 midnight of the activity start date time. Please check, amend as required and resubmit. \
+                    NOTE: If the activity spanned beyond 12 midnight, then submit part of it within 12 midnight and create timesheet entry using fill timesheet option for the effort beyond 12 midnight.";
         let buttons: any[] = [
                         {
                           text: 'Dismiss',

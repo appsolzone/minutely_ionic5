@@ -38,8 +38,9 @@ export class SessionService {
     // network status check listener
     this.handler = Network.addListener('networkStatusChange', (status) => {
       // console.log("Network status changed", status);
-      this.patch({networkStatus: status});
-      if(!this.peek().networkStatus.connected){
+      // this.patch({networkStatus: status});
+      // if(!this.peek().networkStatus.connected){
+      if(!status.connected){
         componentService.showLoader("Please check network connection, you are currently offline.");
       } else {
         setTimeout(()=>componentService.hideLoader(),300);
