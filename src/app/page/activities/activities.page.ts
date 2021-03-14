@@ -40,5 +40,8 @@ export class ActivitiesPage implements OnInit {
   openSearchActivities(){
     this.router.navigateByUrl('activities/activity-search');
   }
+  gotoTeamActivities(){
+    this.router.navigateByUrl('activities/team-activities');
+  }
 
 }

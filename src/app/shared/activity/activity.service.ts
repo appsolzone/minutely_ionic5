@@ -228,7 +228,7 @@ export class ActivityService {
       // Cost view:
       let activity = activityObj.data;
       let id = activityObj.id;
-      let {subscriberId, uid, name, picUrl} = sessionInfo.userProfile;
+      let {subscriberId, uid, name, picUrl, email } = sessionInfo.userProfile;
       // if date is from firestore database then it'll have secods,
       // however if its a backdated entry then it will be a javascript date object
       let startTime = activity.startTime.seconds ?
@@ -287,7 +287,7 @@ export class ActivityService {
 
           if(!smDoc.exists){
             // no document exist so initialise one here
-            userSummary = {subscriberId, uid, name, picUrl,yearMonth,year,month,
+            userSummary = {subscriberId, uid, name, picUrl, email, yearMonth,year,month,
                                effort:0, billingAmount:0,
                                projects:{}, activities:{},
                                details:{[day]:{effort:0, billingAmount: 0}}
@@ -295,8 +295,21 @@ export class ActivityService {
           };
           userSummary.effort +=activity.effort;
           userSummary.billingAmount +=activity.billingAmount;
-          Object.assign(userSummary.projects,{[activity.project.projectId]:true});
-          Object.assign(userSummary.activities,{[activity.activityId]:true});
+          if(userSummary.projects[activity.project.projectId]?.effort){
+            userSummary.projects[activity.project.projectId].effort +=activity.effort;
+            userSummary.projects[activity.project.projectId].billingAmount +=activity.billingAmount;
+          } else {
+            let projectObj = {worked:true, effort: activity.effort, billingAmount: activity.billingAmount, title: activity.project.title}
+            Object.assign(userSummary.projects,{[activity.project.projectId]: projectObj});
+          }
+          if(userSummary.activities[activity.activityId]?.effort){
+            userSummary.activities[activity.activityId].effort +=activity.effort;
+            userSummary.activities[activity.activityId].billingAmount +=activity.billingAmount;
+          } else {
+            let activityObj = {worked:true, effort: activity.effort, billingAmount: activity.billingAmount, name: activity.name, title: activity.project.title}
+            Object.assign(userSummary.activities,{[activity.activityId]: activityObj});
+          }
+
 
           // Now check if the day already added, if not then initialise day
           if(!userSummary.details[day]){

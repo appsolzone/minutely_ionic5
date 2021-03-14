@@ -162,6 +162,129 @@ export class GraphService {
 
   }
 
+  processTeamViewUserSummary(allSummeriesArray,viewMode='monthly', startPeriod=null, endPeriod=null){
+    let colorStack = [...this.colorStack];
+    let userList = {};
+    let summeriesArray = [];
+    console.log("summeriesArray viewMode",viewMode, startPeriod, endPeriod)
+    if(!startPeriod || !endPeriod){
+      summeriesArray = allSummeriesArray;
+    } else {
+      if(viewMode=='monthly'){
+        let startMonth = moment(startPeriod).format('YYYYMM');
+        let endMonth = moment(endPeriod).format('YYYYMM');
+        summeriesArray = allSummeriesArray.filter(as=>as.data.yearMonth>=startMonth && as.data.yearMonth<=endMonth);
+        console.log("summeriesArray",startMonth,endMonth,summeriesArray)
+      } else {
+        let startMonth = moment(startPeriod).startOf('isoWeek').format('YYYYMM');
+        let endMonth = moment(startPeriod).endOf('isoWeek').format('YYYYMM');
+        let startOfWeek = moment(startPeriod).startOf('isoWeek').format('YYYYMMDD');
+        let endOfWeek = moment(startPeriod).endOf('isoWeek').format('YYYYMMDD');
+        let monthlySummeriesArray = allSummeriesArray.filter(as=>as.data.yearMonth>=startMonth && as.data.yearMonth<=endMonth);
+        summeriesArray = [];
+        console.log("monthlySummeriesArray",startMonth,endMonth,startOfWeek,endOfWeek,monthlySummeriesArray)
+        monthlySummeriesArray.forEach(sa=>{
+          // usersummary data model
+          // activities {map}
+          // projects {map}
+          // details { map of date}
+          let weeklySa = {id: sa.id, data: { ...sa.data, effort:0, billingAmount: 0, details: {}, activities: {}, projects: {}} };
+          Object.keys(sa.data.details).forEach(d=>{
+            if(d >= startOfWeek && d<=endOfWeek){
+              let dAct = sa.data.details[d];
+              weeklySa.data.details[d]=dAct;
+              weeklySa.data.effort += dAct.effort;
+              weeklySa.data.billingAmount += dAct.billingAmount;
+              Object.keys(dAct).forEach(act=>{
+                if(dAct[act].project){
+                  // console.log("debug", dAct, act, dAct[act].project, d);
+                  if(weeklySa.data.projects[dAct[act].project.projectId]){
+                    weeklySa.data.projects[dAct[act].project.projectId].effort += dAct[act].effort;
+                    weeklySa.data.projects[dAct[act].project.projectId].billingAmount += dAct[act].billingAmount;
+                  } else {
+                    weeklySa.data.projects[dAct[act].project.projectId] = { worked: true, title: dAct[act].project.title, effort : dAct[act].effort, billingAmount: dAct[act].billingAmount };
+                  }
+                  if(weeklySa.data.activities[act]){
+                    weeklySa.data.activities[act].effort += dAct[act].effort;
+                    weeklySa.data.activities[act].billingAmount += dAct[act].billingAmount;
+                  } else {
+                    weeklySa.data.activities[act] = { worked: true, title: dAct[act].project.title, name: dAct[act].name, effort : dAct[act].effort, billingAmount: dAct[act].billingAmount };
+                  }
+                }
+
+              });
+
+            }
+          });
+          console.log("weeklysa", weeklySa);
+          let projectList = Object.keys(weeklySa.data.projects);
+          let activityList = Object.keys(weeklySa.data.activities);
+          let monthMedium = moment('2021-'+weeklySa.data.month+'-01').format('MMM');
+          let year = weeklySa.data.yearMonth.substr(0,4);
+          summeriesArray.push({...weeklySa, projectList, activityList, monthMedium, year});
+        });
+      }
+    }
+
+
+    let graphX: any={ ...this.graphX, data: [], icon: 'body', title: 'Efforts by team members (in hr)',  };
+    let graphX$: any={ ...this.graphX, data: [], icon: 'body', title: 'Billable amounts per team member (in $)', };
+    summeriesArray.forEach(sa=>{
+      let stackCssClass = 'primary';
+      if(userList[sa.data.uid]){
+        stackCssClass = userList[sa.data.uid];
+      } else {
+        stackCssClass = colorStack[(Object.keys(userList).length+1)%colorStack.length - 1];
+        userList[sa.data.uid] = stackCssClass;
+      }
+      // now create graphX stack
+      let uidIdx = graphX.data.findIndex(p=>p.uid==sa.data.uid);
+      if(uidIdx==-1){
+        // create new entry
+        let newUserObj = {
+          uid: sa.data.uid,
+          label: sa.data.name,
+          value: sa.data.effort,
+          labelValue: this.getRepresentabletext(sa.data.effort,'efforts'), //.toFixed(2) + ' hr',
+          stack: [{cssClass: stackCssClass, width: 0}]
+        };
+        graphX.data.push({...newUserObj})
+        // billing amount entries
+        let newUserObj$ = {
+          uid: sa.data.uid,
+          label: sa.data.name,
+          value: sa.data.billingAmount,
+          labelValue: this.getRepresentabletext(sa.data.billingAmount,'billingAmount'), //'$ ' + activity.billingAmount.toFixed(2),
+          stack: [{cssClass: stackCssClass, width: 0}]
+        };
+        graphX$.data.push({...newUserObj$})
+      } else {
+        graphX.data[uidIdx].value = (sa.data.effort + graphX.data[uidIdx].value * 1); //.toFixed(2);
+        graphX.data[uidIdx].labelValue = this.getRepresentabletext(graphX.data[uidIdx].value,'efforts');
+        // graphX.data[uidIdx].stack[0].width = (graphX.data[actIdx].value*100/graphX.maxValue);
+        // billing amount entries
+        graphX$.data[uidIdx].value = (sa.data.billingAmount + graphX$.data[uidIdx].value * 1); //.toFixed(2);
+        graphX$.data[uidIdx].labelValue = this.getRepresentabletext(graphX$.data[uidIdx].value,'billingAmount');
+        // graphX$.data[uidIdx].stack[0].width = (graphX$.data[actIdx].value*100/graphX$.maxValue);
+      }
+
+    });
+    let efforts = graphX.data.map(d=>d.value);
+    graphX.maxValue = Math.max(...efforts);
+    graphX.maxValue = graphX.maxValue==0 ? 1 : graphX.maxValue;
+    let billingAmount = graphX$.data.map(d=>d.value);
+    graphX$.maxValue = Math.max(...billingAmount);
+    graphX$.maxValue = graphX$.maxValue == 0 ? 1 : graphX$.maxValue;
+
+    graphX.data.forEach((gd,i)=>{
+      gd.stack[0].width = (gd.value*100/graphX.maxValue);
+      graphX$.data[i].stack[0].width = (graphX$.data[i].value*100/graphX$.maxValue);
+    })
+
+    return { summeriesArray, graphX, graphX$ };
+
+  }
+
   createProjectSummaryGraph(summeriesArray, years){
     // summeriesArray is an array with the follwoing structure
     // activities: A1:{billingAmount, effort, name}, A2:{billingAmount, effort, name}

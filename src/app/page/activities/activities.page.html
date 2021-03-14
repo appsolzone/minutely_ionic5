@@ -1,7 +1,7 @@
 <ion-header class="ion-hide-md-down">
   <ion-toolbar class="ion-padding-end">
     <ion-buttons slot="end" class="ion-hide-md-down ion-padding-end ion-margin-end">
-      <ion-button routerDirection="forward" (click)="openSearchActivities()">
+      <ion-button routerDirection="forward" (click)="gotoTeamActivities()">
         <ion-icon slot="icon-only" name="people-circle"></ion-icon>
       </ion-button>
       <ion-button *ngIf="!showActivitySearch" (click)="showActivitySearch=!showActivitySearch">
@@ -17,9 +17,20 @@
 
 <ion-content>
   <ion-header class="ion-hide-md-up">
-  <ion-toolbar>
+  <!-- <ion-toolbar>
     <ion-buttons slot="start" class="ion-hide-md-up">
+      <ion-button routerDirection="forward" (click)="gotoTeamActivities()">
+        <ion-icon slot="icon-only" name="people-circle"></ion-icon>
+      </ion-button>
       <ion-button routerDirection="forward" (click)="openSearchActivities()">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Activities</ion-title>
+  </ion-toolbar> -->
+  <ion-toolbar class="ion-padding-end">
+    <ion-buttons slot="end" class="ion-hide-md-up ion-padding-end ion-margin-end">
+      <ion-button routerDirection="forward" (click)="gotoTeamActivities()">
         <ion-icon slot="icon-only" name="people-circle"></ion-icon>
       </ion-button>
       <ion-button routerDirection="forward" (click)="openSearchActivities()">

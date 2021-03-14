@@ -12,6 +12,10 @@ const routes: Routes = [
     path: 'activity-search',
     loadChildren: () => import('./activity-search-mobile/activity-search-mobile.module').then( m => m.ActivitySearchMobilePageModule)
   },
+  {
+    path: 'team-activities',
+    loadChildren: () => import('./team-activities/team-activities.module').then( m => m.TeamActivitiesPageModule)
+  },
 ];
 
 @NgModule({

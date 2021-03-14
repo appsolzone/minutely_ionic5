@@ -1,0 +1,172 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/activities"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Team activities</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light">
+  <ion-row>
+    <ion-col size="12" size-md="6">
+      <ion-list class="ion-no-margin ion-no-padding">
+        <ion-toolbar color="secondary">
+          <ion-item color="transparent" lines="none">
+            <ion-label><h2>Ongoing activities</h2></ion-label>
+          </ion-item>
+        </ion-toolbar>
+        <ion-item *ngFor="let oact of allOngoingTasks;">
+          <ion-avatar slot="start">
+            <img [src]="oact.data.user.picUrl" *ngIf="oact.data.user.picUrl">
+            <ion-icon name="person-circle-outline" *ngIf="!oact.data.user.picUrl" size="large" color="secondary"></ion-icon>
+          </ion-avatar>
+          <ion-label>
+            <h2>{{oact.data.project.title}}</h2>
+            <h3><ion-text color="medium">{{oact.data.name}}</ion-text></h3>
+            <ion-chip [color]="oact.data?.status=='ACTIVE' ? 'success' : 'danger'">{{oact.data?.statusLabel}}</ion-chip>
+            <!-- <ion-chip [color]="oact.data?.status=='ACTIVE' ? 'success' : 'danger'">{{oact.data?.startTime | date : 'mediumDate'}} {{oact.data?.startTime | date : 'shortTime'}}</ion-chip>
+            <ion-chip [color]="oact.data?.status=='ACTIVE' ? 'success' : 'danger'" class="ion-text-capitalize">{{oact.data?.status=='ACTIVE'? 'Ongoing' : 'Paused'}}</ion-chip> -->
+            <p><ion-text color="">{{oact.data.user.name}}</ion-text></p>
+            <p><ion-text color="medium">{{oact.data.user.email}}</ion-text></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-col>
+    <ion-col size="12" size-md="6">
+      <ion-toolbar mode="md" class="ion-no-margin">
+        <ion-segment [value]="viewMode" (ionChange)="viewModeChanged($event)" class="ion-no-margin ion-no-padding">
+          <!-- (ionChange)="calendarOptionsChanged($event)"> -->
+          <ion-segment-button value="monthly">
+            <ion-label class="ion-padding-start ion-padding-end">Monthly</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="weekly">
+            <ion-label class="ion-padding-start ion-padding-end">Weekly</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-toolbar>
+      <ion-row class="ion-no-padding" *ngIf="viewMode=='monthly'">
+        <ion-col class="ion-no-padding">
+          <ion-item class="sectionTitle reg">
+            <ion-label>
+              <ion-icon name="calendar" class="icons"></ion-icon>
+              From
+            </ion-label>
+            <ion-datetime displayFormat="MMM YYYY" [(ngModel)]="startPeriod" [min]="minPeriod" [max]="endPeriod" (ionChange)="ionMonthChange()"></ion-datetime>
+          </ion-item>
+        </ion-col>
+        <ion-col class="ion-no-padding">
+          <ion-item class="sectionTitle reg">
+            <ion-label>
+              <ion-icon name="calendar" class="icons"></ion-icon>
+              To
+            </ion-label>
+            <ion-datetime displayFormat="MMM YYYY" [(ngModel)]="endPeriod" [min]="startPeriod" [max]="maxPeriod" (ionChange)="ionMonthChange()"></ion-datetime>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-no-padding" *ngIf="viewMode=='weekly'">
+        <ion-col class="ion-no-padding">
+          <ion-item class="sectionTitle reg">
+            <ion-label>
+              <ion-icon name="calendar" class="icons"></ion-icon>
+              Select a date
+            </ion-label>
+            <ion-datetime displayFormat="DD MMM YYYY" [(ngModel)]="startPeriod" [max]="maxPeriodWeek" (ionChange)="ionWeekChange()"></ion-datetime>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-toolbar mode="ios">
+        <ion-row>
+          <ion-col size="12" size-md="6">
+            <ion-segment [value]="graphMode" (ionChange)="graphModeChanged($event)">
+              <!-- (ionChange)="calendarOptionsChanged($event)"> -->
+              <ion-segment-button value="efforts">
+                <ion-label class="ion-padding-start ion-padding-end">View efforts</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="billing amounts">
+                <ion-label class="ion-padding-start ion-padding-end">View costs</ion-label>
+              </ion-segment-button>
+            </ion-segment>
+          </ion-col>
+          <ion-col size="12" size-md="6">
+            <ion-segment [value]="summaryMode" (ionChange)="summaryModeChanged($event)" class="ion-no-margin ion-no-padding">
+              <!-- (ionChange)="calendarOptionsChanged($event)"> -->
+              <ion-segment-button value="summary">
+                <ion-label class="ion-padding-start ion-padding-end">Summary</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="detailed">
+                <ion-label class="ion-padding-start ion-padding-end">Detailed</ion-label>
+              </ion-segment-button>
+            </ion-segment>
+          </ion-col>
+        </ion-row>
+      </ion-toolbar>
+      <ion-toolbar *ngIf="summaryMode=='summary'">
+        <app-bargraph [graphX]="graphMode=='efforts' ? graphData?.graphX : graphData?.graphX$"></app-bargraph>
+      </ion-toolbar>
+      <ion-list *ngIf="summaryMode=='detailed'">
+        <ion-toolbar color="medium" mode="ios">
+          <ion-row>
+            <ion-col class="ion-align-self-center">
+          <!-- <ion-item color="transparent" lines="none"> -->
+              <ion-label class="ion-padding-start ion-padding-end">Showing</ion-label>
+          <!-- </ion-item> -->
+            </ion-col>
+            <ion-col>
+              <ion-segment [value]="detailedViewMode" (ionChange)="detailedViewModeChanged($event)" class="ion-no-margin ion-no-padding">
+                <!-- (ionChange)="calendarOptionsChanged($event)"> -->
+                <ion-segment-button value="projects">
+                  <ion-label class="ion-padding-start ion-padding-end">Projects</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="activities">
+                  <ion-label class="ion-padding-start ion-padding-end">Activities</ion-label>
+                </ion-segment-button>
+              </ion-segment>
+            </ion-col>
+          </ion-row>
+        </ion-toolbar>
+        <!-- <ion-card *ngFor="let oact of allOtherTasks;let o=index;"> -->
+        <div *ngFor="let oact of graphData.summeriesArray;let o=index;">
+          <ion-item *ngIf="oact.projectList.length > 0 && oact.activityList.length > 0" lines="full">
+            <!-- <ion-chip color="transparent"><ion-text color="medium"> {{oact.monthMedium}}, {{oact.year}}</ion-text></ion-chip> -->
+            <ion-avatar slot="start" class="ion-align-self-start">
+              <p><ion-text color="green" color="green" class="ion-padding-bottom"><small>{{oact.monthMedium}}, {{oact.year}}</small></ion-text></p>
+              <img [src]="oact.data.picUrl" *ngIf="oact.data.picUrl">
+              <ion-icon name="person-circle-outline" *ngIf="!oact.data.picUrl"  size="large" color="medium"></ion-icon>
+            </ion-avatar>
+            <ion-label>
+              <h2><ion-text color="primary">{{oact.data.name}}</ion-text></h2>
+              <ion-chip color="transparent"><ion-icon name="body-outline" color="medium"></ion-icon><ion-text color="medium"> {{oact.data.effort.toFixed(1)}}</ion-text></ion-chip>
+              <ion-chip color="transparent"><ion-icon name="cash" color="medium"></ion-icon><ion-text color="medium"> {{oact.data.billingAmount.toFixed(2)}}</ion-text></ion-chip>
+              <ion-toolbar mode="ios" *ngFor="let p of detailedViewMode=='projects' ? oact.projectList : oact.activityList; let i=index;"
+                [color]="i%2==0 ? 'light' : ''"
+                >
+                <ion-row class="ion-no-padding ion-no-margin" *ngIf="detailedViewMode=='projects'">
+                  <ion-col>
+                    <p>{{oact.data.projects[p]?.title ? oact.data.projects[p]?.title : ('Data not available for ' + p )}}</p>
+                  </ion-col>
+                  <ion-col class="ion-text-end">
+                    <ion-text *ngIf="graphMode=='efforts'">{{oact.data.projects[p]?.title ? oact.data.projects[p]?.effort.toFixed(1) : 0 }} hr</ion-text>
+                    <ion-text *ngIf="graphMode=='billing amounts'">$ {{oact.data.projects[p]?.title ? oact.data.projects[p]?.billingAmount.toFixed(1) : 0 }}</ion-text>
+                  </ion-col>
+                </ion-row>
+                <ion-row class="ion-no-padding ion-no-margin" *ngIf="detailedViewMode=='activities'">
+                  <ion-col>
+                    <p>{{oact.data.activities[p]?.name ? oact.data.activities[p]?.name : ('Data not available for ' + p )}}</p>
+                    <p><small><ion-text color="medium">{{oact.data.activities[p]?.title ? oact.data.activities[p]?.title : ('Project name not available for ' + p )}}</ion-text></small></p>
+                  </ion-col>
+                  <ion-col class="ion-text-end">
+                    <ion-text *ngIf="graphMode=='efforts'">{{oact.data.activities[p]?.name ? oact.data.activities[p]?.effort.toFixed(1) : 0 }} hr</ion-text>
+                    <ion-text *ngIf="graphMode=='billing amounts'">$ {{oact.data.activities[p]?.name ? oact.data.activities[p]?.billingAmount.toFixed(1) : 0 }}</ion-text>
+                  </ion-col>
+                </ion-row>
+              </ion-toolbar>
+            </ion-label>
+          </ion-item>
+          <!-- </ion-card> -->
+        </div>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+</ion-content>

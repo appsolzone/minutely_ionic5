@@ -66,6 +66,7 @@ export class ManageprofilePage implements OnInit {
     this.session.watch().subscribe(value=>{
       // console.log("Session Subscription got", value);
       // Re populate the values as required
+      let roleStatusChanged = (!value || this.sessionInfo?.userProfile?.status != value?.userProfile?.status || this.sessionInfo?.userProfile?.role != value?.userProfile?.role);
       this.sessionInfo = value;
       this.allProfiles = value?.allProfiles;
       if(this.allProfiles){
@@ -82,7 +83,9 @@ export class ManageprofilePage implements OnInit {
       // console.log('check_user',this.sessionInfo?.orgProfile,this.sessionInfo?.userProfile )
       if(this.sessionInfo && this.sessionInfo.userProfile && this.sessionInfo.orgProfile &&
          this.sessionInfo?.userProfile?.subscriberId == this.sessionInfo?.orgProfile?.subscriberId
+         && roleStatusChanged
        ){
+         console.log("performPostLoginChecks session watch");
         this.performPostLoginChecks();
       }
     });
@@ -301,8 +304,11 @@ export class ManageprofilePage implements OnInit {
 
   // update profile data
   async onSubmit(){
+    this.common.showLoader("Saving profile data, please wait...");
     await this.user.updateProfile(this.id, this.updatedProfile);
     this.editProfile = false;
+    // hide the loader now
+    setTimeout(()=>this.common.hideLoader(),100);
   }
   // skip profile update
   onSkip(){
