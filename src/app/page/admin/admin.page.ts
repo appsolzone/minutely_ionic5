@@ -72,7 +72,8 @@ export class AdminPage implements OnInit,OnChanges {
   }
 
   fetchAllMembers(){
-    this.fetchAllMembers$ = this.adminManageUserServ.fetchAllUsers(this.orgProfile)
+    let queryObj = [{field: 'subscriberId',operator: '==', value: this.orgProfile.subscriberId}]
+    this.fetchAllMembers$ = this.adminManageUserServ.fetchAllUsers(queryObj)
     .pipe(
         map((actions: any[]) => actions.map((a: any) => {
           const data = a.payload.doc.data();

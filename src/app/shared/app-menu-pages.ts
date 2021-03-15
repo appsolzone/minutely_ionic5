@@ -61,6 +61,27 @@ export const appPages = [
     tab: 'subscription',
     disabled: false,
   },
+   {
+    title: 'Meeting',
+    url: 'meeting',
+    icon: 'calendar',
+    tab: 'meeting',
+    disabled: true,
+  },
+  {
+    title: 'Risk',
+    url: 'risk',
+    icon: 'warning',
+    tab: 'risk',
+    disabled: true,
+  },
+  {
+    title: 'Task',
+    url: 'task',
+    icon: 'document-text',
+    tab: 'task',
+    disabled: true,
+  },
 ];
 
 /*
