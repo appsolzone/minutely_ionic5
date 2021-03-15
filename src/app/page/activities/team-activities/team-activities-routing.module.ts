@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: TeamActivitiesPage
+  },
+  {
+    path: 'team-activity-stats-mobile',
+    loadChildren: () => import('./team-activity-stats-mobile/team-activity-stats-mobile.module').then( m => m.TeamActivityStatsMobilePageModule)
   }
 ];
 

@@ -7,8 +7,9 @@ import { IonicModule } from '@ionic/angular';
 import { TeamActivitiesPageRoutingModule } from './team-activities-routing.module';
 
 import { TeamActivitiesPage } from './team-activities.page';
+import { TeamOngoingActivitiesComponent } from './team-ongoing-activities/team-ongoing-activities.component';
+import { TeamActivityStatsComponentModule } from './team-activity-stats/team-activity-stats.module';
 
-import { BargraphModule } from 'src/app/page/bargraph/bargraph.module';
 
 @NgModule({
   imports: [
@@ -16,8 +17,11 @@ import { BargraphModule } from 'src/app/page/bargraph/bargraph.module';
     FormsModule,
     IonicModule,
     TeamActivitiesPageRoutingModule,
-    BargraphModule
+    TeamActivityStatsComponentModule,
   ],
-  declarations: [TeamActivitiesPage]
+  declarations: [
+    TeamActivitiesPage,
+    TeamOngoingActivitiesComponent
+  ]
 })
 export class TeamActivitiesPageModule {}

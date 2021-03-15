@@ -33,6 +33,12 @@ export class ActivitiesPage implements OnInit {
   ngOnInit() {
   }
 
+  ionViewDidEnter(){
+    if(!this.sessionInfo || !this.sessionInfo?.uid){
+      this.router.navigate(['profile']);
+    }
+  }
+
   ngOnDestroy(){
 
   }

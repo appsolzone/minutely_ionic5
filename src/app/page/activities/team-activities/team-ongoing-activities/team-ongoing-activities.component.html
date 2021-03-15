@@ -1,0 +1,26 @@
+<ion-list class="ion-no-margin ion-no-padding">
+  <ion-toolbar color="secondary">
+    <ion-item color="transparent" lines="none">
+      <ion-label><h2>Ongoing activities</h2></ion-label>
+      <ion-button slot="end" fill="outline" color="white" class="ion-hide-md-up" (click)="gotoTeamStatsMobile()">
+        <ion-icon name="stats-chart"></ion-icon>
+        Team Stats
+      </ion-button>
+    </ion-item>
+  </ion-toolbar>
+  <ion-item *ngFor="let oact of allOngoingTasks;">
+    <ion-avatar slot="start">
+      <img [src]="oact.data.user.picUrl" *ngIf="oact.data.user.picUrl">
+      <ion-icon name="person-circle-outline" *ngIf="!oact.data.user.picUrl" size="large" color="secondary"></ion-icon>
+    </ion-avatar>
+    <ion-label>
+      <h2>{{oact.data.project.title}}</h2>
+      <h3><ion-text color="medium">{{oact.data.name}}</ion-text></h3>
+      <ion-chip [color]="oact.data?.status=='ACTIVE' ? 'success' : 'danger'">{{oact.data?.statusLabel}}</ion-chip>
+      <!-- <ion-chip [color]="oact.data?.status=='ACTIVE' ? 'success' : 'danger'">{{oact.data?.startTime | date : 'mediumDate'}} {{oact.data?.startTime | date : 'shortTime'}}</ion-chip>
+      <ion-chip [color]="oact.data?.status=='ACTIVE' ? 'success' : 'danger'" class="ion-text-capitalize">{{oact.data?.status=='ACTIVE'? 'Ongoing' : 'Paused'}}</ion-chip> -->
+      <p><ion-text color="">{{oact.data.user.name}}</ion-text></p>
+      <p><ion-text color="medium">{{oact.data.user.email}}</ion-text></p>
+    </ion-label>
+  </ion-item>
+</ion-list>
