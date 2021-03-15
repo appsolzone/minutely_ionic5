@@ -40,6 +40,7 @@ export class TaskPage implements OnInit,OnDestroy {
   searchService:any;
   allSearchresult:any;
   searchServ:any;
+  graphX: any ={tasks: false};
 
   constructor(
     private _router:Router,
@@ -104,7 +105,52 @@ export class TaskPage implements OnInit,OnDestroy {
     }
     ]
     this.returnObservable(queryObj);
-    this.kpi$ = this._kpi.getKpiData(this.orgProfile.subscriberId).subscribe(res=>this.kpiData=res);
+    this.kpi$ = this._kpi.getKpiData(this.orgProfile.subscriberId).subscribe(res=>{
+      this.kpiData=res;
+    //   this.graphX = {
+    //   'icon': '', //'stats',
+    //   'title': '', //'Average Resolution Days',
+    //   'maxValue': 1,
+    //   'data': [
+    //     {'label': 'Task', 'labelValue': this.kpiData.averageResolutionTask,
+    //       'stack': [{'cssClass': 'aquabg', 'width': (this.kpiData.averageResolutionTask*100/this.kpiData.maxAverageReolution)}]
+    //     },
+    //     {'label': 'Issue', 'labelValue': this.kpiData.averageResolutionIssue,
+    //       'stack': [{'cssClass': 'purplebg', 'width': (this.kpiData.averageResolutionIssue*100/this.kpiData.maxAverageReolution)}]
+    //     },
+    //     {'label': 'Risk', 'labelValue': this.kpiData.averageResolutionRisk,
+    //       'stack': [{'cssClass': 'peachbg', 'width': (this.kpiData.averageResolutionRisk*100/this.kpiData.maxAverageReolution)}]
+    //     },
+    //   ]
+    // };
+
+    this.graphX = {
+     icon: 'cube',
+     title: 'Average Resolution Days',
+     maxValue: 10, //for graphY
+     data: [
+        {
+        icon: 'document-text', 
+        label: 'Task', 
+        labelValue: this.kpiData.averageResolutionTask, 
+        stack: [
+          // {cssClass: 'secondary', width: 20, height: 0},
+          // {cssClass: 'warning', width: 50, height: 0},
+          {cssClass: 'danger', width: (this.kpiData.averageResolutionTask*100), height: 0}
+        ]},
+        {
+        icon: 'warning', 
+        label: 'Risk',
+        labelValue: this.kpiData.averageResolutionRisk, 
+        stack: [{cssClass: 'secondary', width: (this.kpiData.averageResolutionRisk*100), height: 0}]},
+        {
+        icon: 'bug', 
+        label: 'Issue',
+        labelValue: this.kpiData.averageResolutionIssue, 
+        stack: [{cssClass: 'primary', width: (this.kpiData.averageResolutionRisk*100), height: 0}]}
+      ],
+    };
+    });
   }
 
   // search the risks
