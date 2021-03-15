@@ -136,18 +136,18 @@ export class TaskPage implements OnInit,OnDestroy {
         stack: [
           // {cssClass: 'secondary', width: 20, height: 0},
           // {cssClass: 'warning', width: 50, height: 0},
-          {cssClass: 'danger', width: (this.kpiData.averageResolutionTask*100), height: 0}
+          {cssClass: 'danger', width: (this.kpiData.averageResolutionTask), height: 0}
         ]},
         {
         icon: 'warning', 
         label: 'Risk',
         labelValue: this.kpiData.averageResolutionRisk, 
-        stack: [{cssClass: 'secondary', width: (this.kpiData.averageResolutionRisk*100), height: 0}]},
+        stack: [{cssClass: 'secondary', width: (this.kpiData.averageResolutionRisk), height: 0}]},
         {
         icon: 'bug', 
         label: 'Issue',
         labelValue: this.kpiData.averageResolutionIssue, 
-        stack: [{cssClass: 'primary', width: (this.kpiData.averageResolutionRisk*100), height: 0}]}
+        stack: [{cssClass: 'primary', width: (this.kpiData.averageResolutionRisk), height: 0}]}
       ],
     };
     });
