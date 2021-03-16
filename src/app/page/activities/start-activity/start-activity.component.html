@@ -14,6 +14,7 @@
         Project Name
       </ion-label>
       <ion-input type="text" [(ngModel)]="newTask.searchTitle" color="medium"
+      placeholder="Enter keywords to search project name"
       (ionChange)="onSearchProject()"></ion-input>
     </ion-item>
 
@@ -48,6 +49,7 @@
         Activity Name
       </ion-label>
       <ion-input type="text" debounce="300" [(ngModel)]="newTask.taskName" color="medium"
+      placeholder="Enter keywords to search activity name"
       (ionChange)="onSearchActivity()"></ion-input>
     </ion-item>
 
@@ -78,7 +80,7 @@
         <ion-icon name="cash"></ion-icon>
         Hourly Rate ($)
       </ion-label>
-      <ion-input class="ion-text-end" type="number" placeholder="Hourly rate" [(ngModel)]="newTask.hourlyRate"></ion-input>
+      <ion-input class="ion-text-end" type="number" placeholder="Hourly rate  " [(ngModel)]="newTask.hourlyRate"></ion-input>
     </ion-item>
     <ion-item class="ion-padding-bottom" lines="none">
       <ion-button slot="end" fill="clear" color="medium" (click)="onCancel()">

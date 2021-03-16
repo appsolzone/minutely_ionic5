@@ -7,9 +7,9 @@
       <ion-button *ngIf="!showActivitySearch" (click)="showActivitySearch=!showActivitySearch">
         <ion-icon slot="icon-only" name="search"></ion-icon>
       </ion-button>
-      <ion-button *ngIf="showActivitySearch" (click)="showActivitySearch=!showActivitySearch">
+      <!-- <ion-button *ngIf="showActivitySearch" (click)="showActivitySearch=!showActivitySearch">
         Hide <ion-icon slot="end" name="search"></ion-icon>
-      </ion-button>
+      </ion-button> -->
     </ion-buttons>
     <ion-title>Activities</ion-title>
   </ion-toolbar>
@@ -54,7 +54,7 @@
       </ion-row>
     </ion-col>
     <ion-col size="6" *ngIf="showActivitySearch">
-      <app-activity-search></app-activity-search>
+      <app-activity-search [closeSearch]="closeSearch.bind(this)"></app-activity-search>
     </ion-col>
   </ion-row>
 </ion-content>

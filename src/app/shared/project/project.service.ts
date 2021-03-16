@@ -7,6 +7,7 @@ import { TextsearchService } from '../textsearch/textsearch.service';
   providedIn: 'root'
 })
 export class ProjectService {
+  public projColorStack: any[]= ['secondary', 'success', 'danger', 'tertiary', 'green', 'warning','primary', 'pink'];
   public newProject: Project = {
         projectId: '',
         title: '',

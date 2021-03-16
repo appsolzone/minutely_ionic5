@@ -1,35 +1,62 @@
 <ion-row>
-  <ion-searchbar
-    [(ngModel)]="searchText"
-    (ionClear)="onClear($event)"
-    (ionChange)="ionChange($event)"
-  >
-  </ion-searchbar>
+  <ion-col size="12" class="ion-hide-lg-up">
+  </ion-col>
+  <ion-toolbar>
+    <ion-searchbar
+      [(ngModel)]="searchText"
+      (ionClear)="onClear($event)"
+      (ionChange)="ionChange($event)"
+    >
+    </ion-searchbar>
+    <ion-buttons slot="end" class="ion-hide-md-down">
+      <ion-button (click)="closeSearch()">
+        <ion-icon name="contract-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
   <ion-toolbar mode="ios">
-    <ion-segment *ngIf="!searchText?.trim()" [value]="options.calendarOptions.pickMode" (ionChange)="calendarOptionsChanged($event)">
-      <!-- (ionChange)="calendarOptionsChanged($event)"> -->
-      <ion-segment-button value="single">
-        <ion-label>Single Date</ion-label>
-      </ion-segment-button>
-      <!-- <ion-segment-button value="multi">
-        <ion-label>Multiple Dates</ion-label>
-      </ion-segment-button> -->
-      <ion-segment-button value="range">
-        <ion-label>Date Range</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-    <ion-segment *ngIf="searchText?.trim()" [value]="searchMode" (ionChange)="SearchOptionsChanged($event)" color="primary">
-      <!-- (ionChange)="calendarOptionsChanged($event)"> -->
-      <ion-segment-button value="all">
-        <ion-label>Match all search keywords</ion-label>
-      </ion-segment-button>
-      <!-- <ion-segment-button value="multi">
-        <ion-label>Multiple Dates</ion-label>
-      </ion-segment-button> -->
-      <ion-segment-button value="any">
-        <ion-label>Match any search keyword</ion-label>
-      </ion-segment-button>
-    </ion-segment>
+    <ion-row>
+      <ion-col>
+        <ion-segment *ngIf="!searchText?.trim()" [value]="options.calendarOptions.pickMode" (ionChange)="calendarOptionsChanged($event)">
+          <!-- (ionChange)="calendarOptionsChanged($event)"> -->
+          <ion-segment-button value="single">
+            <ion-label>Single Date</ion-label>
+          </ion-segment-button>
+          <!-- <ion-segment-button value="multi">
+            <ion-label>Multiple Dates</ion-label>
+          </ion-segment-button> -->
+          <ion-segment-button value="range">
+            <ion-label>Date Range</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+        <ion-segment *ngIf="searchText?.trim()" [value]="searchMode" (ionChange)="SearchOptionsChanged($event)" color="primary">
+          <!-- (ionChange)="calendarOptionsChanged($event)"> -->
+          <ion-segment-button value="all">
+            <ion-label>Match all keywords</ion-label>
+          </ion-segment-button>
+          <!-- <ion-segment-button value="multi">
+            <ion-label>Multiple Dates</ion-label>
+          </ion-segment-button> -->
+          <ion-segment-button value="any">
+            <ion-label>Match any keyword</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+      <ion-col>
+        <ion-segment [value]="searchModeUser" (ionChange)="SearchUserOptionsChanged($event)">
+          <!-- (ionChange)="calendarOptionsChanged($event)"> -->
+          <ion-segment-button value="user">
+            <ion-label>My activities</ion-label>
+          </ion-segment-button>
+          <!-- <ion-segment-button value="multi">
+            <ion-label>Multiple Dates</ion-label>
+          </ion-segment-button> -->
+          <ion-segment-button value="all">
+            <ion-label>All activities</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
   </ion-toolbar>
   <ion-calendar
     *ngIf="!searchText?.trim()"
@@ -78,8 +105,9 @@
             <ion-icon name="ellipsis-horizontal"></ion-icon>
           </ion-chip>
         <!-- </ion-row> -->
-        <h1><small><ion-icon name="bookmark-outline" size="small"></ion-icon> {{details.data.project.title}}</small></h1>
+        <h1><small><ion-icon name="bookmark" size="small" [color]="colorStack[(details.data.project.projectId?.replace('P','')-1)%colorStack.length]"></ion-icon> {{details.data.project.title}}</small></h1>
         <p><ion-icon name="body-outline" ></ion-icon> {{details.data.name}}</p>
+        <p><ion-icon name="person-circle-outline"></ion-icon> {{details.data.user.name}}</p>
         <ion-row>
           <ion-chip color="transparent">
             <ion-icon name="time-outline" color="medium"></ion-icon>

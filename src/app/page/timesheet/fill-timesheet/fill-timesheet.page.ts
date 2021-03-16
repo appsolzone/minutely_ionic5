@@ -190,4 +190,19 @@ export class FillTimesheetPage implements OnInit {
     this.getUserSummary();
   }
 
+  async showReadOnlyAlert(){
+    let title='Info';
+    let body = 'Please note that you can not edit existing entries, to log additional timesheet entries please use "Add new timesheet entry" option'
+    let buttons: any[] = [
+                    {
+                      text: 'Dismiss',
+                      role: 'cancel',
+                      cssClass: '',
+                      handler: ()=>{}
+                    }
+                  ];
+
+    await this.component.presentAlert(title,body ,buttons);
+  }
+
 }

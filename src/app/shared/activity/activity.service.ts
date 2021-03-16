@@ -79,7 +79,7 @@ export class ActivityService {
                             subscriberId,
                             uid,
                             project,
-                            searchMap: this.searchMap.createSearchMap(project.title + ' ' + activity.name + ' ' + activity.status),
+                            searchMap: this.searchMap.createSearchMap(project.title + ' ' + activity.name + ' ' + activity.status + ' ' + activity.user.name),
                         };
       if(activityObj.status=='COMPLETE'){
         // This is a retro activity to be created so ensure that data augmentation happens
@@ -89,12 +89,27 @@ export class ActivityService {
         await this.logActivitySummary('COMPLETE', { actRef: actRef, data: activityObj } , sessionInfo, null);
         return {...activityObj,status: 'COMPLETE'};
       }
-      return this.db.afs.collection(this.db.allCollections.activities).add(activityObj)
-                        .then(res=>{
-                          let id = res.id;
-                          return {id, ...activityObj};
-                        });
-
+      // check whether any activity is already running, this is to ensure that no activity is started while another activity is running
+      let queryObj = [{field: 'subscriberId',operator: '==', value: subscriberId},
+                      {field: 'uid',operator: '==', value: uid},
+                      {field: 'status',operator: '==', value: 'ACTIVE'}
+                    ];
+      await this.getActivitiesOnce(queryObj,null,1).then(runningActivity=>{
+        let data = [];
+        runningActivity.forEach((doc)=>{
+          data.push(doc.data());
+        });
+        if(data.length > 0){
+          throw { body: "New activity can not be started as there exists ongoing activity. Please check and try again."};
+        } else {
+          console.log("runningActivity else part", runningActivity);
+          return this.db.afs.collection(this.db.allCollections.activities).add(activityObj)
+                            .then(res=>{
+                              let id = res.id;
+                              return {id, ...activityObj};
+                            });
+        }
+      });
     }
 
     checkRetroActivityDates(sessionInfo,startTime,endTime){
@@ -119,7 +134,7 @@ export class ActivityService {
             message={
               nonConflictingActivity: false ,
               title: 'Warning',
-              body: "It seems some other activities exist during the selected period for the activity you wish to create. Please check and try again."
+              body: "It seems some other activities exist during the selected period for the activity you wish to create. Please check and try again. You may wish to check existing activities from Activities -> Search activities."
             };
 
             return message;
@@ -139,7 +154,7 @@ export class ActivityService {
                   message={
                     nonConflictingActivity: false ,
                     title: 'Warning',
-                    body: "It seems some other activities exist during the selected period for the activity you wish to create. Please check and try again."
+                    body: "It seems some other activities exist during the selected period for the activity you wish to create. Please check and try again. You may wish to check existing activities from Activities -> Search activities."
                   };
                   return message;
                 }else{
@@ -194,7 +209,7 @@ export class ActivityService {
                           activityObj.actRef.ref;
             activity.status = 'COMPLETE';
             return actRef.set({...activity,
-                        searchMap: this.searchMap.createSearchMap(activity.project.title + ' ' + activity.name + ' ' + activity.status),
+                        searchMap: this.searchMap.createSearchMap(activity.project.title + ' ' + activity.name + ' ' + activity.status + ' ' + activity.user.name),
                       },{merge: true});
           }
           break;
@@ -348,7 +363,7 @@ export class ActivityService {
                         :
                         activityObj.actRef.ref;
           transaction.set(actRef,{...activity,
-                      searchMap: this.searchMap.createSearchMap(activity.project.title + ' ' + activity.name + ' ' + activity.status),
+                      searchMap: this.searchMap.createSearchMap(activity.project.title + ' ' + activity.name + ' ' + activity.status + ' ' + activity.user.name),
                     },{merge: true});
 
           // now set the augmented user summary data
@@ -368,7 +383,7 @@ export class ActivityService {
       let actRef = this.db.afs.collection(this.db.allCollections.activities).doc(id).ref;
       activity.status = 'COMPLETE';
       return actRef.set({...activity,
-                  searchMap: this.searchMap.createSearchMap(activity.project.title + ' ' + activity.name + ' ' + activity.status),
+                  searchMap: this.searchMap.createSearchMap(activity.project.title + ' ' + activity.name + ' ' + activity.status + ' ' + activity.user.name),
                 },{merge: true})
                 .then((res)=>{
                   let newActivityObj = {

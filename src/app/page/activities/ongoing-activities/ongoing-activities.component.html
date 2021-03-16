@@ -11,7 +11,7 @@
             <ion-icon name="body" color="success"></ion-icon>
           </ion-avatar>
           <ion-label>
-            <h1>{{allTasks.length}}</h1>
+            <h1>{{allTasks?.length}}</h1>
             <p>activities</p>
           </ion-label>
         </ion-item>
@@ -25,7 +25,63 @@
     </ion-col>
   </ion-row>
 </ion-toolbar>
-<ion-card *ngFor="let task of allTasks; let i=index;">
+<ion-card *ngFor="let task of allTasks ? [] : [null,null,null]; let i=index;">
+  <ion-header mode="ios">
+    <ion-toolbar color="light">
+      <ion-item color="transparent" lines="none">
+        <ion-label><h2><ion-skeleton-text animated style="width: 90%"></ion-skeleton-text></h2></ion-label>
+        <ion-buttons slot="end">
+          <ion-button>
+              <ion-icon name="play" color="medium"></ion-icon>
+            <!-- RESUME -->
+          </ion-button>
+          <ion-button>
+              <ion-icon name="checkmark-done"  color="medium"></ion-icon>
+            <!-- COMPLETE -->
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    </ion-toolbar>
+  </ion-header>
+  <ion-item lines="none">
+    <ion-label>
+      <ion-chip>
+        <ion-icon name="stopwatch-outline" color="medium"></ion-icon>
+        <ion-label>
+          <ion-text color="medium">..........................</ion-text>
+          <ion-skeleton-text animated style="width: 90%"></ion-skeleton-text>
+       </ion-label>
+     </ion-chip>
+     <p><ion-skeleton-text animated style="width: 70%"></ion-skeleton-text></p>
+     </ion-label>
+  </ion-item>
+</ion-card>
+<ion-card *ngIf="allTasks?.length == 0">
+  <ion-card-header mode="ios">
+    <ion-toolbar>
+      <ion-item>
+        <ion-label>
+          <h1>Start activity</h1>
+        </ion-label>
+      </ion-item>
+    </ion-toolbar>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-item lines="none">
+      <ion-label >
+        <p>Starting an activity is simple.</p>
+        <p><ion-icon name="checkbox-outline" color="success" class="ion-padding-end"></ion-icon> Click <b>Start activity</b></p>
+        <p><ion-icon name="checkbox-outline" color="success" class="ion-padding-end"></ion-icon> Select a project and activity</p>
+        <p><ion-icon name="checkbox-outline" color="success" class="ion-padding-end"></ion-icon> Provide hourly rate for the activity</p>
+        <p><ion-icon name="checkbox-outline" color="success" class="ion-padding-end"></ion-icon> Start the activity</p>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-button slot="end" *ngIf="!showCreateActivity" color="primary" [disabled]="newTask?.activeTask?.length!=0" (click)="startNewActivity()">Start activity</ion-button>
+    </ion-item>
+  </ion-card-content>
+</ion-card>
+<ion-card *ngFor="let task of allTasks ? allTasks : []; let i=index;">
   <ion-header mode="ios">
     <ion-toolbar [color]="task?.data?.status=='ACTIVE' ? 'secondary' : 'light'">
       <ion-item color="transparent" lines="none">

@@ -48,7 +48,7 @@
         <ion-label *ngIf="dateRange.startDate">Timesheet entries for the week {{dateRange.startDate| date : 'd'}} to {{dateRange.endDate| date : 'mediumDate'}}</ion-label>
         <ion-label *ngIf="!dateRange.startDate">Select the week for timesheet entries</ion-label>
       </ion-toolbar>
-      <ion-row *ngFor="let ts of timeSheetData" class="ion-align-items-center">
+      <ion-row *ngFor="let ts of timeSheetData" class="ion-align-items-center" (click)="showReadOnlyAlert()">
         <ion-col size="12" size-md="6">
           <ion-item lines="none" color="">
             <ion-icon name="accessibility-outline" slot="start"></ion-icon>
@@ -105,7 +105,7 @@
           <ion-item button="true" lines="none" color="" (click)="addNewActivityData()" detail="false">
             <ion-icon name="add-circle-outline" slot="start" color="primary"></ion-icon>
             <ion-label>
-              <h2><ion-text color="primary">Add new activity</ion-text></h2>
+              <h2><ion-text color="primary">Add new timesheet entry</ion-text></h2>
             </ion-label>
           </ion-item>
         </ion-col>

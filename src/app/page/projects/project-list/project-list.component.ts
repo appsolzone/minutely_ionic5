@@ -20,9 +20,10 @@ export class ProjectListComponent implements OnInit {
   sessionSubs$;
   projectSubs$;
   public sessionInfo: any;
-  public allProjects: any[]=[];
+  public allProjects: any[];
   public searchText: string = '';
   public searchMode: string = 'all';
+  public colorStack: any[];
 
   constructor(
     private router:Router,
@@ -30,6 +31,7 @@ export class ProjectListComponent implements OnInit {
     private project: ProjectService,
     private common: ComponentsService,
   ) {
+    this.colorStack = this.project.projColorStack;
     this.sessionSubs$ = this.session.watch().subscribe(value=>{
       // console.log("Session Subscription got", value);
       // Re populate the values as required
@@ -102,11 +104,13 @@ export class ProjectListComponent implements OnInit {
                                 const id = a.payload.doc.id;
                                 const inceptionDate = new Date(data.inceptionDate?.seconds*1000);
                                 const closureDate = data.closureDate? new Date(data.closureDate?.seconds*1000) : null;
+                                const projectNo = data.projectId.replace(/[A-Z]/,'');
                                 // return {id, data};
-                                return {id, data: {...data, inceptionDate, closureDate}};
+                                return {id, projectNo, data: {...data, inceptionDate, closureDate}};
                               });
 
                               this.allProjects = allProjects;
+                              console.log("allProjects", this.allProjects);
 
                             });
     } else {

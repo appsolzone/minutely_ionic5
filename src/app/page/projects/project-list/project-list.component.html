@@ -31,25 +31,139 @@
 </ion-toolbar>
 
 <ion-list>
-  <ion-item *ngIf="allProjects.length==0 && searchText?.trim()" lines="none">
+  <ion-item *ngIf="allProjects?.length==0 && searchText?.trim()" lines="none">
     <ion-label>
       <p class="ion-text-wrap">Search projects by name, status and keywords. Use <b>match any</b> option to widen the search results.</p>
     </ion-label>
   </ion-item>
-  <ion-card *ngFor="let project of allProjects; let i=index;">
+  <!-- <ion-item *ngFor="let project of allProjects; let i=index;">
+    <ion-icon name="bookmark" slot="start" size="small" [color]="colorStack[i%8]"></ion-icon>
+    <ion-label>{{project.data.title}}</ion-label>
+  </ion-item> -->
+  <ion-card *ngFor="let task of allProjects ? [] : [null,null,null]; let i=index;">
     <ion-header mode="ios">
       <ion-toolbar color="light">
         <!-- <ion-item color="transparent" lines="none" button="true" (click)="showProjectDetails(project)">
           <ion-icon name="bookmark-outline" slot="start" size="small"></ion-icon>
           <ion-label>{{project.data.title}}</ion-label>
         </ion-item> -->
-        <ion-item color="transparent" lines="none" button="true" (click)="gotoProjectDetails(project)">
-          <ion-icon name="bookmark-outline" slot="start" size="small"></ion-icon>
-          <ion-label>{{project.data.title}}</ion-label>
+        <ion-item color="transparent" lines="none">
+          <ion-avatar>
+            <!-- <ion-icon name="bookmark" ></ion-icon> -->
+            <ion-icon name="shuffle-outline"></ion-icon>
+          </ion-avatar>
+          <ion-label>
+            <h2><ion-skeleton-text animated style="width: 90%"></ion-skeleton-text></h2>
+            <ion-row class="ion-no-padding">
+              <!-- <ion-col class="ion-align-self-center">
+                  <ion-icon [name]="project.data.closureDate || (i%3==0)? 'checkmark-done-circle' : 'shuffle-outline'"></ion-icon>
+              </ion-col> -->
+              <ion-col class="ion-align-self-center">
+                <ion-icon name="time" size="small" class="ion-padding-end ion-align-self-baseline"></ion-icon>
+                <small>
+                  <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
+                </small>
+              </ion-col>
+              <!-- <ion-col class="ion-align-self-center">
+                <small>
+                  {{project.data.totalEffort!=null ? '$ ' + project.data.totalEffort.toFixed(0) : 'Not available'}}
+                </small>
+              </ion-col> -->
+              <ion-col class="ion-align-self-center">
+                <ion-icon name="cash" size="small" class="ion-padding-end ion-align-self-center"></ion-icon>
+                <small>
+                  <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
+                </small>
+              </ion-col>
+              <!-- <ion-col>
+                <small>{{project.data.totalBillableAmount!=null ? '$ ' + project.data.totalBillableAmount.toFixed(0) : 'Not available'}}</small>
+              </ion-col> -->
+            </ion-row>
+          </ion-label>
         </ion-item>
       </ion-toolbar>
     </ion-header>
-    <ion-item lines="none">
+  </ion-card>
+  <ion-card *ngIf="allProjects?.length == 0">
+    <ion-card-header mode="ios">
+      <ion-toolbar>
+        <ion-item>
+          <ion-label>
+            <h1>Add projects</h1>
+          </ion-label>
+        </ion-item>
+      </ion-toolbar>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-label >
+          <p>Start creating projects to log activities.</p>
+          <p><ion-icon name="checkbox-outline" color="success" class="ion-padding-end"></ion-icon> Click <b>Add</b></p>
+          <p><ion-icon name="checkbox-outline" color="success" class="ion-padding-end"></ion-icon> Enter basic project information</p>
+          <p><ion-icon name="checkbox-outline" color="success" class="ion-padding-end"></ion-icon> Submit</p>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-button fill="clear" slot="end" (click)="gotoAddProject()" class="ion-hide-md-up">
+          <ion-icon name="add-circle-outline" slot="start" color="primary"></ion-icon>
+          Add project
+        </ion-button>
+        <ion-button *ngIf="!addProject" fill="clear" slot="end" (click)="openAddProject()"  class="ion-hide-md-down">
+          <ion-icon name="add-circle-outline" slot="start" color="primary"></ion-icon>
+          Add project
+        </ion-button>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngFor="let project of allProjects ? allProjects : []; let i=index;">
+    <ion-header mode="ios">
+      <ion-toolbar [color]="colorStack[(project.projectNo - 1)%colorStack.length]">
+        <!-- <ion-item color="transparent" lines="none" button="true" (click)="showProjectDetails(project)">
+          <ion-icon name="bookmark-outline" slot="start" size="small"></ion-icon>
+          <ion-label>{{project.data.title}}</ion-label>
+        </ion-item> -->
+        <ion-item color="transparent" lines="none" button="true" (click)="gotoProjectDetails(project)">
+          <ion-avatar>
+            <!-- <ion-icon name="bookmark" ></ion-icon> -->
+            <ion-icon [name]="project.data.closureDate? 'checkmark-done-circle' : 'shuffle-outline'"></ion-icon>
+          </ion-avatar>
+          <ion-label>
+            <h2>{{project.data.title}}</h2>
+            <ion-row class="ion-no-padding">
+              <!-- <ion-col class="ion-align-self-center">
+                  <ion-icon [name]="project.data.closureDate || (i%3==0)? 'checkmark-done-circle' : 'shuffle-outline'"></ion-icon>
+              </ion-col> -->
+              <ion-col class="ion-align-self-center">
+                <ion-icon name="time" size="small" class="ion-padding-end ion-align-self-baseline"></ion-icon>
+                <small>
+                  {{project.data.totalEffort!=null ? project.data.totalEffort.toFixed(0) : '0'}} hr
+                  <ion-text> of
+                  {{project.data.estimatedEffort!=null ? project.data.estimatedEffort.toFixed(0) : '0'}} hr
+                </ion-text>
+                </small>
+              </ion-col>
+              <!-- <ion-col class="ion-align-self-center">
+                <small>
+                  {{project.data.totalEffort!=null ? '$ ' + project.data.totalEffort.toFixed(0) : 'Not available'}}
+                </small>
+              </ion-col> -->
+              <ion-col class="ion-align-self-center">
+                <ion-icon name="cash" size="small" class="ion-padding-end ion-align-self-center"></ion-icon>
+                <small>{{project.data.totalBillableAmount!=null ? '$ ' + project.data.totalBillableAmount.toFixed(0) : '0'}}
+                  <ion-text> of
+                  {{project.data.estimatedCost!=null ? '$ ' + project.data.estimatedCost.toFixed(0) : '0'}}
+                  </ion-text>
+                </small>
+              </ion-col>
+              <!-- <ion-col>
+                <small>{{project.data.totalBillableAmount!=null ? '$ ' + project.data.totalBillableAmount.toFixed(0) : 'Not available'}}</small>
+              </ion-col> -->
+            </ion-row>
+          </ion-label>
+        </ion-item>
+      </ion-toolbar>
+    </ion-header>
+    <!-- <ion-item lines="none" class="ion-hide-md-down">
       <ion-label>
         <ion-chip>
           <ion-icon name="calendar"></ion-icon>
@@ -100,6 +214,6 @@
           </ion-col>
         </ion-row>
       </ion-label>
-    </ion-item>
+    </ion-item> -->
   </ion-card>
 </ion-list>

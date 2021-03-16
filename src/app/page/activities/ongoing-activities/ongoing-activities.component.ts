@@ -23,7 +23,7 @@ export class OngoingActivitiesComponent implements OnInit {
   public minute: number = 0;
   public sec: number = 0;
   public enableEffortEditing: boolean = false;
-  public allTasks: any[] = [];
+  public allTasks: any[]; // = [];
   public showCreateActivity: boolean = false;
   public newTask: any = {
                           activeTask: [],
@@ -239,11 +239,14 @@ export class OngoingActivitiesComponent implements OnInit {
         moment(data.startTime).format('YYYYMMDD') != moment(endTime).format('YYYYMMDD') ||
         this.hour >= 24
       ) {
+        let offsetTime = moment(moment(data.startTime).format('YYYY-MM-DD 24:00')).diff(this.newTask.activeTask[0].data.startTime); //moment().diff(moment(this.newTask.activeTask[0].startTime.seconds*1000)); // - this.session.admin.timeOffset;
+        let hour = Math.floor(offsetTime/(60*60*1000));
+        let minute = Math.floor((offsetTime%(60*60*1000))/(60*1000));
+
         this.enableEffortEditing = true;
         actionValidated = false;
         let title="Warning";
-        let body = "The duration of the activity is more than 24 hours or activity end time is beyond 12 midnight of the activity start date time. Please check, amend as required and resubmit. \
-                    NOTE: If the activity spanned beyond 12 midnight, then submit part of it within 12 midnight and create timesheet entry using fill timesheet option for the effort beyond 12 midnight.";
+        let body = "The duration of the activity is beyond 12 midnight. Please edit duration to be less than " + hour + " hr " + minute + " min and submit. Create rest of it, if any, using fill timesheet for next day.";
         let buttons: any[] = [
                         {
                           text: 'Dismiss',

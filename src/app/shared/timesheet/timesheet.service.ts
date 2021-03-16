@@ -88,7 +88,7 @@ export class TimesheetService {
         let message={
           nonConflictingActivity: false ,
           title: 'Warning',
-          body: "It seems some other activities exist during the selected period for the activity you wish to create. Please check and try again."
+          body: "It seems some other activities already added for the selected period for the activity you wish to create. Please check and try again."
         };
         return message;
       }

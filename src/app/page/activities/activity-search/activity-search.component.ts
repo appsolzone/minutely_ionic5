@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { CalendarComponentOptions } from 'ion2-calendar';
@@ -7,6 +7,7 @@ import { SessionService } from 'src/app/shared/session/session.service';
 import { ActivityService } from 'src/app/shared/activity/activity.service';
 import { CalendarService } from 'src/app/shared/calendar/calendar.service';
 import { CalendarModule } from 'ion2-calendar';
+import { ProjectService } from 'src/app/shared/project/project.service';
 
 @Component({
   selector: 'app-activity-search',
@@ -15,12 +16,14 @@ import { CalendarModule } from 'ion2-calendar';
 })
 @Autounsubscribe()
 export class ActivitySearchComponent implements OnInit {
+  @Input() closeSearch: any = ()=>{};
   // observables
   sessionSubs$;
   activitySubs$;
   public sessionInfo: any;
   public searchText: string;
   public searchMode: string = 'all';
+  public searchModeUser: string = 'user';
   public options: any;
   public viewResult: any = {};
   public allDates:any=[];
@@ -28,14 +31,17 @@ export class ActivitySearchComponent implements OnInit {
                             startDate: '',
                             endDate: ''
                           };
+  public colorStack: any[];
   constructor(
     private router:Router,
     private session: SessionService,
     private activity: ActivityService,
     private cal: CalendarService,
+    private project: ProjectService,
   ) {
 
     this.options = this.cal.getCalendarMeta();
+    this.colorStack = this.project.projColorStack;
 
     this.sessionSubs$ = this.session.watch().subscribe(value=>{
       // console.log("Session Subscription got", value);
@@ -72,6 +78,11 @@ export class ActivitySearchComponent implements OnInit {
     this.getActivities();
   }
 
+  SearchUserOptionsChanged(e){
+    this.searchModeUser = e.detail.value;
+    this.getActivities();
+  }
+
   ionChange(e){
     this.dateRange = {
                         startDate: '',
@@ -97,6 +108,9 @@ export class ActivitySearchComponent implements OnInit {
     }
 
     queryObj = [{field: 'subscriberId',operator: '==', value: this.sessionInfo.subscriberId}];
+    if(this.searchModeUser=='user'){
+      queryObj.push({field: 'uid',operator: '==', value: this.sessionInfo.uid})
+    }
     if(this.dateRange.startDate){
       queryObj.push({field: 'startTime',operator: '>=', value: this.dateRange.startDate});
     }

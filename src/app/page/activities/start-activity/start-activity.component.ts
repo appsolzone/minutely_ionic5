@@ -27,7 +27,7 @@ export class StartActivityComponent implements OnInit {
                           taskProject: {},
                           taskName: '',
                           activity: {},
-                          hourlyRate: 0,
+                          hourlyRate: null,
                         };
 
   constructor(
@@ -98,6 +98,7 @@ export class StartActivityComponent implements OnInit {
 
 
   async createNewActivity(type: string){
+    this.common.showLoader("Starting new activity, please wait ...");
     const {subscriberId, uid, name, picUrl, email } = this.sessionInfo.userProfile;
     if(type == 'save'){
       if(this.newTask.taskName && this.newTask.searchTitle && this.newTask.hourlyRate){
@@ -135,6 +136,7 @@ export class StartActivityComponent implements OnInit {
 
           await this.activity.createUserActivity(activityObj, this.sessionInfo)
                         .then(async res=>{
+                          this.common.hideLoader();
                           let title="Activity Started";
                           let body = "New activity has been started successfully."
                           let buttons: any[] = [
@@ -159,9 +161,10 @@ export class StartActivityComponent implements OnInit {
                           this.onCancel();
                         })
                         .catch(async err=>{
+                          this.common.hideLoader();
                           console.log("new activity error", err);
                           let title="Error";
-                          let body = "Please note that new activity could not be created! Please try again."
+                          let body = err.body ? err.body : "Please note that new activity could not be created! Please try again."
                           let buttons: any[] = [
                                           {
                                             text: 'Dismiss',
