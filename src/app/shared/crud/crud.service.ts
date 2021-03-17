@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Meeting } from 'src/app/interface/meeting';
 import { Risk } from 'src/app/interface/risk';
 import { Task } from 'src/app/interface/task';
@@ -65,8 +65,11 @@ export class CrudService {
   //const foo: TYPE = { ...e };
   
 
- refMeetingDetails:any= {};
- refMeetingNotiBAsic:any; 
+  refMeetingDetails:any= {};
+  refMeetingNotiBAsic:any; 
+
+  detailsPagePasing$ = new BehaviorSubject<any|null>(undefined);
+
   constructor(
     private _db:DatabaseService,
     private _componentsService:ComponentsService,
@@ -389,5 +392,24 @@ export class CrudService {
     fetchAllServices(collectionName,objectFilter,textSearchObj: any = null){
     return this._db.getAllDocumentsSnapshotByQuery(collectionName,objectFilter,textSearchObj);
     }
+
+
+    fetchAllComments(collectionName,doc):Observable<any>{
+      return this._db.getAllDocumentsSnapshot(`${this._db.allCollections[collectionName]}/${doc}/${this._db.allCollections.comment}`);
+    }
+
+    addComment(commentObj,servicedoc){
+    let docRef = this._db.afs.collection(this._db.allCollections[servicedoc.parentModule]).doc(servicedoc.id).ref;
+    let commentRef = this._db.afs.collection(`${this._db.allCollections[servicedoc.parentModule]}/${servicedoc.id}/${this._db.allCollections.comment}`).doc().ref;
+
+    return this._db.afs.firestore.runTransaction(function(transaction) {
+      return transaction.get(docRef).then(function(regDoc) {
+        this._db.setTransactDocument(transaction,docRef,{latestComment:commentObj},true);
+        
+        delete commentObj.totalComment;
+        this._db.setTransactDocument(transaction,commentRef,commentObj,true);
+      }.bind(this))
+    }.bind(this))
   } 
+}
 

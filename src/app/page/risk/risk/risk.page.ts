@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
@@ -10,6 +11,7 @@ import { DatabaseService } from 'src/app/shared/database/database.service';
 import { SearchText } from 'src/app/shared/empty-screen-text/empty-screen-text';
 import { KpiService } from 'src/app/shared/kpi/kpi.service';
 import { SessionService } from 'src/app/shared/session/session.service';
+import { ModalPagePage } from '../../modal-page/modal-page.page';
 
 @Component({
   selector: 'app-risk',
@@ -41,13 +43,15 @@ export class RiskPage implements OnInit,OnDestroy {
   allSearchresult:any;
   searchServ:any;
 
+  result:string|null = null;
   constructor(
     private _router:Router,
     private _crud:CrudService,
     private _session:SessionService,
     private _db:DatabaseService,
     private _componentService:ComponentsService,
-    private _kpi:KpiService
+    private _kpi:KpiService,
+    private modalController: ModalController
   ) { }
 
   ngOnInit() {
@@ -181,4 +185,31 @@ export class RiskPage implements OnInit,OnDestroy {
      this.fetchAllRisks();
     }
   }
+
+
+  //go to details page 
+  goToDetailsPage(data:object):void{
+   this._crud.detailsPagePasing$.next(data);
+   this._router.navigate(['/risk/details']);
+  }
+
+
+
+  async openModal(){
+   const modal = await this.modalController.create({
+    component: ModalPagePage,
+    cssClass: 'my-custom-class',
+    componentProps: {
+      data: 'Hellow Arnab',
+    }
+  });
+  modal.onDidDismiss()
+      .then((data) => {
+        const result = data; // Here we get data
+        console.log('Modal back result',result);
+        this.result = result.data.data;
+    });
+  return await modal.present();
+  
+}
 }

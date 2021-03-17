@@ -110,7 +110,7 @@
     <!-- list risks -->
     <ion-list>    
         <div *ngFor="let risk of allRisks;let id=index">
-        <ion-card class="ion-no-padding">
+        <ion-card class="ion-no-padding" (click)="goToDetailsPage(risk)">
           <ion-item lines="none">
             <ion-button size="small" slot="start" color="danger">
               <ion-icon name="calendar" slot="start"></ion-icon>
@@ -185,8 +185,14 @@
             </ion-row>
 
           <ion-item class="ion-no-padding" lines="none">
-            <img slot="start" *ngIf="risk.latestComment.picUrl !== ''"
-              [src]="risk.latestComment.picUrl" style="height:20px; width:20px;border-radius:50%;" />
+            <ion-avatar>
+            <img slot="start" *ngIf="risk?.latestComment.totalComments !== 0 && risk.latestComment.picUrl !== ''"
+              [src]="risk.latestComment.picUrl" style="height:40px; width:40px;border-radius:50%;" />
+            <ion-icon *ngIf="risk?.latestComment.totalComments !== 0 && risk.latestComment.picUrl == ''" color="primary"
+              name="person-circle" style="height:40px;width:40px;border-radius:50%">
+            </ion-icon>
+            </ion-avatar>
+
             
             <ion-icon slot="start" name="chatbubbles" [ngStyle]="{'height':'15px','width':'15px','border-radius':'50%'}" color="medium" class="ion-padding-right" *ngIf="risk?.latestComment.totalComments == 0"></ion-icon>
 

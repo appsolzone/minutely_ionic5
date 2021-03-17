@@ -58,3 +58,10 @@ $color-blue-bg: linear-gradient(40deg, rgb(48, 63, 159), rgb(69, 202, 252)); //
   max-height: 2.4rem;
   max-width: 2.4rem;
 }
+.picker-columns.sc-ion-picker-md {
+     height: auto !important; 
+}
+
+.picker-wrapper.sc-ion-picker-md {
+    max-height: 100vh !important;
+}
