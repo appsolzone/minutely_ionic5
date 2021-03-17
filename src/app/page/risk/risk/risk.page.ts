@@ -4,6 +4,7 @@ import { ModalController } from '@ionic/angular';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
+import { Risk } from 'src/app/interface/risk';
 import { User } from 'src/app/interface/user';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { CrudService } from 'src/app/shared/crud/crud.service';
@@ -30,7 +31,7 @@ export class RiskPage implements OnInit,OnDestroy {
   userProfile: User;
   orgProfile:any =null;
 
-  allRisks:any;
+  allRisks:Risk[];
   kpiData:any;
   activeSearch:boolean = false;
 

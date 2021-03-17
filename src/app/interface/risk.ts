@@ -1,5 +1,6 @@
 export interface Risk {
     riskId?:string,
+    id?:string,
     riskTitle : string,
     riskOwner :any,
     riskInitiationDate : any,

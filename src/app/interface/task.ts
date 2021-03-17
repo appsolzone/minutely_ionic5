@@ -1,5 +1,6 @@
 export interface Task {
     taskId?:string,
+    id?:string,
     taskTitle : string,
     taskOwner :any,
     taskInitiationDate : any,

@@ -1,5 +1,6 @@
 export interface Issue {
     issueId?:string,
+    id?:string,
     issueTitle : string,
     issueOwner :any,
     issueInitiationDate : any,

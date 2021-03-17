@@ -1,4 +1,5 @@
 export interface Meeting {
+  id?:string,
   meetingTitle:string,
   meetingStart:any,
   meetingEnd:any,
