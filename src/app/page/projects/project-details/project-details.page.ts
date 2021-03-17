@@ -26,6 +26,7 @@ export class ProjectDetailsPage implements OnInit {
   public showAddActivity: boolean = false;
   public newActivityName: string;
   public statsFullWidth: boolean = false;
+  public colorStack: any[];
 
   constructor(
     private router:Router,
@@ -34,6 +35,7 @@ export class ProjectDetailsPage implements OnInit {
     private common: ComponentsService,
     private searchMap: TextsearchService,
   ) {
+    this.colorStack = this.project.projColorStack;
     this.sessionSubs$ = this.session.watch().subscribe(value=>{
       // console.log("Session Subscription got", value);
       // Re populate the values as required
@@ -120,8 +122,11 @@ export class ProjectDetailsPage implements OnInit {
                                 const id = a.payload.doc.id;
                                 const inceptionDate = new Date(data.inceptionDate?.seconds*1000);
                                 const closureDate = data.closureDate? new Date(data.closureDate?.seconds*1000) : null;
+                                const projectNo = data.projectId.replace(/[A-Z]/,'');
                                 // return {id, data};
-                                return {id, data: {...data, inceptionDate, closureDate}};
+                                return {id, projectNo, data: {...data, inceptionDate, closureDate}};
+                                // return {id, data};
+                                // return {id, data: {...data, inceptionDate, closureDate}};
                               });
 
                               this.selectedProject = allProjects[0];

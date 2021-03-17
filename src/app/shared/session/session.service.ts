@@ -74,10 +74,11 @@ export class SessionService {
         });
         // lets set the userProfile
         let {data,id} = this.getUserProfile(null,allProfiles);
-        let coordinates = await this.getCurrentPosition();
+        // let coordinates = await this.getCurrentPosition();
         // console.log("all profile userprofile",userProfile);
         // lets patch the allprofiles data for session$
-        this.patch({ uid, coordinates, userProfile: data, userProfileDocId: id, allProfiles });
+        // this.patch({ uid, coordinates, userProfile: data, userProfileDocId: id, allProfiles });
+        this.patch({ uid, userProfile: data, userProfileDocId: id, allProfiles });
       });
   }
 

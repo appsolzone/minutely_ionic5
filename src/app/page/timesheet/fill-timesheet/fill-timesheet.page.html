@@ -63,7 +63,7 @@
             <ion-col *ngFor="let day of weekDays; let i=index;">
               <ion-item class="ion-no-padding ion-no-margin" color="">
                 <ion-label position="stacked" class="ion-padding-start">{{day.short}}</ion-label>
-                <ion-input type="number" min="0" max="24" class="ion-no-padding ion-no-margin ion-text-center"
+                <ion-input type="number" min="0" max="24" class="ion-no-padding ion-no-margin ion-text-center hide-number-arrow"
                   [value]="ts.efforts[day.medium]?.toFixed(1)" readonly [color]="ts.efforts[day.medium]==0 ? 'medium' : ''"
                   >
                 </ion-input>
@@ -91,7 +91,7 @@
             <ion-col *ngFor="let day of weekDays; let i=index;">
               <ion-item class="ion-no-padding ion-no-margin" color="">
                 <ion-label position="stacked" class="ion-padding-start" color="primary">{{day.short}}</ion-label>
-                <ion-input type="number" min="0" max="24" class="ion-no-padding ion-no-margin ion-text-center"
+                <ion-input type="number" min="0" max="24" class="ion-no-padding ion-no-margin ion-text-center hide-number-arrow"
                   [value]="nts.efforts[day.medium].toFixed(1)" color="primary" readonly="true"
                   >
                 </ion-input>

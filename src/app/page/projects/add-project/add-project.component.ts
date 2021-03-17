@@ -33,7 +33,7 @@ export class AddProjectComponent implements OnInit {
     this.project.createProject(this.newProject, this.sessionInfo)
       .then(async res=>{
         let title = "Project created";
-        let body = "Project '" + res.projectId + "' '"+res.title+"' has been created successfully."
+        let body = "Thank you for creating the Project '" +res.title+"'.  Start tracking the time by creating the activities."
         let buttons: any[] = [
                         {
                           text: 'Dismiss',

@@ -76,7 +76,7 @@
         <ion-icon name="cash"></ion-icon>
         Hourly Rate ($)
       </ion-label>
-      <ion-input class="ion-text-end" type="number" placeholder="Hourly rate" [(ngModel)]="newTask.hourlyRate"></ion-input>
+      <ion-input class="ion-text-end hide-number-arrow" type="number" placeholder="Hourly rate" [(ngModel)]="newTask.hourlyRate"></ion-input>
     </ion-item>
   </ion-col>
   <ion-col size="12"  size-md="6" class="ion-no-padding">
@@ -99,23 +99,69 @@
           <ion-col>
             <ion-item class="ion-no-padding ion-no-margin" color="">
               <ion-label position="stacked" class="ion-padding-start  ion-text-center">Start</ion-label>
-              <ion-datetime displayFormat="HH:mm" class="ion-text-center" [(ngModel)]="day.start" [min]="day.min" [max]="day.finish && day.finish != day.start ? day.finish : day.max" (ionChange)="startFinishChange(i)"
+              <ion-datetime displayFormat="HH:mm" class="ion-text-center ion-hide-lg-up" [(ngModel)]="day.start" [min]="day.min" [max]="day.finish && day.finish != day.start ? day.finish : day.max" (ionChange)="startFinishChange(i)"
                 >
               </ion-datetime>
+              <ion-input class="ion-text-center ion-hide-lg-down" [placeholder]="day.startPh" [(ngModel)]="day.startTime" inputmode="numeric" (ionBlur)="timeInputChange(i,'start')" (ionFocus)="timeInputFocus(day,'start')">
+              </ion-input>
+              <!-- <ion-row class="ion-hide-lg-down ion-padding-start">
+                <ion-col size="5" class="ion-no-padding ion-no-margin hide-number-arrow  time-input-field ion-text-end">
+                  <ion-select mode="ios" class="ion-no-margin ion-no-paddingn ion-text-end" placeholder="00"  interface="popover" [value]="day.starthh"
+                  [interfaceOptions]="{'cssClass': 'time-popover'}"
+                  appNoArrow>
+                    <ion-select-option [value]="null">00</ion-select-option>
+                    <ion-select-option *ngFor="let h of day.minhours;let i = index;" [value]="h">{{h}}</ion-select-option>
+                  </ion-select>
+                </ion-col>
+                <ion-col size="2" class="ion-no-padding ion-no-margin ion-text-start">
+                  <ion-input class="ion-no-padding ion-no-margin  ion-text-start" readonly value=":"></ion-input>
+                </ion-col>
+                <ion-col size="5" class="ion-no-padding ion-no-margin hide-number-arrow  time-input-field ion-text-end">
+                  <ion-select mode="ios" class="ion-no-margin ion-no-paddingn" placeholder="00"  interface="popover" [value]="day.startmm"
+                  [interfaceOptions]="{'cssClass': 'time-popover'}"
+                  appNoArrow>
+                    <ion-select-option [value]="null">00</ion-select-option>
+                    <ion-select-option *ngFor="let m of day.minminutes;let i = index;" [value]="m">{{m}}</ion-select-option>
+                  </ion-select>
+                </ion-col>
+              </ion-row> -->
             </ion-item>
           </ion-col>
           <ion-col>
             <ion-item class="ion-no-padding ion-no-margin" color="">
               <ion-label position="stacked" class="ion-padding-start ion-text-center">Finish</ion-label>
-              <ion-datetime displayFormat="HH:mm" class="ion-text-center" [(ngModel)]="day.finish" [min]="day.start ? day.start : day.min" [max]="day.max"  (ionChange)="startFinishChange(i)"
+              <ion-datetime displayFormat="HH:mm" class="ion-text-center ion-hide-lg-up" [(ngModel)]="day.finish" [min]="day.start ? day.start : day.min" [max]="day.max"  (ionChange)="startFinishChange(i)"
                 >
               </ion-datetime>
+              <ion-input class="ion-text-center ion-hide-lg-down" [placeholder]="day.finishPh" [(ngModel)]="day.finishTime" inputmode="numeric" (ionBlur)="timeInputChange(i,'finish')" (ionFocus)="timeInputFocus(day,'finish')">
+              </ion-input>
+              <!-- <ion-row class="ion-hide-lg-down ion-padding-start">
+                <ion-col size="5" class="ion-no-padding ion-no-margin hide-number-arrow  time-input-field ion-text-end">
+                  <ion-select mode="ios" class="ion-no-margin ion-no-paddingn ion-text-end" placeholder="00"  interface="popover" [value]="day.finishhh"
+                  [interfaceOptions]="{'cssClass': 'time-popover'}"
+                  appNoArrow>
+                    <ion-select-option [value]="null">00</ion-select-option>
+                    <ion-select-option *ngFor="let h of day.maxhours;let i = index;" [value]="h">{{h}}</ion-select-option>
+                  </ion-select>
+                </ion-col>
+                <ion-col size="2" class="ion-no-padding ion-no-margin ion-text-start">
+                  <ion-input class="ion-no-padding ion-no-margin  ion-text-start" readonly value=":"></ion-input>
+                </ion-col>
+                <ion-col size="5" class="ion-no-padding ion-no-margin hide-number-arrow  time-input-field ion-text-end">
+                  <ion-select mode="ios" class="ion-no-margin ion-no-paddingn" placeholder="00"  interface="popover" [value]="day.finishmm"
+                  [interfaceOptions]="{'cssClass': 'time-popover'}"
+                  appNoArrow>
+                    <ion-select-option [value]="null">00</ion-select-option>
+                    <ion-select-option *ngFor="let m of day.maxminutes;let i = index;" [value]="m">{{m}}</ion-select-option>
+                  </ion-select>
+                </ion-col>
+              </ion-row> -->
             </ion-item>
           </ion-col>
           <ion-col>
             <ion-item class="ion-no-padding ion-no-margin">
               <ion-label position="stacked" class="ion-padding-start  ion-text-center">Effort</ion-label>
-              <ion-input type="number" min="0" max="24" class="ion-text-center ion-align-items-baseline"
+              <ion-input type="number" min="0" max="24" class="ion-text-center ion-align-items-baseline hide-number-arrow"
                 [value]="wdEntry.efforts[day.medium].toFixed(2)" readonly color="primary" readonly
                 >
               </ion-input>

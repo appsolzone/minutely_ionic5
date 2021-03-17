@@ -40,6 +40,37 @@ ion-icon {
 //   //   margin-bottom: 15px;
 //   // }
 // }
+.hide-number-arrow{
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+}
+
+.time-input-field{
+  ion-select::part(icon) {
+    display: none !important;
+    width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+   }
+   ion-select::part(text) {
+     margin-left: -20px !important;
+   }
+}
+
+.time-popover{
+  --max-width: 110px;
+  --width: 110px;
+  --max-height: 40%;
+}
 
 @media (max-width: 575px) {
   .section-masonic{

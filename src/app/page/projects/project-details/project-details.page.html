@@ -10,8 +10,8 @@
 <ion-content color="light">
   <ion-row>
     <ion-col size="12" class="ion-no-padding">
-      <ion-item lines="none">
-        <ion-icon name="bookmark-outline" color="medium" slot="start"></ion-icon>
+      <ion-item lines="none" [color]="colorStack[(selectedProject?.projectNo - 1)%colorStack.length]">
+        <ion-icon name="bookmark-outline" slot="start"></ion-icon>
         <ion-label>
           <h1 class="ion-text-wrap"><small>{{selectedProject?.data?.title}}</small></h1>
         </ion-label>

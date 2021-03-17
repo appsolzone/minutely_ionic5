@@ -176,6 +176,20 @@ export class StartActivityComponent implements OnInit {
 
                           await this.common.presentAlert(title,body ,buttons);
                         });
+        } else {
+          this.common.hideLoader();
+          let title = "Warning";
+          let body = "Activity can not be started. It seems location service is not activated or permission is not allowed. Please enable location service and try again.";
+          let buttons: any[] = [
+                          {
+                            text: 'Dismiss',
+                            role: 'cancel',
+                            cssClass: '',
+                            handler: ()=>{}
+                          }
+                        ];
+
+          await this.common.presentAlert(title,body ,buttons);
         }
       }else{
         let title="Missing Info";

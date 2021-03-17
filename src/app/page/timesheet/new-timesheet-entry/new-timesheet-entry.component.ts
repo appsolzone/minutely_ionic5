@@ -30,6 +30,7 @@ export class NewTimesheetEntryComponent implements OnInit {
   public searchModeActivity = 'all';
   public searchedprojects: any[]=[];
   public searchedactivities: any[] =[];
+  public timeInputValidationAlertShown: boolean = true;
   public viewLoaded: boolean = false;
   public wdEntry = {
     project: {},
@@ -48,13 +49,13 @@ export class NewTimesheetEntryComponent implements OnInit {
                  }
   };
   public weekDays: any[] =  [
-                              {short:'M', medium: 'Mon', weekDate: null, start: null, finish: null, min:'', max:''},
-                              {short:'T', medium: 'Tue', weekDate: null, start: null, finish: null, min:'', max:''},
-                              {short:'W', medium: 'Wed', weekDate: null, start: null, finish: null, min:'', max:''},
-                              {short:'T', medium: 'Thu', weekDate: null, start: null, finish: null, min:'', max:''},
-                              {short:'F', medium: 'Fri', weekDate: null, start: null, finish: null, min:'', max:''},
-                              {short:'S', medium: 'Sat', weekDate: null, start: null, finish: null, min:'', max:''},
-                              {short:'S', medium: 'Sun', weekDate: null, start: null, finish: null, min:'', max:''}
+                              {short:'M', medium: 'Mon', weekDate: null, start: null, finish: null, min:'', max:'', startTime: '', startPh: '00:00', finishTime: '', finishPh: '00:00'},
+                              {short:'T', medium: 'Tue', weekDate: null, start: null, finish: null, min:'', max:'', startTime: '', startPh: '00:00', finishTime: '', finishPh: '00:00'},
+                              {short:'W', medium: 'Wed', weekDate: null, start: null, finish: null, min:'', max:'', startTime: '', startPh: '00:00', finishTime: '', finishPh: '00:00'},
+                              {short:'T', medium: 'Thu', weekDate: null, start: null, finish: null, min:'', max:'', startTime: '', startPh: '00:00', finishTime: '', finishPh: '00:00'},
+                              {short:'F', medium: 'Fri', weekDate: null, start: null, finish: null, min:'', max:'', startTime: '', startPh: '00:00', finishTime: '', finishPh: '00:00'},
+                              {short:'S', medium: 'Sat', weekDate: null, start: null, finish: null, min:'', max:'', startTime: '', startPh: '00:00', finishTime: '', finishPh: '00:00'},
+                              {short:'S', medium: 'Sun', weekDate: null, start: null, finish: null, min:'', max:'', startTime: '', startPh: '00:00', finishTime: '', finishPh: '00:00'}
                             ];
   public newTask: any = {
                           searchTitle: '',
@@ -174,6 +175,7 @@ export class NewTimesheetEntryComponent implements OnInit {
         setTimeout(()=>this.common.hideLoader(),150);
         if(!message.nonConflictingActivity){
           this.weekDays[i].finish = this.weekDays[i].start = moment(this.weekDays[i].weekDate).format('YYYY-MM-DDT00:00');
+          this.weekDays[i].startPh = this.weekDays[i].finishPh = "00:00";
           this.wdEntry.durations[day.medium] = {start: new Date(this.weekDays[i].start), finish: new Date(this.weekDays[i].finish)};
           this.wdEntry.efforts[day.medium] = 0; //moment().diff(moment(this.newTask.activeTask[0].startTime.seconds*1000)); // - this.session.admin.timeOffset;
           this.wdEntry.billingAmount[day.medium] = 0;
@@ -192,6 +194,8 @@ export class NewTimesheetEntryComponent implements OnInit {
           await this.common.presentAlert(title,body ,buttons);
         } else {
           this.wdEntry.durations[day.medium] = {start: new Date(day.start), finish: new Date(day.finish)};
+          this.weekDays[i].startPh = moment(new Date(this.weekDays[i].start)).format('HH:mm')
+          this.weekDays[i].finishPh = moment(new Date(this.weekDays[i].finish)).format('HH:mm');
           this.wdEntry.efforts[day.medium] = moment(day.finish).diff(moment(day.start))/(60*60*1000); //moment().diff(moment(this.newTask.activeTask[0].startTime.seconds*1000)); // - this.session.admin.timeOffset;
           this.wdEntry.billingAmount[day.medium] = this.wdEntry.efforts[day.medium] * (this.newTask.hourlyRate*1);
           this.wdEntry.count ++;
@@ -199,7 +203,9 @@ export class NewTimesheetEntryComponent implements OnInit {
 
         // console.log("message from validation", message, day.start, day.finish);
       } else {
+        // console.log("message from validation new ", day.start, day.finish);
         this.weekDays[i].finish = this.weekDays[i].start;
+        this.weekDays[i].startPh = this.weekDays[i].finishPh = moment(new Date(this.weekDays[i].start)).format('HH:mm');
         this.wdEntry.durations[day.medium] = {start: new Date(this.weekDays[i].start), finish: new Date(this.weekDays[i].finish)};
         this.wdEntry.efforts[day.medium] = 0; //moment().diff(moment(this.newTask.activeTask[0].startTime.seconds*1000)); // - this.session.admin.timeOffset;
         this.wdEntry.billingAmount[day.medium] = 0;
@@ -251,6 +257,56 @@ export class NewTimesheetEntryComponent implements OnInit {
       this.addNewActivityData(data, this.wdEntryDataIndex);
     }
 
+  }
+
+  timeInputFocus(day,startFinish){
+    // setTimeout(()=>{
+      day[startFinish+'Time'] = day[startFinish+'Ph'] ? day[startFinish+'Ph'].replace(/[^0-9]+/,'','g') : '0000';
+    // },100);
+  }
+
+  async timeInputChange(i, startFinish){
+    let day = this.weekDays[i];
+    console.log("entry",startFinish,day[startFinish+'Time']);
+    day[startFinish+'Ph'] = (day[startFinish+'Time'].replace(/[^0-9]+/,'','g')*1 + '');
+    let title="Invalid time";
+    let body = "Invalid time entered, please ensure that the time is 24 hr format and follows HHmm format."
+    let buttons: any[] = [
+                    {
+                      text: 'Dismiss',
+                      role: 'cancel',
+                      cssClass: '',
+                      handler: ()=>{ this.timeInputValidationAlertShown = false;}
+                    }
+                  ];
+    let hr:any = '00';
+    let mi:any = '00';
+    console.log("entry",startFinish,hr,mi,day[startFinish+'Ph'],day[startFinish+'Ph'].length);
+    if(day[startFinish+'Ph'].length >=1 && day[startFinish+'Ph'].length <= 4){
+      hr = (day[startFinish+'Ph'].length - 2 > 0 ? day[startFinish+'Ph'].substr(0, day[startFinish+'Ph'].length - 2) : '00' ).padStart(2,'0');
+      mi = (day[startFinish+'Ph'].length >0 ? day[startFinish+'Ph'].substr(-2) : '00' ).padStart(2,'0');
+      console.log("entry if",startFinish,hr,mi,day[startFinish+'Ph'],day[startFinish+'Ph'].length);
+      if(hr*1<0 || hr*1 > 23 || mi*1 < 0 || mi*1 > 59){
+        hr = '00';
+        mi = '00';
+        this.timeInputValidationAlertShown = true;
+        await this.common.presentAlert(title,body ,buttons);
+      }
+    } else {
+      console.log("else of ",startFinish,hr,mi,day[startFinish+'Ph'].length);
+      this.timeInputValidationAlertShown = true;
+      await this.common.presentAlert(title,body ,buttons);
+    }
+    day[startFinish+'Ph'] = hr + ':' + mi;
+    day[startFinish] = moment(new Date(day[startFinish])).format('YYYY-MM-DDT') + day[startFinish+'Ph'];
+    console.log(startFinish,day[startFinish+'Ph'], day.start, day.finish);
+    day[startFinish+'Time'] = '';
+    console.log('before started validation', day.start, day.finish);
+    if(day.start && day.finish && !this.timeInputValidationAlertShown){
+      this.timeInputValidationAlertShown = true;
+      console.log('started validation', day.start, day.finish);
+      await this.startFinishChange(i);
+    }
   }
 
 }

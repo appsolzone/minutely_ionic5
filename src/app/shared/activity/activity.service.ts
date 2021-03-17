@@ -158,7 +158,47 @@ export class ActivityService {
                   };
                   return message;
                 }else{
-                  return message;
+                  queryObj = [
+                        { field: 'uid', operator: '==', value: uid },
+                        { field: 'subscriberId', operator: '==', value: subscriberId },
+                        { field: 'startTime', operator: '>=', value: new Date(moment(startTime).format('YYYY-MM-DDT00:00')) },
+                        { field: 'startTime', operator: '<=', value: new Date(moment(startTime).format('YYYY-MM-DDT23:59')) },
+                      ];
+                    return this.getActivitiesOnce(queryObj, null, 1)
+                      .then((querySnapshot)=>{
+                        querySnapshot.forEach((doc)=>{
+                          data.push(doc.data());
+                        });
+                        if(data.length > 0){
+                          let conflicts = data.filter(act=>{
+                            let start = new Date(act.startTime.seconds*1000);
+                            let end = new Date(act.endTime?.seconds*1000);
+                            // console.log("data2", (start <= startTime && end >= endTime) , (start <= endTime && act.status == 'ACTIVE'), start, end);
+                            return (start <= startTime && end >= endTime) || (start <= endTime && act.status == 'ACTIVE');
+                          })
+                          // console.log("data2", conflicts);
+                          if(conflicts.length>0){
+                            message={
+                              nonConflictingActivity: false ,
+                              title: 'Warning',
+                              body: "It seems some other activities exist during the selected period for the activity you wish to create. Please check and try again. You may wish to check existing activities from Activities -> Search activities."
+                            };
+                            return message;
+                          } else{
+                            return message;
+                          }
+
+                        }else{
+                          return message;
+                        }
+                  }).catch((err)=>{
+                    message={
+                      nonConflictingActivity: false ,
+                      title: 'Error',
+                      body: "There seems to be an issue during validating dates for the activity. Please try again."
+                    };
+                    return message;
+                  });
                 }
               }).catch((err)=>{
                 message={
