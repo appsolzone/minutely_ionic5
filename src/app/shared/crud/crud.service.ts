@@ -316,8 +316,7 @@ export class CrudService {
         tags:[],
         taskProbability :dataObject.probability,
         taskImpact:dataObject.probability,
-        taskMitigation:dataObject.mitigation,
-        taskContingency:dataObject.notes,
+        taskDetails:dataObject.notes,
         titleSearchMap: this._searchMap.createSearchMap(searchStrings),
         ownerInitiatorUidList:[
                               dataObject.ownerId.uid,
@@ -345,7 +344,7 @@ export class CrudService {
       this._componentsService.presentToaster(`You have ${serviceName} created successfully`);
 
       let eventInfo = {
-        origin: 'risks',
+        origin: this._db.allCollections[serviceName],
         eventType: 'add',
         data: {
           id: data.id,
@@ -355,7 +354,10 @@ export class CrudService {
       this._componentsService.hideLoader();
       this._notification.createNotifications(eventInfo);
 
-      //this._kpi.updateKpiDuringCreation('Risk',1,orgProfile);
+      let kpiServiceName = serviceName.charAt(0).toUpperCase() + serviceName.slice(1)
+      this._kpi.updateKpiDuringCreation(kpiServiceName,1,orgProfile);
+      if(kpiServiceName == 'Risk') this._kpi.updateRiskMetrix(dataObject,dataObject,orgProfile)
+
       // this.storage.remove('risk_type');
       // this.storage.remove('risk_linkage');
 

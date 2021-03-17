@@ -99,7 +99,14 @@ export class UserCommentsPage implements OnInit,OnDestroy {
         date:this.db.frb.firestore.FieldValue.serverTimestamp(),
         totalComment:this.db.frb.firestore.FieldValue.increment(1)
       }
-      this.crud.addComment(objectAdd,this.passObj);
+      this.crud.addComment(objectAdd,this.passObj)
+      .then(res=>{
+        console.log(res);
+         this.commentTxt = '';
+        this.componentService.presentToaster('Your comment add successfully!!');
+      })
+      .catch(err=>{console.log(err);this.componentService.presentAlert('Error',"Somting wents wrong! Please try again")});
+     
     }
 
   }

@@ -24,7 +24,7 @@
     </ion-card-header>
     <ion-item-divider class="ion-no-padding ion-no-margin" style="min-height:0.1rem;"></ion-item-divider>
 
-    <div *ngIf="initiateData$?.service == 'Meeting'">
+
     <ion-item>
       <ion-label color="dark">
         <ion-icon name="pricetags"></ion-icon>
@@ -44,6 +44,7 @@
       </ion-chip>
     </ion-item>
   
+  <div *ngIf="initiateData$?.service == 'Meeting'">
     <ion-item>
       <ion-label color="dark">
         <ion-icon name="md-locate"></ion-icon>

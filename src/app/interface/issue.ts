@@ -19,8 +19,7 @@ export interface Issue {
     tags:[],
     issueProbability :string,
     issueImpact:string,
-    issueMitigation:string,
-    issueContingency:string,
+    issueDetails:string,
     titleSearchMap: any,
     ownerInitiatorUidList:Array<any>
 }

@@ -123,7 +123,7 @@
       <!-- list tasks -->
       <ion-list>
         <div *ngFor="let task of allTasks;let id=index">
-          <ion-card class="ion-no-padding">
+          <ion-card class="ion-no-padding" (click)="goToDetailsPage(task)">
             <ion-item lines="none">
               <ion-button size="small" slot="start" color="danger">
                 <ion-icon name="calendar" slot="start"></ion-icon>
@@ -166,28 +166,33 @@
 
                   <p class="ion-text-start">
                     <ion-icon slot="start" color="dark" name="crop" class="ion-margin-right"></ion-icon>
-                    Mitigation
+                    Details :
                   </p>
-                  <p class="twolines">{{task.taskMitigation ? task.taskMitigation : 'No mitigation plan added yet'}}</p>
+                  <p class="twolines">{{task.taskDetails ? task.taskDetails : 'No details added yet'}}</p>
 
 
                 </ion-col>
               </ion-row>
 
               <ion-item class="ion-no-padding" lines="none">
-                <img slot="start" *ngIf="task.latestComment.picUrl !== ''" [src]="task.latestComment.picUrl"
-                  style="height:20px; width:20px;border-radius:50%;" />
+                <ion-avatar *ngIf="task?.latestComment.totalComment > 0">
+                  <img slot="start" *ngIf="task.latestComment.picUrl !== ''"
+                    [src]="task.latestComment.picUrl" style="height:40px; width:40px;border-radius:50%;" />
+                  <ion-icon *ngIf="task.latestComment.picUrl == ''" color="primary"
+                    name="person-circle" style="height:40px;width:40px;border-radius:50%">
+                  </ion-icon>
+                </ion-avatar>
 
-                <ion-icon slot="start" name="chatbubbles"
-                  [ngStyle]="{'height':'15px','width':'15px','border-radius':'50%'}" color="medium"
-                  class="ion-padding-right" *ngIf="task?.latestComment.totalComments == 0"></ion-icon>
 
-                <!-- <div item-content class="twolines"> -->
-                <p class="ion-text-wrap">
-                  {{task.latestComment.totalComments == 0 ? 'Be the first person to post comment for the task' :
+                <ion-icon *ngIf="task?.latestComment.totalComment == 0" slot="start" name="chatbubbles" [ngStyle]="{'height':'15px','width':'15px','border-radius':'50%'}"
+                  color="medium" class="ion-padding-right"></ion-icon>
+
+            
+                <ion-label>
+                  {{task.latestComment.totalComment == 0 ? 'Be the first person to post comment for the task' :
                   task.latestComment.comment}}
-                </p>
-                <!-- </div> -->
+                </ion-label>
+           
               </ion-item>
             </ion-card-content>
           </ion-card>
@@ -212,23 +217,4 @@
       </ion-fab-button>
     </ion-fab-list>
   </ion-fab>
-  <!-- <ion-fab horizontal="start" vertical="top" slot="fixed">
-    <ion-fab-button color="secondary">
-      <ion-icon md="caret-forward" ios="chevron-forward-circle-outline"></ion-icon>
-    </ion-fab-button>
-    <ion-fab-list side="end">
-      <ion-fab-button color="light">
-        <ion-icon name="logo-facebook"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button color="light">
-        <ion-icon name="logo-twitter"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button color="light">
-        <ion-icon name="logo-vimeo"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button color="light">
-        <ion-icon name="logo-google"></ion-icon>
-      </ion-fab-button>
-    </ion-fab-list>
-  </ion-fab> -->
 </ion-content>

@@ -185,21 +185,21 @@
             </ion-row>
 
           <ion-item class="ion-no-padding" lines="none">
-            <ion-avatar>
-            <img slot="start" *ngIf="risk?.latestComment.totalComments !== 0 && risk.latestComment.picUrl !== ''"
+            <ion-avatar *ngIf="risk?.latestComment.totalComment > 0">
+            <img slot="start" *ngIf="risk.latestComment.picUrl !== ''"
               [src]="risk.latestComment.picUrl" style="height:40px; width:40px;border-radius:50%;" />
-            <ion-icon *ngIf="risk?.latestComment.totalComments !== 0 && risk.latestComment.picUrl == ''" color="primary"
+            <ion-icon *ngIf="risk.latestComment.picUrl == ''" color="primary"
               name="person-circle" style="height:40px;width:40px;border-radius:50%">
             </ion-icon>
             </ion-avatar>
 
             
-            <ion-icon slot="start" name="chatbubbles" [ngStyle]="{'height':'15px','width':'15px','border-radius':'50%'}" color="medium" class="ion-padding-right" *ngIf="risk?.latestComment.totalComments == 0"></ion-icon>
+            <ion-icon *ngIf="risk?.latestComment.totalComment == 0" slot="start" name="chatbubbles" [ngStyle]="{'height':'15px','width':'15px','border-radius':'50%'}" color="medium" class="ion-padding-right"></ion-icon>
 
             <!-- <div item-content class="twolines"> -->
-            <p class="ion-text-wrap">
+            <ion-label>
               {{risk.latestComment.totalComments == 0 ? 'Be the first person to post comment for the risk' : risk.latestComment.comment}}
-            </p>
+            </ion-label>
             <!-- </div> -->
           </ion-item>
           </ion-card-content>

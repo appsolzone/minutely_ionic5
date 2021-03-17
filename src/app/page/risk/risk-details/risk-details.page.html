@@ -28,6 +28,13 @@
     </ion-item>
 
 
+    <ion-item lines="none">
+      <ion-chip *ngFor="let data of risk?.tags" color="warning">
+        <ion-label>{{data}}</ion-label>
+      </ion-chip>
+    </ion-item>
+
+
     <ion-item lines="full">
       <ion-label slot="start">
         <ion-icon name="podium-outline"></ion-icon> Status
@@ -122,16 +129,16 @@
         <ion-icon name="chatbubbles"></ion-icon> Latest Comment
       </ion-label>
       <ion-button slot="end" color="medium" fill="outline" (click)="goToCommentPage(risk)">
-        <ion-icon name="chatbubbles"></ion-icon>{{risk?.latestComment.totalComments > 0? risk.latestComment.totalComments+' comments':'add comment'}} 
+        <ion-icon name="chatbubbles"></ion-icon>{{risk?.latestComment.totalComment > 0? risk.latestComment.totalComment+' comments':'add comment'}} 
       </ion-button>
     </ion-item>
      
-    <ion-item lines="full" *ngIf="risk?.latestComment.totalComments == 0">
+    <ion-item lines="full" *ngIf="risk?.latestComment.totalComment == 0">
     <ion-label slot="start" color="medium" >
       <ion-icon name="send-outline"></ion-icon> Be the first person to post comment for the risk
     </ion-label>
     </ion-item>
-    <ion-item lines="full" *ngIf="risk?.latestComment.totalComments !== 0">
+    <ion-item lines="full" *ngIf="risk?.latestComment.totalComment !== 0">
       <ion-avatar slot="start">
         <img slot="start" *ngIf=" risk?.latestComment.picUrl !== ''"
           [src]="risk?.latestComment.picUrl" style="height:40px; width:40px;border-radius:50%;" />
@@ -151,7 +158,7 @@
   <ion-col>
     <ion-item lines="full">
       <ion-label slot="start">
-        <ion-icon name="edit-outline"></ion-icon> Risk Mitigation
+        <ion-icon name="create-outline"></ion-icon> Risk Mitigation
       </ion-label>
     </ion-item>
     

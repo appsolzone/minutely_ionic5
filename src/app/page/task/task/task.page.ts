@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
+import { Task } from 'src/app/interface/task';
 import { User } from 'src/app/interface/user';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { CrudService } from 'src/app/shared/crud/crud.service';
@@ -28,7 +29,7 @@ export class TaskPage implements OnInit,OnDestroy {
   userProfile: User;
   orgProfile:any =null;
 
-  allTasks:any;
+  allTasks:Task[];
   kpiData:any;
   activeSearch:boolean = false;
 
@@ -225,5 +226,12 @@ export class TaskPage implements OnInit,OnDestroy {
     if(!this.activeSearch){
      this.fetchAllTasks();
     }
+  }
+
+
+  //go to details page 
+  goToDetailsPage(data:object):void{
+   this._crud.detailsPagePasing$.next(data);
+   this._router.navigate(['/task/details']);
   }
 }

@@ -9,6 +9,7 @@ import { TaskPageRoutingModule } from './task-routing.module';
 import { TaskPage } from './task.page';
 import { BargraphComponent } from '../../bargraph/bargraph.component';
 import { NotificationPageRoutingModule } from '../../notification/notification-routing.module';
+import { TaskDetailsPageModule } from '../task-details/task-details.module';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { NotificationPageRoutingModule } from '../../notification/notification-r
     FormsModule,
     IonicModule,
     TaskPageRoutingModule,
-    NotificationPageRoutingModule
+    NotificationPageRoutingModule,
+    TaskDetailsPageModule
   ],
   declarations: [TaskPage,BargraphComponent]
 })

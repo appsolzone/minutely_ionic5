@@ -144,12 +144,20 @@ export class KpiService {
              riskCurrData.riskProbability +
              riskCurrData.riskImpact]: this.database.frb.firestore.FieldValue.increment(1),
            });
-           //------------------only for risk------------
-           batch
-             .commit()
-             .then(() => res(true))
-             .catch((err) => {});
+
+      }else{
+          batch.update(a, {
+             ["risk" +
+             riskCurrData.riskProbability +
+             riskCurrData.riskImpact]: this.database.frb.firestore.FieldValue.increment(1),
+           });
       }
+
+      //------------------only for risk------------
+      batch
+        .commit()
+        .then(() => res(true))
+        .catch((err) => {});
     });
   }
 
