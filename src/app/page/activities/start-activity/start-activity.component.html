@@ -1,25 +1,28 @@
 <ion-card>
-  <ion-card-header color="secondary">
-    <ion-item color="transparent">
+  <ion-header mode="ios">
+    <ion-item color="secondary" lines="none">
       <ion-icon name="bicycle" slot="start"></ion-icon>
       <ion-label>
         <h1><small>Start new activity</small></h1>
       </ion-label>
     </ion-item>
-  </ion-card-header>
+  </ion-header>
   <ion-card-content>
     <ion-item lines="inset" class="ion-no-padding">
       <ion-label position="floating">
         <ion-icon name="bookmark-outline"></ion-icon>
         Project Name
       </ion-label>
-      <ion-input type="text" [(ngModel)]="newTask.searchTitle" color="medium"
+      <ion-input #project id="project" type="text" [(ngModel)]="newTask.searchTitle" color="medium"
       placeholder="Enter keywords to search project name"
-      (ionChange)="onSearchProject()"></ion-input>
+      (ionChange)="onSearchProject()"
+      (ionFocus)="onProjectFocus()"
+      (ionBlur)="onProjectBlur()"
+      ></ion-input>
     </ion-item>
 
     <ion-list>
-      <ion-radio-group [(ngModel)]="newTask.taskProject" *ngIf="!newTask.taskProject.title && newTask.searchTitle.length >=3"
+      <ion-radio-group [(ngModel)]="newTask.taskProject" *ngIf="isProjectSearchFocused"
         (ngModelChange)="onSearchActivity()">
         <ion-list-header  class="ion-no-padding">
           <ion-segment mode="ios" [value]="searchModeProject" (ionChange)="projectSearchOptionsChanged($event)" color="primary">
@@ -31,14 +34,35 @@
             </ion-segment-button>
           </ion-segment>
         </ion-list-header>
-        <ion-item *ngFor="let project of searchedprojects;">
+        <ion-item class="ion-no-padding" *ngIf="isProjectSearchFocused && !newTask.taskProject?.projectId">
+          <ion-label class="ion-text-wrap">
+            <small><ion-text color="danger">
+            {{ !newTask.searchTitle ? "Enter or select a project name" :
+                newTask.searchTitle && searchedprojects==0 ? "Project will be created as '"+ newTask.searchTitle +"'"
+                : "Select a project, else a new project will be created as '"+ newTask.searchTitle +"'"
+              }}
+            </ion-text></small>
+          </ion-label>
+          <ion-icon name="warning" slot="start" color="danger"></ion-icon>
+        </ion-item>
+        <ion-item class="ion-no-padding" *ngFor="let project of searchedprojects;">
+          <ion-icon name="bookmark" slot="start" [color]="colorStack[(project.projectNo - 1)%colorStack.length]"></ion-icon>
           <ion-label>{{project.title}}</ion-label>
           <ion-radio [value]="project"></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <ion-item *ngIf="newTask.taskProject.title">
+      <ion-item class="ion-no-padding" *ngIf="!isProjectSearchFocused && newTask.taskProject.title">
+        <ion-icon name="bookmark" slot="start" [color]="colorStack[(newTask.taskProject.projectNo - 1)%colorStack.length]"></ion-icon>
         <ion-label>{{newTask.taskProject.title}}</ion-label>
-        <ion-icon name="checkbox" color="primary" slot="end"></ion-icon>
+        <ion-icon name="checkbox" slot="end" color="secondary"></ion-icon>
+      </ion-item>
+      <ion-item class="ion-no-padding" *ngIf="!isProjectSearchFocused && !newTask.taskProject?.projectId">
+        <ion-label class="ion-text-wrap">
+          <small><ion-text color="danger">
+          {{newTask.searchTitle ? "Project will be created as '"+ newTask.searchTitle +"'" : 'Enter or select a project name'}}
+          </ion-text></small>
+        </ion-label>
+        <ion-icon name="warning" slot="start" color="danger"></ion-icon>
       </ion-item>
     </ion-list>
 
@@ -48,13 +72,16 @@
         <ion-icon name="body-outline"></ion-icon>
         Activity Name
       </ion-label>
-      <ion-input type="text" debounce="300" [(ngModel)]="newTask.taskName" color="medium"
+      <ion-input #activity id="activity" type="text" debounce="300" [(ngModel)]="newTask.taskName" color="medium"
       placeholder="Enter keywords to search activity name"
-      (ionChange)="onSearchActivity()"></ion-input>
+      (ionChange)="onSearchActivity()"
+      (ionFocus)="onActivityFocus()"
+      (ionBlur)="onActivityBlur()"
+      ></ion-input>
     </ion-item>
 
     <ion-list>
-      <ion-radio-group [(ngModel)]="newTask.activity" *ngIf="!newTask.activity.name && newTask.taskName.length >=3">
+      <ion-radio-group [(ngModel)]="newTask.activity" *ngIf="newTask.taskProject.projectId && (isSearchFocused || !newTask.activity.activityId)">
         <ion-list-header  class="ion-no-padding">
           <ion-segment mode="ios" [value]="searchModeActivity" (ionChange)="activitySearchOptionsChanged($event)" color="primary">
             <ion-segment-button value="all">
@@ -65,14 +92,33 @@
             </ion-segment-button>
           </ion-segment>
         </ion-list-header>
-        <ion-item *ngFor="let act of searchedactivities;">
+        <ion-item class="ion-no-padding" *ngIf="isSearchFocused && !newTask.activity.activityId">
+          <ion-label class="ion-text-wrap">
+            <small><ion-text color="danger">
+            {{ !newTask.taskName ? "Enter or select an activity" :
+                newTask.taskName && searchedactivities==0 ? "Activity will be created as '"+ newTask.taskName +"'"
+                : "Select an activity, else a new activity will be created as '"+ newTask.taskName +"'"
+              }}
+            </ion-text></small>
+          </ion-label>
+          <ion-icon name="warning" slot="start" color="danger"></ion-icon>
+        </ion-item>
+        <ion-item class="ion-no-padding" *ngFor="let act of searchedactivities;">
           <ion-label>{{act.name}}</ion-label>
           <ion-radio [value]="act"></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <ion-item *ngIf="newTask.activity.name">
+      <ion-item class="ion-no-padding" *ngIf="!isSearchFocused && newTask.activity.name">
         <ion-label>{{newTask.activity.name}}</ion-label>
-        <ion-icon name="checkbox" color="primary" slot="end"></ion-icon>
+        <ion-icon name="checkbox" slot="end" color="secondary"></ion-icon>
+      </ion-item>
+      <ion-item class="ion-no-padding" *ngIf="(!newTask.taskProject.projectId && isSearchFocused) || !isSearchFocused && !newTask.activity?.activityId">
+        <ion-label class="ion-text-wrap">
+          <small><ion-text color="danger">
+          {{newTask.taskName ? "Activity will be created as '"+ newTask.taskName +"'" : 'Enter or select an activity'}}
+          </ion-text></small>
+        </ion-label>
+        <ion-icon name="warning" slot="start" color="danger"></ion-icon>
       </ion-item>
     </ion-list>
     <ion-item  lines="inset" class="ion-no-padding">
@@ -80,7 +126,7 @@
         <ion-icon name="cash"></ion-icon>
         Hourly Rate ($)
       </ion-label>
-      <ion-input class="ion-text-end hide-number-arrow" type="number" placeholder="Hourly rate" [(ngModel)]="newTask.hourlyRate"></ion-input>
+      <ion-input class="ion-text-end hide-number-arrow" type="number" inputmode="numeric" placeholder="Hourly rate" [(ngModel)]="newTask.hourlyRate"></ion-input>
     </ion-item>
     <ion-item class="ion-padding-bottom" lines="none">
       <ion-button slot="end" fill="clear" color="medium" (click)="onCancel()">

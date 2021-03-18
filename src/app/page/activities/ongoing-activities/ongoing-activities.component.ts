@@ -6,6 +6,7 @@ import { SessionService } from 'src/app/shared/session/session.service';
 import { ActivityService } from 'src/app/shared/activity/activity.service';
 import { CalendarService } from 'src/app/shared/calendar/calendar.service';
 import { ComponentsService } from '../../../shared/components/components.service';
+import { ProjectService } from 'src/app/shared/project/project.service';
 
 @Component({
   selector: 'app-ongoing-activities',
@@ -18,6 +19,7 @@ export class OngoingActivitiesComponent implements OnInit {
   sessionSubs$;
   activitySubs$;
   public sessionInfo: any;
+  public colorStack: any[];
   public timer: any;
   public hour: number = 0;
   public minute: number = 0;
@@ -44,7 +46,9 @@ export class OngoingActivitiesComponent implements OnInit {
     private activity: ActivityService,
     private cal: CalendarService,
     private common:ComponentsService,
+    private project: ProjectService,
   ) {
+    this.colorStack = this.project.projColorStack;
     this.sessionSubs$ = this.session.watch().subscribe(value=>{
       // console.log("Session Subscription got", value);
       // Re populate the values as required
@@ -119,8 +123,9 @@ export class OngoingActivitiesComponent implements OnInit {
                                 const id = a.payload.doc.id;
                                 const startTime = new Date(data.startTime?.seconds*1000);
                                 const endTime = new Date(data.endTime?.seconds*1000);
+                                const projectNo = data.project.projectId.replace(/[A-Z]/,'');
                                 // return {id, data};
-                                return {id, data: {...data, startTime, endTime}};
+                                return {id, projectNo, data: {...data, startTime, endTime}};
                               });
 
                               this.allTasks =[];

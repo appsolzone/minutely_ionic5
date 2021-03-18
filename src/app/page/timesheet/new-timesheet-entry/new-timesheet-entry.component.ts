@@ -83,7 +83,8 @@ export class NewTimesheetEntryComponent implements OnInit {
     private platform: Platform,
   ) {
     this.colorStack = this.project.projColorStack;
-    this.isMobile = this.platform.is('mobile');
+    this.isMobile = !this.platform.is('desktop');
+    console.log("this.platform", this.platform.platforms());
   }
 
   async ngOnInit() {
@@ -168,6 +169,8 @@ export class NewTimesheetEntryComponent implements OnInit {
 
                               this.allProjects = allProjects;
                               console.log("allProjects", this.allProjects);
+                              // this.isProjectSearchFocused = true;
+                              this.onSearchProject();
 
                             });
     } else {
@@ -183,11 +186,12 @@ export class NewTimesheetEntryComponent implements OnInit {
       // do nothing
     } else {
       // this.newTask.activity = {};
-      if(this.newTask.searchTitle.length <3){
-        this.searchedprojects = this.allProjects ? this.allProjects : [];
+      // if(this.newTask.searchTitle.length <3){
+      if(!this.newTask.searchTitle.trim()){
+        this.searchedprojects = []; //this.allProjects ? this.allProjects : [];
       } else {
         let matchMap = this.searchMap.createSearchMap(this.newTask.searchTitle);
-        let matchStrings = this.newTask.searchTitle.toLowerCase().split(' ');
+        let matchStrings = this.newTask.searchTitle.trim().replace(/[\!\@\#\$\%\^\&\*\(\)\.\+]+/g,'').replace(/  +/g,' ').toLowerCase().split(' ');
         let newexp = this.searchModeProject == 'all' ? '^(?=.*?\ '+matchMap.matchAny.join('\ )(?=.*?\ ')+'\ ).*$' : ' (' + matchMap.matchAny.join('|') + ') ';
         let newExpString = this.searchModeProject == 'all' ? '^(?=.*?'+matchStrings.join(')(?=.*?')+'\).*$' : '^.*(' + matchStrings.join('|') + ').*$';
         console.log("newExpString project", newExpString);
@@ -199,7 +203,7 @@ export class NewTimesheetEntryComponent implements OnInit {
             return matched;
           });
           this.newTask.activity = {};
-          this.searchedactivities = this.newTask.taskProject.activities ? this.newTask.taskProject.activities : [];
+          this.searchedactivities = []; //this.newTask.taskProject.activities ? this.newTask.taskProject.activities : [];
           this.newTask.taskProject = {};
           // this.searchedprojects = [];
       }
@@ -229,11 +233,13 @@ export class NewTimesheetEntryComponent implements OnInit {
       // do nothing
     } else {
       // this.newTask.activity = {};
-      if(this.newTask.taskName.length <3){
-        this.searchedactivities = this.newTask.taskProject.activities ? this.newTask.taskProject.activities : [];
+      // if(this.newTask.taskName.length <3){
+      if(!this.newTask.taskName.trim()){
+        this.searchedactivities = []; //this.newTask.taskProject.activities ? this.newTask.taskProject.activities : [];
+        this.newTask.activity = {};
       } else if(this.newTask.taskProject.activities){
         let matchMap = this.searchMap.createSearchMap(this.newTask.taskName);
-        let matchStrings = this.newTask.taskName.toLowerCase().split(' ');
+        let matchStrings = this.newTask.taskName.trim().replace(/[\!\@\#\$\%\^\&\*\(\)\.\+]+/g,'').replace(/  +/g,' ').toLowerCase().split(' ');
         let newexp = this.searchModeActivity == 'all' ? '^(?=.*?\ '+matchMap.matchAny.join('\ )(?=.*?\ ')+'\ ).*$' : ' (' + matchMap.matchAny.join('|') + ') ';
         let newExpString = this.searchModeActivity == 'all' ? '^(?=.*?'+matchStrings.join(')(?=.*?')+'\).*$' : '^.*(' + matchStrings.join('|') + ').*$';
         console.log("newExpString", newExpString);
@@ -244,6 +250,7 @@ export class NewTimesheetEntryComponent implements OnInit {
                       (a.name.toLowerCase()).match(new RegExp(newExpString))
                     )
           });
+        this.newTask.activity = {};
       }
     }
 
@@ -355,14 +362,15 @@ export class NewTimesheetEntryComponent implements OnInit {
 
   timeInputFocus(day,startFinish){
     // setTimeout(()=>{
-      day[startFinish+'Time'] = day[startFinish+'Ph'] ? day[startFinish+'Ph'].replace(/[^0-9]+/,'','g') : '0000';
+      day[startFinish+'Time'] = day[startFinish+'Ph'] ? day[startFinish+'Ph'].replace(/[^0-9]+/g,'') : '0000';
     // },100);
   }
 
   async timeInputChange(i, startFinish){
     let day = this.weekDays[i];
     console.log("entry",startFinish,day[startFinish+'Time']);
-    day[startFinish+'Ph'] = (day[startFinish+'Time'].replace(/[^0-9]+/,'','g')*1 + '');
+    let timestring: any = (day[startFinish+'Time']+'').replace(/[^0-9]+/g,'');
+    day[startFinish+'Ph'] = (timestring*1 + '');
     let title="Invalid time";
     let body = "Invalid time entered, please ensure that the time is 24 hr format and follows HHmm format."
     let buttons: any[] = [

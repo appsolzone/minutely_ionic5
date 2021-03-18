@@ -5,7 +5,7 @@
       <ion-label><h1><small>Add new timesheet entry</small></h1></ion-label>
     </ion-item>
   </ion-toolbar>
-  <ion-col size="12" [sizeMd]="newTask.activity?.activityId && newTask.hourlyRate && newTask.hourlyRate > 0 ? '6' : '12'">
+  <ion-col size="12" size-md="6">
     <ion-item lines="none" class="">
       <ion-icon name="bookmark-outline" slot="start"></ion-icon>
       <ion-label>
@@ -32,14 +32,16 @@
             </ion-segment-button>
           </ion-segment>
         </ion-list-header>
-        <ion-item *ngFor="let project of searchedprojects;" [color]="colorStack[(project.projectNo - 1)%colorStack.length]">
+        <ion-item *ngFor="let project of searchedprojects;">
+          <ion-icon name="bookmark" slot="start" [color]="colorStack[(project.projectNo - 1)%colorStack.length]"></ion-icon>
           <ion-label>{{project.title}}</ion-label>
           <ion-radio [value]="project"></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <ion-item *ngIf="!isProjectSearchFocused && newTask.taskProject.title" [color]="colorStack[(newTask.taskProject?.projectNo - 1)%colorStack.length]">
+      <ion-item *ngIf="!isProjectSearchFocused && newTask.taskProject.title">
+        <ion-icon name="bookmark" slot="start" [color]="colorStack[(newTask.taskProject.projectNo - 1)%colorStack.length]"></ion-icon>
         <ion-label>{{newTask.taskProject.title}}</ion-label>
-        <ion-icon name="checkbox" slot="end"></ion-icon>
+        <ion-icon name="checkbox" slot="end" color="secondary"></ion-icon>
       </ion-item>
     </ion-list>
 
@@ -76,7 +78,7 @@
       </ion-radio-group>
       <ion-item *ngIf="!isSearchFocused && newTask.activity.name">
         <ion-label>{{newTask.activity.name}}</ion-label>
-        <ion-icon name="checkbox" slot="end"></ion-icon>
+        <ion-icon name="checkbox" slot="end" color="secondary"></ion-icon>
       </ion-item>
     </ion-list>
     <ion-item  lines="inset" class="ion-padding-bottom">
@@ -84,8 +86,33 @@
         <ion-icon name="cash"></ion-icon>
         Hourly Rate ($)
       </ion-label>
-      <ion-input class="ion-text-end hide-number-arrow" type="number" placeholder="Hourly rate" [(ngModel)]="newTask.hourlyRate"></ion-input>
+      <ion-input class="ion-text-end hide-number-arrow" type="number"  inputmode="numeric" placeholder="Hourly rate" [(ngModel)]="newTask.hourlyRate"></ion-input>
     </ion-item>
+  </ion-col>
+  <ion-col size="12" size-md="6" *ngIf="!(newTask.activity?.activityId && newTask.hourlyRate && newTask.hourlyRate > 0)">
+    <ion-toolbar>
+      <!-- <ion-card-header> -->
+        <ion-item lines="inset">
+          <ion-label>
+            <h1>How to add timesheet entry</h1>
+          </ion-label>
+        </ion-item>
+      <!-- </ion-card-header> -->
+      <ion-card-content>
+        <p>
+          Please select the project.
+        </p>
+        <p>
+          Next select the activity.
+        </p>
+        <p>
+          Enter hourly rate.
+        </p>
+        <p>
+          Enter start and finish time for the days required.
+        </p>
+      </ion-card-content>
+    </ion-toolbar>
   </ion-col>
   <ion-col size="12" *ngIf="!(newTask.activity?.activityId && newTask.hourlyRate && newTask.hourlyRate > 0)">
     <ion-item class="ion-padding-bottom ion-padding-end" lines="none">
@@ -96,9 +123,9 @@
   </ion-col>
   <ion-col *ngIf="newTask.activity?.activityId && newTask.hourlyRate && newTask.hourlyRate > 0" size="12"  size-md="6" class="ion-no-padding">
     <ion-row>
-      <ion-col size="12" class="ion-hide-lg-down">
+      <!-- <ion-col size="12" class="ion-hide-lg-down">
         <p class="ion-text-center"><small>Please enter start and finish times as 24 hr format (HHmm)</small></p>
-      </ion-col>
+      </ion-col> -->
       <ion-col size="12" *ngFor="let day of weekDays; let i=index;">
         <ion-row class="ion-align-items-center">
           <ion-col>
@@ -117,11 +144,11 @@
           <ion-col>
             <ion-item class="ion-no-padding ion-no-margin" color="">
               <ion-label position="stacked" class="ion-padding-start  ion-text-center">Start</ion-label>
-              <ion-datetime displayFormat="HH:mm" *ngIf="isMobile" class="ion-text-center" [(ngModel)]="day.start" [min]="day.min" [max]="day.finish && day.finish != day.start ? day.finish : day.max" (ionChange)="startFinishChange(i)"
+              <ion-datetime displayFormat="HH:mm" class="ion-text-center" [(ngModel)]="day.start" [min]="day.min" [max]="day.finish && day.finish != day.start ? day.finish : day.max" (ionChange)="startFinishChange(i)"
                 >
               </ion-datetime>
-              <ion-input *ngIf="!isMobile" class="ion-text-center" [placeholder]="day.startPh" [(ngModel)]="day.startTime" inputmode="numeric" (ionBlur)="timeInputChange(i,'start')" (ionFocus)="timeInputFocus(day,'start')">
-              </ion-input>
+              <!-- <ion-input class="ion-text-center hide-number-arrow  ion-hide-lg-down" [placeholder]="day.startPh" [(ngModel)]="day.startTime" type="number" inputmode="numeric" (ionBlur)="timeInputChange(i,'start')" (ionFocus)="timeInputFocus(day,'start')">
+              </ion-input> -->
               <!-- <ion-row class="ion-hide-lg-down ion-padding-start">
                 <ion-col size="5" class="ion-no-padding ion-no-margin hide-number-arrow  time-input-field ion-text-end">
                   <ion-select mode="ios" class="ion-no-margin ion-no-paddingn ion-text-end" placeholder="00"  interface="popover" [value]="day.starthh"
@@ -148,11 +175,11 @@
           <ion-col>
             <ion-item class="ion-no-padding ion-no-margin" color="">
               <ion-label position="stacked" class="ion-padding-start ion-text-center">Finish</ion-label>
-              <ion-datetime displayFormat="HH:mm" *ngIf="isMobile" class="ion-text-center" [(ngModel)]="day.finish" [min]="day.start ? day.start : day.min" [max]="day.max"  (ionChange)="startFinishChange(i)"
+              <ion-datetime displayFormat="HH:mm" class="ion-text-center" [(ngModel)]="day.finish" [min]="day.start ? day.start : day.min" [max]="day.max"  (ionChange)="startFinishChange(i)"
                 >
               </ion-datetime>
-              <ion-input *ngIf="!isMobile" class="ion-text-center" [placeholder]="day.finishPh" [(ngModel)]="day.finishTime" inputmode="numeric" (ionBlur)="timeInputChange(i,'finish')" (ionFocus)="timeInputFocus(day,'finish')">
-              </ion-input>
+              <!-- <ion-input class="ion-text-center hide-number-arrow ion-hide-lg-down" [placeholder]="day.finishPh" [(ngModel)]="day.finishTime" type="number" inputmode="numeric" (ionBlur)="timeInputChange(i,'finish')" (ionFocus)="timeInputFocus(day,'finish')">
+              </ion-input> -->
               <!-- <ion-row class="ion-hide-lg-down ion-padding-start">
                 <ion-col size="5" class="ion-no-padding ion-no-margin hide-number-arrow  time-input-field ion-text-end">
                   <ion-select mode="ios" class="ion-no-margin ion-no-paddingn ion-text-end" placeholder="00"  interface="popover" [value]="day.finishhh"
