@@ -15,7 +15,8 @@ export interface Task {
       name:string,
       uid:string,
       picUrl:any,
-      subscriberId:string
+      subscriberId:string,
+      email:string
     },
     tags:[],
     taskProbability :string,

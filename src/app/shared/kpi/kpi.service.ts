@@ -125,7 +125,7 @@ export class KpiService {
 
   }
 
-  updateRiskMetrix(riskPrevData, riskCurrData, navData) {
+  updateRiskMetrix(riskPrevData = null, riskCurrData, navData) {
     return new Promise((res, rej) => {
       var batch = this.database.afs.firestore.batch();
       const a = this.database.afs
@@ -133,8 +133,8 @@ export class KpiService {
         .doc(navData.subscriberId).ref;
 
       //------------------only for risk------------
-      if(riskPrevData.riskProbability != riskCurrData.riskProbability ||
-         riskPrevData.riskImpact != riskCurrData.riskImpact)
+      if(riskPrevData !== null && (riskPrevData.riskProbability != riskCurrData.riskProbability ||
+         riskPrevData.riskImpact != riskCurrData.riskImpact))
       {
            batch.update(a, {
              ["risk" +

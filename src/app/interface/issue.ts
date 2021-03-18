@@ -15,7 +15,8 @@ export interface Issue {
       name:string,
       uid:string,
       picUrl:any,
-      subscriberId:string
+      subscriberId:string,
+      email:string
     },
     tags:[],
     issueProbability :string,

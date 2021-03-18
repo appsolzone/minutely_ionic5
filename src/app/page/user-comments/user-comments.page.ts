@@ -2,12 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { ComponentsService } from 'src/app/shared/components/components.service';
-import { CrudService } from 'src/app/shared/crud/crud.service';
 import { Comment } from 'src/app/interface/comment';
 import { map } from 'rxjs/operators';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { User } from 'src/app/interface/user';
 import { DatabaseService } from 'src/app/shared/database/database.service';
+import { UserCommentService } from 'src/app/shared/user-comment/user-comment.service';
+import { CrudService } from 'src/app/shared/crud/crud.service';
 @Component({
   selector: 'app-user-comments',
   templateUrl: './user-comments.page.html',
@@ -25,8 +26,10 @@ export class UserCommentsPage implements OnInit,OnDestroy {
   commentTxt:string = '';
   userProfile:User;
   orgProfile:Object;
+  emailReceiverMembers:any;
   constructor(
     private crud:CrudService,
+    private comment:UserCommentService,
     private componentService:ComponentsService,
     private router:Router,
     private session:SessionService,
@@ -60,6 +63,7 @@ export class UserCommentsPage implements OnInit,OnDestroy {
         if(res == undefined) this.router.navigate(["/profile"]);
         this.passObj = res;
         console.log("this details :",this.passObj);
+        this.setOwnerInitiator(this.passObj);
         this.fetchAllComments();
       },
       (err)=>{
@@ -71,8 +75,19 @@ export class UserCommentsPage implements OnInit,OnDestroy {
       }
       );
   }
+  setOwnerInitiator(serviceObject){
+    this.emailReceiverMembers = [];
+    this.emailReceiverMembers.push(
+      {email:serviceObject[`${serviceObject.parentModule}Initiator`].email,
+      name:serviceObject[`${serviceObject.parentModule}Initiator`].name},
+      {email:serviceObject[`${serviceObject.parentModule}Owner`].email,
+      name:serviceObject[`${serviceObject.parentModule}Owner`].name});
+
+    console.log(this.emailReceiverMembers);  
+  }
+
   fetchAllComments(){
-   this.allComments$ = this.crud.fetchAllComments(this.passObj.parentModule,this.passObj.id)
+   this.allComments$ = this.comment.fetchAllComments(this.passObj.parentModule,this.passObj.id)
                        .pipe(
                           map((allComments:Array<Comment>)=>{
                           return allComments.map((comment:any)=>{
@@ -92,7 +107,7 @@ export class UserCommentsPage implements OnInit,OnDestroy {
   }
   add_cmt(){
     if(this.commentTxt != ''){
-      let objectAdd:Comment = {
+      let commentObject:Comment = {
         author:this.userProfile.name,
         comment:this.commentTxt,
         picUrl:this.userProfile.picUrl,
@@ -100,11 +115,12 @@ export class UserCommentsPage implements OnInit,OnDestroy {
         date:this.db.frb.firestore.FieldValue.serverTimestamp(),
         totalComment:this.db.frb.firestore.FieldValue.increment(1)
       }
-      this.crud.addComment(objectAdd,this.passObj)
+      this.comment.addComment(commentObject,this.passObj)
       .then(res=>{
         console.log(res);
-         this.commentTxt = '';
+        this.commentTxt = '';
         this.componentService.presentToaster('Your comment add successfully!!');
+        this.comment.sendEmail(this.emailReceiverMembers,commentObject,this.passObj)
       })
       .catch(err=>{console.log(err);this.componentService.presentAlert('Error',"Somting wents wrong! Please try again")});
      

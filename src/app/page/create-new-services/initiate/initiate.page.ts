@@ -183,7 +183,8 @@ export class InitiatePage implements OnInit,OnDestroy {
         name:this.userProfile.name,
         uid:this.userProfile.uid,
         picUrl:this.userProfile.picUrl,
-        subscriberId:this.userProfile.subscriberId
+        subscriberId:this.userProfile.subscriberId,
+        email:this.userProfile.email
       }  
       let actions = this._crud.crud_action; 
       actions = {

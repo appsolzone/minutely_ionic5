@@ -35,7 +35,8 @@ export class CrudService {
      name:'',
      uid:'',
      subscriberId:'',
-     picUrl:''
+     picUrl:'',
+     email:''
    },
    status:'',
    subscriberId:'',
@@ -282,11 +283,11 @@ export class CrudService {
           totalComment:0
         },
         riskInitiator :dataObject.ownerId,
-        tags:[],
+        tags:dataObject.tags,
         riskProbability :dataObject.probability,
         riskImpact:dataObject.probability,
         riskMitigation:dataObject.mitigation,
-        riskContingency:dataObject.notes,
+        riskContingency:dataObject.contingency,
         titleSearchMap: this._searchMap.createSearchMap(searchStrings),
         ownerInitiatorUidList:[
                               dataObject.ownerId.uid,
@@ -313,7 +314,7 @@ export class CrudService {
           totalComment:0
         },
         taskInitiator :dataObject.ownerId,
-        tags:[],
+        tags:dataObject.tags,
         taskProbability :dataObject.probability,
         taskImpact:dataObject.probability,
         taskDetails:dataObject.notes,
@@ -356,7 +357,7 @@ export class CrudService {
 
       let kpiServiceName = serviceName.charAt(0).toUpperCase() + serviceName.slice(1)
       this._kpi.updateKpiDuringCreation(kpiServiceName,1,orgProfile);
-      if(kpiServiceName == 'Risk') this._kpi.updateRiskMetrix(dataObject,dataObject,orgProfile)
+      if(kpiServiceName == 'Risk') this._kpi.updateRiskMetrix(null,addObjectWill,orgProfile)
 
       // this.storage.remove('risk_type');
       // this.storage.remove('risk_linkage');
@@ -396,22 +397,6 @@ export class CrudService {
     }
 
 
-    fetchAllComments(collectionName,doc):Observable<any>{
-      return this._db.getAllDocumentsSnapshot(`${this._db.allCollections[collectionName]}/${doc}/${this._db.allCollections.comment}`);
-    }
-
-    addComment(commentObj,servicedoc){
-    let docRef = this._db.afs.collection(this._db.allCollections[servicedoc.parentModule]).doc(servicedoc.id).ref;
-    let commentRef = this._db.afs.collection(`${this._db.allCollections[servicedoc.parentModule]}/${servicedoc.id}/${this._db.allCollections.comment}`).doc().ref;
-
-    return this._db.afs.firestore.runTransaction(function(transaction) {
-      return transaction.get(docRef).then(function(regDoc) {
-        this._db.setTransactDocument(transaction,docRef,{latestComment:commentObj},true);
-        
-        delete commentObj.totalComment;
-        this._db.setTransactDocument(transaction,commentRef,commentObj,true);
-      }.bind(this))
-    }.bind(this))
-  } 
+ 
 }
 

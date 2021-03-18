@@ -21,7 +21,8 @@ export interface Risk {
       name:string,
       uid:string,
       picUrl:any,
-      subscriberId:string
+      subscriberId:string,
+      email:string
     },
     tags:Array<any>,
     riskProbability :string,

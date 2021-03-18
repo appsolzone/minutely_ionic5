@@ -85,7 +85,7 @@
           <ion-col size="10" class="ion-no-padding">
             <ion-row class="ion-text-center ion-no-padding" *ngFor="let y of ['High','Medium','Low']">
               <ion-col size="3" color="primary" class="ion-no-padding cardgraph" *ngFor="let x of ['Low','Medium','High']">
-                <div [class]="initiateData$?.object.probability+initiateData$?.object.impact==y+x ? y+x : 'lightbg'" style="height: 20px;background: blue;">
+                <div [class]="initiateData$?.object.probability+initiateData$?.object.impact==y+x ? y+x : 'lightbg'" style="height: 20px;background: rgb(232, 232, 232);">
                 </div>
               </ion-col>
             </ion-row>
