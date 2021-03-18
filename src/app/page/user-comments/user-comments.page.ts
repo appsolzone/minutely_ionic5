@@ -52,7 +52,8 @@ export class UserCommentsPage implements OnInit,OnDestroy {
      });
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter():void{
+    this.allComments = [];
     this.componentService.showLoader()
     this.passObj$ = this.crud.detailsPagePasing$.subscribe(
       (res)=>{
