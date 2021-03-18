@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import * as moment from 'moment';
+import { Platform } from '@ionic/angular';
 import { Autounsubscribe } from '../../../decorator/autounsubscribe';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { ActivityService } from 'src/app/shared/activity/activity.service';
@@ -16,6 +17,7 @@ import { TimesheetService } from 'src/app/shared/timesheet/timesheet.service';
 @Autounsubscribe()
 export class NewTimesheetEntryComponent implements OnInit {
   @ViewChild('project') myInput: any;
+  @ViewChild('activity') myActivityInput: any;
   // inputs
   @Input() sessionInfo: any = {};
   @Input() dateRange: any = {};
@@ -25,12 +27,18 @@ export class NewTimesheetEntryComponent implements OnInit {
   @Input() newTimeSheetData: any[] = [];
   // observables
   weeklyActivitiesSubs$;
+  projectSubs$;
   // variables
+  public isMobile: boolean = true;
   public searchModeProject = 'all';
   public searchModeActivity = 'all';
+  public allProjects: any[] = [];
   public searchedprojects: any[]=[];
+  public isProjectSearchFocused: boolean = true;
+  public colorStack: any[];
   public searchedactivities: any[] =[];
-  public timeInputValidationAlertShown: boolean = true;
+  public isSearchFocused: boolean = true;
+  public timeInputValidationAlertShown: boolean = false;
   public viewLoaded: boolean = false;
   public wdEntry = {
     project: {},
@@ -72,9 +80,16 @@ export class NewTimesheetEntryComponent implements OnInit {
     private project: ProjectService,
     public searchMap: TextsearchService,
     public timesheet: TimesheetService,
-  ) { }
+    private platform: Platform,
+  ) {
+    this.colorStack = this.project.projColorStack;
+    this.isMobile = this.platform.is('mobile');
+  }
 
-  ngOnInit() {
+  async ngOnInit() {
+    if(!this.projectSubs$ || !this.projectSubs$?.unsubscribe){
+      await this.getProjects();
+    }
     // populate dates for the wekdays in concern
     if(this.wdEntryData){
       this.wdEntry = this.wdEntryData;
@@ -113,37 +128,98 @@ export class NewTimesheetEntryComponent implements OnInit {
   projectSearchOptionsChanged(e){
     this.searchModeProject = e.detail.value;
     this.onSearchProject();
+    setTimeout(()=>{
+      this.myInput.setFocus();
+    },150);
   }
 
   activitySearchOptionsChanged(e){
     this.searchModeActivity = e.detail.value;
     this.onSearchActivity();
+    setTimeout(()=>{
+      this.myActivityInput.setFocus();
+    },150);
+  }
+
+  // search implement
+  async getProjects(){
+    let queryObj = [];
+    if(this.projectSubs$?.unsubscribe){
+      await this.projectSubs$.unsubscribe();
+    }
+
+    if(this.sessionInfo?.uid && this.sessionInfo?.subscriberId){
+      const {subscriberId, uid} = this.sessionInfo;
+      queryObj = [
+                  {field: 'subscriberId',operator: '==', value: subscriberId},
+                  {field: 'status',operator: '==', value: 'OPEN'}
+                  ];
+      this.projectSubs$ = this.project.getProjects(queryObj)
+                            .subscribe(async act=>{
+                              let allProjects = act.map((a: any) => {
+                                const data = a.payload.doc.data();
+                                const id = a.payload.doc.id;
+                                const inceptionDate = new Date(data.inceptionDate?.seconds*1000);
+                                const closureDate = data.closureDate? new Date(data.closureDate?.seconds*1000) : null;
+                                const projectNo = data.projectId.replace(/[A-Z]/,'');
+                                // return {id, data};
+                                return {...data, inceptionDate, closureDate, projectNo};
+                              });
+
+                              this.allProjects = allProjects;
+                              console.log("allProjects", this.allProjects);
+
+                            });
+    } else {
+      // console.log("else part");
+    }
+
   }
 
   onSearchProject(){
     const {subscriberId, uid} = this.sessionInfo;
-    let queryObj = [
-                {field: 'subscriberId',operator: '==', value: subscriberId},
-                ];
-    let searchTextObj = {seachField: 'searchMap', text: this.newTask.searchTitle.trim(), searchOption: this.searchModeProject};
-    if(this.newTask.searchTitle.length >=3){
-      this.project.getProjectsOnce(queryObj, searchTextObj, null)
-        .then(projects=>{
-          this.newTask.activity = {};
-          this.searchedactivities = [];
-          this.newTask.taskProject = {};
-          this.searchedprojects = [];
-          projects.forEach((doc)=>{
-            this.searchedprojects.push(doc.data());
-          });
-        })
+
+    if(this.newTask.taskProject.title==this.newTask.searchTitle){
+      // do nothing
     } else {
-      this.newTask.activity = {};
-      this.searchedactivities = [];
-      this.newTask.taskProject = {};
-      this.searchedprojects = [];
+      // this.newTask.activity = {};
+      if(this.newTask.searchTitle.length <3){
+        this.searchedprojects = this.allProjects ? this.allProjects : [];
+      } else {
+        let matchMap = this.searchMap.createSearchMap(this.newTask.searchTitle);
+        let matchStrings = this.newTask.searchTitle.toLowerCase().split(' ');
+        let newexp = this.searchModeProject == 'all' ? '^(?=.*?\ '+matchMap.matchAny.join('\ )(?=.*?\ ')+'\ ).*$' : ' (' + matchMap.matchAny.join('|') + ') ';
+        let newExpString = this.searchModeProject == 'all' ? '^(?=.*?'+matchStrings.join(')(?=.*?')+'\).*$' : '^.*(' + matchStrings.join('|') + ').*$';
+        console.log("newExpString project", newExpString);
+        this.searchedprojects = this.allProjects.filter(a=>{
+            let matched  = (
+                              (' '+this.searchMap.createSearchMap(a.title).matchAny.join(' ')+' ').match(new RegExp(newexp)) ||
+                              (a.title.toLowerCase()).match(new RegExp(newExpString),'i')
+                            );
+            return matched;
+          });
+          this.newTask.activity = {};
+          this.searchedactivities = this.newTask.taskProject.activities ? this.newTask.taskProject.activities : [];
+          this.newTask.taskProject = {};
+          // this.searchedprojects = [];
+      }
     }
 
+
+      // this.newTask.activity = {};
+      // this.searchedactivities = this.newTask.taskProject.activities ? this.newTask.taskProject.activities : [];
+      // // this.newTask.taskProject = {};
+      // this.searchedprojects = [];
+
+  }
+
+  onProjectFocus(){
+    this.isProjectSearchFocused = true;
+    this.onSearchProject()
+  }
+
+  onProjectBlur(){
+    setTimeout(()=>{this.isProjectSearchFocused = false;this.myActivityInput.setFocus();},150)
   }
 
   onSearchActivity(){
@@ -152,16 +228,34 @@ export class NewTimesheetEntryComponent implements OnInit {
     if(this.newTask.activity.name==this.newTask.taskName){
       // do nothing
     } else {
-      this.newTask.activity = {};
+      // this.newTask.activity = {};
       if(this.newTask.taskName.length <3){
-        this.searchedactivities = [];
+        this.searchedactivities = this.newTask.taskProject.activities ? this.newTask.taskProject.activities : [];
       } else if(this.newTask.taskProject.activities){
         let matchMap = this.searchMap.createSearchMap(this.newTask.taskName);
-        let newexp = this.searchModeActivity == 'all' ? '^(?=.*?\ '+matchMap.matchAny.join('\ )(?=.*?\ ')+'\ ).*$' : ' (' + matchMap.matchAny.join('|') + ') '
-        this.searchedactivities = this.newTask.taskProject.activities.filter(a=>a.status!='COMPLETE' && (' '+this.searchMap.createSearchMap(a.name).matchAny.join(' ')+' ').match(new RegExp(newexp)));
+        let matchStrings = this.newTask.taskName.toLowerCase().split(' ');
+        let newexp = this.searchModeActivity == 'all' ? '^(?=.*?\ '+matchMap.matchAny.join('\ )(?=.*?\ ')+'\ ).*$' : ' (' + matchMap.matchAny.join('|') + ') ';
+        let newExpString = this.searchModeActivity == 'all' ? '^(?=.*?'+matchStrings.join(')(?=.*?')+'\).*$' : '^.*(' + matchStrings.join('|') + ').*$';
+        console.log("newExpString", newExpString);
+        this.searchedactivities = this.newTask.taskProject.activities.filter(a=>{
+            return a.status!='COMPLETE' &&
+                    (
+                      (' '+this.searchMap.createSearchMap(a.name).matchAny.join(' ')+' ').match(new RegExp(newexp)) ||
+                      (a.name.toLowerCase()).match(new RegExp(newExpString))
+                    )
+          });
       }
     }
 
+  }
+
+  onActivityFocus(){
+    this.isSearchFocused = true;
+    this.onSearchActivity()
+  }
+
+  onActivityBlur(){
+    setTimeout(()=>{this.isSearchFocused = false;},150)
   }
 
   async startFinishChange(i){
@@ -241,7 +335,7 @@ export class NewTimesheetEntryComponent implements OnInit {
     let data = this.prepareNewActivityData();
     if(!data.project.projectId || !data.activity.activityId || data.rate==null || this.wdEntry.count==0){
       let title="Incomplete data";
-      let body = "Unable to process activity data. Please ensure  valid project, activity is selected, hourly billing rate is provided and non zero effort for at least one day for the activity is entered."
+      let body = "Unable to process activity data. Please ensure that non zero effort is entered at least for one day."
       let buttons: any[] = [
                       {
                         text: 'Dismiss',
@@ -301,11 +395,12 @@ export class NewTimesheetEntryComponent implements OnInit {
     day[startFinish] = moment(new Date(day[startFinish])).format('YYYY-MM-DDT') + day[startFinish+'Ph'];
     console.log(startFinish,day[startFinish+'Ph'], day.start, day.finish);
     day[startFinish+'Time'] = '';
-    console.log('before started validation', day.start, day.finish);
+    console.log('before started validation', day.start, day.finish, this.timeInputValidationAlertShown);
     if(day.start && day.finish && !this.timeInputValidationAlertShown){
       this.timeInputValidationAlertShown = true;
       console.log('started validation', day.start, day.finish);
       await this.startFinishChange(i);
+      this.timeInputValidationAlertShown = false;
     }
   }
 

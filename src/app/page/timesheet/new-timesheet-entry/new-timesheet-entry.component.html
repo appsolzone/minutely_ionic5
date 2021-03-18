@@ -5,18 +5,22 @@
       <ion-label><h1><small>Add new timesheet entry</small></h1></ion-label>
     </ion-item>
   </ion-toolbar>
-  <ion-col size="12" size-md="6">
-    <ion-item lines="inset" class="">
-      <ion-label position="floating">
-        <ion-icon name="bookmark-outline"></ion-icon>
+  <ion-col size="12" [sizeMd]="newTask.activity?.activityId && newTask.hourlyRate && newTask.hourlyRate > 0 ? '6' : '12'">
+    <ion-item lines="none" class="">
+      <ion-icon name="bookmark-outline" slot="start"></ion-icon>
+      <ion-label>
         Project Name
       </ion-label>
-      <ion-input #project id="project" type="text" [(ngModel)]="newTask.searchTitle" color="medium"
-      (ionChange)="onSearchProject()"></ion-input>
     </ion-item>
+    <ion-searchbar mode="ios" #project id="project" type="text" [(ngModel)]="newTask.searchTitle"
+    placeholder="Enter project name or keywords"
+    (ionChange)="onSearchProject()"
+    (ionFocus)="onProjectFocus()"
+    (ionBlur)="onProjectBlur()"
+    ></ion-searchbar>
 
     <ion-list>
-      <ion-radio-group [(ngModel)]="newTask.taskProject" *ngIf="!newTask.taskProject.title && newTask.searchTitle.length >=3"
+      <ion-radio-group [(ngModel)]="newTask.taskProject" *ngIf="isProjectSearchFocused || !newTask.taskProject.projectId"
         (ngModelChange)="onSearchActivity()">
         <ion-list-header  class="ion-no-padding">
           <ion-segment mode="ios" [value]="searchModeProject" (ionChange)="projectSearchOptionsChanged($event)" color="primary">
@@ -28,29 +32,33 @@
             </ion-segment-button>
           </ion-segment>
         </ion-list-header>
-        <ion-item *ngFor="let project of searchedprojects;">
+        <ion-item *ngFor="let project of searchedprojects;" [color]="colorStack[(project.projectNo - 1)%colorStack.length]">
           <ion-label>{{project.title}}</ion-label>
           <ion-radio [value]="project"></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <ion-item *ngIf="newTask.taskProject.title">
+      <ion-item *ngIf="!isProjectSearchFocused && newTask.taskProject.title" [color]="colorStack[(newTask.taskProject?.projectNo - 1)%colorStack.length]">
         <ion-label>{{newTask.taskProject.title}}</ion-label>
-        <ion-icon name="checkbox" color="primary" slot="end"></ion-icon>
+        <ion-icon name="checkbox" slot="end"></ion-icon>
       </ion-item>
     </ion-list>
 
 
-    <ion-item  lines="inset" class="">
-      <ion-label position="floating">
-        <ion-icon name="body-outline"></ion-icon>
+    <ion-item  lines="none" class="">
+      <ion-icon name="body-outline" slot="start"></ion-icon>
+      <ion-label>
         Activity Name
       </ion-label>
-      <ion-input type="text" debounce="300" [(ngModel)]="newTask.taskName" color="medium"
-      (ionChange)="onSearchActivity()"></ion-input>
     </ion-item>
+    <ion-searchbar mode="ios" #activity id="activity" type="text" debounce="300" [(ngModel)]="newTask.taskName"
+    (ionChange)="onSearchActivity()"
+    (ionFocus)="onActivityFocus()"
+    (ionBlur)="onActivityBlur()"
+    ></ion-searchbar>
 
     <ion-list>
-      <ion-radio-group [(ngModel)]="newTask.activity" *ngIf="!newTask.activity.name && newTask.taskName.length >=3">
+      <ion-radio-group [(ngModel)]="newTask.activity" *ngIf="newTask.taskProject.projectId && (isSearchFocused || !newTask.activity.activityId)">
+        <!-- && newTask.taskName.length >=3"> -->
         <ion-list-header  class="ion-no-padding">
           <ion-segment mode="ios" [value]="searchModeActivity" (ionChange)="activitySearchOptionsChanged($event)" color="primary">
             <ion-segment-button value="all">
@@ -66,9 +74,9 @@
           <ion-radio [value]="act"></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <ion-item *ngIf="newTask.activity.name">
+      <ion-item *ngIf="!isSearchFocused && newTask.activity.name">
         <ion-label>{{newTask.activity.name}}</ion-label>
-        <ion-icon name="checkbox" color="primary" slot="end"></ion-icon>
+        <ion-icon name="checkbox" slot="end"></ion-icon>
       </ion-item>
     </ion-list>
     <ion-item  lines="inset" class="ion-padding-bottom">
@@ -79,8 +87,18 @@
       <ion-input class="ion-text-end hide-number-arrow" type="number" placeholder="Hourly rate" [(ngModel)]="newTask.hourlyRate"></ion-input>
     </ion-item>
   </ion-col>
-  <ion-col size="12"  size-md="6" class="ion-no-padding">
+  <ion-col size="12" *ngIf="!(newTask.activity?.activityId && newTask.hourlyRate && newTask.hourlyRate > 0)">
+    <ion-item class="ion-padding-bottom ion-padding-end" lines="none">
+      <ion-button slot="end" fill="clear" color="medium" (click)="clickCancel()">
+        Cancel
+      </ion-button>
+    </ion-item>
+  </ion-col>
+  <ion-col *ngIf="newTask.activity?.activityId && newTask.hourlyRate && newTask.hourlyRate > 0" size="12"  size-md="6" class="ion-no-padding">
     <ion-row>
+      <ion-col size="12" class="ion-hide-lg-down">
+        <p class="ion-text-center"><small>Please enter start and finish times as 24 hr format (HHmm)</small></p>
+      </ion-col>
       <ion-col size="12" *ngFor="let day of weekDays; let i=index;">
         <ion-row class="ion-align-items-center">
           <ion-col>
@@ -99,10 +117,10 @@
           <ion-col>
             <ion-item class="ion-no-padding ion-no-margin" color="">
               <ion-label position="stacked" class="ion-padding-start  ion-text-center">Start</ion-label>
-              <ion-datetime displayFormat="HH:mm" class="ion-text-center ion-hide-lg-up" [(ngModel)]="day.start" [min]="day.min" [max]="day.finish && day.finish != day.start ? day.finish : day.max" (ionChange)="startFinishChange(i)"
+              <ion-datetime displayFormat="HH:mm" *ngIf="isMobile" class="ion-text-center" [(ngModel)]="day.start" [min]="day.min" [max]="day.finish && day.finish != day.start ? day.finish : day.max" (ionChange)="startFinishChange(i)"
                 >
               </ion-datetime>
-              <ion-input class="ion-text-center ion-hide-lg-down" [placeholder]="day.startPh" [(ngModel)]="day.startTime" inputmode="numeric" (ionBlur)="timeInputChange(i,'start')" (ionFocus)="timeInputFocus(day,'start')">
+              <ion-input *ngIf="!isMobile" class="ion-text-center" [placeholder]="day.startPh" [(ngModel)]="day.startTime" inputmode="numeric" (ionBlur)="timeInputChange(i,'start')" (ionFocus)="timeInputFocus(day,'start')">
               </ion-input>
               <!-- <ion-row class="ion-hide-lg-down ion-padding-start">
                 <ion-col size="5" class="ion-no-padding ion-no-margin hide-number-arrow  time-input-field ion-text-end">
@@ -130,10 +148,10 @@
           <ion-col>
             <ion-item class="ion-no-padding ion-no-margin" color="">
               <ion-label position="stacked" class="ion-padding-start ion-text-center">Finish</ion-label>
-              <ion-datetime displayFormat="HH:mm" class="ion-text-center ion-hide-lg-up" [(ngModel)]="day.finish" [min]="day.start ? day.start : day.min" [max]="day.max"  (ionChange)="startFinishChange(i)"
+              <ion-datetime displayFormat="HH:mm" *ngIf="isMobile" class="ion-text-center" [(ngModel)]="day.finish" [min]="day.start ? day.start : day.min" [max]="day.max"  (ionChange)="startFinishChange(i)"
                 >
               </ion-datetime>
-              <ion-input class="ion-text-center ion-hide-lg-down" [placeholder]="day.finishPh" [(ngModel)]="day.finishTime" inputmode="numeric" (ionBlur)="timeInputChange(i,'finish')" (ionFocus)="timeInputFocus(day,'finish')">
+              <ion-input *ngIf="!isMobile" class="ion-text-center" [placeholder]="day.finishPh" [(ngModel)]="day.finishTime" inputmode="numeric" (ionBlur)="timeInputChange(i,'finish')" (ionFocus)="timeInputFocus(day,'finish')">
               </ion-input>
               <!-- <ion-row class="ion-hide-lg-down ion-padding-start">
                 <ion-col size="5" class="ion-no-padding ion-no-margin hide-number-arrow  time-input-field ion-text-end">
