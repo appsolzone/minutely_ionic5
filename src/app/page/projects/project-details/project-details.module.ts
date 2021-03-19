@@ -10,6 +10,10 @@ import { ProjectDetailsPage } from './project-details.page';
 
 import { ProjectStatsComponent } from '../project-stats/project-stats.component';
 
+import { EditProjectComponent } from '../edit-project/edit-project.component';
+
+import { EditActivitiesComponent } from '../edit-activities/edit-activities.component';
+
 import { BargraphModule } from 'src/app/page/bargraph/bargraph.module';
 
 @NgModule({
@@ -22,7 +26,9 @@ import { BargraphModule } from 'src/app/page/bargraph/bargraph.module';
   ],
   declarations: [
     ProjectDetailsPage,
-    ProjectStatsComponent
+    ProjectStatsComponent,
+    EditProjectComponent,
+    EditActivitiesComponent
   ]
 })
 export class ProjectDetailsPageModule {}

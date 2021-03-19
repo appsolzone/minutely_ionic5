@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { ActivityService } from 'src/app/shared/activity/activity.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { TextsearchService } from 'src/app/shared/textsearch/textsearch.service';
 
 @Component({
   selector: 'app-team-ongoing-activities',
@@ -17,11 +18,16 @@ export class TeamOngoingActivitiesComponent implements OnInit {
   ongoingActivitySubs$;
 
   public allOngoingTasks: any[] = [];
+  public showSearchBar: boolean = false;
+  public matchedActivities: any[] =[]
+  public searchText: string = '';
+  public searchMode: string = 'all';
 
   constructor(
     private router:Router,
     private activity: ActivityService,
     private common:ComponentsService,
+    private searchMap: TextsearchService,
   ) { }
 
   ngOnInit() {
@@ -69,11 +75,52 @@ export class TeamOngoingActivitiesComponent implements OnInit {
                               this.allOngoingTasks =[];
                               this.allOngoingTasks = allActivities.sort((a,b)=>(b.data.startTime)-(a.data.startTime));
 
+                              this.onSearchActivity();
+
                               console.log("allOngoingTasks", this.allOngoingTasks, subscriberId);
 
                             });
     } else {
     }
+
+  }
+
+  SearchOptionsChanged(e){
+    this.searchMode = e.detail.value;
+    this.ionChange(e);
+  }
+
+  ionChange(e){
+    // if(this.searchText?.trim().length>=2){
+      this.onSearchActivity();
+    // }
+  }
+
+  onClear(e){
+    this.searchText = '';
+    this.matchedActivities=[];
+  }
+
+  onSearchActivity(){
+    let matchMap = this.searchMap.createSearchMap(this.searchText);
+    let newexp = this.searchMode == 'all' ? '^(?=.*?\ '+matchMap.matchAny.join('\ )(?=.*?\ ')+'\ ).*$' : ' (' + matchMap.matchAny.join('|') + ') '
+
+    let matchStrings = this.searchText.trim().replace(/[\!\@\#\$\%\^\&\*\(\)\.\+]+/g,'').replace(/  +/g,' ').toLowerCase().split(' ');
+    let newExpString = this.searchMode == 'all' ? '^(?=.*?'+matchStrings.join(')(?=.*?')+'\).*$' : '^.*(' + matchStrings.join('|') + ').*$';
+
+    this.matchedActivities = this.allOngoingTasks.filter(a=>{
+      let matched  = (
+                        (' '+this.searchMap.createSearchMap(a.data.name).matchAny.join(' ')+' ').match(new RegExp(newexp)) ||
+                        (a.data.name.toLowerCase()).match(new RegExp(newExpString),'i')||
+                        (' '+this.searchMap.createSearchMap(a.data.project.title).matchAny.join(' ')+' ').match(new RegExp(newexp)) ||
+                        (a.data.project.title.toLowerCase()).match(new RegExp(newExpString),'i') ||
+                        (' '+this.searchMap.createSearchMap(a.data.user.name).matchAny.join(' ')+' ').match(new RegExp(newexp)) ||
+                        (a.data.user.name.toLowerCase()).match(new RegExp(newExpString),'i') ||
+                        (' '+this.searchMap.createSearchMap(a.data.status).matchAny.join(' ')+' ').match(new RegExp(newexp)) ||
+                        (a.data.status.toLowerCase()).match(new RegExp(newExpString),'i')
+                      );
+      return matched;
+    });
 
   }
 

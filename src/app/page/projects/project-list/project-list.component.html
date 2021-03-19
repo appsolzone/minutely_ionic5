@@ -125,7 +125,7 @@
         <ion-item color="transparent" lines="none" button="true" (click)="gotoProjectDetails(project)">
           <ion-avatar>
             <!-- <ion-icon name="bookmark" ></ion-icon> -->
-            <ion-icon [name]="project.data.closureDate? 'checkmark-done-circle' : 'shuffle-outline'"></ion-icon>
+            <ion-icon [name]="project.data.status == 'OPEN' ? 'shuffle-outline' : 'checkmark-done-circle'"></ion-icon>
           </ion-avatar>
           <ion-label>
             <h2>{{project.data.title}}</h2>

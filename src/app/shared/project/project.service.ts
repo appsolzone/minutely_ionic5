@@ -15,6 +15,7 @@ export class ProjectService {
         status: 'OPEN',
         inceptionDate: new Date(),
         closureDate: null,
+        targetClosureDate: null,
         activityCount: 0,
         activities: [],
         estimatedEffort: 0,
@@ -80,6 +81,30 @@ export class ProjectService {
       });
 
     }
+
+    // update
+    updateProject(id, projectObj, sessionInfo, setClousedate: boolean = false){
+        const { uid, subscriberId, userProfile } = sessionInfo;
+        let user = { uid: uid, name: userProfile.name, picUrl: userProfile.picUrl, email: userProfile.email };
+        let searchStrings = projectObj.title + ' ' + projectObj.status;
+        let project = {
+          ...this.newProject,
+          ...projectObj, // replace the default structure with any of the available fields from projObj
+          updatedOn: this.db.frb.firestore.FieldValue.serverTimestamp(),
+          updatedBy: { ...user },
+          searchMap: this.searchMap.createSearchMap(searchStrings)
+        };
+        // console.log("setClousedate",setClousedate)
+        if(setClousedate){
+          project.closureDate = this.db.frb.firestore.FieldValue.serverTimestamp();
+        } else {
+          project.closureDate = null;
+        }
+        // console.log("setClousedate project",project)
+
+        return this.db.setDocument(this.db.allCollections.projects, id, project, true);
+
+      }
 
     createProjectActivity(activity, sessionInfo){
       // activity structure should be as follows

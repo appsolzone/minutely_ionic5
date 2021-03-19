@@ -86,7 +86,7 @@
         margin: 0 .5px;
         overflow: hidden;
         position: relative;
-        background: var(--ion-color-white);
+        background: transparent; //var(--ion-color-white);
         div{
           div{
               position: absolute;

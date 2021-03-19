@@ -16,13 +16,16 @@ import { TextsearchService } from '../../../shared/textsearch/textsearch.service
 export class StartActivityComponent implements OnInit {
   @ViewChild('project') myInput: any;
   @ViewChild('activity') myActivityInput: any;
+  @ViewChild('hourlyRate') myHourlyRateInput: any;
 
   @Input() sessionInfo: any = {};
   @Input() allTasks: any[] = [];
   @Input() onCancel: any = ()=>{};
   // observables
   projectSubs$;
+  newActivitySubs$;
   // variables
+  public newInputActivity: any;
   public searchModeProject = 'all';
   public searchModeActivity = 'all';
   public allProjects: any[] = [];
@@ -47,6 +50,14 @@ export class StartActivityComponent implements OnInit {
     public searchMap: TextsearchService,
   ) {
     this.colorStack = this.project.projColorStack;
+    this.newActivitySubs$ = this.activity.watch().subscribe(act=>{
+      console.log("activities main this.newActivitySubs", act,act?.activity?.activityId);
+      if(act && (act?.activity?.activityId || act?.taskProject?.projectId)){
+        this.assignInputActivity(act);
+      } else {
+        this.newInputActivity = null;
+      }
+    });
   }
 
   async ngOnInit() {
@@ -54,11 +65,27 @@ export class StartActivityComponent implements OnInit {
       await this.getProjects();
     }
     setTimeout(()=>{
-      this.myInput.setFocus();
+      if(!this.newInputActivity?.activity?.activityId){
+        this.myInput.setFocus();
+      } else {
+        this.myHourlyRateInput.setFocus();
+      }
     },150);
   }
 
   ngOnDestroy() {}
+
+  assignInputActivity(act){
+    this.newInputActivity = act;
+    let { activity, taskProject } = act;
+    this.newTask = {...this.newTask, searchTitle: act.taskProject.title, taskName: activity.name, activity: {...activity}, taskProject: {...taskProject}};
+    this.isProjectSearchFocused = this.isSearchFocused = false;
+    console.log("activities main this.newTask", act,this.newTask);
+    setTimeout(()=>{
+      console.log("activities main this.newTask myHourlyRateInput.setFocus", act,this.newTask);
+      this.myHourlyRateInput.setFocus();
+    },150);
+  }
 
   projectSearchOptionsChanged(e){
     this.searchModeProject = e.detail.value;
@@ -269,6 +296,7 @@ export class StartActivityComponent implements OnInit {
                                         ];
 
                           await this.common.presentAlert(title,body ,buttons);
+                          this.common.hideLoader();
                           // this.sfp.defaultAlert("Activity Started","New activity has been started successfully");
                           Object.assign(this.newTask,{
                             searchTitle: '',
@@ -295,9 +323,9 @@ export class StartActivityComponent implements OnInit {
                                         ];
 
                           await this.common.presentAlert(title,body ,buttons);
+                          this.common.hideLoader();
                         });
         } else {
-          this.common.hideLoader();
           let title = "Warning";
           let body = "Activity can not be started. It seems location service is not activated or permission is not allowed. Please enable location service and try again.";
           let buttons: any[] = [
@@ -310,6 +338,7 @@ export class StartActivityComponent implements OnInit {
                         ];
 
           await this.common.presentAlert(title,body ,buttons);
+          this.common.hideLoader();
         }
       }else{
         let title="Missing Info";
@@ -327,6 +356,7 @@ export class StartActivityComponent implements OnInit {
         this.common.hideLoader();
       }
     }
+    this.activity.clear();
   }
 
 }

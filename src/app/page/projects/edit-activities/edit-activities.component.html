@@ -1,0 +1,53 @@
+<ion-card>
+  <ion-card-header>
+    <ion-item>
+      <ion-label>
+        <h1>Project activities</h1>
+      </ion-label>
+    </ion-item>
+  </ion-card-header>
+  <ion-list>
+    <ion-item lines="inset">
+      <ion-icon slot="start" name="create-outline" color="primary"></ion-icon>
+      <ion-label>
+        <h3><ion-text color="primary">Edit Project activities</ion-text></h3>
+      </ion-label>
+    </ion-item>
+    <ion-searchbar
+      [(ngModel)]="searchText"
+      (ionClear)="onClear($event)"
+      (ionChange)="ionChange($event)"
+    >
+    </ion-searchbar>
+    <ion-toolbar mode="ios">
+      <ion-item *ngIf="!searchText?.trim()" lines="none">
+        <ion-label>
+          <p class="ion-text-wrap">
+            <ion-text color="medium">
+              Search activity by name, status and keywords. Use <b>match any</b> option to widen the search results.
+            </ion-text>
+          </p>
+        </ion-label>
+      </ion-item>
+      <ion-segment *ngIf="searchText?.trim()" [value]="searchMode" (ionChange)="SearchOptionsChanged($event)">
+        <ion-segment-button value="all">
+          <ion-label>Match all keywords</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="any">
+          <ion-label>Match any keyword</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+    <ion-item *ngFor="let act of matchedActivities; let i=index;">
+      <ion-icon [name]="act.isComplete ? 'checkmark-done-circle-outline' : 'shuffle'" [color]="act.isComplete ? 'danger' : 'primary'" slot="start"></ion-icon>
+      <ion-label class="ion-text-wrap">
+        {{act.name}}
+      </ion-label>
+      <ion-toggle [(ngModel)]="act.isComplete" color="danger"></ion-toggle>
+    </ion-item>
+    <ion-item  lines="none" class="ion-padding-top">
+      <ion-button fill="clear" color="medium" slot="end" size="default" (click)="onCancel(false)">Cancel</ion-button>
+      <ion-button slot="end" size="default" (click)="saveProject()" >Save</ion-button>
+    </ion-item>
+  </ion-list>
+</ion-card>

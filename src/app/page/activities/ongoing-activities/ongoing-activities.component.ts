@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { Autounsubscribe } from '../../../decorator/autounsubscribe';
@@ -18,6 +18,7 @@ export class OngoingActivitiesComponent implements OnInit {
   // observables
   sessionSubs$;
   activitySubs$;
+  newActivitySubs$;
   public sessionInfo: any;
   public colorStack: any[];
   public timer: any;
@@ -49,11 +50,19 @@ export class OngoingActivitiesComponent implements OnInit {
     private project: ProjectService,
   ) {
     this.colorStack = this.project.projColorStack;
+    this.newActivitySubs$ = this.activity.watch().subscribe(act=>{
+      console.log("activities main this.newActivitySubs", act,act?.acitivity?.activityId);
+      if(act && (act?.activity?.activityId || act?.taskProject?.projectId)){
+        this.startInputActivity(act);
+      } else {
+        // this.showCreateActivity = false;
+      }
+    });
     this.sessionSubs$ = this.session.watch().subscribe(value=>{
       // console.log("Session Subscription got", value);
       // Re populate the values as required
       if(this.sessionInfo?.uid != value?.uid || this.sessionInfo?.subscriberId != value?.subscriberId){
-        this.allTasks = [];
+        this.allTasks = undefined;
         this.newTask = {
                           activeTask: [],
                           createTask: false,
@@ -85,6 +94,35 @@ export class OngoingActivitiesComponent implements OnInit {
 
   ngOnDestroy(){
 
+  }
+
+  async startInputActivity(act){
+    console.log("activities main this.startInputActivity");
+    // check if we have fetched all tasks and there is no active task to show the start new activity from input
+    if(this.allTasks && this.newTask.activeTask.length == 0){
+      // check if its PAUSED
+      let idx = this.allTasks.findIndex(t=>t.data?.status!='ACTIVE' && t.data?.activityId==act.activity?.activityId);
+      if(idx==-1){
+        this.showCreateActivity = true;
+      } else {
+        let task = this.allTasks[idx];
+        this.actionOnClickActivity(task, idx,'RESUME');
+      }
+    } else {
+      let title="Warning";
+      let body = "Please note that the requested activity can not be started as there is an ongoing activity. Please check and try again."
+      let buttons: any[] = [
+                      {
+                        text: 'Dismiss',
+                        role: 'cancel',
+                        cssClass: '',
+                        handler: ()=>{}
+                      },
+                    ];
+
+      await this.common.presentAlert(title,body ,buttons);
+      this.activity.clear();
+    }
   }
 
   // time started
@@ -211,6 +249,20 @@ export class OngoingActivitiesComponent implements OnInit {
             task.data.billingAmount = task.data.effort * task.data.rate;
             task.data.endTime = new Date(endTime) , //new Date(moment().valueOf() - this.session.admin.timeOffset); // firebase.firestore.FieldValue.serverTimestamp(),
             await this.activity.logActivitySummary(event, task , this.sessionInfo, null);
+          } else {
+            let title = "Warning";
+            let body = "Activity can not be "+ event.toLowerCase() + "d. It seems location service is not activated or permission is not allowed. Please enable location service and try again.";
+            let buttons: any[] = [
+                            {
+                              text: 'Dismiss',
+                              role: 'cancel',
+                              cssClass: '',
+                              handler: ()=>{}
+                            }
+                          ];
+
+            await this.common.presentAlert(title,body ,buttons);
+            this.common.hideLoader();
           }
           // console.log("new end date time", data.startTime, endTime, moment(endTime).format('ll'), new Date(endTime))
           setTimeout(()=>this.common.hideLoader(),300);
@@ -269,6 +321,7 @@ export class OngoingActivitiesComponent implements OnInit {
 
   startNewActivity(){
     this.showCreateActivity = !this.showCreateActivity;
+    this.activity.clear();
   }
 
   gotoTimeSheet(){

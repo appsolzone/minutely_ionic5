@@ -115,8 +115,8 @@
     </ion-toolbar>
   </ion-col>
   <ion-col size="12" *ngIf="!(newTask.activity?.activityId && newTask.hourlyRate && newTask.hourlyRate > 0)">
-    <ion-item class="ion-padding-bottom ion-padding-end" lines="none">
-      <ion-button slot="end" fill="clear" color="medium" (click)="clickCancel()">
+    <ion-item class="ion-padding-bottom" lines="none">
+      <ion-button slot="end" fill="clear" size="default" color="medium" (click)="clickCancel()">
         Cancel
       </ion-button>
     </ion-item>
@@ -215,11 +215,11 @@
         </ion-row>
       </ion-col>
       <ion-col size="12">
-        <ion-item class="ion-padding-bottom ion-padding-end" lines="none">
-          <ion-button slot="end" fill="clear" color="medium" (click)="clickCancel()">
+        <ion-item class="ion-padding-bottom" lines="none">
+          <ion-button slot="end" fill="clear" size="default" color="medium" (click)="clickCancel()">
             Cancel
           </ion-button>
-          <ion-button slot="end" (click)="saveData()">
+          <ion-button slot="end" size="default" (click)="saveData()">
             {{ wdEntryDataIndex != null ? 'Update' : 'Add' }}
           </ion-button>
         </ion-item>

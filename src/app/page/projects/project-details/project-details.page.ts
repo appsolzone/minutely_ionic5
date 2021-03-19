@@ -4,8 +4,10 @@ import * as moment from 'moment';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { ProjectService } from 'src/app/shared/project/project.service';
+import { ActivityService } from 'src/app/shared/activity/activity.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { TextsearchService } from 'src/app/shared/textsearch/textsearch.service';
+import { AccesscontrolService } from 'src/app/shared/accesscontrol/accesscontrol.service';
 
 @Component({
   selector: 'app-project-details',
@@ -27,13 +29,17 @@ export class ProjectDetailsPage implements OnInit {
   public newActivityName: string;
   public statsFullWidth: boolean = false;
   public colorStack: any[];
+  public editProject: boolean = false;
+  public editActivity: boolean = false;
 
   constructor(
     private router:Router,
     private session: SessionService,
     private project: ProjectService,
+    private activity: ActivityService,
     private common: ComponentsService,
     private searchMap: TextsearchService,
+    private accesscontrol: AccesscontrolService,
   ) {
     this.colorStack = this.project.projColorStack;
     this.sessionSubs$ = this.session.watch().subscribe(value=>{
@@ -122,9 +128,10 @@ export class ProjectDetailsPage implements OnInit {
                                 const id = a.payload.doc.id;
                                 const inceptionDate = new Date(data.inceptionDate?.seconds*1000);
                                 const closureDate = data.closureDate? new Date(data.closureDate?.seconds*1000) : null;
+                                const targetClosureDate = data.targetClosureDate ? new Date(data.targetClosureDate?.seconds*1000) : null;
                                 const projectNo = data.projectId.replace(/[A-Z]/,'');
                                 // return {id, data};
-                                return {id, projectNo, data: {...data, inceptionDate, closureDate}};
+                                return {id, projectNo, targetClosureDate: moment(targetClosureDate).format('MMM D, YYYY'), data: {...data, inceptionDate, closureDate, targetClosureDate}};
                                 // return {id, data};
                                 // return {id, data: {...data, inceptionDate, closureDate}};
                               });
@@ -155,6 +162,65 @@ export class ProjectDetailsPage implements OnInit {
 
   onFullWidth(){
     this.statsFullWidth = !this.statsFullWidth;
+  }
+
+  openStartActivity(activity){
+    let startActivity: any = {
+                          activity: {...activity},
+                          taskProject: {...this.selectedProject.data, projectNo: this.selectedProject.projectNo}
+                        };
+    this.activity.patch(startActivity);
+    this.router.navigate(['activities']);
+  }
+
+  async openEditProject(override: boolean=null){
+    if(override!=null){
+      this.editProject = override;
+    } else {
+      // check whether the user has access or not
+      let permissionToEdit = await this.accesscontrol.canEditProject(this.sessionInfo, this.selectedProject);
+      if(permissionToEdit.canEdit){
+        // add the code here
+        this.editProject = true;
+      } else {
+        let {title, body} = permissionToEdit;
+        let buttons: any[] = [
+                        {
+                          text: 'Dismiss',
+                          role: 'cancel',
+                          cssClass: '',
+                          handler: ()=>{}
+                        },
+                      ];
+
+        await this.common.presentAlert(title,body ,buttons);
+      }
+    }
+  }
+
+  async openEditActivity(override: boolean=null){
+    if(override!=null){
+      this.editActivity = override;
+    } else {
+      // check whether the user has access or not
+      let permissionToEdit = await this.accesscontrol.canEditProject(this.sessionInfo, this.selectedProject);
+      if(permissionToEdit.canEdit){
+        // add the code here
+        this.editActivity = true;
+      } else {
+        let {title, body} = permissionToEdit;
+        let buttons: any[] = [
+                        {
+                          text: 'Dismiss',
+                          role: 'cancel',
+                          cssClass: '',
+                          handler: ()=>{}
+                        },
+                      ];
+
+        await this.common.presentAlert(title,body ,buttons);
+      }
+    }
   }
 
 }

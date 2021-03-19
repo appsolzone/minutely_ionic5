@@ -5,6 +5,7 @@ export interface Project {
   status: string,
   inceptionDate: any,
   closureDate: any,
+  targetClosureDate: any,
   activityCount: number,
   activities: any[],
   estimatedEffort?: number,

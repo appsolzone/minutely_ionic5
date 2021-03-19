@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import * as moment from 'moment';
 import { DatabaseService } from '../database/database.service';
 import { ProjectService } from '../project/project.service';
@@ -9,6 +10,7 @@ import { Activity } from '../../interface/activity';
   providedIn: 'root'
 })
 export class ActivityService {
+  newActivityStream$ = new BehaviorSubject<any|undefined>(undefined);
   public newActivity = {
       project: '',
       activityId: '',
@@ -33,7 +35,17 @@ export class ActivityService {
     public db: DatabaseService,
     public projectService: ProjectService,
     public searchMap: TextsearchService,
-  ) { }
+  ) {
+    this.newActivityStream$.next(undefined);
+  }
+
+  // observable methods
+  watch() { return this.newActivityStream$; }
+  peek() { return this.newActivityStream$.value; }
+  patch(t){ const newActivityStream = Object.assign({}, this.peek() ? this.peek() : {}, t); this.poke(newActivityStream);}
+  poke(t) { this.newActivityStream$.next(t); }
+  clear() { this.poke(undefined); }
+
 
   // Read
   getActivitiesOnce(queryObj:any[], textSearchObj: any = null, limit: number=null){
