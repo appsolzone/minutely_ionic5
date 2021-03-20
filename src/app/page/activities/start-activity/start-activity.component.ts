@@ -159,7 +159,7 @@ export class StartActivityComponent implements OnInit {
         this.searchedprojects = this.allProjects.filter(a=>{
             let matched  = (
                               (' '+this.searchMap.createSearchMap(a.title).matchAny.join(' ')+' ').match(new RegExp(newexp)) ||
-                              (a.title.toLowerCase()).match(new RegExp(newExpString),'i')
+                              (a.title.toLowerCase()).match(new RegExp(newExpString))
                             );
             return matched;
           });

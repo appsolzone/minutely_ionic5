@@ -25,7 +25,7 @@
       <ion-label>
         <p class="ion-text-wrap">
           <ion-text color="medium">
-            Search activity by name, status and keywords. Use <b>match any</b> option to widen the search results.
+            Search activity by name, status (<b>pause</b> , <b>active</b>) and keywords. Use <b>match any</b> option to widen the search results.
           </ion-text>
         </p>
       </ion-label>
@@ -45,7 +45,10 @@
       <ion-icon name="person-circle-outline" *ngIf="!oact.data.user.picUrl" size="large" color="secondary"></ion-icon>
     </ion-avatar>
     <ion-label>
-      <h2>{{oact.data.project.title}}</h2>
+      <h2>
+        <ion-icon slot="start" name="bookmark" size="small" class="" [color]="colorStack[(oact?.projectNo - 1)%colorStack.length]"></ion-icon>
+        {{oact.data.project.title}}
+      </h2>
       <h3><ion-text color="medium">{{oact.data.name}}</ion-text></h3>
       <ion-chip [color]="oact.data?.status=='ACTIVE' ? 'success' : 'danger'">{{oact.data?.statusLabel}}</ion-chip>
       <!-- <ion-chip [color]="oact.data?.status=='ACTIVE' ? 'success' : 'danger'">{{oact.data?.startTime | date : 'mediumDate'}} {{oact.data?.startTime | date : 'shortTime'}}</ion-chip>

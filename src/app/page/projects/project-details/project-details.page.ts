@@ -101,10 +101,24 @@ export class ProjectDetailsPage implements OnInit {
   }
 
   onSearchActivity(){
+    // let matchMap = this.searchMap.createSearchMap(this.searchText);
+    // let newexp = this.searchMode == 'all' ? '^(?=.*?\ '+matchMap.matchAny.join('\ )(?=.*?\ ')+'\ ).*$' : ' (' + matchMap.matchAny.join('|') + ') '
+    // this.matchedActivities = this.selectedProject.data.activities.filter(a=>(' '+this.searchMap.createSearchMap(a.name).matchAny.join(' ')+' ').match(new RegExp(newexp)));
+
     let matchMap = this.searchMap.createSearchMap(this.searchText);
     let newexp = this.searchMode == 'all' ? '^(?=.*?\ '+matchMap.matchAny.join('\ )(?=.*?\ ')+'\ ).*$' : ' (' + matchMap.matchAny.join('|') + ') '
-    this.matchedActivities = this.selectedProject.data.activities.filter(a=>(' '+this.searchMap.createSearchMap(a.name).matchAny.join(' ')+' ').match(new RegExp(newexp)));
 
+    let matchStrings = this.searchText.trim().replace(/[\!\@\#\$\%\^\&\*\(\)\.\+]+/g,'').replace(/  +/g,' ').toLowerCase().split(' ');
+    let newExpString = this.searchMode == 'all' ? '^(?=.*?'+matchStrings.join(')(?=.*?')+'\).*$' : '^.*(' + matchStrings.join('|') + ').*$';
+
+    this.matchedActivities = this.selectedProject.data.activities.filter(a=>{
+      let searchString = (a.name + ' ' + a.status).toLowerCase();
+      let matched  = (
+                        (' '+this.searchMap.createSearchMap(a.name).matchAny.join(' ')+' ').match(new RegExp(newexp)) ||
+                        searchString.match(new RegExp(newExpString))
+                      );
+      return matched;
+    });
   }
 
   // search implement

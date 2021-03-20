@@ -9,7 +9,7 @@
 <ion-toolbar mode="ios">
   <ion-item *ngIf="!searchText?.trim()" lines="none">
     <ion-label>
-      <p class="ion-text-wrap">Search projects by name, status and keywords. Use <b>match any</b> option to widen the search results.</p>
+      <p class="ion-text-wrap">Search projects by name, status (<b>open</b>, <b>complete</b>) and keywords. Use <b>match any</b> option to widen the search results.</p>
     </ion-label>
   </ion-item>
   <ion-segment *ngIf="searchText?.trim()" [value]="searchMode" (ionChange)="SearchOptionsChanged($event)" color="primary">
@@ -33,7 +33,7 @@
 <ion-list>
   <ion-item *ngIf="allProjects?.length==0 && searchText?.trim()" lines="none">
     <ion-label>
-      <p class="ion-text-wrap">Search projects by name, status and keywords. Use <b>match any</b> option to widen the search results.</p>
+      <p class="ion-text-wrap">Search projects by name, status (<b>open</b>, <b>complete</b>) and keywords. Use <b>match any</b> option to widen the search results.</p>
     </ion-label>
   </ion-item>
   <!-- <ion-item *ngFor="let project of allProjects; let i=index;">

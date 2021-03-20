@@ -5,6 +5,7 @@ import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { ActivityService } from 'src/app/shared/activity/activity.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { TextsearchService } from 'src/app/shared/textsearch/textsearch.service';
+import { ProjectService } from 'src/app/shared/project/project.service';
 
 @Component({
   selector: 'app-team-ongoing-activities',
@@ -22,13 +23,17 @@ export class TeamOngoingActivitiesComponent implements OnInit {
   public matchedActivities: any[] =[]
   public searchText: string = '';
   public searchMode: string = 'all';
+  public colorStack: any[];
 
   constructor(
     private router:Router,
     private activity: ActivityService,
     private common:ComponentsService,
     private searchMap: TextsearchService,
-  ) { }
+    private project: ProjectService,
+  ) {
+    this.colorStack = this.project.projColorStack;
+  }
 
   ngOnInit() {
     this.getActivities();
@@ -64,12 +69,13 @@ export class TeamOngoingActivitiesComponent implements OnInit {
                                 const id = a.payload.doc.id;
                                 const startTime = new Date(data.startTime?.seconds*1000);
                                 const endTime = new Date(data.endTime?.seconds*1000);
+                                const projectNo = data.project.projectId.replace(/[A-Z]/,'');
                                 const statusLabel = data.status == 'ACTIVE' ?
                                                     'Started working '+ moment(startTime).fromNow()
                                                     :
                                                     'Last worked ' + moment(endTime).fromNow();
                                 // return {id, data};
-                                return {id, data: {...data, startTime, endTime, statusLabel}};
+                                return {id, projectNo, data: {...data, startTime, endTime, statusLabel}};
                               });
 
                               this.allOngoingTasks =[];
@@ -109,18 +115,14 @@ export class TeamOngoingActivitiesComponent implements OnInit {
     let newExpString = this.searchMode == 'all' ? '^(?=.*?'+matchStrings.join(')(?=.*?')+'\).*$' : '^.*(' + matchStrings.join('|') + ').*$';
 
     this.matchedActivities = this.allOngoingTasks.filter(a=>{
+      let searchString = (a.data.name+ ' ' + a.data.project.title + ' ' + a.data.user.name + ' ' + a.data.status + ' ' + (a.data.status == 'ACTIVE' ? 'ongoing open' : ' closed done')).toLowerCase();
       let matched  = (
-                        (' '+this.searchMap.createSearchMap(a.data.name).matchAny.join(' ')+' ').match(new RegExp(newexp)) ||
-                        (a.data.name.toLowerCase()).match(new RegExp(newExpString),'i')||
-                        (' '+this.searchMap.createSearchMap(a.data.project.title).matchAny.join(' ')+' ').match(new RegExp(newexp)) ||
-                        (a.data.project.title.toLowerCase()).match(new RegExp(newExpString),'i') ||
-                        (' '+this.searchMap.createSearchMap(a.data.user.name).matchAny.join(' ')+' ').match(new RegExp(newexp)) ||
-                        (a.data.user.name.toLowerCase()).match(new RegExp(newExpString),'i') ||
-                        (' '+this.searchMap.createSearchMap(a.data.status).matchAny.join(' ')+' ').match(new RegExp(newexp)) ||
-                        (a.data.status.toLowerCase()).match(new RegExp(newExpString),'i')
+                        (' '+this.searchMap.createSearchMap(searchString).matchAny.join(' ')+' ').match(new RegExp(newexp)) ||
+                        searchString.match(new RegExp(newExpString))
                       );
       return matched;
     });
+    console.log("matchedActivities",this.matchedActivities,newexp);
 
   }
 

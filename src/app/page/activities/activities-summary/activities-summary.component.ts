@@ -60,6 +60,10 @@ export class ActivitiesSummaryComponent implements OnInit {
             // maxValue: 1,
             // data: [],
           };
+        if(value?.uid && value?.subscriberId){
+          this.sessionInfo = value;
+          this.getUserSummary();
+        }
       }
       this.sessionInfo = value;
       if(!this.sessionInfo){

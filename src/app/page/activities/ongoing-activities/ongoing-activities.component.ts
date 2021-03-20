@@ -75,6 +75,10 @@ export class OngoingActivitiesComponent implements OnInit {
                           startTime: '',
                           endTime: '',
                         };
+        if(value?.uid && value?.subscriberId){
+          this.sessionInfo = value;
+          this.getActivities();
+        }
       }
       this.sessionInfo = value;
       if(!this.sessionInfo){

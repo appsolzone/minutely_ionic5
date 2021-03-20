@@ -62,9 +62,10 @@ export class EditActivitiesComponent implements OnInit {
     let newExpString = this.searchMode == 'all' ? '^(?=.*?'+matchStrings.join(')(?=.*?')+'\).*$' : '^.*(' + matchStrings.join('|') + ').*$';
 
     this.matchedActivities = this.activities.filter(a=>{
+      let searchString = (a.name + ' ' + a.status).toLowerCase();
       let matched  = (
                         (' '+this.searchMap.createSearchMap(a.name).matchAny.join(' ')+' ').match(new RegExp(newexp)) ||
-                        (a.name.toLowerCase()).match(new RegExp(newExpString),'i')
+                        searchString.match(new RegExp(newExpString))
                       );
       return matched;
     });
