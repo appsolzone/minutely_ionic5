@@ -20,10 +20,6 @@ export class DatabaseService {
     cart:'cart',
     transactions:'transactions',
     coupons:"coupons",
-    activities: "activities",
-    userSummary: "userSummary",
-    projects: "projects",
-    projectSummary: "projectSummary",
   };
   // Admin instance of firebase to create new users, this is to avoid messing up the
   // auth token post user creation for the .currentUser data
