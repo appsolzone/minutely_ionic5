@@ -1,5 +1,5 @@
 {
-  "name": "FieldHour",
+  "name": "commonModule",
   "integrations": {
     "capacitor": {}
   },
