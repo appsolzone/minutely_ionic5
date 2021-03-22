@@ -97,15 +97,17 @@ export class RegistrationService {
                                        subscriberId: sId,
                                        // address: address,
                                        role: userOnbordData !== undefined? userOnbordData. role:'USER',
-                                       status: userOnbordData !== undefined? 'ACTIVE': 'REGISTERED'
+                                       status: userOnbordData !== undefined? 'ACTIVE': 'REGISTERED',
+                                       jobTitle: userOnbordData !== undefined && userOnbordData?.jobTitle ? userOnbordData?.jobTitle : null,
+                                       phoneNumber: userOnbordData !== undefined && userOnbordData?.phoneNumber ? userOnbordData?.phoneNumber : null,
                                      }
                                    );
-           // during admin user onboard                        
+           // during admin user onboard
            if(userOnbordData !== undefined){
            let subsUpdateObj = {
               'noOfFreeLicense': this.db.frb.firestore.FieldValue.increment(-1),
-              }  
-           this.db.setTransactDocument(transaction, subscriberRef,subsUpdateObj,true);             
+              }
+           this.db.setTransactDocument(transaction, subscriberRef,subsUpdateObj,true);
            }
 
            this.db.setTransactDocument(transaction, userRef, newUser);

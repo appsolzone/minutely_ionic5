@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add project</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/projects"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <app-add-project
+    [sessionInfo]="sessionInfo"
+    [openAddProject]="gotoAddProject.bind(this)"
+    ></app-add-project>
+  </ion-row>
+</ion-content>

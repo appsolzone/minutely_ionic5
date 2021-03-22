@@ -1,0 +1,143 @@
+<ion-row>
+  <ion-col size="12" class="ion-hide-lg-up">
+  </ion-col>
+  <ion-toolbar>
+    <ion-searchbar
+      [(ngModel)]="searchText"
+      (ionClear)="onClear($event)"
+      (ionChange)="ionChange($event)"
+    >
+    </ion-searchbar>
+    <ion-buttons slot="end" class="ion-hide-md-down">
+      <ion-button (click)="closeSearch()">
+        <ion-icon name="contract-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar mode="ios">
+    <ion-row>
+      <ion-col>
+        <ion-segment *ngIf="!searchText?.trim()" [value]="options.calendarOptions.pickMode" (ionChange)="calendarOptionsChanged($event)">
+          <!-- (ionChange)="calendarOptionsChanged($event)"> -->
+          <ion-segment-button value="single">
+            <ion-label>Single Date</ion-label>
+          </ion-segment-button>
+          <!-- <ion-segment-button value="multi">
+            <ion-label>Multiple Dates</ion-label>
+          </ion-segment-button> -->
+          <ion-segment-button value="range">
+            <ion-label>Date Range</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+        <ion-segment *ngIf="searchText?.trim()" [value]="searchMode" (ionChange)="SearchOptionsChanged($event)" color="primary">
+          <!-- (ionChange)="calendarOptionsChanged($event)"> -->
+          <ion-segment-button value="all">
+            <ion-label>Match all keywords</ion-label>
+          </ion-segment-button>
+          <!-- <ion-segment-button value="multi">
+            <ion-label>Multiple Dates</ion-label>
+          </ion-segment-button> -->
+          <ion-segment-button value="any">
+            <ion-label>Match any keyword</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+      <ion-col>
+        <ion-segment [value]="searchModeUser" (ionChange)="SearchUserOptionsChanged($event)">
+          <!-- (ionChange)="calendarOptionsChanged($event)"> -->
+          <ion-segment-button value="user">
+            <ion-label>My activities</ion-label>
+          </ion-segment-button>
+          <!-- <ion-segment-button value="multi">
+            <ion-label>Multiple Dates</ion-label>
+          </ion-segment-button> -->
+          <ion-segment-button value="all">
+            <ion-label>All activities</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+  <ion-calendar
+    *ngIf="!searchText?.trim()"
+    [options]="options.calendarOptions"
+    (select)="onSelect($event)"
+    (selectStart)="onSelectStart($event)"
+    (selectEnd)="onSelectEnd($event)"
+    (monthChange)="monthChanges($event)"
+    >
+  </ion-calendar>
+  <ion-col>
+  <ion-toolbar *ngIf="!allDates || allDates?.length==0">
+    <ion-item>
+      <ion-label>
+        <h1>Search activities</h1>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label class="ion-text-wrap">
+        <p>To search activities by date, select <b>a date</b> or <b>a date range</b>.</p>
+        <p>To search activities by <b>keywords</b>, enter one or more keywords.
+        Widen the search results by choosing <b>match any keyword</b> option.</p>
+      </ion-label>
+    </ion-item>
+  </ion-toolbar>
+  <ion-list *ngFor="let data of allDates; let i = index">
+    <ion-header mode="ios">
+      <ion-toolbar color="light">
+        <ion-item color="transparent" lines="none">
+          <ion-label>{{data}}</ion-label>
+        </ion-item>
+      </ion-toolbar>
+    </ion-header>
+    <ion-item *ngFor="let details of viewResult[data]">
+      <ion-label>
+        <!-- <ion-row> -->
+          <ion-chip color="success">
+            <ion-icon name="time-outline"></ion-icon>
+            <ion-label>{{details.data.startTime | date : 'mediumTime'}}</ion-label>
+          </ion-chip>
+          <ion-chip color="primary">
+            <ion-icon name="stopwatch-outline"></ion-icon>
+            <ion-label>{{details.data.endTime ? (details.data.endTime | date : 'mediumTime') : 'Ongoing'}}</ion-label>
+          </ion-chip>
+          <ion-chip color="transparenet" class="ion-float-end" (click)="toSearchActivity(data)">
+            <ion-icon name="ellipsis-horizontal"></ion-icon>
+          </ion-chip>
+        <!-- </ion-row> -->
+        <h1><small><ion-icon name="bookmark" size="small" [color]="colorStack[(details.data.project.projectId?.replace('P','')-1)%colorStack.length]"></ion-icon> {{details.data.project.title}}</small></h1>
+        <p><ion-icon name="body-outline" ></ion-icon> {{details.data.name}}</p>
+        <p><ion-icon name="person-circle-outline"></ion-icon> {{details.data.user.name}}</p>
+        <ion-row>
+          <ion-chip color="transparent">
+            <ion-icon name="time-outline" color="medium"></ion-icon>
+            <ion-label>{{details.data.effort!=null ? details.data.effort.toFixed(2)+' hr ' : 'Ongoing'}}</ion-label>
+          </ion-chip>
+          <ion-chip color="transparent">
+            <ion-icon name="cash-outline" color="medium"></ion-icon>
+            <ion-label>$ {{details.data.billingAmount!=null ? details.data.billingAmount.toFixed(2) : 'Ongoing'}}</ion-label>
+          </ion-chip>
+          <!-- <ion-col>
+            <p class="ion-text-wrap"><ion-icon name="timer-outline" slot="start"></ion-icon> {{details.data.effort!=null ? details.data.effort.toFixed(2)+' hr ' : 'Ongoing'}}</p>
+          </ion-col>
+          <ion-col>
+            <p class="ion-text-wrap"><ion-icon name="cash-outline" slot="start"></ion-icon> $ {{details.data.billingAmount!=null ? details.data.billingAmount.toFixed(2) : 'Ongoing'}}</p>
+          </ion-col> -->
+        </ion-row>
+      </ion-label>
+    </ion-item>
+
+        <!-- <h3><ion-icon name="body-outline"></ion-icon> {{details.data.name}}</h3>
+        <ion-row>
+          <ion-col>
+            <ion-icon name="timer-outline"></ion-icon> {{details.data.effort!=null ? details.data.effort.toFixed(2)+' hr ' : 'Ongoing'}}
+          </ion-col>
+          <ion-col>
+            <ion-icon name="cash-outline"></ion-icon> $ {{details.data.billingAmount!=null ? details.data.billingAmount.toFixed(2) : 'Ongoing'}}
+          </ion-col>
+        </ion-row>
+      </ion-label>
+    </ion-item> -->
+  </ion-list>
+</ion-col>
+</ion-row>

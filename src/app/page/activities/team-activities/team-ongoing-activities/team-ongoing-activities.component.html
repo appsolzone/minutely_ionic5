@@ -1,0 +1,60 @@
+<ion-list class="ion-no-margin ion-no-padding">
+  <ion-toolbar color="secondary">
+    <ion-item color="transparent" lines="none">
+      <ion-label><h2>Ongoing activities</h2></ion-label>
+      <ion-buttons slot="end" >
+        <ion-button slot="end" (click)="showSearchBar=!showSearchBar">
+          <ion-icon name="search" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-button slot="end" fill="outline" color="white" class="ion-hide-md-up" (click)="gotoTeamStatsMobile()">
+        <ion-icon name="stats-chart"></ion-icon>
+        Team Stats
+      </ion-button>
+    </ion-item>
+  </ion-toolbar>
+  <ion-searchbar
+    *ngIf="showSearchBar"
+    [(ngModel)]="searchText"
+    (ionClear)="onClear($event)"
+    (ionChange)="ionChange($event)"
+  >
+  </ion-searchbar>
+  <ion-toolbar mode="ios" *ngIf="showSearchBar">
+    <ion-item *ngIf="!searchText?.trim()" lines="none">
+      <ion-label>
+        <p class="ion-text-wrap">
+          <ion-text color="medium">
+            Search activity by name, status (<b>pause</b> , <b>active</b>) and keywords. Use <b>match any</b> option to widen the search results.
+          </ion-text>
+        </p>
+      </ion-label>
+    </ion-item>
+    <ion-segment *ngIf="searchText?.trim()" [value]="searchMode" (ionChange)="SearchOptionsChanged($event)">
+      <ion-segment-button value="all">
+        <ion-label>Match all keywords</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="any">
+        <ion-label>Match any keyword</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+  <ion-item *ngFor="let oact of showSearchBar ? matchedActivities : allOngoingTasks;">
+    <ion-avatar slot="start">
+      <img [src]="oact.data.user.picUrl" *ngIf="oact.data.user.picUrl">
+      <ion-icon name="person-circle-outline" *ngIf="!oact.data.user.picUrl" size="large" color="secondary"></ion-icon>
+    </ion-avatar>
+    <ion-label>
+      <h2>
+        <ion-icon slot="start" name="bookmark" size="small" class="" [color]="colorStack[(oact?.projectNo - 1)%colorStack.length]"></ion-icon>
+        {{oact.data.project.title}}
+      </h2>
+      <h3><ion-text color="medium">{{oact.data.name}}</ion-text></h3>
+      <ion-chip [color]="oact.data?.status=='ACTIVE' ? 'success' : 'danger'">{{oact.data?.statusLabel}}</ion-chip>
+      <!-- <ion-chip [color]="oact.data?.status=='ACTIVE' ? 'success' : 'danger'">{{oact.data?.startTime | date : 'mediumDate'}} {{oact.data?.startTime | date : 'shortTime'}}</ion-chip>
+      <ion-chip [color]="oact.data?.status=='ACTIVE' ? 'success' : 'danger'" class="ion-text-capitalize">{{oact.data?.status=='ACTIVE'? 'Ongoing' : 'Paused'}}</ion-chip> -->
+      <p><ion-text color="">{{oact.data.user.name}}</ion-text></p>
+      <p><ion-text color="medium">{{oact.data.user.email}}</ion-text></p>
+    </ion-label>
+  </ion-item>
+</ion-list>

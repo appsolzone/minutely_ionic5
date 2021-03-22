@@ -1,0 +1,54 @@
+<ion-card>
+  <ion-card-header>
+    <ion-item>
+      <ion-label>
+        <h1>Add new project</h1>
+      </ion-label>
+    </ion-item>
+  </ion-card-header>
+  <ion-card-content>
+    <!-- <ion-list> -->
+      <ion-item lines="inset" class="ion-no-padding">
+        <ion-label position="floating">
+          <ion-icon name="bookmark"></ion-icon>
+          Project Name
+        </ion-label>
+        <ion-input type="text" [(ngModel)] = "newProject.title"></ion-input>
+      </ion-item>
+      <ion-item lines="inset" class="ion-no-padding">
+        <ion-label>
+          <ion-icon name="calendar"></ion-icon>
+          Inception Date
+        </ion-label>
+        <ion-datetime displayFormat="DD MMM, YYYY" [max]="maxDate" [(ngModel)]="inceptionDate"></ion-datetime>
+      </ion-item>
+      <ion-item lines="inset" class="ion-no-padding">
+        <ion-label>
+          <ion-icon name="calendar"></ion-icon>
+          Target Closure Date
+        </ion-label>
+        <ion-datetime displayFormat="DD MMM, YYYY" [min]="maxDate" [(ngModel)]="targetClosureDate"></ion-datetime>
+      </ion-item>
+      <ion-item  lines="inset" class="ion-no-padding">
+        <ion-label>
+          <ion-icon name="body"></ion-icon>
+          Estimated effort
+        </ion-label>
+        <ion-input type="number" inputmode="numeric" class="ion-text-end hide-number-arrow" [(ngModel)] = "newProject.estimatedEffort"></ion-input>
+        <ion-label slot="end">hr</ion-label>
+      </ion-item>
+      <ion-item  lines="inset" class="ion-no-padding">
+        <ion-label>
+          <ion-icon name="cash"></ion-icon>
+          Estimated cost
+        </ion-label>
+        <ion-input type="number" inputmode="numeric" class="ion-text-end hide-number-arrow" [(ngModel)] = "newProject.estimatedCost"></ion-input>
+        <ion-label slot="end">$<ion-text color="transparent">.</ion-text></ion-label>
+      </ion-item>
+    <!-- </ion-list> -->
+    <ion-item  lines="none" class="ion-padding-top">
+      <ion-button fill="clear" color="medium" slot="end" (click)="openAddProject()">Cancel</ion-button>
+      <ion-button slot="end" (click)="saveProject()" >Save</ion-button>
+    </ion-item>
+  </ion-card-content>
+</ion-card>

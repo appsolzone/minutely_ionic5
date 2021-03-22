@@ -9,17 +9,32 @@
 //   tab: '<tab route>',
 // },
 export const appPages = [
+  {
+    title: 'Activities',
+    url: 'activities',
+    icon: 'body',
+    tab: 'activities',
+    disabled: true,
+  },
+  {
+    title: 'Timesheet',
+    url: 'timesheet',
+    icon: 'calendar',
+    tab: 'timesheet',
+    disabled: true,
+  },
+  {
+    title: 'Projects',
+    url: 'projects',
+    icon: 'bookmark',
+    tab: 'projects',
+    disabled: true,
+  },
   // {
-  //   title: 'Attendance',
-  //   url: 'attendance',
-  //   icon: 'time',
-  //   tab: 'attendance',
-  // },
-  // {
-  //   title: 'Leaves',
-  //   url: 'leave',
-  //   icon: 'cafe',
-  //   tab: 'leave',
+  //   title: 'List',
+  //   url: 'activitysearch',
+  //   icon: 'list',
+  //   tab: 'activitysearch',
   // },
   // {
   //   title: 'Expenses',
@@ -35,7 +50,7 @@ export const appPages = [
     disabled: false,
   },
   {
-    title: 'Ntification',
+    title: 'Alerts',
     url: 'notification',
     icon: 'notifications',
     tab: 'notification',

@@ -1,7 +1,7 @@
 <!-- graphX rendering -->
 <div *ngIf="graphX">
   <ion-item>
-    <h2><ion-icon *ngIf="graphX.icon" [name]="graphX.icon" color="primary"></ion-icon><span>{{graphX.title}}</span></h2>
+    <h2><ion-icon *ngIf="graphX.icon" [name]="graphX.icon" color="primary" class="ion-padding-end"></ion-icon><small>{{' ' + graphX.title}}</small></h2>
   </ion-item>
   <div class="graphX">
     <div class="eachSummary" *ngFor="let data of graphX.data; let i=index;">
@@ -28,11 +28,11 @@
 <!-- Graph Y rendering -->
 <div *ngIf="graphY">
   <ion-item>
-    <h2><ion-icon *ngIf="graphY.icon" [name]="graphY.icon" color="primary"></ion-icon><span> {{graphY.title}}</span></h2>
+    <h2><ion-icon *ngIf="graphY.icon" [name]="graphY.icon" color="primary" class="ion-padding-end"></ion-icon><small>{{graphY.title}}</small></h2>
   </ion-item>
   <div class="graphY">
-    <div class="maxlabel">{{graphY.maxValue}}</div>
-    <div class="halfwaymark">{{graphY.maxValue/2}}</div>
+    <div class="maxlabel">{{graphY.maxValue ? graphY.maxValue : 1}}</div>
+    <div class="halfwaymark">{{graphY.maxValue ? graphY.maxValue/2 : 0.5}}</div>
     <div class="eachbar " [ngStyle]="{'width': (100/graphY.data.length) +'%'}"  *ngFor="let data of graphY.data; let i=index;">
       <div *ngFor="let bar of data.stack; let z=index;">
         <div [class]="bar.cssClass" [ngStyle]="{'height': bar.height +'%', 'z-index': data.stack.length - z + 1}"></div>
