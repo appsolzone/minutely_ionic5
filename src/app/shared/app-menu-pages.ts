@@ -10,16 +10,10 @@
 // },
 export const appPages = [
   // {
-  //   title: 'Attendance',
-  //   url: 'attendance',
-  //   icon: 'time',
-  //   tab: 'attendance',
-  // },
-  // {
-  //   title: 'Leaves',
-  //   url: 'leave',
-  //   icon: 'cafe',
-  //   tab: 'leave',
+  //   title: 'List',
+  //   url: 'activitysearch',
+  //   icon: 'list',
+  //   tab: 'activitysearch',
   // },
   // {
   //   title: 'Expenses',
@@ -35,7 +29,7 @@ export const appPages = [
     disabled: false,
   },
   {
-    title: 'Ntification',
+    title: 'Alerts',
     url: 'notification',
     icon: 'notifications',
     tab: 'notification',

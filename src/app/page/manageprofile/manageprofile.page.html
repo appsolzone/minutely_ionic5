@@ -141,7 +141,7 @@
                 <ion-label>
                   <ion-icon name="call"></ion-icon>
                 </ion-label>
-                <ion-input type="tel" [(ngModel)]="updatedProfile.phoneNumber" class="ion-text-right"
+                <ion-input  type="number" inputmode="numeric" [(ngModel)]="updatedProfile.phoneNumber" class="ion-text-right hide-number-arrow"
                   [disabled]="userData.providerData[0].providerId=='phone'"
                   placeholder="Please enter phone no with country code" [readonly]="!editProfile"></ion-input>
               </ion-item>

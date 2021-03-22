@@ -46,7 +46,7 @@ export class AppComponent {
                 } else {
                   currentIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'profile');
                 }
-                if(currentIndex && currentIndex!=-1){
+                if(currentIndex != null && currentIndex!=-1){
                   appPages[currentIndex].url = currentPath;
                 }
                  console.log("changeSelectedIndex", currentPath, currentIndex);

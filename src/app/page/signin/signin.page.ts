@@ -22,10 +22,12 @@ export class SigninPage implements OnInit {
   public isMobile: boolean = false;
   public showGooglesignin: boolean = true;
   public hideFirebaseUiGoogleButton: boolean = false;
-  public signInWelcomeTxt: string = 'Onestop solution for your organisation HRMS needs. \
-                                      Be it expanding operations across regions or viewing trends in one place, \
-                                      bring everything together. Get the team to focus on the \
-                                      targets and leave the rest to HRMS.';
+  public signInWelcomeTxt: string = 'Tracking time for self on an activity, rolled up to projects \
+  is one of the key functions of a manager or an organization. Proper time tracking gives the view \
+  on effort and cost metrics. commonModule has enabled its users to easily start a project, start an \
+  activity, start - pause - stop a timer and track the efforts to its minute detail. The analytical \
+  reports are aggregated for an individual or an activity level, project level or time scale level \
+  to map the productive hours and billable costs.';
   signinUi: any;
   userData: any;
   redirectUrl: string = 'profile';

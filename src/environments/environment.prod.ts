@@ -2,14 +2,14 @@ export const environment = {
   production: true,
   firebaseConfig: {
     //===============[ Appsolzone ]===============
-    // apiKey: "AIzaSyBAY9Jaq2AxSm0BOd-EI99U4P8LbXm9T_Q",
-    //   authDomain: "hrms-2aae7.firebaseapp.com",
-    //   databaseURL: "https://hrms-2aae7.firebaseio.com",
-    //   projectId: "hrms-2aae7",
-    //   storageBucket: "hrms-2aae7.appspot.com",
-    //   messagingSenderId: "861175361633",
-    //   appId: "1:861175361633:web:94baa25fe6565d9e72ba20",
-    //   measurementId: "G-7Z29Z8ESVW"
+    // apiKey: "AIzaSyCJ2oB3ar3gpbj453zzeBALpBTi-HJaL9g",
+    // authDomain: "timesheet-tracker-f60b7.firebaseapp.com",
+    // databaseURL: "https://timesheet-tracker-f60b7.firebaseio.com",
+    // projectId: "timesheet-tracker-f60b7",
+    // storageBucket: "timesheet-tracker-f60b7.appspot.com",
+    // messagingSenderId: "62933662382",
+    // appId: "1:62933662382:web:bffbd2259e1f0923f0cb3f"
+
     apiKey: "AIzaSyCHcqo53G1ou3nGv50SXxoxGyvZ782dHNg",
     authDomain: "rnmm-7b33d.firebaseapp.com",
     projectId: "rnmm-7b33d",
