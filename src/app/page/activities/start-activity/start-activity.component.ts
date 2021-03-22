@@ -20,7 +20,7 @@ export class StartActivityComponent implements OnInit {
 
   @Input() sessionInfo: any = {};
   @Input() allTasks: any[] = [];
-  @Input() onCancel: any = ()=>{};
+  @Input() Cancel: any = ()=>{};
   // observables
   projectSubs$;
   newActivitySubs$;
@@ -306,7 +306,7 @@ export class StartActivityComponent implements OnInit {
                             hourlyRate: 0,
                           })
                           // hide the create new activity panel
-                          this.onCancel();
+                          this.Cancel();
                         })
                         .catch(async err=>{
                           this.common.hideLoader();

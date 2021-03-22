@@ -16,13 +16,16 @@ import { EditActivitiesComponent } from '../edit-activities/edit-activities.comp
 
 import { BargraphModule } from 'src/app/page/bargraph/bargraph.module';
 
+import { OngoingActivitiesModule } from 'src/app/page/activities/ongoing-activities/ongoing-activities.module';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
     ProjectDetailsPageRoutingModule,
-    BargraphModule
+    BargraphModule,
+    OngoingActivitiesModule
   ],
   declarations: [
     ProjectDetailsPage,

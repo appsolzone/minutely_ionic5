@@ -53,12 +53,31 @@
       </ion-item>
     <!-- </ion-list> -->
     <!-- <ion-item  lines="none" class="ion-padding-top"> -->
-      <ion-button *ngIf="editProject?.status=='OPEN'" class="ion-margin-top" (click)="completeOrOpenProject('COMPLETE')" expand="full" size="default" color="warning">Update & Mark Project Complete</ion-button>
-      <ion-button *ngIf="editProject?.status=='COMPLETE'" class="ion-margin-top" (click)="completeOrOpenProject('OPEN')" expand="full" size="default" color="danger">Update & Reopen Project</ion-button>
+      <ion-button *ngIf="!showOngoingActivities && editProject?.status=='OPEN'" class="ion-margin-top" (click)="completeOrOpenProject('COMPLETE')" expand="full" size="default" color="warning">Update & Mark Project Complete</ion-button>
+      <ion-button *ngIf="!showOngoingActivities && editProject?.status=='COMPLETE'" class="ion-margin-top" (click)="completeOrOpenProject('OPEN')" expand="full" size="default" color="danger">Update & Reopen Project</ion-button>
     <!-- </ion-item> -->
-    <ion-item  lines="none" class="ion-padding-top">
+    <ion-item  *ngIf="!showOngoingActivities" lines="none" class="ion-padding-top">
       <ion-button fill="clear" color="medium" slot="end" size="default" (click)="onCancel(false)">Cancel</ion-button>
       <ion-button slot="end" size="default" (click)="saveProject()" >Save</ion-button>
     </ion-item>
   </ion-card-content>
+  <ion-toolbar class="ion-no-padding" *ngIf="showOngoingActivities">
+    <ion-card-header>
+      <ion-item>
+        <ion-label>
+          <h1>Ongoing activities</h1>
+        </ion-label>
+      </ion-item>
+    </ion-card-header>
+    <app-ongoing-activities *ngIf="showOngoingActivities" [queryObj]="queryObj"></app-ongoing-activities>
+    <ion-card-content>
+      <ion-button *ngIf="editProject?.status=='OPEN'" class="ion-margin-top" (click)="completeOrOpenProject('COMPLETE')" expand="full" size="default" color="warning">Update & Mark Project Complete</ion-button>
+      <ion-button *ngIf="editProject?.status=='COMPLETE'" class="ion-padding ion-margin-top" (click)="completeOrOpenProject('OPEN')" expand="full" size="default" color="danger">Update & Reopen Project</ion-button>
+      <!-- </ion-item> -->
+      <ion-item  lines="none" class="ion-padding-top">
+        <ion-button fill="clear" color="medium" slot="end" size="default" (click)="onCancel(false)">Cancel</ion-button>
+        <ion-button slot="end" size="default" (click)="saveProject()" >Save</ion-button>
+      </ion-item>
+    </ion-card-content>
+  </ion-toolbar>
 </ion-card>

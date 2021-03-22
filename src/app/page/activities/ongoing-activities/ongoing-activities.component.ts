@@ -15,6 +15,7 @@ import { ProjectService } from 'src/app/shared/project/project.service';
 })
 @Autounsubscribe()
 export class OngoingActivitiesComponent implements OnInit {
+  @Input() queryObj: any[];
   // observables
   sessionSubs$;
   activitySubs$;
@@ -153,7 +154,10 @@ export class OngoingActivitiesComponent implements OnInit {
     }
     if(this.sessionInfo?.uid && this.sessionInfo?.subscriberId){
       const {subscriberId, uid} = this.sessionInfo;
-      queryObj = [
+      queryObj = this.queryObj ?
+                  this.queryObj
+                  :
+                  [
                   {field: 'subscriberId',operator: '==', value: subscriberId},
                   {field: 'uid',operator: '==', value: uid},
                   {field: 'status',operator: 'in', value: ['ACTIVE','PAUSE']}

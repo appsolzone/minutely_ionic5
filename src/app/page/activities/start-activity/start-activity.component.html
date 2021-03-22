@@ -129,7 +129,7 @@
       <ion-input #hourlyRate id="hourlyRate" class="ion-text-end hide-number-arrow" type="number" inputmode="numeric" placeholder="Hourly rate" [(ngModel)]="newTask.hourlyRate"></ion-input>
     </ion-item>
     <ion-item class="ion-padding-bottom" lines="none">
-      <ion-button slot="end" fill="clear" color="medium" (click)="onCancel()">
+      <ion-button slot="end" fill="clear" color="medium" (click)="Cancel()">
         Cancel
       </ion-button>
       <ion-button slot="end" (click)="createNewActivity('save')">

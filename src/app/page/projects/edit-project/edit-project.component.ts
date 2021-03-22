@@ -21,6 +21,8 @@ export class EditProjectComponent implements OnInit {
   public inceptionDate: any = null;
   public targetClosureDate: any = null;
   public maxDate: any = moment().format('YYYY-MM-DD')
+  public showOngoingActivities: boolean = false;
+  public queryObj: any[];
 
   constructor(
     private router:Router,
@@ -39,6 +41,8 @@ export class EditProjectComponent implements OnInit {
 
   saveProject(){
     this.common.showLoader("Saving project details, please wait ....");
+    this.showOngoingActivities=false;
+    this.queryObj = null;
     let updatedProject = { ...this.editProject,
                         inceptionDate: this.inceptionDate ? new Date(this.inceptionDate) : null,
                         targetClosureDate: this.targetClosureDate ? new Date(this.targetClosureDate) : null
@@ -87,14 +91,14 @@ export class EditProjectComponent implements OnInit {
                         };
     // check whether we can mark the project as complete
     const {subscriberId, uid} = this.sessionInfo;
-    let queryObj = [
+    this.queryObj = [
                 {field: 'subscriberId',operator: '==', value: subscriberId},
                 {field: 'project.projectId',operator: '==', value: updatedProject.projectId},
                 {field: 'status',operator: 'in', value: ['ACTIVE','PAUSE']}
                 ];
     let ongoingActivities = 0;
     if(event == 'COMPLETE'){
-      await this.activity.getActivitiesOnce(queryObj,null,1)
+      await this.activity.getActivitiesOnce(this.queryObj,null,1)
               .then(act=>{
                 act.forEach(doc=>{
                   ongoingActivities++;
@@ -122,7 +126,7 @@ export class EditProjectComponent implements OnInit {
                               text: 'Dismiss',
                               role: 'cancel',
                               cssClass: '',
-                              handler: ()=>{}
+                              handler: ()=>{this.showOngoingActivities=false;this.queryObj=null;}
                             }
                           ];
 
@@ -138,7 +142,7 @@ export class EditProjectComponent implements OnInit {
                               text: 'Dismiss',
                               role: 'cancel',
                               cssClass: '',
-                              handler: ()=>{}
+                              handler: ()=>{this.showOngoingActivities=false;this.queryObj=null;}
                             }
                           ];
 
@@ -159,7 +163,7 @@ export class EditProjectComponent implements OnInit {
                           text: 'View activities',
                           role: '',
                           cssClass: '',
-                          handler: ()=>{this.router.navigate(['activities/team-activities'])}
+                          handler: ()=>{this.showOngoingActivities=true;}
                         }
                       ];
 

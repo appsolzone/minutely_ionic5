@@ -1,10 +1,10 @@
-<app-start-activity *ngIf="showCreateActivity"
+<app-start-activity *ngIf="showCreateActivity && !queryObj"
 [sessionInfo]="sessionInfo"
 [allTasks]="allTasks"
-[onCancel]="startNewActivity.bind(this)"
+[Cancel]="startNewActivity.bind(this)"
 >
 </app-start-activity>
-<ion-toolbar color="transparent">
+<ion-toolbar color="transparent" *ngIf="!queryObj">
   <ion-row class="ion-align-items-center">
     <ion-col>
       <ion-card>
@@ -58,7 +58,7 @@
      </ion-label>
   </ion-item>
 </ion-card>
-<ion-card *ngIf="allTasks?.length == 0">
+<ion-card *ngIf="!queryObj && allTasks?.length == 0">
   <ion-card-header mode="ios">
     <ion-toolbar>
       <ion-item>
@@ -83,6 +83,17 @@
     </ion-item>
   </ion-card-content>
 </ion-card>
+<ion-toolbar *ngIf="queryObj && allTasks?.length == 0">
+  <ion-item>
+    <ion-label class="ion-text-wrap">
+      <p>
+        <ion-text color="medium">
+          No ongoing activity present for the project. You may wish to mark the project complete.
+        </ion-text>
+      </p>
+    </ion-label>
+  </ion-item>
+</ion-toolbar>
 <ion-card *ngFor="let task of allTasks ? allTasks : []; let i=index;">
   <ion-header mode="ios">
     <ion-toolbar [color]="task?.data?.status=='ACTIVE' ? 'secondary' : 'light'">
@@ -96,7 +107,7 @@
             <!-- PAUSE -->
           </ion-button>
           <ion-button
-          *ngIf="task?.data?.status!='ACTIVE' && newTask?.activeTask?.length==0"
+          *ngIf="!queryObj && task?.data?.status!='ACTIVE' && newTask?.activeTask?.length==0"
           (click)="actionOnClickActivity(task, i,'RESUME')">
               <ion-icon name="play" ></ion-icon>
             <!-- RESUME -->
@@ -130,7 +141,11 @@
        <ion-icon name="bookmark" size="small" class="" [color]="colorStack[(task?.projectNo - 1)%colorStack.length]"></ion-icon>
        {{task?.data?.project.title}}
      </p>
-     </ion-label>
+     <p *ngIf="queryObj">
+       <ion-icon name="person" size="small" class="" color="medium"></ion-icon>
+       {{task?.data?.user?.name}}
+     </p>
+    </ion-label>
   </ion-item>
   <ion-item lines="none" *ngIf="task?.data?.status=='ACTIVE'">
        <ion-row class="ion-padding-bottom ion-align-items-center">
@@ -138,7 +153,7 @@
            <!-- <ion-item lines="none" class="ion-no-padding"> -->
              <ion-buttons class="ion-justify-content-center">
                <ion-button><ion-icon name="timer-outline" color="dark"></ion-icon></ion-button>
-               <ion-button disabled class="ion-hide-md-down"><ion-icon name="shuffle" color="green"></ion-icon></ion-button>
+               <ion-button *ngIf="!queryObj" disabled class="ion-hide-md-down"><ion-icon name="shuffle" color="green"></ion-icon></ion-button>
                <!-- <ion-button *ngIf="enableEffortEditing" (click)="actionCancelEditEffort()"><ion-icon name="play" color="danger"></ion-icon></ion-button>
                <ion-button *ngIf="enableEffortEditing" (click)="actionOnClickActivity(task, i,'PAUSE')"><ion-icon name="checkmark-done" color="success"></ion-icon></ion-button> -->
              </ion-buttons>

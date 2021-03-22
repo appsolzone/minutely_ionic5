@@ -12,11 +12,11 @@ import { CalendarModule } from 'ion2-calendar';
 
 import { ActivitySearchModule } from './activity-search/activity-search.module';
 
-import { OngoingActivitiesComponent } from './ongoing-activities/ongoing-activities.component';
+import { OngoingActivitiesModule } from './ongoing-activities/ongoing-activities.module';
 
 import { ActivitiesSummaryModule } from './activities-summary/activities-summary.module';
 
-import { StartActivityComponent } from './start-activity/start-activity.component';
+// import { StartActivityComponent } from './start-activity/start-activity.component';
 
 
 
@@ -28,12 +28,12 @@ import { StartActivityComponent } from './start-activity/start-activity.componen
     ActivitiesPageRoutingModule,
     CalendarModule,
     ActivitySearchModule,
-    ActivitiesSummaryModule
+    ActivitiesSummaryModule,
+    OngoingActivitiesModule
   ],
   declarations: [
     ActivitiesPage,
-    OngoingActivitiesComponent,
-    StartActivityComponent,
+    // StartActivityComponent,
   ]
 })
 export class ActivitiesPageModule {}
