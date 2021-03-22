@@ -129,7 +129,7 @@
           </ion-col>
           <ion-col size="12" size-xl="1">
           </ion-col>
-          <ion-col size="12" class="ion-hide-md-up">
+          <ion-col size="12" class="ion-hide-md-up" *ngIf="newsubscriber !== undefined || (orgProfile?.subscriptionType=='Free' && !orgProfile?.paypalId)">
             <ion-card mode="ios" *ngIf="orgProfile" class="uniform-card-height">
               <ion-card-header color="light">
                 <ion-item  lines="none" color="transparent">

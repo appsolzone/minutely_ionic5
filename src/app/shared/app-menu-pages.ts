@@ -9,27 +9,6 @@
 //   tab: '<tab route>',
 // },
 export const appPages = [
-  {
-    title: 'Activities',
-    url: 'activities',
-    icon: 'body',
-    tab: 'activities',
-    disabled: true,
-  },
-  {
-    title: 'Timesheet',
-    url: 'timesheet',
-    icon: 'calendar',
-    tab: 'timesheet',
-    disabled: true,
-  },
-  {
-    title: 'Projects',
-    url: 'projects',
-    icon: 'bookmark',
-    tab: 'projects',
-    disabled: true,
-  },
   // {
   //   title: 'List',
   //   url: 'activitysearch',
