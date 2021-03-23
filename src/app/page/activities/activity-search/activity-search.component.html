@@ -60,6 +60,7 @@
   </ion-toolbar>
   <ion-calendar
     *ngIf="!searchText?.trim()"
+    class="app-calendar"
     [options]="options.calendarOptions"
     (select)="onSelect($event)"
     (selectStart)="onSelectStart($event)"

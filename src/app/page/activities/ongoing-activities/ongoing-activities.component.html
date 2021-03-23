@@ -120,34 +120,36 @@
       </ion-item>
     </ion-toolbar>
   </ion-header>
-  <ion-item lines="none">
-    <ion-label>
-      <ion-chip [color]="task?.data?.status=='ACTIVE' ? 'primary' : ''">
-        <ion-icon name="stopwatch-outline"></ion-icon>
+  <ion-row>
+    <ion-col size="12">
+      <ion-item lines="none">
         <ion-label>
-          {{
-            (task?.data?.status == 'ACTIVE' ?
-            (task?.data?.startTime ? task?.data?.startTime : 'Not known')
-            :
-            (task?.data?.endTime ? task?.data?.endTime : 'Not known'))
-           | date:'medium'
-         }}
-       </ion-label>
-     </ion-chip>
-     <ion-chip color="transparenet" class="ion-float-end" (click)="toSearchActivity(task)">
-       <ion-icon name="ellipsis-horizontal"></ion-icon>
-     </ion-chip>
-     <p [class]="' ' + (task?.data?.status!='ACTIVE' ? ' ion-padding-bottom' : '')">
-       <ion-icon name="bookmark" size="small" class="" [color]="colorStack[(task?.projectNo - 1)%colorStack.length]"></ion-icon>
-       {{task?.data?.project.title}}
-     </p>
-     <p *ngIf="queryObj">
-       <ion-icon name="person" size="small" class="" color="medium"></ion-icon>
-       {{task?.data?.user?.name}}
-     </p>
-    </ion-label>
-  </ion-item>
-  <ion-item lines="none" *ngIf="task?.data?.status=='ACTIVE'">
+          <ion-chip [color]="task?.data?.status=='ACTIVE' ? 'primary' : ''">
+            <ion-icon name="stopwatch-outline"></ion-icon>
+            <ion-label>
+              {{
+                (task?.data?.status == 'ACTIVE' ?
+                (task?.data?.startTime ? task?.data?.startTime : 'Not known')
+                :
+                (task?.data?.endTime ? task?.data?.endTime : 'Not known'))
+               | date:'medium'
+             }}
+           </ion-label>
+         </ion-chip>
+         <ion-chip color="transparenet" class="ion-float-end" (click)="toSearchActivity(task)">
+           <ion-icon name="ellipsis-horizontal"></ion-icon>
+         </ion-chip>
+         <p [class]="' ' + (task?.data?.status!='ACTIVE' ? ' ion-padding-bottom' : '')">
+           <ion-icon name="bookmark" size="small" class="" [color]="colorStack[(task?.projectNo - 1)%colorStack.length]"></ion-icon>
+           {{task?.data?.project.title}}
+         </p>
+         <p *ngIf="queryObj">
+           <ion-icon name="person" size="small" class="" color="medium"></ion-icon>
+           {{task?.data?.user?.name}}
+         </p>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none" *ngIf="task?.data?.status=='ACTIVE'">
        <ion-row class="ion-padding-bottom ion-align-items-center">
          <ion-col class="ion-no-padding ion-margin-top" *ngIf="!enableEffortEditing">
            <!-- <ion-item lines="none" class="ion-no-padding"> -->
@@ -194,4 +196,6 @@
          </ion-col>
        </ion-row>
    </ion-item>
+   </ion-col>
+  </ion-row>
 </ion-card>
