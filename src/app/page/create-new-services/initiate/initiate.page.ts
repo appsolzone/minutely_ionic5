@@ -58,7 +58,7 @@ export class InitiatePage implements OnInit,OnDestroy {
     this.sessionSubs$ = this._session.watch().subscribe(value=>{
       //  console.log("Session Subscription got", value);
        // Re populate the values as required
-       if(this.userProfile && (!initiateData || value?.uid != this.userProfile?.uid || value?.subscriberId != this.userProfile?.subscriberId)){
+       if(this.userProfile && (!this.initiateData$ || value?.uid != this.userProfile?.uid || value?.subscriberId != this.userProfile?.subscriberId)){
          this._router.navigate(['task']);
        }
        this.userProfile = value?.userProfile;

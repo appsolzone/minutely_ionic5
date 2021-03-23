@@ -1,11 +1,3 @@
-.wave-background{
-  min-height: 100%;
-  background-image: url("../../../../assets/app-assets/waveBackground.svg"), linear-gradient(to bottom,transparent,var(--ion-color-warning),var(--ion-color-warning));
-  background-size: auto;
-  background-repeat: no-repeat;
-  background-position: center center;
-}
-
 .uniform-card-height{
   height: calc(100% - 48px);
 }
