@@ -1,5 +1,5 @@
 <ion-header class="ion-hide-md-up" >
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/admin"></ion-back-button>
     </ion-buttons>
@@ -40,7 +40,7 @@
     </ion-item>
     <ion-item lines="inset">
       <ion-label><ion-icon name="call"></ion-icon></ion-label>
-      <ion-input type="tel" class="ion-text-right" type="text" placeholder="Please enter contact number" [(ngModel)]="addUserData.phoneNumber" required></ion-input>
+      <ion-input type="number" inputmode="numeric" class="ion-text-right hide-number-arrow" placeholder="Please enter contact number" [(ngModel)]="addUserData.phoneNumber" required></ion-input>
     </ion-item>
     <ion-item lines="none" class="ion-margin-top">
       <ion-button fill="clear" size="default" color="medium" slot="end" (click)="resetAddUserForm()">Clear</ion-button>

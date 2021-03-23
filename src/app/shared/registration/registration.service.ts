@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 
 import { ManageuserService } from '../manageuser/manageuser.service';
 import { SubscriberService } from '../subscriber/subscriber.service';
+import { KpiService } from '../kpi/kpi.service';
+
 
 
 
@@ -12,10 +14,12 @@ import { SubscriberService } from '../subscriber/subscriber.service';
 })
 export class RegistrationService {
 
+
   constructor(
     public db: DatabaseService,
     public user: ManageuserService,
     public subscriber: SubscriberService,
+    private kpi:KpiService
   ) {
     // TBA
   }
@@ -26,6 +30,7 @@ export class RegistrationService {
     const subscriberRef = this.db.afs.firestore.collection(this.db.allCollections.subscribers).doc(sId);
     const userRef = this.db.afs.firestore.collection(this.db.allCollections.users).doc();
     const notificationRef = this.db.afs.firestore.collection(this.db.allCollections.notifications).doc(uId);
+    const kpiRef = this.db.afs.firestore.collection(this.db.allCollections.kpi).doc(sId);
     const useruids = this.db.afs.firestore.collection(this.db.allCollections.useruids).doc(uId);
 
     return this.db.afs.firestore.runTransaction(transaction =>{
@@ -72,6 +77,8 @@ export class RegistrationService {
                                      {companyName: companyName,subscriberId: sId,email: email, address: address}
                                    );
            this.db.setTransactDocument(transaction, subscriberRef, newSubscriber);
+
+          this.db.setTransactDocument(transaction, kpiRef, this.kpi.kpiObj);
          }
        }); // end of transaction callback
     }); // end of runTransaction
@@ -97,15 +104,17 @@ export class RegistrationService {
                                        subscriberId: sId,
                                        // address: address,
                                        role: userOnbordData !== undefined? userOnbordData. role:'USER',
-                                       status: userOnbordData !== undefined? 'ACTIVE': 'REGISTERED'
+                                       status: userOnbordData !== undefined? 'ACTIVE': 'REGISTERED',
+                                       jobTitle: userOnbordData !== undefined && userOnbordData?.jobTitle ? userOnbordData?.jobTitle : null,
+                                       phoneNumber: userOnbordData !== undefined && userOnbordData?.phoneNumber ? userOnbordData?.phoneNumber : null,
                                      }
                                    );
-           // during admin user onboard                        
+           // during admin user onboard
            if(userOnbordData !== undefined){
            let subsUpdateObj = {
               'noOfFreeLicense': this.db.frb.firestore.FieldValue.increment(-1),
-              }  
-           this.db.setTransactDocument(transaction, subscriberRef,subsUpdateObj,true);             
+              }
+           this.db.setTransactDocument(transaction, subscriberRef,subsUpdateObj,true);
            }
 
            this.db.setTransactDocument(transaction, userRef, newUser);

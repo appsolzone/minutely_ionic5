@@ -10,6 +10,7 @@ export const environment = {
     //   messagingSenderId: "861175361633",
     //   appId: "1:861175361633:web:94baa25fe6565d9e72ba20",
     //   measurementId: "G-7Z29Z8ESVW"
+
     apiKey: "AIzaSyCHcqo53G1ou3nGv50SXxoxGyvZ782dHNg",
     authDomain: "rnmm-7b33d.firebaseapp.com",
     projectId: "rnmm-7b33d",

@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>meeting</ion-title>
+    <ion-button slot="end" fill="clear" size="small" (click)="navigateCreateMeeting()" class="ion-hide-md-down">
+      <ion-icon name="add-outline"></ion-icon> Add New meeting
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="ion-hide-md-up">
+    <ion-fab-button (click)="navigateCreateMeeting()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

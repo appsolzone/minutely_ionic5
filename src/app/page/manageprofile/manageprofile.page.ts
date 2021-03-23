@@ -66,6 +66,10 @@ export class ManageprofilePage implements OnInit {
     this.session.watch().subscribe(value=>{
       // console.log("Session Subscription got", value);
       // Re populate the values as required
+      let roleStatusChanged = (!value || this.sessionInfo?.userProfile?.status != value?.userProfile?.status || this.sessionInfo?.userProfile?.role != value?.userProfile?.role);
+      let subscriberChanged = (!value || this.sessionInfo?.userProfile?.subscriberId != value?.userProfile?.subscriberId ||
+                               this.sessionInfo?.orgProfile?.subscriptionType != value?.orgProfile?.subscriptionType);
+      console.log("performPostLoginChecks session watch roleStatusChanged",roleStatusChanged, subscriberChanged);
       this.sessionInfo = value;
       this.allProfiles = value?.allProfiles;
       if(this.allProfiles){
@@ -80,9 +84,12 @@ export class ManageprofilePage implements OnInit {
       // console.log("subscription end check", this.sessionInfo?.orgProfile?.subscriptionEnd);
       // console.log("userProfile status check", this.sessionInfo?.userProfile?.status);
       // console.log('check_user',this.sessionInfo?.orgProfile,this.sessionInfo?.userProfile )
-      if(this.sessionInfo && this.sessionInfo.userProfile && this.sessionInfo.orgProfile &&
+      if((this.sessionInfo && this.sessionInfo.userProfile && this.sessionInfo.orgProfile &&
          this.sessionInfo?.userProfile?.subscriberId == this.sessionInfo?.orgProfile?.subscriberId
+         && roleStatusChanged) ||
+         (this.sessionInfo && this.sessionInfo.userProfile && this.sessionInfo.orgProfile && subscriberChanged)
        ){
+         console.log("performPostLoginChecks session watch");
         this.performPostLoginChecks();
       }
     });
@@ -111,12 +118,13 @@ export class ManageprofilePage implements OnInit {
                         handler: ()=>{}
                       }
                     ];
-      this.common.presentAlert(title,body, buttons);
+      await this.common.presentAlert(title,body, buttons);
       // should we signout the user or redirect for select profile
       // this.signOut();
       this.userProfile = null;
       this.appPages.forEach(p=>p.disabled=(!['profile'].includes(p.tab)));
       this.addSubscriber = false;
+      this.router.navigate(['profile']);
     }
     // hide the loader now
     setTimeout(()=>this.common.hideLoader(),100);
@@ -153,8 +161,14 @@ export class ManageprofilePage implements OnInit {
                         }
                       );
     }
+    if(instruction.subsStatus == 'valid' && instruction.userStatus == 'ACTIVE'){
+      // if everything is fine just go to activity page directly
+      this.onDismissClick(instruction);
+    } else {
+      await this.common.presentAlert(instruction.title,instruction.body ,buttons);
+    }
+    this.common.hideLoader()
 
-    await this.common.presentAlert(instruction.title,instruction.body ,buttons);
   }
 
   onDismissClick(instruction){
@@ -301,8 +315,11 @@ export class ManageprofilePage implements OnInit {
 
   // update profile data
   async onSubmit(){
+    this.common.showLoader("Saving profile data, please wait...");
     await this.user.updateProfile(this.id, this.updatedProfile);
     this.editProfile = false;
+    // hide the loader now
+    setTimeout(()=>this.common.hideLoader(),100);
   }
   // skip profile update
   onSkip(){

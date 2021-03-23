@@ -1,6 +1,6 @@
 {
   "appId": "dev.rnmm",
-  "appName": "ionic-cubedHR",
+  "appName": "commonModule",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

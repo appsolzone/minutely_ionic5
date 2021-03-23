@@ -15,6 +15,7 @@ export class AppComponent {
   public selectedIndex: number;
   public appPages = appPages;
   public isMenubarCollapsed: boolean = false;
+  public darkMode: boolean = false;
   constructor(
     private router: Router,
     private platform: Platform,
@@ -22,6 +23,10 @@ export class AppComponent {
     private statusBar: StatusBar
   ) {
     this.initializeApp();
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+    // Listen for changes to the prefers-color-scheme media query
+    prefersDark.addListener((e) => this.changeDarkMode(e.matches));
   }
 
   initializeApp() {
@@ -46,7 +51,7 @@ export class AppComponent {
                 } else {
                   currentIndex = this.appPages.findIndex(page => page.tab.toLowerCase() === 'profile');
                 }
-                if(currentIndex && currentIndex!=-1){
+                if(currentIndex != null && currentIndex!=-1){
                   appPages[currentIndex].url = currentPath;
                 }
                  console.log("changeSelectedIndex", currentPath, currentIndex);
@@ -63,6 +68,14 @@ export class AppComponent {
                 // console.log("changeSelectedIndex NavigationEnd", window.location.hash, path, this.selectedIndex);
             }
     });
+  }
+
+  changeDarkMode(ev){
+    // if(ev){
+      this.darkMode = ev;
+    // }
+    console.log("document.body.classList", document.body.classList, ev, this.darkMode);
+    document.body.classList.toggle('dark', this.darkMode);
   }
 
 }

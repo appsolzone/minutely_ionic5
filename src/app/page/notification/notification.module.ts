@@ -8,7 +8,7 @@ import { NotificationPageRoutingModule } from './notification-routing.module';
 
 import { NotificationPage } from './notification.page';
 
-import { BargraphComponent } from '../bargraph/bargraph.component';
+import { BargraphModule } from '../bargraph/bargraph.module';
 
 @NgModule({
   imports: [
@@ -16,7 +16,10 @@ import { BargraphComponent } from '../bargraph/bargraph.component';
     FormsModule,
     IonicModule,
     NotificationPageRoutingModule,
+    BargraphModule,
   ],
-  declarations: [NotificationPage, BargraphComponent]
+  declarations: [
+    NotificationPage,
+  ]
 })
 export class NotificationPageModule {}

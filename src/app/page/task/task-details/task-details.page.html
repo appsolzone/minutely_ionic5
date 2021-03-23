@@ -1,0 +1,125 @@
+<ion-header>
+  <ion-toolbar color="success">
+    <ion-title>Task Details</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/task"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col>
+      <ion-item lines="none">
+        <ion-button slot="start" color="danger">
+          <ion-icon name="calendar" slot="start"></ion-icon>
+          {{ task?.taskInitiationDate}}
+        </ion-button>
+        <ion-button slot="start" color="light">
+          <ion-icon name="pencil" slot="start"></ion-icon>
+          {{ task?.targetCompletionDate}}
+        </ion-button>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-label>
+          <h1>{{task?.taskTitle}}</h1>
+        </ion-label>
+      </ion-item>
+
+
+      <ion-item lines="none">
+        <ion-chip *ngFor="let data of task?.tags" color="success">
+          <ion-label>{{data}}</ion-label>
+        </ion-chip>
+      </ion-item>
+
+
+      <ion-item lines="full">
+        <ion-label slot="start">
+          <ion-icon name="podium-outline"></ion-icon> Status
+        </ion-label>
+        <ion-label slot="end" color="medium" class="ion-text-right">
+          {{task?.taskStatus}}
+        </ion-label>
+      </ion-item>
+      <ion-row>
+        <ion-col size="4">
+          <ion-button expand="full" [color]="task?.taskStatus =='OPEN'?'warning':'light'"
+            [disabled]="task?.taskStatus !=='OPEN'">Low</ion-button>
+        </ion-col>
+        <ion-col size="4">
+          <ion-button expand="full" [color]="task?.taskStatus =='INPROGRESS'?'primary':'light'"
+            [disabled]="task?.taskStatus !=='INPROGRESS'">Medium</ion-button>
+        </ion-col>
+        <ion-col size="4">
+          <ion-button expand="full" [color]="task?.taskStatus =='RESOLVED'?'success':'light'"
+            [disabled]="task?.taskStatus !=='RESOLVED'">High</ion-button>
+        </ion-col>
+      </ion-row>
+
+
+      <ion-item lines="full">
+        <ion-label slot="start">
+          <ion-icon color="warning" name="person-circle"></ion-icon>
+          Initiator
+        </ion-label>
+        <ion-input type="text" slot="end" disabled value="{{task?.taskInitiator.name}}" class="ion-text-right">
+        </ion-input>
+      </ion-item>
+
+      <ion-item lines="full">
+        <ion-label>
+          <ion-icon color="danger" name="hand-right"></ion-icon>
+          Owner
+        </ion-label>
+        <ion-input type="text" slot="end" disabled value="{{task?.taskOwner.name}}" class="ion-text-right"></ion-input>
+      </ion-item>
+
+      <ion-item lines="full">
+        <ion-label slot="start">
+          <ion-icon name="create-outline"></ion-icon> Task Details
+        </ion-label>
+      </ion-item>
+      
+      <ion-item lines="none">
+        <ion-textarea disabled readonly>
+          {{task?.taskDetails}}
+        </ion-textarea>
+      </ion-item>
+    </ion-col>
+
+    <ion-col>
+
+      <ion-item lines="full">
+        <ion-label slot="start">
+          <ion-icon name="chatbubbles"></ion-icon> Latest Comment
+        </ion-label>
+        <ion-button slot="end" color="medium" fill="outline" (click)="goToCommentPage(task)">
+          <ion-icon name="chatbubbles"></ion-icon>{{task?.latestComment.totalComments > 0?
+          task.latestComment.totalComments+' comments':'add comment'}}
+        </ion-button>
+      </ion-item>
+      
+      <ion-item lines="full" *ngIf="task?.latestComment.totalComment == 0">
+        <ion-label slot="start" color="medium">
+          <ion-icon name="send-outline"></ion-icon> Be the first person to post comment for the task
+        </ion-label>
+      </ion-item>
+      <ion-item lines="full" *ngIf="task?.latestComment.totalComment > 0">
+        <ion-avatar slot="start">
+          <img slot="start" *ngIf=" task?.latestComment.picUrl !== ''" [src]="task?.latestComment.picUrl"
+            style="height:40px; width:40px;border-radius:50%;" />
+          <ion-icon *ngIf="task?.latestComment.picUrl == ''" color="primary" name="person-circle"
+            style="height:40px; width:40px;border-radius:50%;">
+          </ion-icon>
+        </ion-avatar>
+        <ion-label>
+          <h2>{{task?.latestComment.author}}</h2>
+          <p>{{task?.latestComment.comment}}</p>
+        </ion-label>
+      </ion-item>
+
+    </ion-col>
+  </ion-row>
+</ion-content>
