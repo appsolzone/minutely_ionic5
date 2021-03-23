@@ -38,8 +38,9 @@ export class SessionService {
     // network status check listener
     this.handler = Network.addListener('networkStatusChange', (status) => {
       // console.log("Network status changed", status);
-      this.patch({networkStatus: status});
-      if(!this.peek().networkStatus.connected){
+      // this.patch({networkStatus: status});
+      // if(!this.peek().networkStatus.connected){
+      if(!status.connected){
         componentService.showLoader("Please check network connection, you are currently offline.");
       } else {
         setTimeout(()=>componentService.hideLoader(),300);
@@ -73,10 +74,11 @@ export class SessionService {
         });
         // lets set the userProfile
         let {data,id} = this.getUserProfile(null,allProfiles);
-        let coordinates = await this.getCurrentPosition();
+        // let coordinates = await this.getCurrentPosition();
         // console.log("all profile userprofile",userProfile);
         // lets patch the allprofiles data for session$
-        this.patch({ uid, coordinates, userProfile: data, userProfileDocId: id, allProfiles });
+        // this.patch({ uid, coordinates, userProfile: data, userProfileDocId: id, allProfiles });
+        this.patch({ uid, userProfile: data, userProfileDocId: id, allProfiles });
       });
   }
 
@@ -178,7 +180,7 @@ export class SessionService {
       // console.log('Current', coordinates);
       return coordinates;
     } catch(error){
-      this.componentService.presentAlert("Error","Please note that location can not be determined. Check location service is on and permission is given to the app from settings.");
+      // this.componentService.presentAlert("Error","Please note that location can not be determined. Check location service is on and permission is given to the app from settings.");
       return undefined;
     }
 

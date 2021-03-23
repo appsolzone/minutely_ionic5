@@ -1,5 +1,5 @@
 {
-  "name": "ionic-cubedHR",
+  "name": "commonModule",
   "version": "0.0.1",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
@@ -30,6 +30,7 @@
     "@ionic/pwa-elements": "^3.0.2",
     "firebase": "^8.2.7",
     "firebaseui": "^4.7.1",
+    "ion2-calendar": "^3.5.0",
     "moment": "^2.24.0",
     "rxjs": "~6.5.5",
     "talisman": "^1.1.4",

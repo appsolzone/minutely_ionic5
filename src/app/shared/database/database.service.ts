@@ -51,12 +51,12 @@ export class DatabaseService {
   getAllDocuments(collection:string){
     return this.afs.collection(collection).ref.get();
   }
-  getAllDocumentsByQuery(collection:string, queryObj:any[]=[], textSearchObj: any = null){
+  getAllDocumentsByQuery(collection:string, queryObj:any[]=[], textSearchObj: any = null, limit:number = null){
     return this.afs.collection(collection,
-                               ref=>this.buildQuery(ref,queryObj, textSearchObj)
-                             )
-                    .get()
-                    .toPromise();
+                             ref=>this.buildQuery(ref,queryObj, textSearchObj, limit)
+                           )
+                  .get()
+                  .toPromise();
   }
   // read and watch
   getDocumentSnapshotById(collection:string, id:string){
@@ -71,12 +71,15 @@ export class DatabaseService {
                              )
                     .snapshotChanges();
   }
-  buildQuery(ref,queryObj:any[]=[], textSearchObj: any = null){
+  buildQuery(ref,queryObj:any[]=[], textSearchObj: any = null, limit: number = null){
     queryObj.forEach(q=>{ref=ref.where(q.field,q.operator,q.value);});
     if(textSearchObj){
       // now build additional query elements using textsearch
       const { seachField, text, searchOption } = textSearchObj;
       ref = this.txtsearch.getSearchMapQuery(ref, seachField, text, searchOption);
+    }
+    if(limit){
+      ref = ref.limit(limit);
     }
     return ref;
   }
@@ -91,7 +94,7 @@ export class DatabaseService {
   deleteDocument(collection:string, id:string){
     return this.afs.collection(collection).doc(id).delete();
   }
-  // Delete subcollections 
+  // Delete subcollections
   deleteSubcollectionDocument(collection:string,docid:string,subcollections:string, subDocid:string){
     return this.afs.collection(collection).doc(docid).collection(subcollections).doc(subDocid).delete();
   }

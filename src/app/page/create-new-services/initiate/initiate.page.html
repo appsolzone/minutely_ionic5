@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="initiateData$">
 
       <ion-row class="wave-background">
       <ion-col size="12" size-xl="1">
@@ -19,18 +19,18 @@
               <h1>
                 <ion-icon name="create"
                 color="success" class="ion-padding-end"></ion-icon>
-                {{initiateData$.service}}
+                {{initiateData$?.service}}
               </h1>
               </ion-label>
             </ion-card-header>
             <ion-item-divider class="ion-no-padding ion-no-margin" style="min-height:0.1rem;"></ion-item-divider>
-      
+
             <ion-list>
               <ion-list-header lines="none">
                     <ion-label>
                       <h1 class="ion-padding-bottom"><small>
                           <ion-text color="primary">
-                            {{initiateData$.service}} initiation details 
+                            {{initiateData$?.service}} initiation details
                           </ion-text>
                         </small></h1>
                     </ion-label>
@@ -40,7 +40,7 @@
             <ion-item class="sectionTitle reg">
               <ion-label color="dark" position="floating">
                 <ion-icon name="people" class="icons"></ion-icon>
-                {{initiateData$.service}} Title
+                {{initiateData$?.service}} Title
               </ion-label>
               <ion-input type="text" color="primary" [(ngModel)]="initiateData$.object.title"></ion-input>
             </ion-item>
@@ -166,7 +166,7 @@
            </ion-list>
           </ion-card>
         </ion-col>
-      
+
         <ion-col>
           <ion-card color="primary" class="bluebg">
             <ion-card-header>

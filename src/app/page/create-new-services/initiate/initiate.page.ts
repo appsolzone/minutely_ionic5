@@ -34,7 +34,7 @@ export class InitiatePage implements OnInit,OnDestroy {
     private _crud:CrudService,
     private _router:Router,
     private _componentService:ComponentsService,
-    private _session:SessionService 
+    private _session:SessionService
   ) { }
 
   ngOnInit() {
@@ -44,8 +44,8 @@ export class InitiatePage implements OnInit,OnDestroy {
     this.initiateData$ = res;
     console.log(res);
     }else{
-      this._router.navigate(['/profile']);
-    }  
+      // this._router.navigate(['/profile']);
+    }
 
   });
   }
@@ -58,6 +58,9 @@ export class InitiatePage implements OnInit,OnDestroy {
     this.sessionSubs$ = this._session.watch().subscribe(value=>{
       //  console.log("Session Subscription got", value);
        // Re populate the values as required
+       if(this.userProfile && (!initiateData || value?.uid != this.userProfile?.uid || value?.subscriberId != this.userProfile?.subscriberId)){
+         this._router.navigate(['task']);
+       }
        this.userProfile = value?.userProfile;
        this.orgProfile = value?.orgProfile;
        if(this.userProfile){
@@ -185,15 +188,15 @@ export class InitiatePage implements OnInit,OnDestroy {
         picUrl:this.userProfile.picUrl,
         subscriberId:this.userProfile.subscriberId,
         email:this.userProfile.email
-      }  
-      let actions = this._crud.crud_action; 
+      }
+      let actions = this._crud.crud_action;
       actions = {
         service:this.initiateData$.service,
         type:this.initiateData$.type,
         parentModule:this.initiateData$.parentModule,
         header:this.initiateData$.service == 'Meeting'?'Select Attendee':`Choose ${this.initiateData$.service} Owner`,
         object:this.initiateData$.object
-      } 
+      }
       this._crud.crud_action$.next(actions);
       this._router.navigate([`/${this.initiateData$.parentModule}/select-members`]);
       }
