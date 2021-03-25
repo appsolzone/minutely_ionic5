@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DatabaseService } from '../database/database.service';
 
@@ -8,6 +9,9 @@ import { DatabaseService } from '../database/database.service';
   providedIn: 'root'
 })
 export class KpiService {
+  kpi$ = new BehaviorSubject<any|undefined>(undefined);
+  // Observable
+  getKpiSubs$;
   kpiObj = {
             totalMeeting : 0,
             openMeeting : 0,
@@ -36,13 +40,51 @@ export class KpiService {
             riskHighLow: 0,
             riskHighMedium: 0,
             riskHighHigh: 0,
+            subscriberId: '',
         }
   constructor(
     private database:DatabaseService,
     public http: HttpClient
-  ) { }
+  ) {
+    // initialise
+    this.kpi$.next(undefined);
+  }
 
 
+  // Read and watch
+  getKpis(queryObj:any[], textSearchObj: any = null){
+    return this.database.getAllDocumentsSnapshotByQuery(this.database.allCollections.kpi, queryObj, textSearchObj);
+  }
+  getKpisByDocId(docId: string){
+    return this.database.getDocumentSnapshotById(this.database.allCollections.kpi, docId);
+  }
+
+  async initialiseKpi(sessionInfo){
+    let queryObj = [{field: 'subscriberId',operator: '==', value: sessionInfo.userProfile.subscriberId}];
+    if(this.getKpiSubs$?.unsubscribe){
+      await this.getKpiSubs$.unsubscribe();
+    }
+    // if(!this.getKpiSubs$){
+      // this.getKpiSubs$ = this.getKpis(queryObj).subscribe(kpiDocs=>{
+      this.getKpiSubs$ = this.getKpisByDocId(sessionInfo.userProfile.subscriberId).subscribe(kpiDocs=>{
+                            let kpi = kpiDocs.payload.data();
+                            // let kpi = kpiDocs.map((a: any) => {
+                            //   const data = a.payload.doc.data();
+                            //   const id = a.payload.doc.id;
+                            //   return data;
+                            // });
+                            console.log('kpiData',kpi, sessionInfo.userProfile.subscriberId);
+                            this.patch(kpi);
+                          });
+    // }
+
+  }
+
+  watch() { return this.kpi$; }
+  peek() { return this.kpi$.value; }
+  patch(t){ const newkpi = Object.assign({}, this.peek() ? this.peek() : {}, t); this.poke(newkpi);}
+  poke(t) { this.kpi$.next(t); }
+  clear() { this.poke(undefined); }
 
   updateKpiDuringCreation(type: any,counter:any,navData:any)
   {

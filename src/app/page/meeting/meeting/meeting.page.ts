@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { User } from 'src/app/interface/user';
-import { CrudService } from 'src/app/shared/crud/crud.service';
+import { KpiService } from 'src/app/shared/kpi/kpi.service';
 import { SessionService } from 'src/app/shared/session/session.service';
 
 @Component({
@@ -14,48 +14,34 @@ import { SessionService } from 'src/app/shared/session/session.service';
 export class MeetingPage implements OnInit,OnDestroy {
   // observables
   sessionSubs$;
+  public sessionInfo: any;
 
-  userData: any;
-  allProfiles: any[];
-  userProfile: User;
-  orgProfile:any =null;
   constructor(
-    private _router:Router,
-    private _crud:CrudService,
-    private _session:SessionService
+    private router: Router,
+    private kpi: KpiService,
+    private session: SessionService
   ) { }
 
   ngOnInit() {
      this.getSessionInfo();
-   
   }
-  ionViewWillEnter(){
-      this._crud.crud_action$.next(undefined);
-  }
+
   ngOnDestroy(){}
-  
+
   getSessionInfo(){
-    this.sessionSubs$ = this._session.watch().subscribe(value=>{
-       if(value?.userProfile){
-       // Nothing to do just display details
-       // Re populate the values as required
-       this.userProfile = value?.userProfile;
-       this.orgProfile = value?.orgProfile;
-       } else {
-        //  this._router.navigate(['profile']);
-       }
-     });
-  }
-  navigateCreateMeeting(){
-   let actions = this._crud.crud_action; 
-   actions = {
-     service:'Meeting',
-     type:'create',
-     parentModule:'meeting',
-     header:'Create new meeting',
-     object:this._crud.passingObj
-   } 
-   this._crud.crud_action$.next(actions);
-   this._router.navigate(['/meeting/initiate']);
+    this.sessionSubs$ = this.session.watch().subscribe(value=>{
+      console.log("meeting Session Subscription got", value, this.sessionInfo?.userProfile?.subscriberId , value?.userProfile?.subscriberId);
+      // Re populate the values as required
+      if(this.sessionInfo?.uid != value?.uid){
+        // TBA
+      }
+      if(value?.userProfile && this.sessionInfo?.userProfile?.subscriberId != value?.userProfile?.subscriberId){
+        this.kpi.initialiseKpi(value);
+      }
+      this.sessionInfo = value;
+      if(!this.sessionInfo){
+        this.router.navigate(['profile']);
+      }
+    });
   }
 }

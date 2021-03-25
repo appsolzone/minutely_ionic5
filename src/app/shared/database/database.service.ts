@@ -65,9 +65,9 @@ export class DatabaseService {
   getAllDocumentsSnapshot(collection:string){
     return this.afs.collection(collection).snapshotChanges();
   }
-  getAllDocumentsSnapshotByQuery(collection:string, queryObj:any[]=[], textSearchObj: any = null){
+  getAllDocumentsSnapshotByQuery(collection:string, queryObj:any[]=[], textSearchObj: any = null, limit: number = null){
     return this.afs.collection(collection,
-                               ref=>this.buildQuery(ref,queryObj, textSearchObj)
+                               ref=>this.buildQuery(ref,queryObj, textSearchObj, limit)
                              )
                     .snapshotChanges();
   }

@@ -1,16 +1,31 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>meeting</ion-title>
-    <ion-button slot="end" fill="clear" size="small" (click)="navigateCreateMeeting()" class="ion-hide-md-down">
-      <ion-icon name="add-outline"></ion-icon> Add New meeting
-    </ion-button>
+<ion-header class="">
+  <ion-toolbar color="" class="ion-padding-end">
+    <ion-title>Meetings</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="ion-hide-md-up">
-    <ion-fab-button (click)="navigateCreateMeeting()">
-      <ion-icon name="add-outline"></ion-icon>
+  <ion-row>
+    <ion-col size="12"  size-md="4" size-lg="5" size-xl="6">
+      <ion-row>
+        <ion-col size="12">
+          <app-kpi *ngIf="sessionInfo?.userProfile"></app-kpi>
+        </ion-col>
+        <ion-col size="12" class="ion-hide-lg-down">
+          <app-meeting-list showOnlyUpcommingMeetings="true"></app-meeting-list>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+    <ion-col size="12" size-md="8" size-lg="7" size-xl="6">
+      <app-meeting-list showOnlyUpcommingMeetings="true" class="ion-hide-lg-up"></app-meeting-list>
+    <!-- </ion-col>
+    <ion-col size="12" size-md="8" size-lg="7" size-xl="6"> -->
+      <app-meeting-list class="ion-hide-lg-down"></app-meeting-list>
+    </ion-col>
+  </ion-row>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button  size="small" (click)="gotoAddMeeting()">
+      <ion-icon name="add" size="large"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>

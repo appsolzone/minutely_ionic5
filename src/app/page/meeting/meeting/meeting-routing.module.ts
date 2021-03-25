@@ -23,6 +23,10 @@ const routes: Routes = [
     {
     path: 'preview',
     loadChildren: () => import('../../create-new-services/preview/preview.module').then( m => m.PreviewPageModule)
+  },
+  {
+    path: 'meeting-details',
+    loadChildren: () => import('./meeting-details/meeting-details.module').then( m => m.MeetingDetailsPageModule)
   }
 ];
 
