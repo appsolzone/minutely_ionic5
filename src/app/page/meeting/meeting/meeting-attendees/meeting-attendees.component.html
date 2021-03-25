@@ -4,10 +4,10 @@
     Status
   </ion-label>
   <ion-button slot="end"
-    [color]="meetingDetails.status=='OPEN'? 'warning' : meetingDetails.status=='COMPLETED' ? 'green' : 'danger'"
+    [color]="meetingDetails?.status=='OPEN'? 'warning' : meetingDetails?.status=='COMPLETED' ? 'green' : 'danger'"
     class="ion-padding-start ion-padding-end"
     >
-    {{meetingDetails.status}}
+    {{meetingDetails?.status}}
   </ion-button>
 </ion-item>
 <ion-item>
@@ -15,7 +15,7 @@
     <ion-icon name="person-circle"></ion-icon>
     Organiser
   </ion-label>
-  <ion-input  readonly="true" type="text" [value]="meetingDetails.ownerId.name" class="ion-text-end"  color="medium">
+  <ion-input  readonly="true" type="text" [value]="meetingDetails?.ownerId.name" class="ion-text-end"  color="medium">
   </ion-input>
 </ion-item>
 
@@ -23,7 +23,7 @@
   <ion-label><ion-icon name="people-circle"></ion-icon> Attendees</ion-label>
 </ion-item>
 <ion-list>
-  <ion-item *ngFor="let data of meetingDetails.attendeeList; let i = index;">
+  <ion-item *ngFor="let data of meetingDetails?.attendeeList; let i = index;">
     <ion-avatar slot="start">
       <img
         src="{{(data.picUrl) ? data.picUrl : 'assets/imgs/shapes.svg'}}"

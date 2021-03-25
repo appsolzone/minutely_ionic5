@@ -25,9 +25,23 @@ export class MeetingDetailsPage implements OnInit {
 
   ngOnInit() {
     this.meeting = history.state.data.meeting;
+    console.log("meetingDetails ngOnInit")
+    if(!this.meeting){
+      console.log("ngOnInit")
+      this.router.navigate(['meeting']);
+    }
   }
 
   ngOnDestroy(){}
+
+  ionViewDidEnter(){
+    console.log("meetingDetails ionViewDidEnter", history.state.data?.meeting)
+    this.meeting = history.state.data?.meeting ? history.state.data.meeting : this.meeting;
+    if(!this.meeting){
+      console.log("ionViewDidEnter")
+      this.router.navigate(['meeting']);
+    }
+  }
 
   getSessionInfo(){
     this.sessionSubs$ = this.session.watch().subscribe(value=>{

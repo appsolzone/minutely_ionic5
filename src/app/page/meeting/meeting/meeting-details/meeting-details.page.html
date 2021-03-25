@@ -11,12 +11,12 @@
   <ion-row>
     <ion-col size="12" size-md="6">
       <ion-card class="ion-no-padding ion-no-margin">
-        <app-meeting-basic-info *ngIf="sessionInfo" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-basic-info>
-        <app-meeting-attendees *ngIf="sessionInfo" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-attendees>
+        <app-meeting-basic-info *ngIf="sessionInfo && meeting" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-basic-info>
+        <app-meeting-attendees *ngIf="sessionInfo && meeting" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-attendees>
       </ion-card>
     </ion-col>
     <ion-col size="12" size-md="6">
-      <app-meeting-agenda-note *ngIf="sessionInfo" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-agenda-note>
+      <app-meeting-agenda-note *ngIf="sessionInfo && meeting" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-agenda-note>
     </ion-col>
   </ion-row>
 </ion-content>

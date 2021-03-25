@@ -11,7 +11,7 @@
   </ion-buttons>
 </ion-item>
 <ion-item class="" lines="none">
-  <ion-chip color="{{meetingDetails.status=='COMPLETED' ? 'success' : meetingDetails.status=='OPEN' ? 'primary' : 'danger'}}">
+  <ion-chip color="{{meetingDetails?.status=='COMPLETED' ? 'success' : meetingDetails?.status=='OPEN' ? 'primary' : 'danger'}}">
     <ion-icon name="time-outline"></ion-icon>
     <ion-label>{{meetingDetails?.meetingStart| date : 'shortTime'}} - {{meetingDetails?.meetingEnd| date : 'shortTime'}}</ion-label>
   </ion-chip>
@@ -22,12 +22,12 @@
 <ion-item>
   <ion-label class="ion-text-wrap">
     <h1>
-      {{meetingDetails.meetingTitle}}
+      {{meetingDetails?.meetingTitle}}
     </h1>
   </ion-label>
 </ion-item>
 <ion-item *ngIf="meetingDetails?.tags?.length>0" lines="none" class="ion-text-wrap">
-    <ion-chip *ngFor="let data of meetingDetails.tags; let i = index" outline="true" color="primary">{{data}}</ion-chip>
+    <ion-chip *ngFor="let data of meetingDetails?.tags; let i = index" outline="true" color="primary">{{data}}</ion-chip>
 </ion-item>
 <ion-item class="">
   <ion-label color="dark">
@@ -36,25 +36,24 @@
   </ion-label>
   <ion-icon slot="end" size="large"
     name="toggle"
-    [color]="meetingDetails.isOccurence ? 'primary' : 'medium'"
-    [class]="meetingDetails.isOccurence ? '' : 'rotate-180deg'"
+    [color]="meetingDetails?.isOccurence ? 'primary' : 'medium'"
+    [class]="meetingDetails?.isOccurence ? '' : 'rotate-180deg'"
     ></ion-icon>
-  <!-- <ion-toggle [(ngModel)]="meetingDetails.isOccurence" disabled="true"></ion-toggle> -->
 </ion-item>
-<div *ngIf="meetingDetails.isOccurence">
+<div *ngIf="meetingDetails?.isOccurence">
   <ion-item class="">
     <ion-label>
       <ion-icon name="sync" class="icons"></ion-icon>
       Recurring meeting no
     </ion-label>
-    <ion-input class="ion-text-end" type="text" readonly="true" [value]="meetingDetails.eventSequenceId"  color="medium"></ion-input>
+    <ion-input class="ion-text-end" type="text" readonly="true" [value]="meetingDetails?.eventSequenceId"  color="medium"></ion-input>
   </ion-item>
   <ion-item class="">
     <ion-label>
       <ion-icon name="options" class="icons"></ion-icon>
       Total no of meetings
     </ion-label>
-    <ion-input class="ion-text-end" type="text" readonly="true" [value]="meetingDetails.noOfOccurence"  color="medium"></ion-input>
+    <ion-input class="ion-text-end" type="text" readonly="true" [value]="meetingDetails?.noOfOccurence"  color="medium"></ion-input>
   </ion-item>
   <ion-item class="" lines="none">
     <ion-label>
@@ -65,36 +64,35 @@
   </ion-item>
   <ion-list class="">
     <ion-radio-group [(ngModel)]="meetingDetails.occurenceType">
-      <ion-item *ngIf="meetingDetails.occurenceType=='daily'">
+      <ion-item *ngIf="meetingDetails?.occurenceType=='daily'">
         <ion-label>Daily</ion-label>
         <ion-radio value="daily"  readonly="true" checked="true"></ion-radio>
       </ion-item>
-      <ion-list *ngIf="meetingDetails.occurenceType=='daily'">
+      <ion-list *ngIf="meetingDetails?.occurenceType=='daily'">
         <ion-row>
           <ion-col *ngFor="let day of ['SUN','MON','TUE','WED','THU','FRI','SAT'];let i=index;">
             <ion-item lines="none">
               <ion-icon slot="start"
-                [name]="meetingDetails.weekdays[i]? 'checkbox' : 'square-outline'"
-                [color]="meetingDetails.weekdays[i]? 'primary' : 'medium'"></ion-icon>
+                [name]="meetingDetails?.weekdays[i]? 'checkbox' : 'square-outline'"
+                [color]="meetingDetails?.weekdays[i]? 'primary' : 'medium'"></ion-icon>
               <ion-label class="ion-no-margin">{{day}}</ion-label>
-              <!-- <ion-checkbox [(ngModel)]="meetingDetails.weekdays[i]" slot="end" disabled="true"></ion-checkbox> -->
             </ion-item>
           </ion-col>
         </ion-row>
       </ion-list>
-      <ion-item *ngIf="meetingDetails.occurenceType=='weekly'" class="">
+      <ion-item *ngIf="meetingDetails?.occurenceType=='weekly'" class="">
         <ion-label>Weekly</ion-label>
         <ion-radio value="weekly" checked="true"></ion-radio>
       </ion-item>
-      <ion-item *ngIf="meetingDetails.occurenceType=='fortnightly'" class="">
+      <ion-item *ngIf="meetingDetails?.occurenceType=='fortnightly'" class="">
         <ion-label>Fortnightly</ion-label>
         <ion-radio value="fortnightly" checked="true"></ion-radio>
       </ion-item>
-      <ion-item *ngIf="meetingDetails.occurenceType=='monthly'" class="">
+      <ion-item *ngIf="meetingDetails?.occurenceType=='monthly'" class="">
         <ion-label>Monthly</ion-label>
         <ion-radio value="monthly" checked="true"></ion-radio>
       </ion-item>
-      <ion-item *ngIf="meetingDetails.occurenceType=='quarterly'" class="">
+      <ion-item *ngIf="meetingDetails?.occurenceType=='quarterly'" class="">
         <ion-label>Quarterly</ion-label>
         <ion-radio value="quarterly" checked="true"></ion-radio>
       </ion-item>
