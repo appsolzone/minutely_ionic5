@@ -41,9 +41,11 @@ export class ManageprofilePage implements OnInit {
   emailRegex: string = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$';
   firestore: any;
   sessionInfo: any;
+  subscriberId:any
   photo: SafeResourceUrl;
   public base64Image: string;
   public isMobile: boolean = false;
+  
 
 
 
@@ -60,6 +62,8 @@ export class ManageprofilePage implements OnInit {
     private upload: UploadImageService,
     private platform: Platform,
   ) {
+
+   
     this.isMobile = this.platform.is('mobile') && !this.platform.is('mobileweb');
     this.firestore = this.user.db.frb.firestore;
     this.getauthStateSubs$ = this.auth.authState(this.authStateCallBack.bind(this));
@@ -193,7 +197,15 @@ export class ManageprofilePage implements OnInit {
   }
 
   take_photo() {
-    this.upload.take_photo();
+    let source={
+      'collection':this.database.allCollections.users,
+      'location':'profileImages',
+      'document':this.sessionInfo?.userProfileDocId
+  
+    }
+    console.log('id',this.sessionInfo?.userProfileDocId)
+
+    this.upload.take_photo(source);
   }
 
 
@@ -303,7 +315,7 @@ export class ManageprofilePage implements OnInit {
   getUserProfile(index){
     this.userProfile=this.allProfiles[index]?.data;
     this.id = this.allProfiles[index]?.id;
-    // console.log("getUserProfile",this.userProfile,index);
+    console.log("getUserProfileArnsb",this.userProfile,index);
     Storage.set({key: 'userProfile', value: JSON.stringify(this.userProfile)});
     this.session.getSessionInfo(this.userProfile.subscriberId);
     // this.userData = data.userData;

@@ -33,10 +33,38 @@ export class AddProjectComponent implements OnInit {
   ngOnInit() {}
   ngOnDestroy(){}
 
+  saveProjectConfirm(){
+    if(this.targetClosureDate == null || this.targetClosureDate == ''){
+      this.common.presentAlertConfirm('No closure date', 
+      'This project does not have any closure date. Would you like to continue?').then(feed=>{
+        if(feed==true){
+          this.saveProject();
+          //console.log('action needed');
+  
+        }
+        else{
+          console.log('no action needed');
+        }
+      })
+    }
+    else{
+console.log('No exception')
+    }
+    
+  }
+
   saveProject(){
-    this.newProject = { ...this.newProject, inceptionDate: new Date(this.inceptionDate),
-                        targetClosureDate: new Date(this.targetClosureDate)
-                      };
+    if(this.targetClosureDate == null || this.targetClosureDate == ''){
+      this.newProject = { ...this.newProject, inceptionDate: new Date(this.inceptionDate),
+        targetClosureDate: new Date(this.targetClosureDate),hasClosureDate:false
+      };
+    }
+    else{
+      this.newProject = { ...this.newProject, inceptionDate: new Date(this.inceptionDate),
+        targetClosureDate: new Date(this.targetClosureDate),hasClosureDate:true
+      };
+    }
+    
     this.project.createProject(this.newProject, this.sessionInfo)
       .then(async res=>{
         let title = "Project created";

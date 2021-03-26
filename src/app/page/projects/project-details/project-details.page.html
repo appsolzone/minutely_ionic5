@@ -37,9 +37,9 @@
                       <ion-icon name="calendar"></ion-icon>
                       <ion-label>{{selectedProject?.data?.inceptionDate | date : 'mediumDate'}}</ion-label>
                     </ion-chip>
-                    <ion-chip color="primary">
+                    <ion-chip color="primary" *ngIf="selectedProject?.data?.hasClosureDate">
                       <ion-icon name="calendar"></ion-icon>
-                      <ion-label>{{selectedProject?.targetClosureDate}}</ion-label>
+                      <ion-label>{{selectedProject?.targetClosureDate }}</ion-label>
                       <!-- <ion-label>{{selectedProject?.data?.closureDate ? (selectedProject.data.closureDate | date : 'mediumDate') : 'Ongoing'}}</ion-label> -->
                     </ion-chip>
                   </ion-label>
@@ -79,7 +79,7 @@
           <ion-card *ngIf="showAddActivity">
             <ion-item>
               <ion-icon name="body" color="medium" slot="start"></ion-icon>
-              <ion-label>Add new activity</ion-label>
+              <ion-label><b>Add new activity</b></ion-label>
             </ion-item>
             <ion-card-content>
               <ion-item>

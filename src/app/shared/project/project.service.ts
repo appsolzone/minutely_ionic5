@@ -27,6 +27,7 @@ export class ProjectService {
         createdOn: this.db.frb.firestore.FieldValue.serverTimestamp(),
         updatedBy: '',
         updatedOn: this.db.frb.firestore.FieldValue.serverTimestamp(),
+        hasClosureDate: false,
       };
 
   constructor(

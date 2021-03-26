@@ -144,13 +144,15 @@ export class ProjectDetailsPage implements OnInit {
                                 const closureDate = data.closureDate? new Date(data.closureDate?.seconds*1000) : null;
                                 const targetClosureDate = data.targetClosureDate ? new Date(data.targetClosureDate?.seconds*1000) : null;
                                 const projectNo = data.projectId.replace(/[A-Z]/,'');
+                                const hasClosureDate = data.hasClosureDate
                                 // return {id, data};
-                                return {id, projectNo, targetClosureDate: moment(targetClosureDate).format('MMM D, YYYY'), data: {...data, inceptionDate, closureDate, targetClosureDate}};
+                                return {id, projectNo, targetClosureDate: moment(targetClosureDate).format('MMM D, YYYY'), data: {...data, inceptionDate, closureDate, targetClosureDate,hasClosureDate}};
                                 // return {id, data};
                                 // return {id, data: {...data, inceptionDate, closureDate}};
                               });
 
                               this.selectedProject = allProjects[0];
+                              console.log('project_details', this.selectedProject)
 
                             });
     } else {
