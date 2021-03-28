@@ -17,6 +17,10 @@ export class MeetingAttendeesComponent implements OnInit {
     this.meetingDetails = this.meeting?.data;
   }
 
+  ngOnChanges() {
+    this.meetingDetails = this.meeting?.data;
+  }
+
   profileImgErrorHandler(user: any){
     user.picUrl = '/assets/shapes.svg';
   }

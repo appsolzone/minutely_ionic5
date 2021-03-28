@@ -53,4 +53,8 @@ export class MeetingService {
   getMeetings(queryObj:any[], textSearchObj: any = null, limit: any=null){
     return this.db.getAllDocumentsSnapshotByQuery(this.db.allCollections.meeting, queryObj, textSearchObj, limit);
   }
+  // Read and watch
+  getMeetingById(id: string){
+    return this.db.getDocumentSnapshotById(this.db.allCollections.meeting, id);
+  }
 }

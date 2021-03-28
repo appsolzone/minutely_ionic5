@@ -1,10 +1,10 @@
 <ion-item class="" lines="none" *ngIf="meetingDetails?.status=='OPEN' && !meetingExpired && meetingDetails?.ownerId?.uid!=sessionInfo?.uid">
   <ion-buttons slot="end">
-    <ion-button slot="end" fill="outline" color="success" [disabled]="acceptedStatus=='accept' || meetingExpired" (click)="onActionClick('accept')">
-      <ion-icon name="checkbox" slot="start"></ion-icon>
+    <ion-button slot="end" fill="solid" color="success" [disabled]="acceptedStatus=='accept' || meetingExpired" (click)="onActionClick('accept')">
+      <ion-icon name="checkmark" slot="start"></ion-icon>
       Accept
     </ion-button>
-    <ion-button  slot="end" fill="outline" color="danger" [disabled]="acceptedStatus=='decline' || meetingExpired" (click)="onActionClick('decline')">
+    <ion-button  slot="end" fill="solid" color="danger" [disabled]="acceptedStatus=='decline' || meetingExpired" (click)="onActionClick('decline')">
       <ion-icon name="close" slot="start"></ion-icon>
       Decline
     </ion-button>

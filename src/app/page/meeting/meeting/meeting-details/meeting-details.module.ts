@@ -9,6 +9,9 @@ import { MeetingDetailsPageRoutingModule } from './meeting-details-routing.modul
 import { MeetingBasicInfoComponent } from '../meeting-basic-info/meeting-basic-info.component';
 import { MeetingAttendeesComponent } from '../meeting-attendees/meeting-attendees.component';
 import { MeetingAgendaNoteComponent } from '../meeting-agenda-note/meeting-agenda-note.component';
+import { MeetingLocationComponent } from '../meeting-location/meeting-location.component';
+
+import { LinkageModule } from 'src/app/page/linkage/linkage.module';
 
 import { MeetingDetailsPage } from './meeting-details.page';
 
@@ -18,13 +21,15 @@ import { MeetingDetailsPage } from './meeting-details.page';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    MeetingDetailsPageRoutingModule
+    MeetingDetailsPageRoutingModule,
+    LinkageModule
   ],
   declarations: [
     MeetingDetailsPage,
     MeetingBasicInfoComponent,
     MeetingAttendeesComponent,
-    MeetingAgendaNoteComponent
+    MeetingAgendaNoteComponent,
+    MeetingLocationComponent
   ]
 })
 export class MeetingDetailsPageModule {}

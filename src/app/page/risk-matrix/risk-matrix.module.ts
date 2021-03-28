@@ -4,9 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { RiskMatrixModule } from 'src/app/page/risk-matrix/risk-matrix.module';
-
-import { KpiComponent } from './kpi.component';
+import { RiskMatrixComponent } from './risk-matrix.component';
 
 
 @NgModule({
@@ -14,13 +12,12 @@ import { KpiComponent } from './kpi.component';
     CommonModule,
     FormsModule,
     IonicModule,
-    RiskMatrixModule,
   ],
   declarations: [
-    KpiComponent
+    RiskMatrixComponent,
   ],
   exports: [
-    KpiComponent,
+    RiskMatrixComponent,
   ]
 })
-export class KpiModule {}
+export class RiskMatrixModule {}

@@ -17,4 +17,8 @@ export class MeetingAgendaNoteComponent implements OnInit {
     this.meetingDetails = this.meeting?.data;
   }
 
+  ngOnChanges() {
+    this.meetingDetails = this.meeting?.data;
+  }
+
 }

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
+import { MeetingService } from 'src/app/shared/meeting/meeting.service';
 
 @Component({
   selector: 'app-meeting-details',
@@ -13,22 +14,28 @@ import { SessionService } from 'src/app/shared/session/session.service';
 export class MeetingDetailsPage implements OnInit {
   // observables
   sessionSubs$;
+  meetingsSubs$;
   public sessionInfo: any;
   public meeting: any;
 
   constructor(
     private router: Router,
-    private session: SessionService
+    private session: SessionService,
+    private meetingservice: MeetingService,
   ) {
     this.getSessionInfo();
   }
 
   ngOnInit() {
-    this.meeting = history.state.data.meeting;
+    let meetingStateData = history.state.data.meeting;
     console.log("meetingDetails ngOnInit")
-    if(!this.meeting){
+    if(!meetingStateData){
       console.log("ngOnInit")
       this.router.navigate(['meeting']);
+    } else{
+      if(meetingStateData?.id!=this.meeting?.id){
+        this.getMeeting(meetingStateData);
+      }
     }
   }
 
@@ -36,10 +43,14 @@ export class MeetingDetailsPage implements OnInit {
 
   ionViewDidEnter(){
     console.log("meetingDetails ionViewDidEnter", history.state.data?.meeting)
-    this.meeting = history.state.data?.meeting ? history.state.data.meeting : this.meeting;
-    if(!this.meeting){
+    let meetingStateData = history.state.data?.meeting ? history.state.data.meeting : this.meeting;
+    if(!meetingStateData){
       console.log("ionViewDidEnter")
       this.router.navigate(['meeting']);
+    } else {
+      if(meetingStateData?.id!=this.meeting?.id){
+        this.getMeeting(meetingStateData);
+      }
     }
   }
 
@@ -51,6 +62,22 @@ export class MeetingDetailsPage implements OnInit {
         this.router.navigate(['profile']);
       }
     });
+  }
+
+  // search implement
+  getMeeting(meetingStateData){
+    // this.meeting = null;
+    this.meetingsSubs$ = this.meetingservice.getMeetingById(meetingStateData.id)
+                          .subscribe(act=>{
+                              const data: any = act.payload.data();
+                              const id: string = act.payload.id;
+                              const meetingStart = new Date(data.meetingStart?.seconds*1000);
+                              const meetingEnd = data.meetingEnd?.seconds ? new Date(data.meetingEnd?.seconds*1000) : null;
+                              this.meeting = {id, data: {...data, meetingStart, meetingEnd }};
+
+                              console.log("meeting details", this.meeting);
+                          });
+
   }
 
 }

@@ -26,6 +26,12 @@ export class MeetingBasicInfoComponent implements OnInit {
       this.checkAcceptence();
     }
   }
+  ngOnChanges() {
+    this.meetingDetails = this.meeting?.data;
+    if(this.meetingDetails){
+      this.checkAcceptence();
+    }
+  }
 
   checkAcceptence(){
     let now = new Date();

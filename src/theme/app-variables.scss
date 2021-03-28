@@ -71,6 +71,15 @@ ion-icon {
       max-height: 67px;
       -webkit-box-orient: vertical;
 }
+.app-twolines{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    // line-height: 16px;
+    max-height: 34px;
+    -webkit-box-orient: vertical;
+}
 
 .time-input-field{
   ion-select::part(icon) {
