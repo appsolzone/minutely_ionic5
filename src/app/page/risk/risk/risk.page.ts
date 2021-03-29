@@ -12,7 +12,7 @@ import { DatabaseService } from 'src/app/shared/database/database.service';
 import { SearchText } from 'src/app/shared/empty-screen-text/empty-screen-text';
 import { KpiService } from 'src/app/shared/kpi/kpi.service';
 import { SessionService } from 'src/app/shared/session/session.service';
-import { ModalPagePage } from '../../modal-page/modal-page.page';
+
 
 @Component({
   selector: 'app-risk',

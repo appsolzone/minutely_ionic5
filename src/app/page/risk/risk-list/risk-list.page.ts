@@ -54,19 +54,19 @@ export class RiskListPage implements OnInit,OnDestroy {
       if(!this.sessionInfo){
         this.router.navigate(['profile']);
       }
-      if( this.sessionInfo?.subscriberId && this.sessionInfo?.uid && !this.risksSubs$){
+      if( this.sessionInfo?.orgProfile.subscriberId && this.sessionInfo?.userProfile.uid && !this.risksSubs$){
         this.getAllRisks();
       }
     });
   }
   ngOnDestroy(){
-    if(this.sessionInfo?.subscriberId && this.sessionInfo?.uid){
+    if(this.sessionInfo?.orgProfile.subscriberId && this.sessionInfo?.userProfile.uid){
           this.getAllRisks();
         }
   }
 
   ionViewDidEnter(){
-    if(this.sessionInfo?.subscriberId && this.sessionInfo?.uid){
+    if(this.sessionInfo?.orgProfile.subscriberId && this.sessionInfo?.userProfile.uid){
       this.getAllRisks();
     }
   }

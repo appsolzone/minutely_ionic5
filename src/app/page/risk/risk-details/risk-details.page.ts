@@ -17,17 +17,12 @@ import { SessionService } from 'src/app/shared/session/session.service';
 export class RiskDetailsPage implements OnInit,OnDestroy {
   // observables
   sessionSubs$;
-  risk$;
-
-  userData: any;
-  allProfiles: any[];
-  userProfile: User;
-  orgProfile:any =null;
+  public sessionInfo: any;
+  public risk: any;
 
   //variable
-  risk:any|null = null;
-  riskCopy:any|null = null;
-  toggleEditMode:boolean = false;
+  public riskCopy:any|null = null;
+  public toggleEditMode:boolean = false;
 
   status:string='';
   maxMeetingDate: any = moment().add(20,'years').format("YYYY");
@@ -38,88 +33,84 @@ export class RiskDetailsPage implements OnInit,OnDestroy {
   
   constructor(
     private crud:CrudService,
-    private componentService:ComponentsService,
     private router:Router,
     private session:SessionService,
-    ) { }
+    ) {
+        this.getSessionInfo();
+     }
 
   ngOnInit() {
-    this.getSessionInfo();
+    this.risk = history.state.data.risk;
+    console.log("riskDetails ngOnInit",this.risk)
+    if(!this.risk){
+      console.log("ngOnInit")
+      this.router.navigate(['risk']);
+    }
   }
   ngOnDestroy(){}
 
   getSessionInfo(){
-    this.sessionSubs$ = this.session.watch().subscribe(value=>{
-      console.log("testing :",value?.userProfile?true:false);
-       if(value?.userProfile){
-       // Nothing to do just display details
-       // Re populate the values as required
-       this.userProfile = value?.userProfile;
-       this.orgProfile = value?.orgProfile;
-       } else {
-          this.router.navigate(['profile']);
-       }
-     });
+   this.sessionSubs$ = this.session.watch().subscribe(value=>{
+      // Re populate the values as required
+      this.sessionInfo = value;
+      if(!this.sessionInfo){
+        this.router.navigate(['profile']);
+      }
+    });
   }
 
-  ionViewWillEnter(){
-   // this.componentService.showLoader()
-    this.risk$ = this.crud.detailsPagePasing$.subscribe(
-      (res)=>{
-        this.risk = res;
-        this.riskCopy = res;
-        console.log("this details :",this.risk);
-        if(res == null) this.router.navigate(["/risk"]);
-      },
-      (err)=>{
-        console.log(err);
-      },
-      ()=>{
-        //this.componentService.hideLoader()
-      }
-      );
+  ionViewDidEnter(){
+    console.log("riskDetails ionViewDidEnter", history.state.data?.risk)
+    this.risk = history.state.data?.risk ? history.state.data.risk : this.risk;
+    console.log(this.risk)
+    if(!this.risk){
+      console.log("ionViewDidEnter")
+      this.router.navigate(['risk']);
+    }
   }
+
 
   goToCommentPage(risk){
-   let passObj = {...risk,parentModule:'risk',navigateBack:'/risk/details'};
+   let passObj = {...risk,parentModule:'risk',navigateBack:'/risk/risk-details'};
    this.crud.detailsPagePasing$.next(passObj);
-   this.router.navigate(['/risk/details/comments']); 
+   this.router.navigate(['/risk/risk-details/comments']); 
   }
 
-  goToSelectMemberPage(){
-   let crud_action = {
-    service:'Risk',     // Meeting,Risk,Issue,Task
-    type:'update',        // create,update
-    parentModule:'risk',    //meeting,risk,issue,task
-    header:'Update new risk owner',      // header on page
-    object:{...this.risk},      // initiate object
-    }
-    this.crud.detailsPagePasing$.next(crud_action.object);
-    // this.router.navigate(['/risk/details/select-members']); 
+  // goToSelectMemberPage(){
+  //  let crud_action = {
+  //   service:'Risk',     // Meeting,Risk,Issue,Task
+  //   type:'update',        // create,update
+  //   parentModule:'risk',    //meeting,risk,issue,task
+  //   header:'Update new risk owner',      // header on page
+  //   object:{...this.risk},      // initiate object
+  //   }
+  //   this.crud.detailsPagePasing$.next(crud_action.object);
+  //   // this.router.navigate(['/risk/details/select-members']); 
 
-    console.log("this latest details condition :",this.risk)
-  }
+  //   console.log("this latest details condition :",this.risk)
+  // }
 
 
-  // ====== [ tags ] =========
-  // adding tags
-  addTags(){
-    if(this.addThisTag && this.addThisTag!=""){
-      this.risk.tags.push(this.addThisTag);
-      this.addThisTag = '';
-    }
-  }
-  // delete tags
-  deleteTag(toBeDeleted){
-    let index = this.risk.tags.indexOf(toBeDeleted);
-    this.risk$.tags.splice(index, 1);
-  } 
+  // // ====== [ tags ] =========
+  // // adding tags
+  // addTags(){
+  //   if(this.addThisTag && this.addThisTag!=""){
+  //     this.risk.tags.push(this.addThisTag);
+  //     this.addThisTag = '';
+  //   }
+  // }
+  // // delete tags
+  // deleteTag(toBeDeleted){
+  //   let index = this.risk.tags.indexOf(toBeDeleted);
+  //   this.risk.tags.splice(index, 1);
+  // } 
 
-  //editMode
-  editMode(){
+  // //editMode
+  // editMode(){
 
-    console.log("the current risk data ====",this.risk);
-    this.toggleEditMode = !this.toggleEditMode;
-    this.risk = this.riskCopy;
-  }
+  //   console.log("the current risk data ====",this.risk);
+  //   this.toggleEditMode = !this.toggleEditMode;
+  //   this.risk = this.riskCopy;
+  // }
+
 }
