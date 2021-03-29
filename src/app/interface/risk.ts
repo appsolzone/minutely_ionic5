@@ -29,6 +29,6 @@ export interface Risk {
     riskImpact:string,
     riskMitigation:string,
     riskContingency:string,
-    titleSearchMap: any,
+    searchMap: any,
     ownerInitiatorUidList:Array<any>,
 }

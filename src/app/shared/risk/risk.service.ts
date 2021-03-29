@@ -39,7 +39,7 @@ export class RiskService {
       riskImpact:'',
       riskMitigation:'',
       riskContingency:'',
-      titleSearchMap:{},
+      searchMap:{},
       ownerInitiatorUidList:[],
   }
 

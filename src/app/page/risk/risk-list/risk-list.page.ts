@@ -71,6 +71,20 @@ export class RiskListPage implements OnInit,OnDestroy {
     }
   }
 
+
+  ionChange(e){
+
+    this.getAllRisks();
+  }
+
+  onClear(e){
+    this.viewRisksResult = [];
+  }
+
+  dateFormater(date,format){
+    return moment(date).format(format ? format : "ll");
+  }
+
   SearchOptionsChanged(e){
     this.activeSearchMode = !this.activeSearchMode;
     this.searchMode = e.detail.value;
@@ -115,7 +129,7 @@ export class RiskListPage implements OnInit,OnDestroy {
 
   // return the result of observable
   getAllRisks(){
-  this.viewRisksResult = [];  
+    this.viewRisksResult = [];  
 
     let searchTextObj = null;
     let queryObj = [];
