@@ -12,6 +12,10 @@ const routes: Routes = [
     path: 'comments',
     loadChildren: () => import('../../../page/user-comments/user-comments.module').then( m => m.UserCommentsPageModule)
   },
+  {
+    path: 'select-members',
+    loadChildren: () => import('../../../page/create-new-services/select-members/select-members.module').then( m => m.SelectMembersPageModule)
+  },
 ];
 
 @NgModule({

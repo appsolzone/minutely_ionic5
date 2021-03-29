@@ -10,7 +10,7 @@
 <ion-content>
 <ion-row>
   <ion-col>
-    <ion-item lines="none">
+    <ion-item lines="none" *ngIf="!toggleEditMode">
       <ion-button slot="start" color="danger">
         <ion-icon name="calendar" slot="start"></ion-icon>
         {{  risk?.riskInitiationDate}}
@@ -21,14 +21,58 @@
       </ion-button>
     </ion-item>
 
-    <ion-item lines="none">
+    <!-- if EditMode -->
+      <ion-item *ngIf="toggleEditMode">
+        <ion-label color="dark">
+          <ion-icon name="create-outline"></ion-icon> Initiation date
+        </ion-label>
+        <ion-input type="text" readonly disabled class="ion-text-right" value="{{risk?.riskInitiationDate}}"></ion-input>
+      </ion-item>
+      <ion-item  *ngIf="toggleEditMode">
+        <ion-label color="dark">
+          <ion-icon name="locate"></ion-icon> Target date
+        </ion-label>
+        <ion-datetime displayFormat="MMM DD, YYYY" [min]="minMeetingDate" [max]="maxMeetingDate"
+          [(ngModel)]="risk.targetCompletionDate" (change)="target_date($event)"
+          [disabled]="risk?.riskStatus=='RESOLVED' || risk?.riskInitiator.uid != userProfile?.uid"></ion-datetime>
+      </ion-item>
+
+        <ion-item lines="none" *ngIf="toggleEditMode">
+          <ion-label position="floating" color="dark">
+            <ion-icon name="clipboard"></ion-icon> Risk title
+          </ion-label>
+          <ion-input type="text" [(ngModel)]="risk.riskTitle"></ion-input>
+        </ion-item>
+
+        <ion-item *ngIf="toggleEditMode">
+          <ion-label color="dark">
+            <ion-icon name="pricetags"></ion-icon>
+            Add tags
+          </ion-label>
+          <ion-input type="text" placeholder="Enter tag and add to the list" [(ngModel)]="addThisTag">
+          </ion-input>
+          <ion-button size="small" slot="end" fill="outline" (click)="addTags()">
+            <ion-icon name="add-outline" color="primary"></ion-icon>
+          </ion-button>
+        </ion-item>
+        
+        <ion-item lines="none" *ngIf="toggleEditMode">
+          <ion-chip *ngFor="let data of risk.tags" (click)="deleteTag(data)">
+            <ion-label>{{data}}</ion-label>
+            <ion-icon name="close-circle"></ion-icon>
+          </ion-chip>
+        </ion-item>
+
+    <!-- if edit mode  -->
+
+    <ion-item lines="none" *ngIf="!toggleEditMode">
      <ion-label>
         <h1>{{risk?.riskTitle}}</h1>
      </ion-label>
     </ion-item>
 
 
-    <ion-item lines="none">
+    <ion-item lines="none"  *ngIf="!toggleEditMode && risk?.tags.length > 0">
       <ion-chip *ngFor="let data of risk?.tags" color="warning">
         <ion-label>{{data}}</ion-label>
       </ion-chip>
@@ -46,15 +90,15 @@
     <ion-row>
       <ion-col size="4">
         <ion-button expand="full" [color]="risk?.riskStatus =='OPEN'?'warning':'light'"
-        [disabled]="risk?.riskStatus !=='OPEN'">Low</ion-button>
+        [disabled]="!toggleEditMode" (click)="risk.riskStatus = 'OPEN'" >Low</ion-button>
       </ion-col>
       <ion-col size="4">
         <ion-button expand="full" [color]="risk?.riskStatus =='INPROGRESS'?'primary':'light'"
-        [disabled]="risk?.riskStatus !=='INPROGRESS'">Medium</ion-button>
+        [disabled]="!toggleEditMode" (click)="risk.riskStatus = 'INPROGRESS'" >Medium</ion-button>
       </ion-col>
       <ion-col size="4">
         <ion-button expand="full" [color]="risk?.riskStatus =='RESOLVED'?'success':'light'"
-        [disabled]="risk?.riskStatus !=='RESOLVED'">High</ion-button>
+        [disabled]="!toggleEditMode" (click)="risk.riskStatus = 'RESOLVED'">High</ion-button>
       </ion-col>
     </ion-row>
 
@@ -88,15 +132,15 @@
     <ion-row>
       <ion-col size="4">
         <ion-button expand="full" [color]="risk?.riskProbability =='Low'?'success':'light'"
-          [disabled]="risk?.riskProbability !=='Low'">Low</ion-button>
+          [disabled]="!toggleEditMode">Low</ion-button>
       </ion-col>
       <ion-col size="4">
         <ion-button expand="full" [color]="risk?.riskProbability =='Medium'?'warning':'light'"
-          [disabled]="risk?.riskProbability !=='Medium'">Medium</ion-button>
+          [disabled]="!toggleEditMode">Medium</ion-button>
       </ion-col>
       <ion-col size="4">
         <ion-button expand="full" [color]="risk?.riskProbability =='High'?'danger':'light'"
-        [disabled]="risk?.riskProbability !=='High'">High</ion-button>
+        [disabled]="!toggleEditMode">High</ion-button>
       </ion-col>
     </ion-row>
 
@@ -111,15 +155,15 @@
     <ion-row>
       <ion-col size="4">
         <ion-button expand="full" [color]="risk?.riskImpact =='Low'?'success':'light'"
-        [disabled]="risk?.riskImpact !=='Low'" >Low</ion-button>
+        [disabled]="!toggleEditMode" >Low</ion-button>
       </ion-col>
       <ion-col size="4">
         <ion-button expand="full" [color]="risk?.riskImpact =='Medium'?'warning':'light'"
-        [disabled]="risk?.riskImpact !=='Medium'" >Medium</ion-button>
+        [disabled]="!toggleEditMode" >Medium</ion-button>
       </ion-col>
       <ion-col size="4">
         <ion-button expand="full" [color]="risk?.riskImpact =='High'?'danger':'light'"
-        [disabled]="risk?.riskImpact !=='High'">High</ion-button>
+        [disabled]="!toggleEditMode">High</ion-button>
       </ion-col>
     </ion-row>
 
@@ -163,7 +207,7 @@
     </ion-item>
     
     <ion-item lines="none">
-    <ion-textarea disabled readonly>
+    <ion-textarea [disabled]="!toggleEditMode">
       {{risk?.riskMitigation}}
     </ion-textarea>
     </ion-item>
@@ -174,11 +218,26 @@
       </ion-label>
     </ion-item>
     <ion-item lines="none">
-      <ion-textarea  disabled readonly>
+      <ion-textarea [disabled]="!toggleEditMode">
           {{risk?.riskContingency}}
       </ion-textarea>
     </ion-item>
 
   </ion-col>
 </ion-row>
+
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="ion-hide-md-up">
+    <ion-fab-button>
+      <ion-icon name="ellipsis-vertical"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <!-- <ion-fab-button (click)="naviageteAddPage()" color="primary">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-fab-button> -->
+      <ion-fab-button (click)="editMode()" color="primary" *ngIf="risk?.riskInitiator.uid != userProfile?.uid || risk?.riskOwner.uid != userProfile?.uid">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>

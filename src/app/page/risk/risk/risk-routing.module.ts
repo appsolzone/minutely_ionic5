@@ -29,7 +29,7 @@ const routes: Routes = [
     loadChildren: () => import('../../search-component/search-component.module').then( m => m.SearchComponentPageModule)
   },
   {
-    path: 'details',
+    path: 'risk-details',
     loadChildren: () => import('../../risk/risk-details/risk-details.module').then( m => m.RiskDetailsPageModule)
   },
 ];
