@@ -33,38 +33,37 @@ export class AddProjectComponent implements OnInit {
   ngOnInit() {}
   ngOnDestroy(){}
 
-  saveProjectConfirm(){
-    if(this.targetClosureDate == null || this.targetClosureDate == ''){
-      this.common.presentAlertConfirm('No closure date', 
-      'This project does not have any closure date. Would you like to continue?').then(feed=>{
-        if(feed==true){
-          this.saveProject();
-          //console.log('action needed');
-  
-        }
-        else{
-          console.log('no action needed');
-        }
-      })
+  async saveProjectConfirm(){
+    if(!this.targetClosureDate){
+      let title = "No closure date";
+      let body = "This project does not have any target closure date. Would you like to continue?"
+      let buttons: any[] = [
+                      {
+                        text: 'Dismiss',
+                        role: 'cancel',
+                        cssClass: '',
+                        handler: ()=>{}
+                      },
+                      {
+                        text: 'Continue',
+                        role: '',
+                        cssClass: '',
+                        handler: ()=>{this.saveProject();}
+                      }
+                    ];
+
+      await this.common.presentAlert(title,body ,buttons);
+    } else {
+      this.saveProject();
     }
-    else{
-console.log('No exception')
-    }
-    
+
   }
 
   saveProject(){
-    if(this.targetClosureDate == null || this.targetClosureDate == ''){
-      this.newProject = { ...this.newProject, inceptionDate: new Date(this.inceptionDate),
-        targetClosureDate: new Date(this.targetClosureDate),hasClosureDate:false
-      };
-    }
-    else{
-      this.newProject = { ...this.newProject, inceptionDate: new Date(this.inceptionDate),
-        targetClosureDate: new Date(this.targetClosureDate),hasClosureDate:true
-      };
-    }
-    
+    this.newProject = { ...this.newProject, inceptionDate: new Date(this.inceptionDate),
+                        targetClosureDate: (this.targetClosureDate ? new Date(this.targetClosureDate) : null)
+                      };
+
     this.project.createProject(this.newProject, this.sessionInfo)
       .then(async res=>{
         let title = "Project created";

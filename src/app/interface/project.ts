@@ -16,6 +16,5 @@ export interface Project {
   createdBy: string,
   createdOn: any,
   updatedBy: string,
-  updatedOn: any,
-  hasClosureDate:boolean,
+  updatedOn: any
 }
