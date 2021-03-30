@@ -12,13 +12,16 @@ import { RiskMatrixModule } from 'src/app/page/risk-matrix/risk-matrix.module';
 
 import { LinkageComponent } from './linkage.component';
 
+import { MeetingListModule } from 'src/app/page/meeting/meeting/meeting-list/meeting-list.module';
+
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    RiskMatrixModule
+    RiskMatrixModule,
+    MeetingListModule
   ],
   declarations: [
     LinkageComponent,

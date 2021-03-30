@@ -1,3 +1,19 @@
+<ion-item lines="none" *ngIf="viewMode=='edit'">
+  <ion-label class="ion-text-end">
+    <p><ion-text color="medium">Seach and link meetings</ion-text></p>
+  </ion-label>
+  <ion-buttons slot="end" *ngIf="linkedMeetings">
+    <ion-button slot="end" (click)="showSearchList=!showSearchList">
+      <ion-icon slot="icon-only" [name]="showSearchList ? 'close' : 'search'"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+</ion-item>
+<ion-item *ngIf="showSearchList && linkedMeetings?.length>0">
+  <ion-icon slot="start" name="attach"></ion-icon>
+  <ion-label>
+    <h2>Selected linked meetings</h2>
+  </ion-label>
+</ion-item>
 <ion-card *ngIf="linkedMeetings?.length==0" class="ion-no-padding">
   <ion-item lines="none">
     <ion-icon name="information-circle-outline"  slot="start" color="medium"></ion-icon>
@@ -10,6 +26,11 @@
     </ion-label>
   </ion-item>
 </ion-card>
+<app-meeting-list *ngIf="showSearchList"
+  viewMode="linkage"
+  [excludeList]="linkedMeetings"
+  (onSelectMeeting)="linkSelectedMeeting($event)"
+  ></app-meeting-list>
 <ion-card class="ion-no-padding" *ngFor="let m of linkedMeetings ? linkedMeetings : [null,null];"  button="true" (click)="openMeetingDetails(m)">
   <ion-item lines="none" color="transparent">
     <ion-chip *ngIf="m" size="small"  slot="start" color="primary">{{m.data.meetingStart| date : 'shortTime'}} - {{m.data.meetingEnd| date : 'shortTime'}}</ion-chip>

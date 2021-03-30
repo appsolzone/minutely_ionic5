@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { CalendarComponentOptions } from 'ion2-calendar';
@@ -15,7 +15,9 @@ import { Meeting } from 'src/app/interface/meeting';
 })
 @Autounsubscribe()
 export class MeetingListComponent implements OnInit {
-  @Input() showOnlyUpcommingMeetings: boolean = false;
+  @Input() viewMode: string = 'normal'; // Other options upcoming, linkage
+  @Input() excludeList: any[]=[];
+  @Output() onSelectMeeting = new EventEmitter<any>();
   // observables
   sessionSubs$;
   meetingsSubs$;
@@ -51,7 +53,7 @@ export class MeetingListComponent implements OnInit {
       if(!this.sessionInfo){
         this.router.navigate(['profile']);
       }
-      if( this.sessionInfo?.subscriberId && this.sessionInfo?.uid && this.showOnlyUpcommingMeetings && !this.meetingsSubs$){
+      if( this.sessionInfo?.subscriberId && this.sessionInfo?.uid && this.viewMode=='upcoming' && !this.meetingsSubs$){
         this.getUpcommingMeetings();
       }
     });
@@ -59,13 +61,13 @@ export class MeetingListComponent implements OnInit {
 
   ngOnInit() {
     this.cal.renderDataSet(this.options);
-    if(this.showOnlyUpcommingMeetings && this.sessionInfo?.subscriberId && this.sessionInfo?.uid){
+    if(this.viewMode=='upcoming' && this.sessionInfo?.subscriberId && this.sessionInfo?.uid){
       this.getUpcommingMeetings();
     }
   }
 
   ionViewDidEnter(){
-    if(this.showOnlyUpcommingMeetings && this.sessionInfo?.subscriberId && this.sessionInfo?.uid){
+    if(this.viewMode=='upcoming' && this.sessionInfo?.subscriberId && this.sessionInfo?.uid){
       this.getUpcommingMeetings();
     }
   }
@@ -142,21 +144,45 @@ export class MeetingListComponent implements OnInit {
       this.viewMeetingResult = null;
       this.meetingsSubs$ = this.meeting.getMeetings(queryObj, searchTextObj, this.limit)
                             .subscribe(act=>{
-                              let allMeetings = act.map((a: any) => {
+                              let allMeetings = [];
+                              act.forEach((a: any) => {
                                 const data = a.payload.doc.data();
                                 const id = a.payload.doc.id;
                                 const meetingStart = new Date(data.meetingStart?.seconds*1000);
                                 const meetingEnd = data.meetingEnd?.seconds ? new Date(data.meetingEnd?.seconds*1000) : null;
+                                let idx = this.excludeList.findIndex(em=>em.id==id);
                                 // return {id, data: { ...data, startTime, endTime }};
-                                return {id, data: {...data, meetingStart, meetingEnd }};
+                                if(idx==-1) {
+                                  allMeetings.push({id, data: {...data, meetingStart, meetingEnd }});
+                                }
                               });
-                              this.viewMeetingResult =[];
+                              // this.viewMeetingResult =[];
                               this.viewMeetingResult = allMeetings.sort((a:any,b:any)=>a.data.meetingStart-b.data.meetingStart)
-                              console.log("activities", this.viewMeetingResult);
+                              console.log("activities", this.viewMeetingResult,this.excludeList);
                             });
     }
 
 
+  }
+
+  repopulateMeetingList(){
+    console.log("repopulateMeetingList this.excludeList", this.excludeList);
+    let allMeetings = [];
+    if(this.viewMeetingResult){
+      this.viewMeetingResult.forEach((a: any) => {
+        const data = a.data;
+        const id = a.id;
+        let idx = this.excludeList.findIndex(em=>em.id==id);
+        // return {id, data: { ...data, startTime, endTime }};
+        if(idx==-1) {
+          const meetingStart = data.meetingStart?.seconds ? new Date(data.meetingStart?.seconds*1000) : data.meetingStart;
+          const meetingEnd = data.meetingEnd?.seconds ? new Date(data.meetingEnd?.seconds*1000) : data.meetingEnd ? data.meetingEnd : null;
+          allMeetings.push({id, data: {...data, meetingStart, meetingEnd }});
+        }
+      });
+    }
+    // this.viewMeetingResult =[];
+    this.viewMeetingResult = allMeetings.sort((a:any,b:any)=>a.data.meetingStart-b.data.meetingStart)
   }
 
   onSelect(event){
@@ -201,8 +227,17 @@ export class MeetingListComponent implements OnInit {
   }
 
   openMeetingDetails(meeting){
-    this.router.navigate(['meeting/meeting-details'],{state: {data:{meeting: meeting}}});
+    if(this.viewMode!='linkage'){
+      this.router.navigate(['meeting/meeting-details'],{state: {data:{meeting: meeting}}});
+    }
   }
+
+  onLinkMeeting(m){
+    this.excludeList.push(m);
+    this.repopulateMeetingList();
+    this.onSelectMeeting.emit(m);
+  }
+
   showHideSearch(){
     this.showSearchModesforUpcomming=!this.showSearchModesforUpcomming;
     // re initialise all the serach variables

@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 export class LinkageTaskComponent implements OnInit {
   @Input() sessionInfo: any;
   @Input() tasks: any[];
+  @Input() viewMode = '';
   public linkedTasks: any[];
 
   constructor(

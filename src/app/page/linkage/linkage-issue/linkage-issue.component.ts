@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 export class LinkageIssueComponent implements OnInit {
   @Input() sessionInfo: any;
   @Input() issues: any[];
+  @Input() viewMode = '';
   public linkedIssues: any[];
 
   constructor(

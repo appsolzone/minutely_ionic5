@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 export class LinkageRiskComponent implements OnInit {
   @Input() sessionInfo: any;
   @Input() risks: any[];
+  @Input() viewMode = '';
   public linkedRisks: any[];
 
 

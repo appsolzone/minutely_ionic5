@@ -6,7 +6,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { MeetingPageRoutingModule } from './meeting-routing.module';
 
-import { MeetingListComponent } from './meeting-list/meeting-list.component';
+import { MeetingListModule } from './meeting-list/meeting-list.module';
 
 import { MeetingPage } from './meeting.page';
 
@@ -21,11 +21,11 @@ import { CalendarModule } from 'ion2-calendar';
     IonicModule,
     MeetingPageRoutingModule,
     KpiModule,
-    CalendarModule
+    CalendarModule,
+    MeetingListModule
   ],
   declarations: [
     MeetingPage,
-    MeetingListComponent
   ]
 })
 export class MeetingPageModule {}

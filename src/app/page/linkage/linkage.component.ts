@@ -11,6 +11,7 @@ import { LinkageService } from 'src/app/shared/linkage/linkage.service';
 export class LinkageComponent implements OnInit {
   @Input() sessionInfo: any;
   @Input() selectedObject: any;
+  @Input() viewMode = '';
   // observables
   meetingLinksSubs$;
   taskLinksSubs$;
@@ -22,7 +23,13 @@ export class LinkageComponent implements OnInit {
                             meetings: null,
                             tasks: null,
                             issues: null,
-                            riskd: null
+                            risks: null
+                          };
+  public editedlinkages: any = {
+                            meetings: [],
+                            tasks: [],
+                            issues: [],
+                            risks: []
                           };
 
   constructor(
@@ -51,15 +58,34 @@ export class LinkageComponent implements OnInit {
   getLinkages(){
     return this.linkage.getLinkages(this.selectedObject.id, this.selectedItem)
                               .subscribe(act=>{
-                                let allItems = act.map((a: any) => {
+                                let allItems = [];
+                                act.forEach((a: any) => {
                                   const data = a.payload.doc.data();
                                   const id = a.payload.doc.id;
-                                  return {id, data};
+                                  let idx = this.editedlinkages[this.selectedItem].findIndex(el=>el.id==id);
+                                  if(idx==-1){
+                                    allItems.push({id, data});
+                                  }
                                 });
-                                this.linkages[this.selectedItem] =[];
-                                this.linkages[this.selectedItem] = allItems;
+                                this.linkages[this.selectedItem] =[...allItems, ...this.editedlinkages[this.selectedItem]];
+                                // this.linkages[this.selectedItem] = allItems;
                                 console.log("linkedMeetings", this.linkages[this.selectedItem]);
                               });
+  }
+
+  repopulateItems(){
+    let allItems = [];
+    this.linkages[this.selectedItem].forEach((a: any) => {
+      const data = a.data;
+      const id = a.id;
+      let idx = this.editedlinkages[this.selectedItem].findIndex(el=>el.id==id);
+      if(idx==-1){
+        allItems.push({id, data});
+      }
+    });
+    this.linkages[this.selectedItem] =[...allItems, ...this.editedlinkages[this.selectedItem]];
+    // this.linkages[this.selectedItem] = allItems;
+    console.log("repopulateItems linkedMeetings", this.linkages[this.selectedItem]);
   }
 
   getLinkedItems(){
@@ -78,6 +104,11 @@ export class LinkageComponent implements OnInit {
         case 'risks':
           this.riskLinksSubs$ = this.getLinkages();
           break;
+      }
+    } else {
+      // there might be edited items, so process again
+      if(this.linkages[this.selectedItem].length > 0){
+        this.repopulateItems();
       }
     }
 

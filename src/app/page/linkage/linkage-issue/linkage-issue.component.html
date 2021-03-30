@@ -13,7 +13,7 @@
 <ion-card class="ion-no-padding" *ngFor="let t of linkedIssues ? linkedIssues : [null,null];"  button="true" (click)="openIssueDetails(t)">
   <ion-item lines="none" color="transparent">
     <ion-buttons slot="start">
-      <ion-button slot="start" fill="solid" color="green">
+      <ion-button slot="start" fill="solid" color="warning">
         <ion-icon slot="start" name="locate"></ion-icon>
         {{t?.data.targetCompletionDate| date : 'mediumDate'}}
         <ion-skeleton-text *ngIf="!t" animated style="width: 30%"></ion-skeleton-text>
