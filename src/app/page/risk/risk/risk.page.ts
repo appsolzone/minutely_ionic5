@@ -38,9 +38,6 @@ export class RiskPage implements OnInit,OnDestroy {
 
   ngOnDestroy(){}
 
-  ionViewWillEnter(){
-      this.crud.crud_action$.next(undefined);
-  }
   getSessionInfo(){
     this.sessionSubs$ = this.session.watch().subscribe(value=>{
       console.log("testing :",value?.userProfile?true:false);
@@ -68,13 +65,5 @@ export class RiskPage implements OnInit,OnDestroy {
    } 
    this.crud.crud_action$.next(actions);
    this.router.navigate(['/risk/initiate']);
-  }
-
-
-
-  //go to details page 
-  goToDetailsPage(data:object):void{
-   this.crud.detailsPagePasing$.next(data);
-   this.router.navigate(['/risk/risk-details']);
   }
 }

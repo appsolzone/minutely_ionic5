@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
-import { ComponentsService } from 'src/app/shared/components/components.service';
 import { CrudService } from 'src/app/shared/crud/crud.service';
+import { SessionService } from 'src/app/shared/session/session.service';
 
 @Component({
   selector: 'app-task-details',
@@ -11,41 +12,64 @@ import { CrudService } from 'src/app/shared/crud/crud.service';
 })
 @Autounsubscribe()
 export class TaskDetailsPage implements OnInit,OnDestroy {
-//observable
-  task$;
-  //variable
-  task:object|null = null;
+  // observables
+  sessionSubs$;
+  public sessionInfo: any;
+  public task: any;
 
+  //variable
+  public riskCopy:any|null = null;
+  public toggleEditMode:boolean = false;
+
+  status:string='';
+  maxMeetingDate: any = moment().add(20,'years').format("YYYY");
+  minMeetingDate: any = moment().format("YYYY-MM-DD");
+  date: any;
+
+  addThisTag:string;
+  
   constructor(
     private crud:CrudService,
-    private componentService:ComponentsService,
-    private router:Router
-    ) { }
+    private router:Router,
+    private session:SessionService,
+    ) {
+        this.getSessionInfo();
+     }
 
   ngOnInit() {
+    this.task = history.state.data.task;
+    console.log("taskDetails ngOnInit",this.task)
+    if(!this.task){
+      console.log("ngOnInit")
+      this.router.navigate(['task']);
+    }
   }
   ngOnDestroy(){}
 
-  ionViewWillEnter(){
-   // this.componentService.showLoader()
-    this.task$ = this.crud.detailsPagePasing$.subscribe(
-      (res)=>{
-        this.task = res;
-        console.log("this details :",this.task);
-        if(res == null) this.router.navigate(["/task"]);
-      },
-      (err)=>{
-        console.log(err);
-      },
-      ()=>{
-        //this.componentService.hideLoader()
+  getSessionInfo(){
+   this.sessionSubs$ = this.session.watch().subscribe(value=>{
+      // Re populate the values as required
+      this.sessionInfo = value;
+      if(!this.sessionInfo){
+        this.router.navigate(['profile']);
       }
-      );
+    });
   }
 
+  ionViewDidEnter(){
+    console.log("taskDetails ionViewDidEnter", history.state.data?.task)
+    this.task = history.state.data?.task ? history.state.data.task : this.task;
+    console.log(this.task)
+    if(!this.task){
+      console.log("ionViewDidEnter")
+      this.router.navigate(['task']);
+    }
+  }
+
+
   goToCommentPage(task){
-   let passObj = {...task,parentModule:'task',navigateBack:'/task/details'};
+   let passObj = {...task,parentModule:'task',navigateBack:'/task/task-details'};
    this.crud.detailsPagePasing$.next(passObj);
-   this.router.navigate(['/task/details/comments']); 
+   this.router.navigate(['/task/task-details/comments']); 
   }
 }

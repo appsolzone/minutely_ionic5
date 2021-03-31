@@ -1,0 +1,33 @@
+<ion-item class="" lines="none">
+  <ion-chip
+    color="{{taskDetails?.status=='COMPLETED' ? 'success' : taskDetails?.status=='OPEN' ? 'warning' : 'primary'}}">
+    <ion-icon name="time-outline"></ion-icon>
+    <ion-label>{{taskDetails?.taskInitiationDate| date : 'mediumDate'}}
+    </ion-label>
+  </ion-chip>
+  <ion-label class="ion-no-padding ion-no-margin">
+    <h2>
+      <ion-icon name="calendar" color="medium"></ion-icon> {{taskDetails?.targetCompletionDate| date : 'mediumDate'}}
+    </h2>
+  </ion-label>
+</ion-item>
+<ion-item>
+  <ion-label class="ion-text-wrap">
+    <h1>
+      {{taskDetails?.taskTitle}}
+    </h1>
+  </ion-label>
+</ion-item>
+<ion-item *ngIf="taskDetails?.tags?.length>0" lines="none" class="ion-text-wrap">
+  <ion-chip *ngFor="let data of taskDetails?.tags; let i = index" outline="true" color="success">{{data}}</ion-chip>
+</ion-item>
+<ion-item lines="full">
+  <ion-label slot="start">
+    <ion-icon name="bookmark"></ion-icon> Status
+  </ion-label>
+  <ion-button slot="end"
+    [color]="taskDetails?.taskStatus=='OPEN'? 'warning' : taskDetails?.taskStatus=='RESOVLED' ? 'green' : 'primary'"
+    class="ion-padding-start ion-padding-end">
+    {{taskDetails?.taskStatus}}
+  </ion-button>
+</ion-item>
