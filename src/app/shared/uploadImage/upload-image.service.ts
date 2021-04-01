@@ -35,22 +35,38 @@ export class UploadImageService {
    }
 
 
-   upload_profile_photo(base64Image)
+   upload_profile_photo(base64Image,src)
    {
      this.common.showLoader();
      let storageRef = firebase.storage().ref();
+    //  let loc_name = '';
+    //  let collection = '';
+    //  let document = '';
+
+    //  if(src == 'member'){
+    //    loc_name = 'profile_images'
+    //    collection = this.db.allCollections.users
+    //    document = this.sessionInfo?.userProfileDocId
+    //  }
+    //  else{
+    //   loc_name = 'org_logo'
+    //   collection = this.db.allCollections.subscribers
+    //   document = this.sessionInfo?.userProfile.subscriberId
+
+
+    //  }
 
      const filename = this.sessionInfo?.userProfile.uid+'_'+this.sessionInfo?.userProfile.subscriberId;
 
      // Create a reference to 'images/todays-date.jpg'
-     const imageRef = storageRef.child(`profile_images/${filename}.jpg`);
+     const imageRef = storageRef.child(`${src.location}/${filename}.jpg`);
 
      imageRef.putString(base64Image, firebase.storage.StringFormat.DATA_URL)
        .then((snapshot)=> {
          // Do something here when the data is succesfully uploaded!
          snapshot.ref.getDownloadURL().then((downloadURL)=>{
 
-           this.db.updateDocument(this.db.allCollections.users, this.sessionInfo?.userProfileDocId , {
+           this.db.updateDocument(src.collection, src.document , {
                'picUrl': downloadURL, //imageRef.toString()
              }
            )
@@ -72,7 +88,7 @@ export class UploadImageService {
 
 
 
-   async take_photo(){
+   async takePhoto(src){
     const actionSheet = await this.actionSheetCtrl.create({
       header: 'Edit profile picture',
       cssClass: 'my-custom-class',
@@ -81,7 +97,7 @@ export class UploadImageService {
                   text: 'Select source',
                   icon: 'person-circle',
                   handler: () => {
-                  this.takePicture();
+                  this.takePicture(src);
                   }
                 },
                 {
@@ -97,7 +113,7 @@ export class UploadImageService {
     await actionSheet.present();
    }
 
-   async takePicture() {
+   async takePicture(src) {
     const image = await Plugins.Camera.getPhoto({
       quality: 100,
       allowEditing: false,
@@ -109,6 +125,6 @@ export class UploadImageService {
 
     this.photo = this.sanitizer.bypassSecurityTrustResourceUrl(image && (image.dataUrl))
     console.log('image_dataUrl',image.dataUrl);
-    this.upload_profile_photo(image.dataUrl)
+    this.upload_profile_photo(image.dataUrl,src)
   }
 }
