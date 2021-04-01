@@ -12,6 +12,7 @@ import { SessionService } from 'src/app/shared/session/session.service';
   styleUrls: ['./add-member.page.scss'],
 })
 export class AddMemberPage implements OnInit,OnChanges {
+  @Input() showHeader: boolean = true;
  // @Input() mood:any;
   // observables
   sessionSubs$;

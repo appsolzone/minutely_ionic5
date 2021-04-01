@@ -1,0 +1,77 @@
+<ion-row>
+  <ion-col *ngIf="!filterdUserList">
+    <ion-list>
+      <ion-item *ngFor="let member of [null,null,null]">
+        <ion-avatar [ngStyle]="{'height':'auto','width':'40px'}" slot="start">
+          <ion-icon color="medium" name="person-circle" [ngStyle]="{'height':'40px','width':'40px'}">
+          </ion-icon>
+        </ion-avatar>
+        <ion-label>
+          <h3><ion-skeleton-text animated style="width: 80%"></ion-skeleton-text></h3>
+          <p><ion-skeleton-text animated style="width: 60%"></ion-skeleton-text></p>
+          <p><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-col>
+  <ion-col *ngIf="filterdUserList">
+      <ion-toolbar>
+        <ion-searchbar
+          placeholder="Search by name, email, role"
+          [(ngModel)]="textSearch"
+          (ionChange)="onSearchUser()"
+          (ionClear)="onSearchUser()">
+        </ion-searchbar>
+        <ion-buttons slot="end">
+          <ion-button *ngIf="multiSelect" slot="end" (click)="returnSelectedUsers()">
+            <ion-icon name="checkmark-done" slot="icon-only"></ion-icon>
+          </ion-button>
+          <ion-button slot="end" size="default" (click)="gotoAddMemberPage()">
+            <ion-icon name="person-add" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+      <ion-list *ngIf="!multiSelect">
+        <ion-radio-group [(ngModel)]="selectedUser" [value]="selectedUser" (ngModelChange)="returnSelectedUsers()">
+          <ion-item *ngFor="let member of filterdUserList">
+            <ion-avatar [ngStyle]="{'height':'auto','width':'40px'}" slot="start">
+              <img *ngIf="member?.picUrl != ''" src="{{member?.picUrl}}" [ngStyle]="{'height':'40px','width':'40px'}">
+              <ion-icon *ngIf="!member?.picUrl" color="primary" name="person-circle" [ngStyle]="{'height':'40px','width':'40px'}">
+              </ion-icon>
+            </ion-avatar>
+            <ion-label>
+              <h3>{{member.name}}</h3>
+              <p>{{member.email}}</p>
+              <p>{{member.jobTitle}}</p>
+            </ion-label>
+            <ion-radio [value]="member"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+      <ion-list *ngIf="multiSelect">
+        <ion-item *ngFor="let member of filterdUserList" (click)="multiSelectAddRemove(member)">
+          <ion-avatar [ngStyle]="{'height':'auto','width':'40px'}" slot="start">
+            <img *ngIf="member?.picUrl != ''" src="{{member?.picUrl}}" [ngStyle]="{'height':'40px','width':'40px'}">
+            <ion-icon *ngIf="!member?.picUrl" color="primary" name="person-circle" [ngStyle]="{'height':'40px','width':'40px'}">
+            </ion-icon>
+          </ion-avatar>
+          <ion-label>
+            <h3>{{member.name}}</h3>
+            <p>{{member.email}}</p>
+            <p>{{member.jobTitle}}</p>
+          </ion-label>
+          <ion-checkbox slot="end"
+            [(ngModel)]="member.selected"
+            [checked]="member?.selected"
+            >
+          </ion-checkbox>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-button slot="end" (click)="returnSelectedUsers()">
+            <ion-icon name="checkmark-done" slot="start"></ion-icon>
+            Done
+          </ion-button>
+        </ion-item>
+      </ion-list>
+  </ion-col>
+</ion-row>

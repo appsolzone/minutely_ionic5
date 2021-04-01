@@ -23,6 +23,22 @@ const routes: Routes = [
     {
     path: 'preview',
     loadChildren: () => import('../../create-new-services/preview/preview.module').then( m => m.PreviewPageModule)
+  },
+  {
+    path: 'meeting-details',
+    loadChildren: () => import('./meeting-details/meeting-details.module').then( m => m.MeetingDetailsPageModule)
+  },
+  {
+    path: 'meeting-details-linkage/:id',
+    loadChildren: () => import('./meeting-details/meeting-details.module').then( m => m.MeetingDetailsPageModule)
+  },
+  {
+    path: 'meeting-details-edit',
+    loadChildren: () => import('./meeting-details-edit/meeting-details-edit.module').then( m => m.MeetingDetailsEditPageModule)
+  },
+  {
+    path: 'create-meeting',
+    loadChildren: () => import('./create-meeting/create-meeting.module').then( m => m.CreateMeetingPageModule)
   }
 ];
 

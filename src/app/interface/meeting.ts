@@ -1,5 +1,4 @@
 export interface Meeting {
-  id?:string,
   meetingTitle:string,
   meetingStart:any,
   meetingEnd:any,
@@ -26,4 +25,6 @@ export interface Meeting {
   occurenceType?:any,
   noOfOccurence?:number,
   weekdays?:any,
+  eventId: any,
+  updatedAt: any,
 }

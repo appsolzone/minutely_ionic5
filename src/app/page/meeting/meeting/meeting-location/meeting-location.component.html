@@ -1,0 +1,34 @@
+<ion-item >
+  <ion-label >
+    <ion-icon name="locate"></ion-icon>
+    Meeting Location
+  </ion-label>
+  <ion-button slot="end" fill="outline" mode="ios"
+    *ngIf="meetingDetails.meetingPlace && meetingDetails.meetingPlace.url && meetingDetails.meetingPlace.from"
+    [href]="(meetingDetails.meetingPlace.url) ? meetingDetails.meetingPlace.url : ''"
+    target="_system"
+    >
+    Join {{meetingDetails.meetingPlace.from}}
+    <ion-icon slot="end" name="logo-skype" color="primary" *ngIf="meetingDetails.meetingPlace.from == 'Skype'"></ion-icon>
+    <ion-icon slot="end" name="navigate" color="green" *ngIf="meetingDetails.meetingPlace.from == 'Others'"></ion-icon>
+    <ion-icon slot="end" src="assets/app-assets/zoom.svg" *ngIf="meetingDetails.meetingPlace.from == 'Zoom App'"></ion-icon>
+    <ion-icon slot="end" src="assets/app-assets/google-meet.svg" *ngIf="meetingDetails.meetingPlace.from == 'Google Meet'"></ion-icon>
+  </ion-button>
+  <ion-button slot="end" disabled *ngIf="!meetingDetails?.meetingPlace?.from">
+    Not available
+  </ion-button>
+</ion-item>
+<ion-item detail="true" button="true" (click)="dropDownCallList()">
+  <ion-label >
+    <ion-icon name="call"></ion-icon>
+    Dial-in numbers
+  </ion-label>
+</ion-item>
+<ion-item *ngIf="showDialin" lines="none" class="ion-padding-bottom">
+  <small>
+    <ion-textarea autoGrow="true" readonly="true" wrap="soft" 
+      [value]="meetingDetails?.callList ? meetingDetails?.callList : 'Dial-in details are not available for the meeting.'"
+      color="medium">
+    </ion-textarea>
+  </small>
+</ion-item>

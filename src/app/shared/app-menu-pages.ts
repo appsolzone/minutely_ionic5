@@ -17,18 +17,32 @@ export const appPages = [
    disabled: true,
   },
   {
+   title: 'Task',
+   url: 'task',
+   icon: 'body',
+   tab: 'task',
+   disabled: true,
+  },
+  {
+   title: 'Issue',
+   url: 'issue',
+   icon: 'options',
+   tab: 'issue',
+   disabled: true,
+  },
+  {
    title: 'Risk',
    url: 'risk',
-   icon: 'warning',
+   icon: 'flag',
    tab: 'risk',
    disabled: true,
   },
   {
-   title: 'Task',
-   url: 'task',
-   icon: 'document-text',
-   tab: 'task',
-   disabled: true,
+    title: 'Alerts',
+    url: 'notification',
+    icon: 'notifications',
+    tab: 'notification',
+    disabled: true,
   },
   // {
   //   title: 'List',
@@ -49,13 +63,7 @@ export const appPages = [
     tab: 'profile',
     disabled: false,
   },
-  {
-    title: 'Alerts',
-    url: 'notification',
-    icon: 'notifications',
-    tab: 'notification',
-    disabled: true,
-  },
+
   // {
   //   title: 'Regions',
   //   url: 'region',

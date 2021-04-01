@@ -1,0 +1,98 @@
+<ion-card *ngIf="linkedRisks?.length==0" class="ion-no-padding">
+  <ion-item lines="none">
+    <ion-icon name="information-circle-outline"  slot="start" color="medium"></ion-icon>
+    <ion-label class="ion-text-wrap" color="medium">
+      <p>
+        No linked risk found. If you have edit permission, you may wish to
+        link other risks through edit option,
+        else ask the owner to link the related risks.
+      </p>
+    </ion-label>
+  </ion-item>
+</ion-card>
+<ion-card class="ion-no-padding" *ngFor="let t of linkedRisks ? linkedRisks : [null,null];"  button="true" (click)="openRiskDetails(t)">
+  <ion-item lines="none" color="transparent">
+    <ion-buttons slot="start">
+      <ion-button slot="start" fill="solid" color="danger">
+        <ion-icon slot="start" name="locate"></ion-icon>
+        {{t?.data.targetCompletionDate| date : 'mediumDate'}}
+        <ion-skeleton-text *ngIf="!t" animated style="width: 30%"></ion-skeleton-text>
+      </ion-button>
+      <ion-button slot="start"  fill="solid" color="medium">
+        <ion-icon slot="start" name="pencil"></ion-icon>
+        {{t?.data.riskInitiationDate| date : 'mediumDate'}}
+        <ion-skeleton-text *ngIf="!t" animated style="width: 30%"></ion-skeleton-text>
+      </ion-button>
+    </ion-buttons>
+  </ion-item>
+  <ion-card-content class="ion-no-padding ion-padding-start ion-padding-end">
+    <ion-item lines="none" class="ion-no-padding"  color="transparent">
+      <ion-label class="ion-no-padding ion-no-margin ion-text-wrap">
+        <h1 *ngIf="t"><small>{{t.data.riskTitle}}</small></h1>
+        <ion-skeleton-text *ngIf="!t" animated style="width: 80%"></ion-skeleton-text>
+      </ion-label>
+    </ion-item>
+    <ion-row class="ion-no-padding">
+      <ion-col size="7" size-md="8" class="ion-no-padding">
+        <ion-item class="ion-no-padding" lines="none"  color="transparent">
+          <img src="{{(t?.data.riskOwner.picUrl) ? t?.data.riskOwner?.picUrl : 'assets/shapes.svg'}}"
+          (error)="profileImgErrorHandler(t.data.riskOwner)"
+            style="height:30px; width:30px;border-radius:50%;"
+            />
+          <ion-label class="ion-padding-start">
+            <h2  *ngIf="t">Owner</h2>
+            <p *ngIf="t"><ion-text color="medium">{{t.data.riskOwner.name}}</ion-text></p>
+            <ion-skeleton-text *ngIf="!t" animated style="width: 40%"></ion-skeleton-text>
+            <ion-skeleton-text *ngIf="!t" animated style="width: 60%"></ion-skeleton-text>
+          </ion-label>
+        </ion-item>
+        <ion-item class="ion-no-padding" lines="none"  color="transparent">
+          <img src="{{(t?.data.riskInitiator.picUrl) ? t?.data.riskInitiator?.picUrl : 'assets/shapes.svg'}}"
+          (error)="profileImgErrorHandler(t.data.riskInitiator)"
+            style="height:30px; width:30px;border-radius:50%;"
+            />
+          <ion-label class="ion-padding-start">
+            <h2  *ngIf="t">Initiator</h2>
+            <p *ngIf="t"><ion-text color="medium">{{t.data.riskInitiator.name}}</ion-text></p>
+            <ion-skeleton-text *ngIf="!t" animated style="width: 40%"></ion-skeleton-text>
+            <ion-skeleton-text *ngIf="!t" animated style="width: 60%"></ion-skeleton-text>
+          </ion-label>
+        </ion-item>
+      </ion-col>
+      <ion-col  size="5" size-md="4" class="ion-no-padding">
+        <app-risk-matrix *ngIf="t" [highLightCells]="t.highLightCells"></app-risk-matrix>
+        <!-- <ion-row>
+          <ion-col size="2" class="ion-float-start ion-no-padding">
+            <p class="verticalText withincard" class="ion-text-center"><ion-text color="medium"><small>Probability</small></ion-text></p>
+          </ion-col>
+          <ion-col size="10" class="ion-no-padding">
+            <ion-row class="ion-text-center ion-no-padding" *ngFor="let y of ['High','Medium','Low']">
+              <ion-col size="4" color="primary" class="ion-no-padding cardgraph" *ngFor="let x of ['Low','Medium','High']">
+                <ion-card class="ion-no-margin" style="margin: 2px;"
+                  [color]="t?.data.riskProbability+t?.data.riskImpact==y+x ? matrixColor[y+x] : 'light'">
+                  <ion-card-content style="color: #ffffff;">
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+          <ion-col size="2">
+          </ion-col>
+          <ion-col size="10" class="ion-no-padding ion-text-start ion-padding-start">
+            <p class="withincard"><ion-text color="medium"><small>Impact</small></ion-text></p>
+          </ion-col>
+        </ion-row> -->
+      </ion-col>
+    </ion-row>
+    <p *ngIf="t" class="ion-text-start">
+      <ion-icon name="crop" slot="start" class="ion-padding-end"></ion-icon> Mitigation
+    </p>
+    <p *ngIf="t" class="ion-text-start">
+      <small class="app-twolines">{{t?.data.riskMitigation ? t?.data.riskMitigation : 'Refer to the risk details for mitigation plan'}}</small>
+    </p>
+    <p *ngIf="!t">
+      <ion-skeleton-text *ngIf="!t" animated style="width: 100%"></ion-skeleton-text>
+      <ion-skeleton-text *ngIf="!t" animated style="width: 100%"></ion-skeleton-text>
+    </p>
+  </ion-card-content>
+</ion-card>
