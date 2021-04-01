@@ -20,6 +20,7 @@ export class DatabaseService {
     cart:'cart',
     transactions:'transactions',
     coupons:"coupons",
+    latestAlert:"latestAlerts",
   };
   // Admin instance of firebase to create new users, this is to avoid messing up the
   // auth token post user creation for the .currentUser data
@@ -58,9 +59,9 @@ export class DatabaseService {
   getAllDocumentsSnapshot(collection:string){
     return this.afs.collection(collection).snapshotChanges();
   }
-  getAllDocumentsSnapshotByQuery(collection:string, queryObj:any[]=[], textSearchObj: any = null){
+  getAllDocumentsSnapshotByQuery(collection:string, queryObj:any[]=[], textSearchObj: any = null, limit: number = null){
     return this.afs.collection(collection,
-                               ref=>this.buildQuery(ref,queryObj, textSearchObj)
+                               ref=>this.buildQuery(ref,queryObj, textSearchObj, limit)
                              )
                     .snapshotChanges();
   }
@@ -86,6 +87,10 @@ export class DatabaseService {
   // Delete
   deleteDocument(collection:string, id:string){
     return this.afs.collection(collection).doc(id).delete();
+  }
+  // Delete subcollections
+  deleteSubcollectionDocument(collection:string,docid:string,subcollections:string, subDocid:string){
+    return this.afs.collection(collection).doc(docid).collection(subcollections).doc(subDocid).delete();
   }
   // transaction and batch
   setTransactDocument(transRef:any, docRef: any, docObject:any, merge:boolean=false){

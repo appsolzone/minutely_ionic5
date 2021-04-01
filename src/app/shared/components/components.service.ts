@@ -54,12 +54,27 @@ export class ComponentsService {
     (await alert).present();
 
   }
-  presentAlertConfirm(header,message){
+  presentAlertConfirm(header,message,buttons?:any){
   return new Promise(async (resolve) => {
+        // process buttons
+        let newButtons = []
+        if(buttons){
+          newButtons = buttons.map(b=>{
+            return {
+              text: b.text,
+              role: b.role,
+              cssClass: '',
+              handler: ()=>{
+                b.handler();
+                resolve(b.resolve)
+              }
+            }
+          })
+        }
         const alert = await this.alertController.create({
           header: header,
           message: message,
-          buttons: [
+          buttons: buttons ? newButtons : [
             {
               text: 'Dismiss',
               role: 'cancel',
