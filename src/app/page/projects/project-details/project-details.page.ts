@@ -151,6 +151,7 @@ export class ProjectDetailsPage implements OnInit {
                               });
 
                               this.selectedProject = allProjects[0];
+                              console.log('project_details', this.selectedProject)
 
                             });
     } else {

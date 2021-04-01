@@ -57,6 +57,7 @@
               <ion-label>
                 <h1>
                   <ion-icon name="leaf" color="success" class="ion-padding-end"></ion-icon>Hi !
+                  
                 </h1>
               </ion-label>
               <ion-button fill="clear" slot="end" *ngIf="!editProfile  && userProfile" (click)="userProfile=null">
@@ -105,7 +106,7 @@
                   <h1 class="ion-padding-bottom"><small>
                       <ion-text color="primary">Update profile</ion-text>
                     </small></h1>
-                  <ion-progress-bar value="0.5" color="warning"></ion-progress-bar>
+                  <!-- <ion-progress-bar value="0.5" color="warning"></ion-progress-bar> -->
                 </ion-label>
               </ion-list-header>
               <ion-item lines="inset">
