@@ -117,7 +117,22 @@
     </ion-toolbar>
     <ion-card class="ion-no-padding" *ngFor="let m of viewRisksResult ? viewRisksResult : [null,null,null];"
       button="true" (click)="openRiskDetails(m)">
-      <ion-item lines="none" color="transparent">
+      <ion-item *ngIf="m" lines="none" color="transparent">
+        <ion-buttons slot="start">
+          <ion-button slot="start" fill="solid" color="{{m?.data.riskStatus=='OPEN' ? 'warning' : m?.data.riskStatus=='INPROGRESS' ? 'primary' : 'green'}}">
+            <ion-icon slot="start" name="locate"></ion-icon>
+            {{m?.data.targetCompletionDate | date : 'mediumDate'}}
+            <ion-skeleton-text *ngIf="!m" animated style="width: 30%"></ion-skeleton-text>
+          </ion-button>
+          <ion-button slot="start"  fill="solid" color="medium">
+            <ion-icon slot="start" name="pencil"></ion-icon>
+            {{m?.data.riskInitiationDate | date : 'mediumDate'}}
+            <ion-skeleton-text *ngIf="!m" animated style="width: 30%"></ion-skeleton-text>
+          </ion-button>
+        </ion-buttons>
+        <ion-icon slot="end" name="bookmark" size="small" color="{{m?.data.riskStatus=='OPEN' ? 'warning' : 'success'}}"></ion-icon>
+      </ion-item>
+      <!-- <ion-item lines="none" color="transparent">
         <ion-chip *ngIf="m" size="small" slot="start"
           color="{{m.data.riskStatus=='OPEN' ? 'warning' : m.data.riskStatus=='INPROGRESS' ? 'primary' : 'green'}}">
           {{m.data.targetCompletionDate | date : 'mediumDate'}}</ion-chip>
@@ -127,7 +142,7 @@
         </ion-label>
         <ion-icon slot="end" name="bookmark" size="small" color="{{m?.data.riskStatus=='OPEN' ? 'warning' : 'success'}}">
         </ion-icon>
-      </ion-item>
+      </ion-item> -->
       <ion-card-content class="ion-no-padding ion-padding-start ion-padding-end">
         <ion-item lines="none" class="ion-no-padding" color="transparent">
           <ion-label class="ion-no-padding ion-no-margin ion-text-wrap">

@@ -15,13 +15,13 @@ export const environment = {
       // measurementId: "G-7Z29Z8ESVW"
 
       //==============[ appsolzone it4 config ]=================
-      // apiKey: "AIzaSyAAlYcDlFQPlEEYZKimGAjNAvJhMlsjGdU",
-      // authDomain: "ocurrenshub.firebaseapp.com",
-      // databaseURL: "https://ocurrenshub.firebaseio.com",
-      // projectId: "ocurrenshub",
-      // storageBucket: "ocurrenshub.appspot.com",
-      // messagingSenderId: "438479765215",
-      // appId: "1:438479765215:web:9389987f7dcabee06b736a"
+      apiKey: "AIzaSyAAlYcDlFQPlEEYZKimGAjNAvJhMlsjGdU",
+      authDomain: "ocurrenshub.firebaseapp.com",
+      databaseURL: "https://ocurrenshub.firebaseio.com",
+      projectId: "ocurrenshub",
+      storageBucket: "ocurrenshub.appspot.com",
+      messagingSenderId: "438479765215",
+      appId: "1:438479765215:web:9389987f7dcabee06b736a"
 
       // apiKey: "AIzaSyARa8_ZMTMIhnFy0C3OcR-SYuEOwCjr8IQ",
       // authDomain: "chat-70583.firebaseapp.com",
@@ -40,14 +40,14 @@ export const environment = {
       // appId: "1:418702508352:web:37971ae16be3fe0e49faa5"
 
       //================[ arnab dutta config]=====
-        apiKey: "AIzaSyCeN8pzW6OU7wNRG5LCdfLvHqM3i9S3_eU",
-        authDomain: "ionic-firebase-test-7d6f1.firebaseapp.com",
-        databaseURL: "https://ionic-firebase-test-7d6f1.firebaseio.com",
-        projectId: "ionic-firebase-test-7d6f1",
-        storageBucket: "ionic-firebase-test-7d6f1.appspot.com",
-        messagingSenderId: "479980265024",
-        appId: "1:479980265024:web:f14950916cce201c4ec9a5",
-        measurementId: "G-N0JL3JV17G",
+        // apiKey: "AIzaSyCeN8pzW6OU7wNRG5LCdfLvHqM3i9S3_eU",
+        // authDomain: "ionic-firebase-test-7d6f1.firebaseapp.com",
+        // databaseURL: "https://ionic-firebase-test-7d6f1.firebaseio.com",
+        // projectId: "ionic-firebase-test-7d6f1",
+        // storageBucket: "ionic-firebase-test-7d6f1.appspot.com",
+        // messagingSenderId: "479980265024",
+        // appId: "1:479980265024:web:f14950916cce201c4ec9a5",
+        // measurementId: "G-N0JL3JV17G",
   },
 
   paypalInfo: {
