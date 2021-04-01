@@ -1,0 +1,43 @@
+// .firebaseui-page-provider-sign-in, .firebaseui-page-select-tenant {
+//     background: none;
+// }
+// .firebaseui-sigin {
+//     background: linear-gradient(to right, transparent,rgba(var(--ion-color-white-rgb),0.8),var(--ion-color-white));
+//     // padding: 12px 0;
+//     // max-width: 360px;
+// }
+.card-look{
+
+}
+.overlay-sigin-button{
+  margin-bottom: -56px;
+  z-index: 99;
+}
+
+.signin-container{
+  // pointer-events: all;
+}
+
+
+.signin-banner{
+  background: var(--ion-color-white);
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px;
+  // box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+  border-radius: 8px;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+@media (min-width: 768px) {
+  .signin-banner{
+    max-width: 360px;
+    // left: calc(50% - 180px);
+  }
+}
+// .shapes{
+//   min-height: 24rem;
+//   background-image: url(../../../assets/app-assets/waveBackground.svg), linear-gradient(to bottom, var(--ion-color-medium),var(--ion-color-dark),var(--ion-color-medium));
+//   // width: 100%;
+//   background-size: cover;
+//   background-repeat: no-repeat;
+//   background-position: center center;
+// }

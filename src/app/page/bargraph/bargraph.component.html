@@ -1,0 +1,47 @@
+<!-- graphX rendering -->
+<div *ngIf="graphX">
+  <ion-item>
+    <h2><ion-icon *ngIf="graphX.icon" [name]="graphX.icon" color="primary" class="ion-padding-end"></ion-icon><small>{{' ' + graphX.title}}</small></h2>
+  </ion-item>
+  <div class="graphX">
+    <div class="eachSummary" *ngFor="let data of graphX.data; let i=index;">
+      <div class="floats">
+        <ion-row>
+          <ion-col size="9" class="label">
+            <p><ion-icon *ngIf="data.icon" [name]="data.icon"></ion-icon> {{data.label}}</p>
+          </ion-col>
+          <ion-col size="3" class="value">
+            <p>{{(data.labelValue) ? data.labelValue : ''}}</p>
+          </ion-col>
+        </ion-row>
+        <div class="clear"></div>
+      </div>
+      <div class="rating">
+        <div *ngFor="let bar of data.stack; let z=index;" [class]="bar.cssClass" [ngStyle]="{'width': bar.width+'%', 'z-index': data.stack.length - z}">
+          <!-- <div [class]="bar.cssClass" [ngStyle]="{'width': bar.width+'%', 'z-index': data.stack.length - z}"></div> -->
+        </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- Graph Y rendering -->
+<div *ngIf="graphY">
+  <ion-item>
+    <h2><ion-icon *ngIf="graphY.icon" [name]="graphY.icon" color="primary" class="ion-padding-end"></ion-icon><small>{{graphY.title}}</small></h2>
+  </ion-item>
+  <div class="graphY">
+    <div class="maxlabel">{{graphY.maxValue ? graphY.maxValue : 1}}</div>
+    <div class="halfwaymark">{{graphY.maxValue ? graphY.maxValue/2 : 0.5}}</div>
+    <div class="eachbar " [ngStyle]="{'width': (100/graphY.data.length) +'%'}"  *ngFor="let data of graphY.data; let i=index;">
+      <div *ngFor="let bar of data.stack; let z=index;">
+        <div [class]="bar.cssClass" [ngStyle]="{'height': bar.height +'%', 'z-index': data.stack.length - z + 1}"></div>
+      </div>
+    </div>
+  </div>
+  <div class="xAxis">
+    <div class="eachbar" [ngStyle]="{'width': (100/graphY.data.length) +'%'}"  *ngFor="let data of graphY.data; let j=index;">
+      <div *ngIf="j%graphY.xAxisFrequency==0" [ngStyle]="{'overflow': 'hidden'}">{{data.label}}</div>
+    </div>
+  </div>
+</div>

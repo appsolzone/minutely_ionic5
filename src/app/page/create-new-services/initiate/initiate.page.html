@@ -1,0 +1,186 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" >
+      <ion-back-button [defaultHref]="'/'+ initiateData$?.service" slot="start"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{initiateData$?.header}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="initiateData$">
+
+      <ion-row class="wave-background">
+      <ion-col size="12" size-xl="1">
+      </ion-col>
+        <ion-col>
+          <ion-card>
+            <ion-card-header>
+              <ion-label>
+              <h1>
+                <ion-icon name="create"
+                color="success" class="ion-padding-end"></ion-icon>
+                {{initiateData$?.service}}
+              </h1>
+              </ion-label>
+            </ion-card-header>
+            <ion-item-divider class="ion-no-padding ion-no-margin" style="min-height:0.1rem;"></ion-item-divider>
+
+            <ion-list>
+              <ion-list-header lines="none">
+                    <ion-label>
+                      <h1 class="ion-padding-bottom"><small>
+                          <ion-text color="primary">
+                            {{initiateData$?.service}} initiation details
+                          </ion-text>
+                        </small></h1>
+                    </ion-label>
+              </ion-list-header>
+
+            <!-- title ==> common for all -->
+            <ion-item class="sectionTitle reg">
+              <ion-label color="dark" position="floating">
+                <ion-icon name="people" class="icons"></ion-icon>
+                {{initiateData$?.service}} Title
+              </ion-label>
+              <ion-input type="text" color="primary" [(ngModel)]="initiateData$.object.title"></ion-input>
+            </ion-item>
+
+              <!-- startDate ==> common for all -->
+            <ion-item>
+              <ion-label color="dark">
+                <ion-icon name="calendar" class="icons"></ion-icon>
+                {{initiateData$.service}} {{initiateData$.service == 'Meeting'?' Date of':' Initiation Date'}}
+              </ion-label>
+              <ion-datetime displayFormat="DD MMM, YYYY" [min]="minMeetingDate" [max]="maxMeetingDate"
+                [(ngModel)]="initiateData$.object.startDate" (ionChange)="compare_date()"></ion-datetime>
+            </ion-item>
+
+            <!-- endDate ==> common for risk/issue/task -->
+            <ion-item *ngIf="initiateData$.service !== 'Meeting'">
+              <ion-label color="dark">
+                <ion-icon name="calendar" class="icons"></ion-icon>
+                {{initiateData$.service}} Target Completion Date
+              </ion-label>
+              <ion-datetime displayFormat="DD MMM, YYYY" [min]="minMeetingDate" [max]="maxMeetingDate"
+                [(ngModel)]="initiateData$.object.endDate" (ionChange)="compare_date()"></ion-datetime>
+            </ion-item>
+
+          <!-- startTime & endTime ==> use for meeting -->
+            <ion-item *ngIf="initiateData$.service == 'Meeting'">
+              <ion-label color="dark">
+                <ion-icon name="time" class="icons"></ion-icon>
+                Start Time
+              </ion-label>
+              <ion-datetime displayFormat="hh:mm A" [(ngModel)]="initiateData$.object.startTime" (ionChange)="compare_time()">
+              </ion-datetime>
+            </ion-item>
+            <ion-item *ngIf="initiateData$.service == 'Meeting'">
+              <ion-label color="dark">
+                <ion-icon name="time" class="icons"></ion-icon>
+                End Time
+              </ion-label>
+              <ion-datetime displayFormat="hh:mm A" [(ngModel)]="initiateData$.object.endTime" (ionChange)="compare_time()">
+              </ion-datetime>
+            </ion-item>
+
+            <!-- recurring meeting ==> use for meeting -->
+            <div *ngIf="initiateData$.service == 'Meeting'">
+            <ion-item>
+              <ion-label color="dark">
+                <ion-icon name="md-repeat" class="icons"></ion-icon>
+                Recurring Meeting
+              </ion-label>
+              <ion-toggle [(ngModel)]="initiateData$.object.isOccurence"></ion-toggle>
+            </ion-item>
+            <div *ngIf="initiateData$.object.isOccurence">
+              <ion-item>
+                <ion-label color="dark">
+                  <ion-icon name="md-sync" class="icons"></ion-icon>
+                  No of occurences
+                </ion-label>
+                <ion-select [(ngModel)]="initiateData$.object.noOfOccurence" (ionChange)="checkNoOfRecurringMeetings()"
+                  interface="popover">
+                  <ion-select-option *ngFor="let freq of frequency; let i=index;" value="{{(i + 2)}}">{{(i + 2)}}</ion-select-option>
+                </ion-select>
+                <!-- <ion-datetime displayFormat="YY"  min="2002" max="2030" placeholder="Select a value" [(ngModel)]="initiateData$.object.noOfOccurence" (ionChange)="checkNoOfRecurringMeetings()"></ion-datetime> -->
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <ion-icon name="infinite" color="dark"></ion-icon>
+                  Select Meeting Frequency
+                </ion-label>
+              </ion-item>
+              <ion-list>
+                <ion-radio-group [(ngModel)]="initiateData$.object.occurenceType">
+                  <ion-item>
+                    <ion-label>Daily</ion-label>
+                    <ion-radio value="daily"></ion-radio>
+                  </ion-item>
+                  <ion-list *ngIf="initiateData$.object.occurenceType=='daily'" class="weekdays">
+                    <ion-row>
+                      <ion-col *ngFor="let day of ['SUN','MON','TUE','WED','THU','FRI','SAT'];let i=index;">
+                        <ion-item no-lines>
+                          <ion-label>{{day}}</ion-label>
+                          <ion-checkbox [(ngModel)]="initiateData$.object.weekdays[i]"></ion-checkbox>
+                        </ion-item>
+                      </ion-col>
+                    </ion-row>
+                  </ion-list>
+                  <ion-item>
+                    <ion-label>Weekly</ion-label>
+                    <ion-radio value="weekly"></ion-radio>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label>Fortnightly</ion-label>
+                    <ion-radio value="fortnightly"></ion-radio>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label>Monthly</ion-label>
+                    <ion-radio value="monthly"></ion-radio>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label>Quarterly</ion-label>
+                    <ion-radio value="quarterly"></ion-radio>
+                  </ion-item>
+                </ion-radio-group>
+              </ion-list>
+            </div>
+            </div>
+
+            <ion-item lines="none" class="ion-padding-top ion-padding-bottom">
+
+              <ion-button fill="outline" size="small" slot="end"
+                [disabled]="!initiateData$.object.title || (initiateData$.object.title && initiateData$.object.title.trim() == '') || formErrorCount.ocuurence || formErrorCount.date || formErrorCount.time"
+                (click)="formOneSubmit()" *ngIf="initiateData$.service =='Meeting'">
+                Next
+                <ion-icon name="arrow-forward" slot="end"></ion-icon>
+              </ion-button>
+
+              <ion-button fill="outline" size="small" slot="end"
+                [disabled]="!initiateData$.object.title || (initiateData$.object.title && initiateData$.object.title.trim() == '') || formErrorCount.date"
+                (click)="formOneSubmit()" *ngIf="initiateData$.service !=='Meeting'">
+                Next
+                <ion-icon name="arrow-forward" slot="end"></ion-icon>
+              </ion-button>
+            </ion-item>
+           </ion-list>
+          </ion-card>
+        </ion-col>
+
+        <ion-col>
+          <ion-card color="primary" class="bluebg">
+            <ion-card-header>
+              <h1>
+                <ion-icon name="calendar" slot="start"></ion-icon>
+                New meeting
+              </h1>
+            </ion-card-header>
+            <ion-card-content>
+              <p>Add new meeting, create notes, share information and link related tasks, issues and risk.</p>
+              <p class="ion-text-right">Select date and time</p>
+              <p class="ion-text-right">Choose recurrence, if any</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+</ion-content>

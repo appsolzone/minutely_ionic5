@@ -1,0 +1,169 @@
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-title>manageprofile</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+</ion-content> -->
+<ion-row class="ion-no-padding ion-padding-bottom" *ngIf="userData">
+  <ion-col size="1" class="ion-hide-xl-down">
+  </ion-col>
+  <ion-col size="12">
+    <app-add-subscriber *ngIf="addSubscriber" [cancelAddSubscriber]="cancelAddSubscriber.bind(this)"
+      [allProfiles]="allProfiles"></app-add-subscriber>
+  </ion-col>
+  <ion-col size="12" size-lg *ngIf="allProfiles && allProfiles?.length > 0 && !addSubscriber && !userProfile">
+    <ion-row class="" *ngIf="userData">
+      <ion-col size="2" class="ion-hide-md-down">
+      </ion-col>
+      <ion-col size="12" size-md>
+        <ion-card class="no-box-shadow">
+          <ion-card-header>
+            <ion-item>
+              <ion-icon name="qr-code" color="success" slot="start"></ion-icon>
+              <ion-button slot="end" fill="outline" color="success" (click)="addSubscriber=true;">
+                <ion-icon name="add"></ion-icon>
+              </ion-button>
+              <ion-label>
+                <h1>Select organisation</h1>
+              </ion-label>
+            </ion-item>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-radio-group>
+                <ion-item *ngFor="let org of allProfiles; let i=index;" (click)="getUserProfile(i)">
+                  <ion-label>{{org.data.subscriberId}}</ion-label>
+                  <ion-radio [value]="i"></ion-radio>
+                </ion-item>
+              </ion-radio-group>
+            </ion-list>
+            <ion-button *ngIf="this.id" expand="block" fill="outline" (click)="getLastSignInProfile()"><ion-icon name="arrow-back" slot="start"></ion-icon> Back</ion-button>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size="2" class="ion-hide-md-down">
+      </ion-col>
+    </ion-row>
+  </ion-col>
+  <ion-col size="12" size-lg *ngIf="(!allProfiles || allProfiles?.length !=0)  && !addSubscriber">
+    <ion-row class="" *ngIf="userData">
+      <ion-col size="2" [class]="(!userProfile ? 'ion-hide-lg-up ' : '') + ' ion-hide-md-down'">
+      </ion-col>
+      <ion-col size="12" size-md>
+        <ion-card class="no-box-shadow">
+          <ion-card-header>
+            <ion-item>
+              <ion-label>
+                <h1>
+                  <ion-icon name="leaf" color="success" class="ion-padding-end"></ion-icon>Hi !
+                </h1>
+              </ion-label>
+              <ion-button fill="clear" slot="end" *ngIf="userProfile" (click)="userProfile=null">
+                <ion-icon slot="icon-only" name="qr-code" color="success"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear" slot="end" *ngIf="!editProfile  && userProfile" (click)="toggleEditMode()">
+                <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear" slot="end" color="danger" (click)="signOut()">
+                <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-item  lines="none">
+
+
+              <ion-avatar slot="start" (click)="take_photo()" >
+
+                  <img src="{{userProfile?.picUrl}}" *ngIf="userProfile?.picUrl" >
+
+
+                  <h1 *ngIf="!userProfile?.picUrl">
+                    <ion-icon color="primary" slot="icon-only" name="person-circle"
+                      [ngStyle]="{'height':'40px','width':'40px'}"  ></ion-icon>
+                  </h1>
+
+
+
+              </ion-avatar>
+              <ion-label color="primary" *ngIf="!allProfiles && !editProfile">
+                <h2 class="ion-text-wrap">We are getting the profile information. Please wait ....</h2>
+                <br />
+                <ion-progress-bar type="indeterminate"></ion-progress-bar>
+              </ion-label>
+              <ion-label color="primary" *ngIf="allProfiles && !userProfile && !editProfile">
+                <h2 class="ion-text-wrap">Select an organisation to continue</h2>
+              </ion-label>
+              <ion-label *ngIf="userProfile && !editProfile">
+                <h1 class="ion-text-wrap">{{userProfile.name? userProfile.name : 'Guest'}}</h1>
+              </ion-label>
+            </ion-item>
+            <ion-list *ngIf="userProfile && updatedProfile">
+              <ion-list-header lines="none" *ngIf="editProfile">
+                <ion-label>
+                  <h1 class="ion-padding-bottom"><small>
+                      <ion-text color="primary">Update profile</ion-text>
+                    </small></h1>
+                  <ion-progress-bar value="0.5" color="warning"></ion-progress-bar>
+                </ion-label>
+              </ion-list-header>
+              <ion-item lines="inset">
+                <ion-label>
+                  <ion-icon name="qr-code"></ion-icon>
+                </ion-label>
+                <ion-input type="text" [(ngModel)]="updatedProfile.subscriberId" class="ion-text-right"
+                  [disabled]="editProfile" [readonly]="!editProfile"></ion-input>
+              </ion-item>
+              <ion-item lines="inset">
+                <ion-label>
+                  <ion-icon name="mail"></ion-icon>
+                </ion-label>
+                <ion-input type="email" [(ngModel)]="updatedProfile.email" class="ion-text-right" [pattern]="emailRegex"
+                  [disabled]="userData.providerData[0].providerId!='phone' && editProfile"
+                  placeholder="Please enter email" [readonly]="!editProfile"></ion-input>
+              </ion-item>
+              <ion-item lines="inset" *ngIf="editProfile">
+                <ion-label>
+                  <ion-icon name="person-circle"></ion-icon>
+                </ion-label>
+                <ion-input type="text" [(ngModel)]="updatedProfile.name" class="ion-text-right"
+                  placeholder="Please enter your name" [readonly]="!editProfile"></ion-input>
+              </ion-item>
+              <ion-item lines="inset">
+                <ion-label>
+                  <ion-icon name="body"></ion-icon>
+                </ion-label>
+                <ion-input type="text" [(ngModel)]="updatedProfile.jobTitle" class="ion-text-right"
+                  placeholder="Please enter your job title" [readonly]="!editProfile"></ion-input>
+              </ion-item>
+              <ion-item lines="inset">
+                <ion-label>
+                  <ion-icon name="call"></ion-icon>
+                </ion-label>
+                <ion-input  type="number" inputmode="numeric" [(ngModel)]="updatedProfile.phoneNumber" class="ion-text-right hide-number-arrow"
+                  [disabled]="userData.providerData[0].providerId=='phone'"
+                  placeholder="Please enter phone no with country code" [readonly]="!editProfile"></ion-input>
+              </ion-item>
+              <ion-item lines="inset">
+                <ion-label>
+                  <ion-icon name="location"></ion-icon>
+                </ion-label>
+                <ion-input type="text" [(ngModel)]="updatedProfile.address" class="ion-text-right"
+                  placeholder="Please enter you permanent address" [readonly]="!editProfile"></ion-input>
+              </ion-item>
+              <ion-item lines="none" class="ion-margin-top" *ngIf="editProfile">
+                <ion-button fill="clear" size="default" color="medium" slot="end" (click)="onSkip()">Skip</ion-button>
+                <ion-button slot="end" size="default" (click)="onSubmit()">Submit</ion-button>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size="2" [class]="(!userProfile ? 'ion-hide-lg-up ' : '') + ' ion-hide-md-down'">
+      </ion-col>
+    </ion-row>
+  </ion-col>
+  <ion-col size="1" class="ion-hide-xl-down">
+  </ion-col>
+</ion-row>

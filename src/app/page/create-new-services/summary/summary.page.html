@@ -1,0 +1,119 @@
+<!-- 
+<ion-content>
+</ion-content>
+-->
+
+<ion-card class="ion-non-padding">
+  <!-- date section ==> for risk/issue/task -->
+    <ion-item lines="none" *ngIf="initiateData$?.service !== 'Meeting'">
+      <ion-button size="small" slot="start" color="danger">
+        <ion-icon name="calendar"></ion-icon>
+        {{initiateData$?.object.startDate| date:"mediumDate"}}
+      </ion-button>
+      <ion-button size="small" slot="start" color="light">
+        <ion-icon name="pencil"></ion-icon>
+      {{initiateData$?.object.endDate| date:"mediumDate"}}
+      </ion-button>
+      <ion-button size="small" fill="clear" slot="end">
+        <ion-icon name="bookmark" color="warning"></ion-icon>
+      </ion-button>
+    </ion-item>
+  <!-- date section ==> for meeting -->
+  <ion-item lines="none" *ngIf="initiateData$?.service == 'Meeting'">
+    <ion-button size="small" slot="start" color="danger">
+      <ion-icon name="calendar"></ion-icon>
+      {{initiateData$?.object.startTime| date:"shortTime"}} -
+      {{initiateData$?.object.endTime| date:"shortTime"}}
+    </ion-button>
+    <ion-button size="small" slot="start" color="danger" fill="clear">
+      <ion-icon name="pencil"></ion-icon>
+      {{initiateData$?.object.startDate| date:"mediumDate"}}
+    </ion-button>
+    <ion-button size="small" fill="clear" slot="end">
+      <ion-icon name="bookmark" color="warning"></ion-icon>
+    </ion-button>
+  </ion-item>
+
+  <ion-card-content>
+    <ion-card-title class="ion-no-padding">
+      <h1>{{initiateData$?.object.title}}</h1>
+    </ion-card-title>
+
+    <p class="ion-text-start">
+      <ion-icon slot="start" color="dark" name="crop" class="ion-margin-right"></ion-icon> 
+     <b>
+        {{initiateData$?.service == 'Meeting'?
+        'Agendas' : initiateData$?.service == 'Risk'?
+        'Mitigation' : 'Notes'
+        }}
+     </b> 
+      <span color="medium">
+        {{ initiateData$?.service == 'Meeting'?
+      initiateData$?.object.agendas : initiateData$?.service == 'Risk'?
+      initiateData$?.object.mitigation : initiateData$?.object.notes
+      }}
+    </span>
+    </p>
+
+
+    <ion-row>
+      <!-- Owner + initiator data -->
+      <ion-col [size]="initiateData$?.service == 'Risk'? 8 : 12" >
+        <ion-item class="ion-no-padding" lines="none">
+          <ion-label color="dark">
+            <ion-icon color="appred" name="contact"></ion-icon>
+            {{initiateData$?.service == 'Meeting'?
+            'Organiser :' : 'Initiator :'
+            }}
+          </ion-label>
+          <ion-input type="text" disabled value="{{initiateData$?.object.ownerId.name}}"></ion-input>
+        </ion-item>
+        <ion-item class="ion-no-padding" *ngIf="initiateData$?.service !== 'Meeting'" lines="none">
+          <ion-label color="dark">
+            <ion-icon color="appred" name="contact"></ion-icon>
+            Owner :
+          </ion-label>
+          <ion-input type="text" disabled value="{{initiateData$?.object.selectedMembers[0].name}}"></ion-input>
+        </ion-item>
+      </ion-col>
+
+      <ion-col class="ion-no-padding" size="4" *ngIf="initiateData$?.service == 'Risk'">
+        <ion-row>
+          <ion-col size="2" class="ion-float-start ion-no-padding">
+            <p class="verticalText withincard ion-text-center"><small>Probability</small></p>
+          </ion-col>
+          <ion-col size="10" class="ion-no-padding">
+            <ion-row class="ion-text-center ion-no-padding" *ngFor="let y of ['High','Medium','Low']">
+              <ion-col size="3" color="primary" class="ion-no-padding cardgraph" *ngFor="let x of ['Low','Medium','High']">
+                <div [class]="initiateData$?.object.probability+initiateData$?.object.impact==y+x ? y+x : 'lightbg'" style="height: 20px;background: rgb(232, 232, 232);">
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+          <ion-col size="2">
+          </ion-col>
+          <ion-col size="10" class="ion-no-padding ion-text-start ion-padding-left">
+            <p class="withincard" color="appash"><small>Impact</small></p>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+
+
+    
+    <!-- attendee list ==> for meeting-->
+    <div *ngIf="initiateData$?.object.selectedMembers.length !== 0 && initiateData$?.service == 'Meeting'">
+      <ion-item lines="none">
+        <div *ngFor="let member of initiateData$?.object.selectedMembers| slice:0:3">
+          <img *ngIf="member?.picUrl !== ''" src="{{member?.picUrl}}"
+            [ngStyle]="{'height':'25px','width':'25px','border-radius':'50%'}">
+          <ion-icon *ngIf="member?.picUrl == ''" color="primary" name="person-circle"
+            [ngStyle]="{'height':'25px','width':'25px','border-radius':'50%'}">
+          </ion-icon>
+        </div>
+        <span *ngIf="initiateData$?.object.selectedMembers.length > 3">+{{initiateData$.object.selectedMembers.length -
+          3}}</span>
+      </ion-item>
+    </div>
+  </ion-card-content>
+</ion-card>

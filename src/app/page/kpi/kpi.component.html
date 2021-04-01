@@ -1,0 +1,191 @@
+<ion-row *ngIf="kpiData">
+  <ion-col size="6" size-md *ngIf="kpiTypes.includes('meeting')" class="">
+    <ion-card class="ion-no-padding ion-no-margin">
+      <ion-header mode="ios">
+        <ion-toolbar color="primary" class="ion-no-padding">
+          <ion-item lines="none" color="transparent">
+            <ion-icon slot="start" name="calendar"></ion-icon>
+            <ion-label>
+              <h1>{{kpiData?.totalMeeting}}</h1>
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none" color="transparent">
+            <ion-label>
+              <h1 class="ion-text-end">Meetings</h1>
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none" color="transparent">
+            <ion-label class="ion-text-nowrap">
+              <ion-row class="ion-text-end">
+                <ion-col size="4">
+                  <p>{{kpiData?.openMeeting}}</p>
+                </ion-col>
+                <ion-col size="8">
+                  <p>Open</p>
+                </ion-col>
+                <ion-col size="4">
+                  <p>{{kpiData?.completedMeeting}}</p>
+                </ion-col>
+                <ion-col size="8">
+                  <p>Completed</p>
+                </ion-col>
+                <ion-col size="4">
+                  <p>{{kpiData?.cancelMeeting?kpiData?.cancelMeeting : 0}}</p>
+                </ion-col>
+                <ion-col size="8">
+                  <p>Cancelled</p>
+                </ion-col>
+              </ion-row>
+            </ion-label>
+          </ion-item>
+        </ion-toolbar>
+      </ion-header>
+    </ion-card >
+  </ion-col>
+  <ion-col size="6" size-md *ngIf="kpiTypes.includes('task')" class="">
+    <ion-card class="ion-no-padding ion-no-margin">
+      <ion-header mode="ios">
+        <ion-toolbar color="green" class="ion-no-padding">
+          <ion-item lines="none" color="transparent">
+            <ion-icon slot="start" name="body"></ion-icon>
+            <ion-label>
+              <h1>{{kpiData?.totalTask}}</h1>
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none" color="transparent">
+            <ion-label>
+              <h1 class="ion-text-end">Tasks</h1>
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none" color="transparent">
+            <ion-label class="ion-text-nowrap">
+              <ion-row class="ion-text-end">
+                <ion-col size="4">
+                  <p>{{kpiData?.openTask}}</p>
+                </ion-col>
+                <ion-col size="8">
+                  <p>Open</p>
+                </ion-col>
+                <ion-col size="4">
+                  <p>{{kpiData?.inprogressTask}}</p>
+                </ion-col>
+                <ion-col size="8">
+                  <p>In-progress</p>
+                </ion-col>
+                <ion-col size="4">
+                  <p>{{kpiData?.resolvedTask}}</p>
+                </ion-col>
+                <ion-col size="8">
+                  <p>Resolved</p>
+                </ion-col>
+              </ion-row>
+            </ion-label>
+          </ion-item>
+        </ion-toolbar>
+      </ion-header>
+    </ion-card >
+  </ion-col>
+  <ion-col size="6" size-md *ngIf="kpiTypes.includes('risk')" class="">
+    <ion-card class="ion-no-padding ion-no-margin">
+      <ion-header mode="ios">
+        <ion-toolbar color="warning" class="ion-no-padding">
+          <ion-item lines="none" color="transparent">
+            <ion-icon slot="start" name="flag"></ion-icon>
+            <ion-label>
+              <h1>{{kpiData?.totalRisk}}</h1>
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none" color="transparent">
+            <ion-label>
+              <h1 class="ion-text-end">Risks</h1>
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none" color="transparent">
+            <ion-label>
+              <ion-row class="ion-text-end">
+                <ion-col size="4">
+                  <p>{{kpiData?.openRisk}}</p>
+                </ion-col>
+                <ion-col size="8">
+                  <p>Open</p>
+                </ion-col>
+                <ion-col size="4">
+                  <p>{{kpiData?.inprogressRisk}}</p>
+                </ion-col>
+                <ion-col size="8">
+                  <p>In-progress</p>
+                </ion-col>
+                <ion-col size="4">
+                  <p>{{kpiData?.resolvedRisk}}</p>
+                </ion-col>
+                <ion-col size="8">
+                  <p>Resolved</p>
+                </ion-col>
+              </ion-row>
+            </ion-label>
+          </ion-item>
+        </ion-toolbar>
+      </ion-header>
+    </ion-card >
+  </ion-col>
+  <ion-col size="6" size-md *ngIf="kpiTypes.includes('issue')" class="">
+    <ion-card class="ion-no-padding ion-no-margin">
+      <ion-header mode="ios">
+        <ion-toolbar color="danger" class="ion-no-padding">
+          <ion-item lines="none" color="transparent">
+            <ion-icon slot="start" name="options"></ion-icon>
+            <ion-label>
+              <h1>{{kpiData?.totalIssue}}</h1>
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none" color="transparent">
+            <ion-label>
+              <h1 class="ion-text-end">Issues</h1>
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none" color="transparent">
+            <ion-label>
+              <ion-row class="ion-text-end">
+                <ion-col size="4">
+                  <p>{{kpiData?.openIssue}}</p>
+                </ion-col>
+                <ion-col size="8">
+                  <p>Open</p>
+                </ion-col>
+                <ion-col size="4">
+                  <p>{{kpiData?.inprogressIssue}}</p>
+                </ion-col>
+                <ion-col size="8">
+                  <p>In-progress</p>
+                </ion-col>
+                <ion-col size="4">
+                  <p>{{kpiData?.resolvedIssue}}</p>
+                </ion-col>
+                <ion-col size="8">
+                  <p>Resolved</p>
+                </ion-col>
+              </ion-row>
+            </ion-label>
+          </ion-item>
+        </ion-toolbar>
+      </ion-header>
+    </ion-card >
+  </ion-col>
+  <ion-col size="12" *ngIf="kpiTypes.includes('riskMatrix')" class="">
+    <ion-card class="ion-no-padding ion-no-margin">
+      <ion-card-header mode="ios">
+        <ion-item class="ion-no-padding">
+          <ion-icon name="apps-sharp" slot="start"></ion-icon>
+          <ion-label>
+            <h1>Risk matrix</h1>
+          </ion-label>
+        </ion-item>
+      </ion-card-header>
+      <ion-row>
+        <ion-col size="12" class="ion-padding-end">
+          <app-risk-matrix [highLightCells]="highLightCells" addPadding="true" labelFont="normal"></app-risk-matrix>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </ion-col>
+</ion-row>

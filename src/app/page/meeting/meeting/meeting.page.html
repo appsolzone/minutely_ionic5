@@ -1,0 +1,31 @@
+<ion-header class="">
+  <ion-toolbar color="" class="ion-padding-end">
+    <ion-title>Meetings</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col size="12"  size-md="4" size-lg="5" size-xl="6">
+      <ion-row>
+        <ion-col size="12">
+          <app-kpi *ngIf="sessionInfo?.userProfile"></app-kpi>
+        </ion-col>
+        <ion-col size="12" class="ion-hide-lg-down">
+          <app-meeting-list viewMode="upcoming"></app-meeting-list>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+    <ion-col size="12" size-md="8" size-lg="7" size-xl="6">
+      <app-meeting-list viewMode="upcoming" class="ion-hide-lg-up"></app-meeting-list>
+    <!-- </ion-col>
+    <ion-col size="12" size-md="8" size-lg="7" size-xl="6"> -->
+      <app-meeting-list class="ion-hide-lg-down"></app-meeting-list>
+    </ion-col>
+  </ion-row>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button  size="small" (click)="gotoAddMeeting()">
+      <ion-icon name="add" size="large"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

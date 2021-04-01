@@ -1,0 +1,164 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/subscription"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Choose plan</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row class="wave-background">
+    <ion-col>
+     <ion-row>
+      <ion-col size="12" *ngIf="newsubscriber !== undefined || (orgProfile?.subscriptionType=='Free' && !orgProfile?.paypalId)">
+        <ion-row>
+          <ion-col size="12" size-xl="1">
+          </ion-col>
+          <ion-col size="12" size-md>
+            <ion-card mode="ios" class="uniform-card-height">
+              <ion-card-header>
+                <ion-item  lines="none">
+                  <ion-icon color="primary" slot="start" name="qr-code"></ion-icon>
+                  <ion-label>
+                    {{orgProfile?.subscriberId}}
+                  </ion-label>
+                </ion-item>
+              </ion-card-header>
+              <ion-card-content>
+                <ion-list >
+                  <ion-item lines="inset" class="ion-hide-md-down">
+                    <ion-label>
+                      <ion-icon name="apps"></ion-icon>
+                    </ion-label>
+                    <ion-input type="text" [value]="orgProfile?.companyName" class="ion-text-right"
+                     readonly ></ion-input>
+                  </ion-item>
+                  <ion-item lines="inset">
+                    <ion-label>
+                      <ion-icon name="card"></ion-icon>
+                    </ion-label>
+                    <ion-input type="email" [value]="orgProfile?.subscriptionType" class="ion-text-right"
+                      placeholder="No subscription info found" readonly></ion-input>
+                  </ion-item>
+                  <ion-item lines="inset">
+                    <ion-label>
+                      <ion-icon name="people"></ion-icon>
+                    </ion-label>
+                    <ion-input type="text" [value]="orgProfile?.noOfUserAllowed - orgProfile?.noOfFreeLicense + ' of ' + orgProfile?.noOfUserAllowed + ' in use'" class="ion-text-right"
+                      placeholder="No free license info" readonly></ion-input>
+                  </ion-item>
+                </ion-list>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col size="12" size-md class="ion-hide-md-down">
+            <ion-card mode="ios" *ngIf="orgProfile" class="uniform-card-height">
+              <ion-card-header color="light">
+                <ion-item  lines="none" color="transparent">
+                  <ion-icon color="success" slot="start" name="ticket"></ion-icon>
+                  <ion-label>
+                    Apply Coupon Code
+                  </ion-label>
+                </ion-item>
+              </ion-card-header>
+              <ion-card-content>
+                <ion-item>
+                  <ion-label position="fixed"><ion-icon name="paper-plane"></ion-icon></ion-label>
+                  <ion-input [(ngModel)]="couponCode" placeholder="Coupon code"></ion-input>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-button slot="end" fill="outline" color="warning" (click)="cancelCoupon()">Cancel</ion-button>
+                  <ion-button slot="end" (click)="applyCoupon()"><ion-icon slot="end" name="send"></ion-icon>Apply</ion-button>
+                </ion-item>
+                <ion-item lines="none" class="ion-text-center">
+                  <ion-note>Please enter the coupon code to avail discounted subscription plan</ion-note>
+                </ion-item>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col size="12" class="ion-hide-md-up">
+            <ion-card mode="ios" *ngIf="orgProfile">
+              <ion-card-header color="light">
+                <ion-item  button=true lines="none" color="transparent" (click)="scrollToBottom()">
+                  <ion-icon color="success" slot="start" name="ticket"></ion-icon>
+                  <ion-label>
+                    Apply Coupon Code
+                  </ion-label>
+                </ion-item>
+              </ion-card-header>
+            </ion-card>
+          </ion-col>
+          <ion-col size="12" size-xl="1">
+          </ion-col>
+        </ion-row>
+      </ion-col>
+       <ion-col size="12" size-md class="">
+        <ion-row>
+          <ion-col size="12" size-xl="1">
+          </ion-col>
+          <ion-col size="12" size-md>
+            <ion-row>
+              <ion-col *ngFor="let plan of generalPlans; let i = index">
+                  <ion-card mode="ios" class="uniform-card-height">
+                    <ion-item lines="none" color="transparent" style="background: {{plan.color}};">
+                      <h1>
+                          <ion-text color="white">{{ plan.planName }}</ion-text>
+                      </h1>
+                      <ion-text color="white" slot="end">$ {{plan.price}} / mo</ion-text>
+                    </ion-item>
+                    <ion-card-content>
+                      <ion-item no-lines>
+                        <ion-label class="ion-text-center">
+                          <h1>
+                            <ion-text class="large-title">$ {{ plan.price/plan.allowedLicense | number:'1.2-2'}}</ion-text> / mo <br/> <small>per user</small>
+                          </h1>
+                        </ion-label>
+                      </ion-item>
+                      <ion-item lines="none" class="" *ngFor="let tag of plan.tags;">
+                        <p class="ion-text-start">{{tag}}</p>
+                        <ion-icon slot="start" color="green" name="checkmark-circle-outline"></ion-icon>
+                      </ion-item>
+                      <ion-item lines="none">
+                        <ion-button fill="outline" slot="end" color="secondary" (click)="paymentPage(plan)">Subscribe</ion-button>
+                      </ion-item>
+                    </ion-card-content>
+                  </ion-card>
+                </ion-col>
+            </ion-row>
+          </ion-col>
+          <ion-col size="12" size-xl="1">
+          </ion-col>
+          <ion-col size="12" class="ion-hide-md-up" *ngIf="newsubscriber !== undefined || (orgProfile?.subscriptionType=='Free' && !orgProfile?.paypalId)">
+            <ion-card mode="ios" *ngIf="orgProfile" class="uniform-card-height">
+              <ion-card-header color="light">
+                <ion-item  lines="none" color="transparent">
+                  <ion-icon color="success" slot="start" name="ticket"></ion-icon>
+                  <ion-label>
+                    Apply Coupon Code
+                  </ion-label>
+                </ion-item>
+              </ion-card-header>
+              <ion-card-content class="ion-hide-md-up">
+                <ion-item>
+                  <ion-label position="fixed"><ion-icon name="paper-plane"></ion-icon></ion-label>
+                  <ion-input [(ngModel)]="couponCode" placeholder="Coupon code"></ion-input>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-button slot="end" fill="outline" color="warning" (click)="cancelCoupon()">Cancel</ion-button>
+                  <ion-button slot="end" (click)="applyCoupon()"><ion-icon slot="end" name="send"></ion-icon>Apply</ion-button>
+                </ion-item>
+                <ion-item lines="none" class="ion-text-center">
+                  <ion-note>Please enter the coupon code to avail discounted subscription plan</ion-note>
+                </ion-item>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+     </ion-row>
+   </ion-col>
+ </ion-row>
+
+
+</ion-content>
