@@ -9,6 +9,13 @@
 //   tab: '<tab route>',
 // },
 export const appPages = [
+  {
+    title: 'Alerts',
+    url: 'notification',
+    icon: 'notifications',
+    tab: 'notification',
+    disabled: true,
+  },
   // {
   //   title: 'List',
   //   url: 'activitysearch',
@@ -28,13 +35,7 @@ export const appPages = [
     tab: 'profile',
     disabled: false,
   },
-  {
-    title: 'Alerts',
-    url: 'notification',
-    icon: 'notifications',
-    tab: 'notification',
-    disabled: true,
-  },
+
   // {
   //   title: 'Regions',
   //   url: 'region',
@@ -55,6 +56,7 @@ export const appPages = [
     tab: 'subscription',
     disabled: false,
   },
+
 ];
 
 /*

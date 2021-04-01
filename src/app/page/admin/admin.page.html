@@ -1,10 +1,28 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header class="ion-hide-md-down">
+  <ion-toolbar class="ion-padding-end">
+    <ion-buttons slot="end" class="ion-hide-md-down ion-padding-end ion-margin-end">
+      <ion-button routerDirection="forward" (click)="gotoChangeOrgName()">
+        <ion-icon slot="icon-only" name="qr-code" color="success"></ion-icon>
+      </ion-button>
+      </ion-buttons>
     <ion-title>Admin</ion-title>
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content>
+  <ion-header class="ion-hide-md-up">
+ 
+    <ion-toolbar class="ion-padding-end">
+      <ion-buttons slot="end" class="ion-hide-md-up ion-padding-end ion-margin-end">
+        <ion-button routerDirection="forward" (click)="gotoChangeOrgName()">
+          <ion-icon slot="icon-only" name="qr-code" color="success"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>Admin</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
   <ion-row class="height-background">
     <!-- <ion-col>
     <ion-row>
@@ -109,7 +127,7 @@
           </ion-item>
         </ion-list>
           <div *ngIf="addMember">
-            <app-add-member></app-add-member>
+            <app-add-member [showHeader]="false"></app-add-member>
           </div>
         <!-- </ion-card-content>
       </ion-card> -->
@@ -122,7 +140,7 @@
     <ion-col class="ion-hide-md-down ion-no-padding" >
       <!-- <ion-row>
         <ion-col> -->
-          <app-add-member></app-add-member>
+          <app-add-member  [showHeader]="false"></app-add-member>
         <!-- </ion-col> -->
       <!-- </ion-row> -->
     </ion-col>

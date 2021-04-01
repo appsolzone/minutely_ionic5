@@ -50,15 +50,7 @@ export class ManageuserService {
   }
 
       // fetch All the users of org
-  fetchAllUsers(orgProfile){
-      let queryObj = [
-        {
-          field:'subscriberId',
-          operator:'==',
-          value:orgProfile.subscriberId
-
-        }
-      ]
+  fetchAllUsers(queryObj){
     return this.db.getAllDocumentsSnapshotByQuery(this.db.allCollections.users,queryObj);
    }
 

@@ -1,5 +1,5 @@
 // this is app specific variable and global class declaration
-:root{
+:root {
   --masonic-no-of-col-xl: 4;
   --masonic-no-of-col-lg: 3;
   --masonic-no-of-col-md: 2;
@@ -17,7 +17,6 @@ ion-icon {
   padding: 15px;
   margin-top: 15px;
   display: block;
-
 }
 .masonic-card {
   display: inline-block;
@@ -61,6 +60,25 @@ ion-icon {
   input[type=number] {
     -moz-appearance: textfield;
   }
+}
+
+.app-therelines{
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      // line-height: 16px;
+      max-height: 67px;
+      -webkit-box-orient: vertical;
+}
+.app-twolines{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    // line-height: 16px;
+    max-height: 34px;
+    -webkit-box-orient: vertical;
 }
 
 .time-input-field{
@@ -295,30 +313,30 @@ body.dark {
   }
 }
 @media (max-width: 575px) {
-  .section-masonic{
+  .section-masonic {
     columns: var(--masonic-no-of-col-xs);
   }
 }
 
 @media (min-width: 576px) {
-  .section-masonic{
+  .section-masonic {
     columns: var(--masonic-no-of-col-sm);
   }
 }
 
 @media (min-width: 768px) {
-  .section-masonic{
+  .section-masonic {
     columns: var(--masonic-no-of-col-md);
   }
 }
 @media (min-width: 992px) {
-  .section-masonic{
+  .section-masonic {
     columns: var(--masonic-no-of-col-lg);
   }
 }
 
 @media (min-width: 1200px) {
-  .section-masonic{
+  .section-masonic {
     columns: var(--masonic-no-of-col-xl);
   }
 }

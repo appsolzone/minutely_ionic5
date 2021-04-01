@@ -92,7 +92,7 @@ export class AddSubscriberPage implements OnInit {
           noOfFreeLicense: 2,
           noOfUserAllowed: 3,
           address: '',
-          companyLogo: '',
+          picUrl: '',
           tncVersion: 1,
           subscriptionType: 'Free',
           subscriptionStart: this.firestore.FieldValue.serverTimestamp(),
