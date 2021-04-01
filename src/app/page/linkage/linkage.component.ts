@@ -12,6 +12,18 @@ export class LinkageComponent implements OnInit {
   @Input() sessionInfo: any;
   @Input() selectedObject: any;
   @Input() viewMode = '';
+  @Input() alllinkages: any = {
+                            meetings: [],
+                            tasks: [],
+                            issues: [],
+                            risks: []
+                          };
+  @Input() editedlinkages: any = {
+                            meetings: [],
+                            tasks: [],
+                            issues: [],
+                            risks: []
+                          };
   // observables
   meetingLinksSubs$;
   taskLinksSubs$;
@@ -25,12 +37,12 @@ export class LinkageComponent implements OnInit {
                             issues: null,
                             risks: null
                           };
-  public editedlinkages: any = {
-                            meetings: [],
-                            tasks: [],
-                            issues: [],
-                            risks: []
-                          };
+  // public editedlinkages: any = {
+  //                           meetings: [],
+  //                           tasks: [],
+  //                           issues: [],
+  //                           risks: []
+  //                         };
 
   constructor(
     private linkage: LinkageService
@@ -52,7 +64,9 @@ export class LinkageComponent implements OnInit {
 
   linkageOptionsChanged(e){
     this.selectedItem = e.detail.value;
-    this.getLinkedItems();
+    if(this.selectedObject?.id){
+      this.getLinkedItems();
+    }
   }
 
   getLinkages(){
@@ -68,6 +82,7 @@ export class LinkageComponent implements OnInit {
                                   }
                                 });
                                 this.linkages[this.selectedItem] =[...allItems, ...this.editedlinkages[this.selectedItem]];
+                                this.alllinkages[this.selectedItem] = [...this.linkages[this.selectedItem]]
                                 // this.linkages[this.selectedItem] = allItems;
                                 console.log("linkedMeetings", this.linkages[this.selectedItem]);
                               });
@@ -84,6 +99,7 @@ export class LinkageComponent implements OnInit {
       }
     });
     this.linkages[this.selectedItem] =[...allItems, ...this.editedlinkages[this.selectedItem]];
+    this.alllinkages[this.selectedItem] = [...this.linkages[this.selectedItem]]
     // this.linkages[this.selectedItem] = allItems;
     console.log("repopulateItems linkedMeetings", this.linkages[this.selectedItem]);
   }
@@ -107,7 +123,7 @@ export class LinkageComponent implements OnInit {
       }
     } else {
       // there might be edited items, so process again
-      if(this.linkages[this.selectedItem].length > 0){
+      if(this.linkages[this.selectedItem].length >= 0){
         this.repopulateItems();
       }
     }

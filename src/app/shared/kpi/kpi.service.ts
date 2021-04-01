@@ -16,6 +16,7 @@ export class KpiService {
             totalMeeting : 0,
             openMeeting : 0,
             completedMeeting : 0,
+            cancelMeeting : 0,
             totalTask : 0,
             openTask : 0,
             inprogressTask : 0,

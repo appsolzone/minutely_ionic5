@@ -35,6 +35,10 @@ const routes: Routes = [
   {
     path: 'meeting-details-edit',
     loadChildren: () => import('./meeting-details-edit/meeting-details-edit.module').then( m => m.MeetingDetailsEditPageModule)
+  },
+  {
+    path: 'create-meeting',
+    loadChildren: () => import('./create-meeting/create-meeting.module').then( m => m.CreateMeetingPageModule)
   }
 ];
 

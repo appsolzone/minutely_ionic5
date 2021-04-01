@@ -42,12 +42,16 @@ export class MeetingListComponent implements OnInit {
     private meeting: MeetingService
   ) {
     this.options = this.cal.getCalendarMeta();
-    this.sessionSubs$ = this.session.watch().subscribe(value=>{
+    this.sessionSubs$ = this.session.watch().subscribe(async value=>{
       // console.log("Session Subscription got", value);
       // Re populate the values as required
-      if(this.sessionInfo?.uid != value?.uid){
+      if(this.sessionInfo?.uid != value?.uid || this.sessionInfo?.subscriberId != value?.subscriberId){
         this.viewMeetingResult = [];
         this.searchText = '';
+        if(this.meetingsSubs$ && this.meetingsSubs$?.unsubscribe){
+          this.meetingsSubs$.unsubscribe();
+          this.meetingsSubs$ = undefined;
+        }
       }
       this.sessionInfo = value;
       if(!this.sessionInfo){
@@ -118,11 +122,11 @@ export class MeetingListComponent implements OnInit {
     return moment(date).format(format ? format : "ll");
   }
   // search implement
-  getMeetings(){
+  async getMeetings(){
     let searchTextObj = null;
     let queryObj = [];
-    if(this.meetingsSubs$?.unsubscribe){
-      this.meetingsSubs$.unsubscribe();
+    if(this.meetingsSubs$ && this.meetingsSubs$?.unsubscribe){
+      await this.meetingsSubs$.unsubscribe();
     }
 
     queryObj = [{field: 'subscriberId',operator: '==', value: this.sessionInfo.subscriberId}];
@@ -254,6 +258,10 @@ export class MeetingListComponent implements OnInit {
     if(!this.showSearchModesforUpcomming){
       this.getUpcommingMeetings();
     }
+  }
+
+  gotoAddMeeting(){
+    this.router.navigate(['meeting/create-meeting'])
   }
 
 }

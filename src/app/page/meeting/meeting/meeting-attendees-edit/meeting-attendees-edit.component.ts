@@ -32,18 +32,26 @@ export class MeetingAttendeesEditComponent implements OnInit {
     userList.forEach(u=>{
         const {name, picUrl, email, uid, attendance, accepted } = u;
         if(u.uid!=this.meetingDetails.ownerId.uid){
-          attendeeList.push({name, picUrl, email, uid, attendance, accepted });
+          attendeeList.push({name, picUrl, email, uid, attendance: attendance ? attendance : false, accepted:  accepted ? accepted : 'invited'});
         }
       });
     this.meetingDetails.attendeeList = attendeeList;
+    this.generateAttendeeListUid();
     this.showSelectAttendees = false;
   }
 
   changeMeetingOwner(owner){
     console.log("owner selected",owner);
     const {name, picUrl, email, uid, attendance, accepted } = owner;
-    this.meetingDetails.ownerId = {name, picUrl, email, uid, attendance, accepted };
+    this.meetingDetails.ownerId = {name, picUrl, email, uid };
+    this.generateAttendeeListUid();
     this.showSelectOwner = false;
+  }
+
+  generateAttendeeListUid(){
+    let attendeeUidList = this.meetingDetails.attendeeList.map(a=>a.uid);
+    attendeeUidList.push(this.meetingDetails.ownerId.uid);
+    this.meetingDetails.attendeeUidList = attendeeUidList;
   }
 
 }

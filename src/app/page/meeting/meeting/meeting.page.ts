@@ -44,4 +44,8 @@ export class MeetingPage implements OnInit,OnDestroy {
       }
     });
   }
+
+  gotoAddMeeting(){
+    this.router.navigate(['meeting/create-meeting'])
+  }
 }

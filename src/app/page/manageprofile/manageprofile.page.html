@@ -59,7 +59,7 @@
                   <ion-icon name="leaf" color="success" class="ion-padding-end"></ion-icon>Hi !
                 </h1>
               </ion-label>
-              <ion-button fill="clear" slot="end" *ngIf="!editProfile  && userProfile" (click)="userProfile=null">
+              <ion-button fill="clear" slot="end" *ngIf="userProfile" (click)="userProfile=null">
                 <ion-icon slot="icon-only" name="qr-code" color="success"></ion-icon>
               </ion-button>
               <ion-button fill="clear" slot="end" *ngIf="!editProfile  && userProfile" (click)="toggleEditMode()">

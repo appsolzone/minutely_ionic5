@@ -8,6 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class MeetingLocationEditComponent implements OnInit {
   @Input() sessionInfo: any;
   @Input() meeting: any;
+  @Input() editMode: string = 'update';
   // form data
   public meetingDetails: any;
   public showDialin: boolean = false;
@@ -17,6 +18,7 @@ export class MeetingLocationEditComponent implements OnInit {
 
   ngOnInit() {
     this.meetingDetails = this.meeting?.data;
+    this.showDialin =  !this.editMode || this.editMode=='update' ? false : true;
     if(!this.meetingDetails.meetingPlace){
       this.meetingDetails.meetingPlace = {url: null, from: null};
     } else {
@@ -25,6 +27,7 @@ export class MeetingLocationEditComponent implements OnInit {
   }
 
   ngOnChanges() {
+    this.showDialin =  !this.editMode || this.editMode=='update' ? false : true;
     this.meetingDetails = this.meeting?.data;
      console.log("Onchange", this.meetingDetails);
      if(!this.meetingDetails.meetingPlace){

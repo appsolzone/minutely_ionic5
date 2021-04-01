@@ -36,7 +36,7 @@ export class PreviewPage implements OnInit,OnDestroy {
 
   ngOnInit() {
     this.getSessionInfo();
-    this.previousResponse(); 
+    this.previousResponse();
   }
   ngOnDestroy(){
     //this._crud.crud_action$.unsubscribe();
@@ -76,14 +76,14 @@ export class PreviewPage implements OnInit,OnDestroy {
   }
 
   toNavigate(header,path){
-    let actions = this._crud.crud_action; 
+    let actions = this._crud.crud_action;
     actions = {
       service:this.initiateData$.service,
       type:this.initiateData$.type,
       header:header,
       parentModule:this.initiateData$.parentModule,
       object:this.initiateData$.object
-    } 
+    }
     this._crud.crud_action$.next(actions);
     this._router.navigate([`/${this.initiateData$.parentModule}/${path}`]);
   }
@@ -118,7 +118,7 @@ export class PreviewPage implements OnInit,OnDestroy {
       // let titleSearchMap = this.searchMap.createSearchMap(searchStrings);
       // Now add the uidMap of attendees to the searchMap
       // Object.assign(titleSearchMap,attendeeObj.uidMap);
-      let meetingBasics:Meeting = {
+      let meetingBasics:any = {
         'subscriberId' : this.orgProfile.subscriberId,
         'ownerId': this.initiateData$.object.ownerId,
         'meetingTitle': this.initiateData$.object.title,
@@ -170,4 +170,3 @@ export class PreviewPage implements OnInit,OnDestroy {
     return { data: data, nameText: nameText, uidMap: uidMap, uidList: uidList };
   }
   }
-

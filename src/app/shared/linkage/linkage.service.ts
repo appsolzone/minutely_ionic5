@@ -20,6 +20,13 @@ export class LinkageService {
     // To be used if required
   }
 
+  // Read once
+  getLinkagesOnce(id: string, linkType: string){
+    let collection = this.db.allCollections.meeting + '/' +
+                      id + '/' + linkType;
+    return this.db.getAllDocuments(collection);
+  }
+
   // Read and watch
   getLinkages(id: string, linkType: string){
     let collection = this.db.allCollections.meeting + '/' +
@@ -36,7 +43,7 @@ export class LinkageService {
 
   }
 
-  saveDocumentData(collectionName: string, documentId: any, data: any, linkage: any, selfLinkData: any, tranRef:any = null) {
+  saveDocumentData(collectionName: string, documentId: any, data: any, linkage: any, selfLinkData: any, tranRef:any = null, type: string ='update') {
     return new Promise((resolve: any, reject: any)=>{
       let linkageSubCollections=['meetings','tasks','issues','risks'];
       // initiate a btach
@@ -46,46 +53,69 @@ export class LinkageService {
       let itemRef = this.db.afs.collection(collectionName).doc(documentId).ref;
       if(data){
         // batch.set(itemRef,data,{ merge: true });
-        // Purposely updateed data instead of set with merge true to replace the searchMap
-        // with the latestest updated text search values!
-        batch.update(itemRef,data);
+
+        if(data.status=='CANCEL'){
+          // If cancel the meeting, no need to update any of the fields, just set the status as cencel
+          batch.update(itemRef,{status: 'CANCEL'}, {merge: true});
+        } else {
+          // Purposely updateed data instead of set with merge true to replace the searchMap
+          // with the latestest updated text search values!
+          // if(type=='update'){
+          //   try{
+          //     batch.update(itemRef,data);
+          //   } catch(error){
+          //     console.log("error", error);
+          //     if(error.match(/(No document to update)/ig)){
+          //       batch.set(itemRef,data);
+          //     } else {
+          //       throw error;
+          //     }
+          //
+          //   }
+          // } else {
+            batch.set(itemRef,data);
+          // }
+
+          //   step 2: add newly included linkages
+          //   step 3: remove linkages marked as delete
+          //   step 4: if any element from step 1 is modified
+          //           update reference data of the ITEM for the existing linked objects
+          linkageSubCollections.forEach((sub)=>{
+            // loop through each of the linkage item
+            linkage[sub].forEach((link)=>{
+              let linkRef = this.db.afs.collection(collectionName).doc(documentId).collection(sub).doc(link.id).ref;
+              let conlinkRef = this.db.afs.collection(sub).doc(link.id).collection(collectionName).doc(documentId).ref;
+              let state = link.state;
+              // Now remove the following additional elements/properties we added for processing
+              // delete link.id;
+              // delete link.state;
+
+              switch(state){
+                case 'pending':
+                  // add the linkage to the item for both current document as well as corresponding document
+                  let linkData = this.getLinkData(sub,link.data);
+                  batch.set(linkRef,linkData);
+                  batch.set(conlinkRef,selfLinkData);
+                  break;
+                case 'delete':
+                  // add the linkage to the item for both current document as well as corresponding document
+
+                  batch.delete(linkRef);
+                  batch.delete(conlinkRef);
+                  break;
+                default:
+                  // so this is an existing linkage, update the references if data is modified
+
+                  batch.set(conlinkRef,selfLinkData);
+                  break;
+              }
+            });
+
+          });
+        }
+
       }
-      //   step 2: add newly included linkages
-      //   step 3: remove linkages marked as delete
-      //   step 4: if any element from step 1 is modified
-      //           update reference data of the ITEM for the existing linked objects
-      linkageSubCollections.forEach((sub)=>{
-        // loop through each of the linkage item
-        linkage[sub].forEach((link)=>{
-          let linkRef = this.db.afs.collection(collectionName).doc(documentId).collection(sub).doc(link.id).ref;
-          let conlinkRef = this.db.afs.collection(sub).doc(link.id).collection(collectionName).doc(documentId).ref;
-          let state = link.state;
-          // Now remove the following additional elements/properties we added for processing
-          // delete link.id;
-          // delete link.state;
 
-          switch(state){
-            case 'pending':
-              // add the linkage to the item for both current document as well as corresponding document
-
-              batch.set(linkRef,{...link,state:'added'});
-              batch.set(conlinkRef,selfLinkData);
-              break;
-            case 'delete':
-              // add the linkage to the item for both current document as well as corresponding document
-
-              batch.delete(linkRef);
-              batch.delete(conlinkRef);
-              break;
-            default:
-              // so this is an existing linkage, update the references if data is modified
-
-              batch.set(conlinkRef,selfLinkData);
-              break;
-          }
-        });
-
-      });
 
       if(tranRef){
         resolve(true);

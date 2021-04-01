@@ -10,7 +10,7 @@
         (click)="editMeeting()">
         <ion-icon name="create-outline" slot="icon-only"></ion-icon>
       </ion-button>
-      <ion-button slot="end">
+      <ion-button slot="end" (click)="sendMinutes()">
         <ion-icon name="paper-plane-outline" slot="icon-only"></ion-icon>
       </ion-button>
       <ion-button slot="end" disabled="true" class="ion-hide-lg-up">
@@ -31,7 +31,7 @@
     </ion-col>
     <ion-col size="12" size-md="6">
       <app-meeting-agenda-note *ngIf="sessionInfo && meeting" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-agenda-note>
-      <app-linkage [selectedObject]="meeting" [sessionInfo]="sessionInfo"> </app-linkage>
+      <app-linkage *ngIf="sessionInfo && meeting" [selectedObject]="meeting" [sessionInfo]="sessionInfo" [alllinkages]="alllinkages"> </app-linkage>
     </ion-col>
   </ion-row>
 </ion-content>

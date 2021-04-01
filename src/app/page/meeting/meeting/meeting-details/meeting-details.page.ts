@@ -4,6 +4,7 @@ import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { MeetingService } from 'src/app/shared/meeting/meeting.service';
+import { ComponentsService } from 'src/app/shared/components/components.service';
 
 @Component({
   selector: 'app-meeting-details',
@@ -17,11 +18,18 @@ export class MeetingDetailsPage implements OnInit {
   meetingsSubs$;
   public sessionInfo: any;
   public meeting: any;
+  public alllinkages: any = {
+                            meetings: [],
+                            tasks: [],
+                            issues: [],
+                            risks: []
+                          };
 
   constructor(
     private router: Router,
     private session: SessionService,
     private meetingservice: MeetingService,
+    private common: ComponentsService,
   ) {
     this.getSessionInfo();
   }
@@ -83,6 +91,19 @@ export class MeetingDetailsPage implements OnInit {
   // editMeeting
   editMeeting(){
     this.router.navigate(['meeting/meeting-details-edit'],{state: {data:{meeting: this.meeting}}});
+  }
+  // share minutes
+  async sendMinutes(){
+    let response = await this.meetingservice.shareMeetingMinutes(this.meeting, this.alllinkages);
+    let buttons = [
+                    {
+                      text: 'Dismiss',
+                      role: 'cancel',
+                      cssClass: '',
+                      handler: ()=>{}
+                    }
+                  ];
+    this.common.presentAlert(response.title, response.body, buttons);
   }
 
 }

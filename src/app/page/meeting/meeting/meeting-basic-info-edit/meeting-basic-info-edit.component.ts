@@ -11,16 +11,17 @@ import { ComponentsService } from 'src/app/shared/components/components.service'
 export class MeetingBasicInfoEditComponent implements OnInit {
   @Input() sessionInfo: any;
   @Input() meeting: any;
-  @Input() editMode: boolean = false;
+  @Input() refInformation: any;
+  @Input() editMode: string = 'update';
   // form data
-  public noOfOccurenceOption: any = Array.from(Array(50)).map((a,i)=>i+1);
+  public noOfOccurenceOption: any = Array.from(Array(30)).map((a,i)=>i+1);
   public meetingDetails: any;
   public meetingExpired: boolean=false;
   public acceptedStatus: any;
   public minMeetingDate: any;
   public defaultMaxDate: any;
   public showCascadeChange: boolean = false;
-  public toCascadeChanges: boolean = false;
+  // public toCascadeChanges: boolean = false;
   public meetingTag: string = '';
 
   constructor(
@@ -65,11 +66,11 @@ export class MeetingBasicInfoEditComponent implements OnInit {
     // min and max start date
     this.minMeetingDate = moment().format('YYYY-MM-DD');
     this.defaultMaxDate = moment().add(5,'y').format('YYYY-MM-DD');
-    this.meetingDetails.meetingStart = this.meetingDetails.meetingStart < new Date() ? null : moment(this.meetingDetails.meetingStart,'YYYY-MM-DDTHH:mm');
-    this.meetingDetails.meetingEnd = this.meetingDetails.meetingEnd < new Date() ? null : moment(this.meetingDetails.meetingEnd,'YYYY-MM-DDTHH:mm');
+    this.meetingDetails.meetingStart = this.meetingDetails.meetingStart ? this.meetingDetails.meetingStart : null;
+    this.meetingDetails.meetingEnd = this.meetingDetails.meetingEnd ? this.meetingDetails.meetingEnd  : null;
     this.noOfOccurenceOption.splice(0,
                                       this.meetingDetails.noOfOccurence &&
-                                      this.noOfOccurenceOption.length == 50
+                                      this.noOfOccurenceOption.length == 30
                                       ? this.meetingDetails.noOfOccurence-1 : 0);
     // console.log("this.noOfOccurenceOption",this.noOfOccurenceOption);
   }
@@ -84,14 +85,16 @@ export class MeetingBasicInfoEditComponent implements OnInit {
     let body='';
     let startDateTime = new Date(this.meetingDetails.meetingStart);
     let isValidStartDate = !this.meetingDetails.isOccurence ||
-                           !this.toCascadeChanges ||
+                           !this.refInformation.toCascadeChanges ||
                           (this.meetingDetails.occurenceType!='daily'
                             ||
                             (this.meetingDetails.occurenceType=='daily'
                              && this.meetingDetails.weekdays[parseInt(moment(startDateTime).format('e'))]
                              )
                           );
-    if(new Date() <= startDateTime && isValidStartDate) {
+    if(
+      (this.refInformation.meetingStart == this.meetingDetails.meetingStart && this.refInformation.meetingEnd == this.meetingDetails.meetingEnd && isValidStartDate) ||
+      (new Date() <= startDateTime && isValidStartDate)) {
       this.checkCascadeState();
       return true;
     } else {
@@ -136,7 +139,7 @@ export class MeetingBasicInfoEditComponent implements OnInit {
   }
 
   async onCascadeChanges(e){
-    if(this.toCascadeChanges && this.meetingDetails.status=='COMPLETED'){
+    if(this.refInformation.toCascadeChanges && this.meetingDetails.status=='COMPLETED'){
       let title = "Invalid Operation";
       let body = "It seems you are trying to propagate changes for the future meetings while the meeting status is COMPLETE. \
               This is not permitted, either cancel change propagation or change the meeting status as OPEN and try again.";
@@ -149,7 +152,7 @@ export class MeetingBasicInfoEditComponent implements OnInit {
                       }
                     ];
       await this.common.presentAlert(title,body, buttons);
-      this.toCascadeChanges = false;
+      this.refInformation.toCascadeChanges = false;
       // this.toCascadeLinakges = false;
     } else{
       // this.toCascadeLinakges = false;
@@ -161,7 +164,7 @@ export class MeetingBasicInfoEditComponent implements OnInit {
      let status = e.detail.value;
      let prevStatus = this.meetingDetails.status;
      console.log("this.meetingDetails.status", this.meetingDetails.status, status);
-      if(status=='COMPLETED' && (this.toCascadeChanges)){ //|| this.toCascadeLinakges)
+      if(status=='COMPLETED' && (this.refInformation.toCascadeChanges)){ //|| this.toCascadeLinakges)
         let title = "Invalid Operation";
         let body = "It seems you are trying to mark the meeting COMPLETE and propagate changes for the future meetings. \
                     This is not permitted, either cancel change propagation or keep the meeting status as OPEN and try again.";

@@ -7,7 +7,9 @@
     <ion-input readonly="true"></ion-input>
   </ion-item>
   <ion-item lines="none">
-    <ion-textarea autoGrow="true" wrap="soft" [(ngModel)]="meetingDetails.agendas" [value]="meetingDetails?.agendas"  color="medium"></ion-textarea>
+    <ion-textarea autoGrow="true" wrap="soft" [(ngModel)]="meetingDetails.agendas" [value]="meetingDetails?.agendas"  color="medium"
+      placeholder="Please enter meeting agenda here"
+    ></ion-textarea>
   </ion-item>
   <br/>
 </ion-card>
@@ -21,7 +23,9 @@
     <ion-input  readonly="true"></ion-input>
   </ion-item>
   <ion-item lines="none">
-    <ion-textarea autoGrow="true" wrap="soft" [(ngModel)]="meetingDetails.notes" [value]="meetingDetails?.notes" color="medium"></ion-textarea>
+    <ion-textarea autoGrow="true" wrap="soft" [(ngModel)]="meetingDetails.notes" [value]="meetingDetails?.notes" color="medium"
+    placeholder="Please add meeting notes here"
+    ></ion-textarea>
   </ion-item>
   <br/>
 </ion-card>
