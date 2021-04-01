@@ -21,12 +21,6 @@ export class DatabaseService {
     transactions:'transactions',
     coupons:"coupons",
     latestAlert:"latestAlerts",
-    meeting:'meetings',
-    risk:'risks',
-    task:'tasks',
-    issue:'issues',
-    kpi:'kpi',
-    comment:'comments'
   };
   // Admin instance of firebase to create new users, this is to avoid messing up the
   // auth token post user creation for the .currentUser data

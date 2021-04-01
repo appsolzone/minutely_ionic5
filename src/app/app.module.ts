@@ -17,6 +17,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
+import { FormsModule,ReactiveFormsModule }   from '@angular/forms';
 
 // ion2-calendar
 import { CalendarModule } from 'ion2-calendar';
@@ -33,7 +34,9 @@ import { CalendarModule } from 'ion2-calendar';
     AngularFireDatabaseModule,
     AngularFirestoreModule,
     CalendarModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     StatusBar,

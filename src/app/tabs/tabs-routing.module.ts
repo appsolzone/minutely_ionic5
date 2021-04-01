@@ -23,18 +23,6 @@ const routes: Routes = [
         path: 'subscription',
         loadChildren: () => import('../page/subscription/subscription.module').then( m => m.SubscriptionPageModule)
       },
-        {
-        path: 'meeting',
-        loadChildren: () => import('../page/meeting/meeting/meeting.module').then( m => m.MeetingPageModule)
-      },
-      {
-        path: 'risk',
-        loadChildren: () => import('../page/risk/risk/risk.module').then( m => m.RiskPageModule)
-      },
-        {
-        path: 'task',
-        loadChildren: () => import('../page/task/task/task.module').then( m => m.TaskPageModule)
-      },
       {
         path: '',
         redirectTo: 'profile',

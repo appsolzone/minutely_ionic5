@@ -10,34 +10,6 @@
 // },
 export const appPages = [
   {
-   title: 'Meeting',
-   url: 'meeting',
-   icon: 'calendar',
-   tab: 'meeting',
-   disabled: true,
-  },
-  {
-   title: 'Task',
-   url: 'task',
-   icon: 'body',
-   tab: 'task',
-   disabled: true,
-  },
-  {
-   title: 'Issue',
-   url: 'issue',
-   icon: 'options',
-   tab: 'issue',
-   disabled: true,
-  },
-  {
-   title: 'Risk',
-   url: 'risk',
-   icon: 'flag',
-   tab: 'risk',
-   disabled: true,
-  },
-  {
     title: 'Alerts',
     url: 'notification',
     icon: 'notifications',

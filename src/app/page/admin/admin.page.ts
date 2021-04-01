@@ -202,4 +202,9 @@ export class AdminPage implements OnInit,OnChanges {
       await actionSheet.present();
     }
   }
+
+
+  gotoChangeOrgName(){
+    this.router.navigate(['/admin/edit-organization']);
+  }
 }

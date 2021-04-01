@@ -8,7 +8,7 @@ export interface Subscriber {
   noOfFreeLicense: number,
   noOfUserAllowed: number,
   address?: string,
-  companyLogo?: string,
+  picUrl?: string,
   tncVersion: number,
   subscriptionType: string,
   subscriptionStart: any,

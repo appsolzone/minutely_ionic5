@@ -105,7 +105,7 @@ export class AdminAddUsersService {
       userId = userDetails.user.uid;
     }
     return await this.componentService.presentAlertConfirm(
-      "Warning",`Are you sure you want to register ${newUserData.name} in this organisation as ${newUserData.role}`
+      "Warning",`Are you sure you want to register ${newUserData.name} in ${orgProfile.companyName} as ${newUserData.role}`
       )
      .then(async function(res:any){
       console.log("======= presentAlertConfirm ========");  
