@@ -24,6 +24,12 @@ export class MeetingDetailsPage implements OnInit {
                             issues: [],
                             risks: []
                           };
+  public editedlinkages: any = {
+                            meetings: [],
+                            tasks: [],
+                            issues: [],
+                            risks: []
+                          };
 
   constructor(
     private router: Router,
@@ -86,6 +92,12 @@ export class MeetingDetailsPage implements OnInit {
                               console.log("meeting details", this.meeting);
                           });
 
+  }
+  // edit linkage callback
+  publishLinkage(ev){
+    this.alllinkages = ev.linkages;
+    this.editedlinkages = ev.editedlinkages;
+    console.log("edited data received", this.alllinkages, this.editedlinkages);
   }
 
   // editMeeting
