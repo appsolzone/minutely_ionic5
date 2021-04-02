@@ -1,0 +1,27 @@
+export interface Task {
+    taskId?:string,
+    id?:string,
+    taskTitle : string,
+    taskOwner :any,
+    taskInitiationDate : any,
+    taskEntryDate : any,
+    targetCompletionDate : any,
+    actualCompletionDate: any,
+    taskStatus: 'OPEN',
+    lastUpdateDate: any,
+    subscriberId:string,
+    latestComment:any,
+    taskInitiator :{
+      name:string,
+      uid:string,
+      picUrl:any,
+      subscriberId:string,
+      email:string
+    },
+    tags:[],
+    taskProbability :string,
+    taskImpact:string,
+    taskDetails:string,
+    titleSearchMap: any,
+    ownerInitiatorUidList:Array<any>,
+}

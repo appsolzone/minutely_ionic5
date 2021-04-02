@@ -53,7 +53,7 @@ export class AddMemberPage implements OnInit,OnChanges {
       phone: ['', Validators.required],
       role: ['', Validators.required],
 
-      
+
     });
 
   //   this.adminUserForm = new FormGroup({
@@ -93,14 +93,14 @@ export class AddMemberPage implements OnInit,OnChanges {
      });
   }
 
- 
+
 
   resetAddUserForm(){
     this.addUserData = {...this.manageUserService.newUser};
     this.adminUserForm.reset();
 
    // this.adminUserForm.reset(this.adminUserForm.value);
-    
+
     // this.adminUserForm.form.controls['description'].markAsPristine();4
     // markFormGroupTouched(this.adminUserForm)
     // FormGroup.markAllAsTouched('f');

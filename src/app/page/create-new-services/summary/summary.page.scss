@@ -1,0 +1,60 @@
+$color-peach-bg: linear-gradient(40deg, rgb(255, 216, 111), rgb(252, 98, 98));
+$color-aqua-bg: linear-gradient(40deg, rgb(32, 150, 255), rgb(5, 255, 163));
+$color-green-bg: linear-gradient(40deg, #62b796, rgb(5, 255, 163));
+$color-accent-bg: linear-gradient(40deg, #e83a4f, rgb(252, 98, 98));
+$color-ash-bg: linear-gradient(40deg, #cdcbcc, #cdcbcc45);
+$color-brown-bg: linear-gradient(40deg, #8d6e63, #f6c513);
+$color-primary-bg: linear-gradient(40deg, rgb(48, 63, 159), rgb(69, 202, 252));
+$color-secondary-bg: linear-gradient(
+  40deg,
+  rgb(32, 150, 255),
+  rgb(5, 255, 163)
+);
+$color-purple-bg: linear-gradient(
+  40deg,
+  rgb(255, 110, 196),
+  rgb(120, 115, 245)
+);
+$color-blue-bg: linear-gradient(40deg, rgb(48, 63, 159), rgb(69, 202, 252)); //
+.purplebg {
+  background: $color-purple-bg;
+}
+.aquabg,
+.LowLow {
+  background: $color-aqua-bg !important;
+}
+.peachbg {
+  background: $color-peach-bg !important;
+}
+.redbg,
+.HighHigh,
+.MediumHigh,
+.HighMedium {
+  background: $color-accent-bg !important;
+}
+.orangebg,
+.MediumLow,
+.HighLow,
+.LowMedium,
+.LowHigh,
+.MediumMedium {
+  background: orange !important;
+}
+// .lightbg{
+//   background: color($colors,light) !important;
+// }
+.verticalText {
+  writing-mode: vertical-rl;
+  padding-bottom: 4rem;
+  transform: rotate(-180deg);
+}
+.withincard {
+  padding-bottom: 1rem;
+  // color: color($colors, appash);
+}
+.cardgraph {
+  // padding: 0.2rem 0;
+  margin: 0.2rem;
+  max-height: 2.4rem;
+  max-width: 2.4rem;
+}
