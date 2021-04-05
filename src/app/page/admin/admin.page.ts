@@ -100,11 +100,11 @@ export class AdminPage implements OnInit,OnChanges {
       //   return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 && item.status == "REGISTERED";
       // }else{
         return (
-                item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 ||
+                item.name?.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 ||
                 item.email.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 ||
                 item.status.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 ||
-                item.role.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 ||
-                item.jobTitle.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1
+                item.role?.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 ||
+                item.jobTitle?.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1
               );
       // }
     });

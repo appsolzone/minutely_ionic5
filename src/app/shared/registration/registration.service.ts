@@ -110,7 +110,7 @@ export class RegistrationService {
                                      }
                                    );
            // during admin user onboard
-           if(userOnbordData !== undefined){
+           if(userOnbordData != undefined){
            let subsUpdateObj = {
               'noOfFreeLicense': this.db.frb.firestore.FieldValue.increment(-1),
               }

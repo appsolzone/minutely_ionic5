@@ -71,10 +71,10 @@ export class ManageuserService {
           let decrementObj = {'noOfFreeLicense': this.db.frb.firestore.FieldValue.increment(-1)};
           if(this.decrementStatus.includes(whatToDo) && data.status !== 'REGISTERED'){
             this.db.setTransactDocument(transaction, subscriberRef,incrementObj,true);
-          }else if(this.incrementStatus.includes(whatToDo) && data.status !== 'REGISTERED'){
+          }else if(this.incrementStatus.includes(whatToDo)){ // && data.status !== 'REGISTERED'){
             this.db.setTransactDocument(transaction, subscriberRef,decrementObj,true);
-          }else if(this.incrementStatus.includes(whatToDo) && data.status !== 'REGISTERED'){
-            this.db.setTransactDocument(transaction, subscriberRef,incrementObj,true);
+          // }else if(this.incrementStatus.includes(whatToDo) && data.status !== 'REGISTERED'){
+          //   this.db.setTransactDocument(transaction, subscriberRef,incrementObj,true);
           }else{
             // no need
           }
