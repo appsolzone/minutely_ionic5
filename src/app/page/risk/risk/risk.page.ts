@@ -55,15 +55,15 @@ export class RiskPage implements OnInit,OnDestroy {
   }
 
   naviageteAddPage(){
-   let actions = this.crud.crud_action; 
-   actions = {
-     service:'Risk',
-     type:'create',
-     parentModule:'risk',
-     header:'Create new risk',
-     object:this.crud.passingObj
-   } 
-   this.crud.crud_action$.next(actions);
-   this.router.navigate(['/risk/initiate']);
+   // let actions = this.crud.crud_action;
+   // actions = {
+   //   service:'Risk',
+   //   type:'create',
+   //   parentModule:'risk',
+   //   header:'Create new risk',
+   //   object:this.crud.passingObj
+   // }
+   // this.crud.crud_action$.next(actions);
+   // this.router.navigate(['/risk/initiate']);
   }
 }

@@ -46,15 +46,15 @@ export class TaskPage implements  OnInit,OnDestroy {
   }
 
   naviageteAddPage(){
-   let actions = this.crud.crud_action; 
-   actions = {
-     service:'Task',
-     type:'create',
-     parentModule:'task',
-     header:'Create new task',
-     object:this.crud.passingObj
-   } 
-   this.crud.crud_action$.next(actions);
-   this.router.navigate(['/task/initiate']);
+   // let actions = this.crud.crud_action;
+   // actions = {
+   //   service:'Task',
+   //   type:'create',
+   //   parentModule:'task',
+   //   header:'Create new task',
+   //   object:this.crud.passingObj
+   // }
+   // this.crud.crud_action$.next(actions);
+   // this.router.navigate(['/task/initiate']);
   }
 }
