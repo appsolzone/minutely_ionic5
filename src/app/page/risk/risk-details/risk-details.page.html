@@ -1,8 +1,22 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Risk details</ion-title>
+    <ion-title class="ion-hide-md-up ion-text-start">Risk details</ion-title>
+    <ion-title class="ion-hide-md-down">Risk details</ion-title>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/risk"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end" class="ion-padding-end ion-margin-end">
+      <ion-button slot="end"
+        *ngIf="risk?.data.riskOwner.uid == sessionInfo?.uid || risk?.data.riskInitiator.uid == sessionInfo?.uid"
+        (click)="editRisk()">
+        <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button slot="end" (click)="sendMinutes()">
+        <ion-icon name="paper-plane-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button slot="end" disabled="true" class="ion-hide-lg-up">
+        <ion-icon name="" slot="icon-only"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -34,7 +48,7 @@
         <!-- <ion-fab-button (click)="naviageteAddPage()" color="primary">
             <ion-icon name="add-outline"></ion-icon>
           </ion-fab-button> -->
-        <ion-fab-button (click)="editMode()" color="primary"
+        <ion-fab-button (click)="editRisk()" color="primary"
           *ngIf="risk?.data.riskInitiator.uid != sessionInfo.userProfile?.uid || risk?.data.riskOwner.uid != sessionInfo.userProfile?.uid">
           <ion-icon name="create-outline"></ion-icon>
         </ion-fab-button>

@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-hide-md-up ion-text-start">Risk details</ion-title>
+    <ion-title class="ion-hide-md-down">Risk details</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/risk"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end" class="ion-padding-end ion-margin-end">
+      <ion-button slot="end" *ngIf="risk?.data.riskOwner.uid == sessionInfo?.uid || risk?.data.riskInitiator.uid == sessionInfo?.uid" (click)="editrisk()">
+        <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button slot="end" (click)="sendMinutes()">
+        <ion-icon name="paper-plane-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button slot="end" disabled="true" class="ion-hide-lg-up">
+        <ion-icon name="" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col size="12" size-md="6">
+      <ion-card class="ion-no-padding ion-no-margin">
+        <app-risk-basic-info-edit *ngIf="sessionInfo && risk" [risk]="risk" [sessionInfo]="sessionInfo" [refInformation]="refInformation">
+        </app-risk-basic-info-edit>
+        <app-risk-probability-impact-edit *ngIf="sessionInfo && risk" [risk]="risk" [sessionInfo]="sessionInfo">
+        </app-risk-probability-impact-edit>
+        <app-risk-owner-initiator-edit *ngIf="sessionInfo && risk" [risk]="risk" [sessionInfo]="sessionInfo">
+        </app-risk-owner-initiator-edit>
+      </ion-card>
+    </ion-col>
+    <ion-col size="12" size-md="6">
+      <app-risk-mitigation-contingency-edit *ngIf="sessionInfo && risk" [risk]="risk" [sessionInfo]="sessionInfo">
+      </app-risk-mitigation-contingency-edit>
+      <app-linkage *ngIf="sessionInfo && risk" [selectedObject]="risk" [sessionInfo]="sessionInfo"
+      [alllinkages]="alllinkages"> </app-linkage>
+    </ion-col>
+  </ion-row>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button size="small" (click)="saveRisk()">
+      <ion-icon name="checkmark-done" size="large"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

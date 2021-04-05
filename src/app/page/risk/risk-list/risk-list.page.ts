@@ -180,5 +180,7 @@ export class RiskListPage implements OnInit,OnDestroy {
 
   }
 
-
+  gotoAddRisk(){
+    this.router.navigate(['risk/create-risk'])
+  }
 }

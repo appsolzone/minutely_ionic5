@@ -32,6 +32,18 @@ const routes: Routes = [
     path: 'risk-details',
     loadChildren: () => import('../../risk/risk-details/risk-details.module').then( m => m.RiskDetailsPageModule)
   },
+    {
+    path: 'risk-details-linkage/:id',
+    loadChildren: () => import('../../risk/risk-details/risk-details.module').then( m => m.RiskDetailsPageModule)
+  },
+  {
+    path: 'meeting-details-edit',
+    loadChildren: () => import('../../risk/risk-details-edit/risk-details-edit.module').then( m => m.RiskDetailsEditPageModule)
+  },
+  {
+    path: 'create-meeting',
+    loadChildren: () => import('../../risk/create-risk/create-risk.module').then( m => m.CreateRiskPageModule)
+  }
 ];
 
 @NgModule({

@@ -5,6 +5,7 @@ import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { User } from 'src/app/interface/user';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { CrudService } from 'src/app/shared/crud/crud.service';
+import { RiskService } from 'src/app/shared/risk/risk.service';
 import { SessionService } from 'src/app/shared/session/session.service';
 
 @Component({
@@ -17,34 +18,38 @@ import { SessionService } from 'src/app/shared/session/session.service';
 export class RiskDetailsPage implements OnInit,OnDestroy {
   // observables
   sessionSubs$;
+  risksSubs$;
   public sessionInfo: any;
   public risk: any;
 
-  //variable
-  public riskCopy:any|null = null;
-  public toggleEditMode:boolean = false;
 
-  status:string='';
-  maxMeetingDate: any = moment().add(20,'years').format("YYYY");
-  minMeetingDate: any = moment().format("YYYY-MM-DD");
-  date: any;
+  public alllinkages: any = {
+                            meetings: [],
+                            tasks: [],
+                            issues: [],
+                            risks: []
+                          };
 
-  addThisTag:string;
   
   constructor(
-    private crud:CrudService,
     private router:Router,
     private session:SessionService,
+    private riskService: RiskService,
+    private common: ComponentsService,
     ) {
         this.getSessionInfo();
      }
 
   ngOnInit() {
-    this.risk = history.state.data.risk;
-    console.log("riskDetails ngOnInit",this.risk)
-    if(!this.risk){
+    let riskStateData = history.state.data.risk;
+    console.log("riskDetails ngOnInit")
+    if(!riskStateData){
       console.log("ngOnInit")
       this.router.navigate(['risk']);
+    } else{
+      if(riskStateData?.id!=this.risk?.id){
+        this.getRisk(riskStateData);
+      }
     }
   }
   ngOnDestroy(){}
@@ -61,56 +66,59 @@ export class RiskDetailsPage implements OnInit,OnDestroy {
 
   ionViewDidEnter(){
     console.log("riskDetails ionViewDidEnter", history.state.data?.risk)
-    this.risk = history.state.data?.risk ? history.state.data.risk : this.risk;
-    console.log(this.risk)
-    if(!this.risk){
+    let riskStateData = history.state.data?.risk ? history.state.data.risk : this.risk;
+    if(!riskStateData){
       console.log("ionViewDidEnter")
       this.router.navigate(['risk']);
+    } else {
+      if(riskStateData?.id!=this.risk?.id){
+        this.getRisk(riskStateData);
+      }
     }
   }
 
+   // search implement
+  getRisk(riskStateData){
+    // this.risk = null;
+    this.risksSubs$ = this.riskService.getRiskById(riskStateData.id)
+                          .subscribe(act=>{
+                              const data: any = act.payload.data();
+                              const id: string = act.payload.id;
+                              const riskInitiationDate = new Date(data.riskInitiationDate?.seconds*1000);
+                              const targetCompletionDate = data.targetCompletionDate?.seconds ? new Date(data.targetCompletionDate?.seconds*1000) : null;
+                              this.risk = {id, data: {...data, targetCompletionDate, riskInitiationDate }};
 
-  goToCommentPage(risk){
-   let passObj = {...risk,parentModule:'risk',navigateBack:'/risk/risk-details'};
-   this.crud.detailsPagePasing$.next(passObj);
-   this.router.navigate(['/risk/risk-details/comments']); 
+                              console.log("risk details", this.risk);
+                          });
+
   }
 
-  // goToSelectMemberPage(){
-  //  let crud_action = {
-  //   service:'Risk',     // Meeting,Risk,Issue,Task
-  //   type:'update',        // create,update
-  //   parentModule:'risk',    //meeting,risk,issue,task
-  //   header:'Update new risk owner',      // header on page
-  //   object:{...this.risk},      // initiate object
-  //   }
-  //   this.crud.detailsPagePasing$.next(crud_action.object);
-  //   // this.router.navigate(['/risk/details/select-members']); 
 
-  //   console.log("this latest details condition :",this.risk)
+
+
+  // goToCommentPage(risk){
+  //  let passObj = {...risk,parentModule:'risk',navigateBack:'/risk/risk-details'};
+  //  this.crud.detailsPagePasing$.next(passObj);
+  //  this.router.navigate(['/risk/risk-details/comments']); 
   // }
 
-
-  // // ====== [ tags ] =========
-  // // adding tags
-  // addTags(){
-  //   if(this.addThisTag && this.addThisTag!=""){
-  //     this.risk.tags.push(this.addThisTag);
-  //     this.addThisTag = '';
-  //   }
+    // editrisk
+  editRisk(){
+    this.router.navigate(['risk/risk-details-edit'],{state: {data:{risk: this.risk}}});
+  }
+  // share Risk
+  // async sendMinutes(){
+  //   let response = await this.riskService.shareRiskMinutes(this.risk, this.alllinkages);
+  //   let buttons = [
+  //                   {
+  //                     text: 'Dismiss',
+  //                     role: 'cancel',
+  //                     cssClass: '',
+  //                     handler: ()=>{}
+  //                   }
+  //                 ];
+  //   this.common.presentAlert(response.title, response.body, buttons);
   // }
-  // // delete tags
-  // deleteTag(toBeDeleted){
-  //   let index = this.risk.tags.indexOf(toBeDeleted);
-  //   this.risk.tags.splice(index, 1);
-  // } 
 
-  // //editMode
-  // editMode(){
-
-  //   console.log("the current risk data ====",this.risk);
-  //   this.toggleEditMode = !this.toggleEditMode;
-  //   this.risk = this.riskCopy;
-  // }
 
 }
