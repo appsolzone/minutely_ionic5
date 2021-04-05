@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { RiskBasicInfoEditPage } from './risk-basic-info-edit.page';
 
+
 @NgModule({
   imports: [
     CommonModule,

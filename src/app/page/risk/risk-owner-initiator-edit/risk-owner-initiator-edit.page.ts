@@ -49,9 +49,10 @@ export class RiskOwnerInitiatorEditPage implements OnInit {
   }
 
   generateAttendeeListUid(){
-    let ownerInitiatorUidList = this.riskDetails.attendeeList.map(a=>a.uid);
+    let ownerInitiatorUidList = [];
+    ownerInitiatorUidList.push(this.riskDetails.riskOwner.uid);
     ownerInitiatorUidList.push(this.riskDetails.riskInitiator.uid);
-    this.riskDetails.attendeeUidList = ownerInitiatorUidList;
+    this.riskDetails.ownerInitiatorUidList = ownerInitiatorUidList;
   }
 
 }

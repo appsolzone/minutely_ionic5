@@ -149,7 +149,7 @@ export class RiskListPage implements OnInit,OnDestroy {
     //   queryObj.push({field: 'meetingStart',operator: '<=', value: this.dateRange.endDate});
     // }
     if(this.searchText?.trim().length>=3){
-      searchTextObj = {seachField: 'searchMap', text: this.searchText.trim(), searchOption: this.searchMode};
+      searchTextObj = {seachField: 'titleSearchMap', text: this.searchText.trim(), searchOption: this.searchMode};
     }
     console.log("queryObj, searchTextObj, this.limit", queryObj, searchTextObj, this.limit);
     if(this.searchText?.trim().length>=3 || !this.activeSearchMode){ // or dates selected

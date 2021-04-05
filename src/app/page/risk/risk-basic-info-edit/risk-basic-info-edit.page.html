@@ -3,7 +3,7 @@
     <ion-icon name="time-outline"></ion-icon> Risk Initiate
   </ion-label>
   <ion-datetime displayFormat="DD MMM, YYYY HH:mm" [min]="minRiskDate"
-    [max]="riskDetails.targetCompletionDate ? RiskDetails.targetCompletionDate : defaultMaxDate"
+    [max]="riskDetails.targetCompletionDate ? riskDetails.targetCompletionDate : defaultMaxDate"
     [(ngModel)]="riskDetails.riskInitiationDate" (ionChange)="dateChange()" placeholder="Please select risk start time">
   </ion-datetime>
 </ion-item>
@@ -12,7 +12,7 @@
     <ion-icon name="time-outline"></ion-icon> Risk End
   </ion-label>
   <ion-datetime displayFormat="DD MMM, YYYY HH:mm" [min]="riskDetails.riskInitiationDate"
-    [(ngModel)]="RiskDetails.targetCompletionDate" (ionChange)="dateChange()" placeholder="Please select risk end time">
+    [(ngModel)]="riskDetails.targetCompletionDate" (ionChange)="dateChange()" placeholder="Please select risk end time">
   </ion-datetime>
 </ion-item>
 <ion-item lines="none">
@@ -53,7 +53,7 @@
     <ion-icon name="bookmark"></ion-icon> Status
   </ion-label>
   <ion-button slot="end"
-    [color]="riskDetails?.riskStatus=='OPEN'? 'warning' : riskDetails?.status=='RESOLVED' ? 'green' : 'danger'"
+    [color]="riskDetails?.riskStatus=='OPEN'? 'warning' : riskDetails?.status=='RESOLVED' ? 'green' : 'primary'"
     class="ion-padding-start ion-padding-end">
     {{riskDetails?.riskStatus}}
   </ion-button>
