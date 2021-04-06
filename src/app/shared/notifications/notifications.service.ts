@@ -11,8 +11,8 @@ export class NotificationsService {
     createdAt: this.db.frb.firestore.FieldValue.serverTimestamp(),
     msgBody: '',
     msgTitle: '',
-    origin: {label: '', icon: ''},
-    actions: {action1:'Dismiss',},
+    origin: {label: '', icon: '', color: ''},
+    actions: [{text: 'clear', color: 'medium', href: 'clear'}],
     refData: {}, // data required for any action or oter purpose
     subscriberId: '',
     user: {uid: '', email: '', name: ''}
@@ -30,11 +30,11 @@ export class NotificationsService {
   createNotifications(notifications: any[]=[])
   {
     console.log("function is calling")
-    return new Promise((resolve: any, reject: any)=>{
+    return new Promise(async (resolve: any, reject: any)=>{
       // initiate a btach
       let batch = this.db.afs.firestore.batch(); // initiate batch
       // Loop through the notifications to populate notifications
-      notifications.forEach(async (msg)=>{
+      await notifications.forEach(async (msg)=>{
         // set the document for the item in concern
         let notificationItem = await this.db.generateDocuemnetRef(this.db.allCollections.notifications);
         batch.set(notificationItem.ref,msg);
@@ -55,7 +55,7 @@ export class NotificationsService {
     this.db.deleteDocument(this.db.allCollections.notifications, notification.id);
   }
 
-  getBroadcastNotifications(msg: any, sessionInfo: any, listofUsers: any[]=[])
+  broadcastNotifications(msg: any, sessionInfo: any, listofUsers: any[]=[])
   {
     let newNotifications = [];
     let {subscriberId} = sessionInfo;
@@ -63,10 +63,10 @@ export class NotificationsService {
     let _newAlertObj: any=
           {
             ...this.newNotification,
-            msgBody: msg,
-            msgTitle: 'Boradcast message',
-            origin: {label: 'broadcasts', icon: 'megaphone'},
-            actions: {action1:'Dismiss',},
+            msgBody: msg.msgBody,
+            msgTitle: msg.msgTitle ? msg.msgTitle : 'Boradcast message',
+            origin: {label: 'Broadcasts', icon: 'megaphone', color: 'secondary'},
+            actions: [{text: 'clear', color: 'medium', href: 'clear'}],
             refData: {}, // data required for any action or oter purpose
             subscriberId: subscriberId,
             user: {uid: '', email: '', name: ''}
@@ -75,6 +75,7 @@ export class NotificationsService {
       return {..._newAlertObj, user:{uid: u.uid, email: u.email, name: u.name} }
     });
 
-    return newNotifications;
+    this.createNotifications(newNotifications);
+    return {status: 'success', title: 'Broadcast messge', body: 'Message has been successfully broadcasted for the selected people.'}
   }
 }

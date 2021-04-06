@@ -1,8 +1,11 @@
 <ion-header class="ion-hide-md-down">
   <ion-toolbar class="ion-padding-end">
     <ion-buttons slot="end" class="ion-hide-md-down ion-padding-end ion-margin-end">
+      <ion-button routerDirection="forward" (click)="gotoBroadcastMessage()">
+        <ion-icon slot="icon-only" name="megaphone"></ion-icon>
+      </ion-button>
       <ion-button routerDirection="forward" (click)="gotoChangeOrgName()">
-        <ion-icon slot="icon-only" name="qr-code" color="success"></ion-icon>
+        <ion-icon slot="icon-only" name="qr-code"></ion-icon>
       </ion-button>
       </ion-buttons>
     <ion-title>Admin</ion-title>
@@ -15,8 +18,11 @@
 
     <ion-toolbar class="ion-padding-end">
       <ion-buttons slot="end" class="ion-hide-md-up ion-padding-end ion-margin-end">
+        <ion-button routerDirection="forward" (click)="gotoBroadcastMessage()">
+          <ion-icon slot="icon-only" name="megaphone"></ion-icon>
+        </ion-button>
         <ion-button routerDirection="forward" (click)="gotoChangeOrgName()">
-          <ion-icon slot="icon-only" name="qr-code" color="success"></ion-icon>
+          <ion-icon slot="icon-only" name="qr-code"></ion-icon>
         </ion-button>
       </ion-buttons>
       <ion-title>Admin</ion-title>

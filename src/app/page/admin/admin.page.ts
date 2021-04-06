@@ -46,7 +46,9 @@ export class AdminPage implements OnInit,OnChanges {
 
   }
    ionViewWillEnter(){
-    this.fetchAllMembers();
+     if(this.orgProfile){
+       this.fetchAllMembers();
+     }
    }
 
    gotoAddMemberPage(){
@@ -72,7 +74,7 @@ export class AdminPage implements OnInit,OnChanges {
   }
 
   fetchAllMembers(){
-    let queryObj = [{field: 'subscriberId',operator: '==', value: this.orgProfile.subscriberId}]
+    let queryObj = [{field: 'subscriberId',operator: '==', value: this.orgProfile?.subscriberId}]
     this.fetchAllMembers$ = this.adminManageUserServ.fetchAllUsers(queryObj)
     .pipe(
         map((actions: any[]) => actions.map((a: any) => {
@@ -206,5 +208,9 @@ export class AdminPage implements OnInit,OnChanges {
 
   gotoChangeOrgName(){
     this.router.navigate(['/admin/edit-organization']);
+  }
+
+  gotoBroadcastMessage(){
+    this.router.navigate(['/admin/broadcast-message']);
   }
 }

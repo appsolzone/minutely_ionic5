@@ -5,6 +5,7 @@ import { TextsearchService } from 'src/app/shared/textsearch/textsearch.service'
 import { LinkageService } from 'src/app/shared/linkage/linkage.service';
 import { KpiService } from 'src/app/shared/kpi/kpi.service';
 import { NotificationsService } from 'src/app/shared/notifications/notifications.service';
+import { ItemUpdatesService } from 'src/app/shared/item-updates/item-updates.service';
 import { SendEmailService } from 'src/app/shared/send-email/send-email.service';
 import { Meeting } from 'src/app/interface/meeting';
 
@@ -49,6 +50,7 @@ export class MeetingService {
     public link: LinkageService,
     public kpi: KpiService,
     public notification: NotificationsService,
+    public itemupdate: ItemUpdatesService,
     public sendmail: SendEmailService,
   ){
      // TBA
@@ -391,10 +393,10 @@ export class MeetingService {
 
           // this.meetingExpand = this.issueExpand = this.riskExpand = this.taskExpand = false;
           // what about seting the values of other fields which are required to be reset post update
-          let infodata = (meeting.status == 'CANCEL' ? meeting : refCopy);
+          let infodata = (meeting.status == 'CANCEL' ? refCopy : meeting);
           let eventInfo = {
             origin: 'meetings',
-            eventType: meeting.status == 'CANCEL' ? 'cancel' : 'update',
+            eventType: type=='new' ? 'add' : meeting.status == 'CANCEL' ? 'cancel' : 'update',
             data: {
               id: refCopy.id,
               subscriberId: subscriberId,
@@ -402,7 +404,8 @@ export class MeetingService {
             },
             prevData: refCopy,
           };
-          this.notification.createNotifications(eventInfo);
+          let notifications = this.itemupdate.getNotifications(eventInfo);
+          this.notification.createNotifications(notifications);
           if(meeting.status != 'CANCEL'){
             // this.sendMail(meeting.attendeeList,refCopy.id,meeting.meetingStart,meeting.meetingEnd);
           }
