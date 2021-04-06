@@ -66,4 +66,8 @@ export class RiskPage implements OnInit,OnDestroy {
    // this.crud.crud_action$.next(actions);
    // this.router.navigate(['/risk/initiate']);
   }
+
+    gotoAddRisk(){
+    this.router.navigate(['risk/create-risk'])
+  }
 }

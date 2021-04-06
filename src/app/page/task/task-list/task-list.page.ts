@@ -179,5 +179,8 @@ export class TaskListPage implements OnInit,OnDestroy {
 
   }
 
+  gotoAddTask(){
+    this.router.navigate(['task/create-task'])
+  }
 
 }

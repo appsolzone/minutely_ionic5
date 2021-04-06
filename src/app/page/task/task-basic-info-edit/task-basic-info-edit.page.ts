@@ -4,25 +4,25 @@ import * as moment from 'moment';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 
 @Component({
-  selector: 'app-risk-basic-info-edit',
-  templateUrl: './risk-basic-info-edit.page.html',
-  styleUrls: ['./risk-basic-info-edit.page.scss'],
+  selector: 'app-task-basic-info-edit',
+  templateUrl: './task-basic-info-edit.page.html',
+  styleUrls: ['./task-basic-info-edit.page.scss'],
 })
-export class RiskBasicInfoEditPage implements OnInit {
+export class TaskBasicInfoEditPage implements OnInit {
   @Input() sessionInfo: any;
-  @Input() risk: any;
+  @Input() task: any;
   @Input() refInformation: any;
   @Input() editMode: string = 'update';
   // form data
   // public noOfOccurenceOption: any = Array.from(Array(30)).map((a,i)=>i+1);
-  public riskDetails: any;
-  public riskExpired: boolean=false;
+  public taskDetails: any;
+  public taskExpired: boolean=false;
   public acceptedStatus: any;
-  public minRiskDate: any;
+  public minTaskDate: any;
   public defaultMaxDate: any;
   public showCascadeChange: boolean = false;
   // public toCascadeChanges: boolean = false;
-  public riskTag: string = '';
+  public taskTag: string = '';
 
   constructor(
     private router: Router,
@@ -30,16 +30,16 @@ export class RiskBasicInfoEditPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.riskDetails = this.risk?.data;
-    console.log("riskDetails", this.riskDetails);
-    if(this.riskDetails){
+    this.taskDetails = this.task?.data;
+    console.log("taskDetails", this.taskDetails);
+    if(this.taskDetails){
       this.checkAcceptence();
       this.initialiseEdit();
     }
   }
   ngOnChanges() {
-    this.riskDetails = this.risk?.data;
-    if(this.riskDetails){
+    this.taskDetails = this.task?.data;
+    if(this.taskDetails){
       this.checkAcceptence();
       this.initialiseEdit();
     }
@@ -47,16 +47,16 @@ export class RiskBasicInfoEditPage implements OnInit {
 
   checkAcceptence(){
     let now = new Date();
-    let expired = this.riskDetails.riskInitiationDate;
+    let expired = this.taskDetails.taskInitiationDate;
     if(now > expired){
-      this.riskExpired = true;
+      this.taskExpired = true;
     } else {
-      this.riskExpired = false;
+      this.taskExpired = false;
     }
-    //let attendeePos = this.riskDetails.ownerInitiatorUidList.findIndex((u,i)=>u.uid==this.sessionInfo.uid);
+    //let attendeePos = this.taskDetails.ownerInitiatorUidList.findIndex((u,i)=>u.uid==this.sessionInfo.uid);
     // if(attendeePos!=-1){
-    //   this.acceptedStatus = this.riskDetails.attendeeList[attendeePos].accepted ?
-    //                         this.riskDetails.attendeeList[attendeePos].accepted
+    //   this.acceptedStatus = this.taskDetails.attendeeList[attendeePos].accepted ?
+    //                         this.taskDetails.attendeeList[attendeePos].accepted
     //                         :
     //                         'invited';
     // }
@@ -64,11 +64,11 @@ export class RiskBasicInfoEditPage implements OnInit {
   // edit mode methods
   initialiseEdit(){
     // min and max start date
-    this.minRiskDate = moment().format('YYYY-MM-DD');
+    this.minTaskDate = moment().format('YYYY-MM-DD');
     this.defaultMaxDate = moment().add(5,'y').format('YYYY-MM-DD');
-    this.riskDetails.riskInitiationDate = this.riskDetails.riskInitiationDate ? this.riskDetails.riskInitiationDate : null;
-    this.riskDetails.targetCompletionDate = this.riskDetails.targetCompletionDate  ? this.riskDetails.targetCompletionDate   : null;
-    //this.noOfOccurenceOption.splice(0,this.riskDetails.noOfOccurence &&this.noOfOccurenceOption.length == 30? this.riskDetails.noOfOccurence-1 : 0);
+    this.taskDetails.taskInitiationDate = this.taskDetails.taskInitiationDate ? this.taskDetails.taskInitiationDate : null;
+    this.taskDetails.targetCompletionDate = this.taskDetails.targetCompletionDate  ? this.taskDetails.targetCompletionDate   : null;
+    //this.noOfOccurenceOption.splice(0,this.taskDetails.noOfOccurence &&this.noOfOccurenceOption.length == 30? this.taskDetails.noOfOccurence-1 : 0);
     // console.log("this.noOfOccurenceOption",this.noOfOccurenceOption);
   }
   // cascadechanges
@@ -77,10 +77,10 @@ export class RiskBasicInfoEditPage implements OnInit {
   }
   // date changing
   async dateChange(showAlert:boolean=true){
-    console.log("risk details", this.riskDetails, this.riskDetails.riskInitiationDate, this.minRiskDate, this.defaultMaxDate);
+    console.log("task details", this.taskDetails, this.taskDetails.taskInitiationDate, this.minTaskDate, this.defaultMaxDate);
     let title='';
     let body='';
-    let startDateTime = new Date(this.riskDetails.riskInitiationDate);
+    let startDateTime = new Date(this.taskDetails.taskInitiationDate);
     // let isValidStartDate = !this.meetingDetails.isOccurence ||
     //                        !this.refInformation.toCascadeChanges ||
     //                       (this.meetingDetails.occurenceType!='daily'
@@ -90,7 +90,7 @@ export class RiskBasicInfoEditPage implements OnInit {
     //                          )
     //                       );
     if(
-      (this.refInformation.riskInitiationDate == this.riskDetails.riskInitiationDate && this.refInformation.targetCompletionDate == this.riskDetails.targetCompletionDate ) ||
+      (this.refInformation.taskInitiationDate == this.taskDetails.taskInitiationDate && this.refInformation.targetCompletionDate == this.taskDetails.targetCompletionDate ) ||
       (new Date() <= startDateTime)) {
       this.checkCascadeState();
       return true;
@@ -109,8 +109,8 @@ export class RiskBasicInfoEditPage implements OnInit {
       //                    ];
       //      await this.common.presentAlert(title,body, buttons);
       //   } else {
-          title = "Invalid Risk Start Date";
-          body = "Risk cannot be set in past. The risk start time should be future time.";
+          title = "Invalid task Start Date";
+          body = "task cannot be set in past. The task start time should be future time.";
           let buttons: any[] = [
                           {
                             text: 'Dismiss',
@@ -127,19 +127,19 @@ export class RiskBasicInfoEditPage implements OnInit {
   }
 
   addTag(){
-    this.riskDetails.tags.push(this.riskTag);
-    this.riskTag = '';
+    this.taskDetails.tags.push(this.taskTag);
+    this.taskTag = '';
   }
 
   removeTag(index){
-    this.riskDetails.tags.splice(index,1);
+    this.taskDetails.tags.splice(index,1);
   }
 
   async onCascadeChanges(e){
-    if(this.refInformation.toCascadeChanges && this.riskDetails.riskStatus=='RESOLVED'){
+    if(this.refInformation.toCascadeChanges && this.taskDetails.taskStatus=='RESOLVED'){
       let title = "Invalid Operation";
-      let body = "It seems you are trying to propagate changes for the future risks while the risk status is RESOLVED. \
-              This is not permitted, either cancel change propagation or change the risk status as OPEN and try again.";
+      let body = "It seems you are trying to propagate changes for the future tasks while the task status is RESOLVED. \
+              This is not permitted, either cancel change propagation or change the task status as OPEN and try again.";
       let buttons: any[] = [
                       {
                         text: 'Dismiss',
@@ -159,12 +159,12 @@ export class RiskBasicInfoEditPage implements OnInit {
   async statusChanged(e)
   {
      let status = e.detail.value;
-     let prevStatus = this.riskDetails.riskStatus;
-     console.log("this.riskDetails.riskStatus", this.riskDetails.riskStatus, status);
+     let prevStatus = this.taskDetails.taskStatus;
+     console.log("this.taskDetails.taskStatus", this.taskDetails.taskStatus, status);
       if(status=='RESOLVED' && (this.refInformation.toCascadeChanges)){ //|| this.toCascadeLinakges)
         let title = "Invalid Operation";
-        let body = "It seems you are trying to mark the risk RESOLVED and propagate changes for the future risks. \
-                    This is not permitted, either cancel change propagation or keep the risk status as OPEN and try again.";
+        let body = "It seems you are trying to mark the task RESOLVED and propagate changes for the future tasks. \
+                    This is not permitted, either cancel change propagation or keep the task status as OPEN and try again.";
         let buttons: any[] = [
                         {
                           text: 'Dismiss',
@@ -174,10 +174,11 @@ export class RiskBasicInfoEditPage implements OnInit {
                         }
                       ];
         await this.common.presentAlert(title,body, buttons);
-        this.riskDetails.riskStatus = 'OPEN';
+        this.taskDetails.taskStatus = 'OPEN';
       } else {
-        this.riskDetails.riskStatus=status;
+        this.taskDetails.taskStatus=status;
       }
   }
 
 }
+

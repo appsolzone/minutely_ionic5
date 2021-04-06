@@ -1,15 +1,16 @@
 <ion-item class="" lines="none">
-  <ion-chip
-    color="{{taskDetails?.status=='COMPLETED' ? 'success' : taskDetails?.status=='OPEN' ? 'warning' : 'primary'}}">
-    <ion-icon name="time-outline"></ion-icon>
-    <ion-label>{{taskDetails?.taskInitiationDate| date : 'mediumDate'}}
-    </ion-label>
-  </ion-chip>
-  <ion-label class="ion-no-padding ion-no-margin">
-    <h2>
-      <ion-icon name="calendar" color="medium"></ion-icon> {{taskDetails?.targetCompletionDate| date : 'mediumDate'}}
-    </h2>
-  </ion-label>
+    <ion-buttons slot="start">
+      <ion-button slot="start" fill="solid"
+        color="{{taskDetails?.taskStatus=='RESOLVED' ? 'success' : taskDetails?.taskStatus=='OPEN' ? 'warning' : 'primary'}}">
+        <ion-icon slot="start" name="locate"></ion-icon>
+        {{taskDetails?.taskInitiationDate| date : 'mediumDate'}}
+
+      </ion-button>
+      <ion-button slot="start" fill="solid" color="medium">
+        <ion-icon slot="start" name="pencil"></ion-icon>
+        {{taskDetails?.targetCompletionDate| date : 'mediumDate'}}
+      </ion-button>
+    </ion-buttons>
 </ion-item>
 <ion-item>
   <ion-label class="ion-text-wrap">

@@ -1,8 +1,22 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Task details</ion-title>
+    <ion-title class="ion-hide-md-up ion-text-start">Task details</ion-title>
+    <ion-title class="ion-hide-md-down">Task details</ion-title>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/task"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end" class="ion-padding-end ion-margin-end">
+      <ion-button slot="end"
+        *ngIf="task?.data.taskOwner.uid == sessionInfo?.uid || task?.data.taskInitiator.uid == sessionInfo?.uid"
+        (click)="editTask()">
+        <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button slot="end" (click)="sendMinutes()">
+        <ion-icon name="paper-plane-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button slot="end" disabled="true" class="ion-hide-lg-up">
+        <ion-icon name="" slot="icon-only"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -21,6 +35,10 @@
     <ion-col size="12" size-md="6">
       <app-task-agenda-note *ngIf="sessionInfo && task" [task]="task" [sessionInfo]="sessionInfo">
       </app-task-agenda-note>
+
+
+    <app-linkage *ngIf="sessionInfo && task" [selectedObject]="task" [sessionInfo]="sessionInfo"
+      [alllinkages]="alllinkages"> </app-linkage>
     </ion-col>
   </ion-row>
 

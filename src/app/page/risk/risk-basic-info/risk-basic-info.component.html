@@ -1,5 +1,19 @@
 <ion-item class="" lines="none">
-  <ion-chip
+  <ion-buttons slot="start">
+    <ion-button slot="start" fill="solid"
+      color="{{riskDetails?.riskStatus=='RESOLVED' ? 'success' : riskDetails?.riskStatus=='OPEN' ? 'warning' : 'primary'}}">
+      <ion-icon slot="start" name="locate"></ion-icon>
+      {{riskDetails?.riskInitiationDate| date : 'mediumDate'}}
+  
+    </ion-button>
+    <ion-button slot="start" fill="solid" color="medium">
+      <ion-icon slot="start" name="pencil"></ion-icon>
+      {riskDetails?.targetCompletionDate| date : 'mediumDate'}}
+    </ion-button>
+  </ion-buttons>
+
+
+  <!-- <ion-chip
     color="{{riskDetails?.status=='COMPLETED' ? 'success' : riskDetails?.status=='OPEN' ? 'warning' : 'primary'}}">
     <ion-icon name="time-outline"></ion-icon>
     <ion-label>{{riskDetails?.riskInitiationDate| date : 'mediumDate'}}
@@ -9,7 +23,7 @@
     <h2>
       <ion-icon name="calendar" color="medium"></ion-icon> {{riskDetails?.targetCompletionDate| date : 'mediumDate'}}
     </h2>
-  </ion-label>
+  </ion-label> -->
 </ion-item>
 <ion-item>
   <ion-label class="ion-text-wrap">

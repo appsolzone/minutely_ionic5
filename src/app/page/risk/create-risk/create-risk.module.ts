@@ -7,13 +7,23 @@ import { IonicModule } from '@ionic/angular';
 import { CreateRiskPageRoutingModule } from './create-risk-routing.module';
 
 import { CreateRiskPage } from './create-risk.page';
+import { RiskBasicInfoEditPageModule } from '../risk-basic-info-edit/risk-basic-info-edit.module';
+import { LinkageModule } from '../../linkage/linkage.module';
+import { RiskMitigationContingencyEditModule } from '../risk-mitigation-contingency-edit/risk-mitigation-contingency-edit.module';
+import { RiskOwnerInitiatorEditPageModule } from '../risk-owner-initiator-edit/risk-owner-initiator-edit.module';
+import { RiskProbabilityImpactEditPageModule } from '../risk-probability-impact-edit/risk-probability-impact-edit.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    CreateRiskPageRoutingModule
+    CreateRiskPageRoutingModule,
+    LinkageModule,
+    RiskBasicInfoEditPageModule,
+    RiskMitigationContingencyEditModule,
+    RiskOwnerInitiatorEditPageModule,
+    RiskProbabilityImpactEditPageModule
   ],
   declarations: [CreateRiskPage]
 })

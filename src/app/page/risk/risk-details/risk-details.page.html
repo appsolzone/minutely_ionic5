@@ -36,6 +36,9 @@
     <ion-col size="12" size-md="6">
       <app-risk-mitigation-contingency *ngIf="sessionInfo && risk" [risk]="risk" [sessionInfo]="sessionInfo">
       </app-risk-mitigation-contingency>
+
+      <app-linkage *ngIf="sessionInfo && risk" [selectedObject]="risk" [sessionInfo]="sessionInfo"
+      [alllinkages]="alllinkages"> </app-linkage>
     </ion-col>
   </ion-row>
 

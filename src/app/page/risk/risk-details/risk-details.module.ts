@@ -12,6 +12,7 @@ import { RiskOwnerInitiatorComponent } from '../risk-owner-initiator/risk-owner-
 import { RiskMitigationContingencyComponent } from '../risk-mitigation-contingency/risk-mitigation-contingency.component';
 import { RiskCommentsComponent } from '../risk-comments/risk-comments.component';
 import { RiskProbabilityImpactComponent } from '../risk-probability-impact/risk-probability-impact.component';
+import { LinkageModule } from '../../linkage/linkage.module';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { RiskProbabilityImpactComponent } from '../risk-probability-impact/risk-
     FormsModule,
     IonicModule,
     RiskDetailsPageRoutingModule,
+    LinkageModule,
   ],
   declarations: [
     RiskDetailsPage,

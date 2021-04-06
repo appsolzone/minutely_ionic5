@@ -57,4 +57,9 @@ export class TaskPage implements  OnInit,OnDestroy {
    // this.crud.crud_action$.next(actions);
    // this.router.navigate(['/task/initiate']);
   }
+
+
+  gotoAddTask(){
+    this.router.navigate(['task/create-task'])
+  }
 }

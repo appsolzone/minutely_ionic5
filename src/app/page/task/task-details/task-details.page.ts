@@ -2,8 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
+import { ComponentsService } from 'src/app/shared/components/components.service';
 import { CrudService } from 'src/app/shared/crud/crud.service';
 import { SessionService } from 'src/app/shared/session/session.service';
+import { TaskService } from 'src/app/shared/task/task.service';
 
 @Component({
   selector: 'app-task-details',
@@ -14,34 +16,38 @@ import { SessionService } from 'src/app/shared/session/session.service';
 export class TaskDetailsPage implements OnInit,OnDestroy {
   // observables
   sessionSubs$;
+  tasksSubs$;
   public sessionInfo: any;
   public task: any;
 
-  //variable
-  public riskCopy:any|null = null;
-  public toggleEditMode:boolean = false;
 
-  status:string='';
-  maxMeetingDate: any = moment().add(20,'years').format("YYYY");
-  minMeetingDate: any = moment().format("YYYY-MM-DD");
-  date: any;
+  public alllinkages: any = {
+                            meetings: [],
+                            tasks: [],
+                            issues: [],
+                            risks: []
+                          };
 
-  addThisTag:string;
   
   constructor(
-    private crud:CrudService,
     private router:Router,
     private session:SessionService,
+    private taskService: TaskService,
+    private common: ComponentsService,
     ) {
         this.getSessionInfo();
      }
 
   ngOnInit() {
-    this.task = history.state.data.task;
-    console.log("taskDetails ngOnInit",this.task)
-    if(!this.task){
+    let taskStateData = history.state.data.task;
+    console.log("taskDetails ngOnInit")
+    if(!taskStateData){
       console.log("ngOnInit")
       this.router.navigate(['task']);
+    } else{
+      if(taskStateData?.id!=this.task?.id){
+        this.getTask(taskStateData);
+      }
     }
   }
   ngOnDestroy(){}
@@ -58,18 +64,59 @@ export class TaskDetailsPage implements OnInit,OnDestroy {
 
   ionViewDidEnter(){
     console.log("taskDetails ionViewDidEnter", history.state.data?.task)
-    this.task = history.state.data?.task ? history.state.data.task : this.task;
-    console.log(this.task)
-    if(!this.task){
+    let taskStateData = history.state.data?.task ? history.state.data.task : this.task;
+    if(!taskStateData){
       console.log("ionViewDidEnter")
       this.router.navigate(['task']);
+    } else {
+      if(taskStateData?.id!=this.task?.id){
+        this.getTask(taskStateData);
+      }
     }
   }
 
+   // search implement
+  getTask(taskStateData){
+    // this.task = null;
+    this.tasksSubs$ = this.taskService.getTaskById(taskStateData.id)
+                          .subscribe(act=>{
+                              const data: any = act.payload.data();
+                              const id: string = act.payload.id;
+                              const taskInitiationDate = new Date(data.taskInitiationDate?.seconds*1000);
+                              const targetCompletionDate = data.targetCompletionDate?.seconds ? new Date(data.targetCompletionDate?.seconds*1000) : null;
+                              this.task = {id, data: {...data, targetCompletionDate, taskInitiationDate }};
 
-  goToCommentPage(task){
-   let passObj = {...task,parentModule:'task',navigateBack:'/task/task-details'};
-   this.crud.detailsPagePasing$.next(passObj);
-   this.router.navigate(['/task/task-details/comments']); 
+                              console.log("task details", this.task);
+                          });
+
   }
+
+
+
+
+  // goToCommentPage(task){
+  //  let passObj = {...task,parentModule:'task',navigateBack:'/task/task-details'};
+  //  this.crud.detailsPagePasing$.next(passObj);
+  //  this.router.navigate(['/task/task-details/comments']); 
+  // }
+
+    // edittask
+  editTask(){
+    this.router.navigate(['task/task-details-edit'],{state: {data:{task: this.task}}});
+  }
+  // share task
+  // async sendMinutes(){
+  //   let response = await this.taskService.sharetaskMinutes(this.task, this.alllinkages);
+  //   let buttons = [
+  //                   {
+  //                     text: 'Dismiss',
+  //                     role: 'cancel',
+  //                     cssClass: '',
+  //                     handler: ()=>{}
+  //                   }
+  //                 ];
+  //   this.common.presentAlert(response.title, response.body, buttons);
+  // }
+
+
 }

@@ -12,6 +12,19 @@ const routes: Routes = [
     path: 'task-details',
     loadChildren: () => import('../../task/task-details/task-details.module').then( m => m.TaskDetailsPageModule)
   },
+
+  {
+    path: 'task-details-linkage/:id',
+    loadChildren: () => import('../../task/task-details/task-details.module').then( m => m.TaskDetailsPageModule)
+  },
+  {
+    path: 'task-details-edit',
+    loadChildren: () => import('../../task/task-details-edit/task-details-edit.module').then( m => m.TaskDetailsEditPageModule)
+  },
+  {
+    path: 'create-task',
+    loadChildren: () => import('../../task/create-task/create-task.module').then( m => m.CreateTaskPageModule)
+  }
 ];
 
 @NgModule({

@@ -117,14 +117,20 @@
     </ion-toolbar>
     <ion-card class="ion-no-padding" *ngFor="let m of viewTasksResult ? viewTasksResult : [null,null,null];"
       button="true" (click)="openTaskDetails(m)">
-      <ion-item lines="none" color="transparent">
-        <ion-chip *ngIf="m" size="small" slot="start"
-          color="{{m.data.taskStatus=='OPEN' ? 'warning' : m.data.taskStatus=='INPROGRESS' ? 'primary' : 'green'}}">
-          {{m.data.targetCompletionDate | date : 'mediumDate'}}</ion-chip>
-        <ion-label class="ion-no-padding ion-no-margin">
-          <h3 *ngIf="m">{{m.data.taskInitiationDate | date : 'mediumDate'}}</h3>
-          <ion-skeleton-text *ngIf="!m" animated style="width: 70%"></ion-skeleton-text>
-        </ion-label>
+      <ion-item *ngIf="m" lines="none" color="transparent">
+          <ion-buttons slot="start">
+            <ion-button slot="start" fill="solid"
+              color="{{m?.data.taskStatus=='OPEN' ? 'warning' : m?.data.taskStatus=='INPROGRESS' ? 'primary' : 'green'}}">
+              <ion-icon slot="start" name="locate"></ion-icon>
+              {{m?.data.targetCompletionDate | date : 'mediumDate'}}
+              <ion-skeleton-text *ngIf="!m" animated style="width: 30%"></ion-skeleton-text>
+            </ion-button>
+            <ion-button slot="start" fill="solid" color="medium">
+              <ion-icon slot="start" name="pencil"></ion-icon>
+              {{m?.data.taskInitiationDate | date : 'mediumDate'}}
+              <ion-skeleton-text *ngIf="!m" animated style="width: 30%"></ion-skeleton-text>
+            </ion-button>
+          </ion-buttons>
         <ion-icon slot="end" name="bookmark" size="small"
           color="{{m?.data.taskStatus=='OPEN' ? 'warning' : 'success'}}">
         </ion-icon>

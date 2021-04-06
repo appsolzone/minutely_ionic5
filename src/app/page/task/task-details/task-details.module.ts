@@ -11,6 +11,7 @@ import { TaskBasicInfoComponent } from '../task-basic-info/task-basic-info.compo
 import { TaskOwnerInitiatorComponent } from '../task-owner-initiator/task-owner-initiator.component';
 import { TaskAgendaNoteComponent } from '../task-agenda-note/task-agenda-note.component';
 import { TaskCommentsComponent } from '../task-comments/task-comments.component';
+import { LinkageModule } from '../../linkage/linkage.module';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { TaskCommentsComponent } from '../task-comments/task-comments.component'
     FormsModule,
     IonicModule,
     TaskDetailsPageRoutingModule,
+    LinkageModule
   ],
   declarations: [
     TaskDetailsPage,
