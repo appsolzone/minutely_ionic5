@@ -22,6 +22,6 @@ export interface Task {
     taskProbability :string,
     taskImpact:string,
     taskDetails:string,
-    titleSearchMap: any,
+    searchMap: any,
     ownerInitiatorUidList:Array<any>,
 }

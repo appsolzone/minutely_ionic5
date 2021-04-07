@@ -8,6 +8,8 @@ import { RiskPageRoutingModule } from './risk-routing.module';
 
 import { RiskPage } from './risk.page';
 import { SearchComponentPageModule } from '../../search-component/search-component.module';
+import { KpiModule } from '../../kpi/kpi.module';
+import { RiskListPageModule } from '../risk-list/risk-list.module';
 
 @NgModule({
   imports: [
@@ -15,7 +17,9 @@ import { SearchComponentPageModule } from '../../search-component/search-compone
     FormsModule,
     IonicModule,
     RiskPageRoutingModule,
-    SearchComponentPageModule
+    SearchComponentPageModule,
+    KpiModule,
+    RiskListPageModule
   ],
   declarations: [RiskPage]
 })

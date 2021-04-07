@@ -1,0 +1,75 @@
+<ion-item class="">
+  <ion-label>
+    <ion-icon name="time-outline"></ion-icon> Task Initiate
+  </ion-label>
+  <ion-datetime displayFormat="DD MMM, YYYY HH:mm" [min]="minTaskDate"
+    [max]="taskDetails.targetCompletionDate ? taskDetails.targetCompletionDate : defaultMaxDate"
+    [(ngModel)]="taskDetails.taskInitiationDate" (ionChange)="dateChange()" placeholder="Please select task start time">
+  </ion-datetime>
+</ion-item>
+<ion-item class="">
+  <ion-label>
+    <ion-icon name="time-outline"></ion-icon> Task End
+  </ion-label>
+  <ion-datetime displayFormat="DD MMM, YYYY HH:mm" [min]="taskDetails.taskInitiationDate"
+    [(ngModel)]="taskDetails.targetCompletionDate" (ionChange)="dateChange()" placeholder="Please select task end time">
+  </ion-datetime>
+</ion-item>
+<ion-item lines="none">
+  <ion-label>
+    <ion-icon name="book"></ion-icon>
+   Task title
+  </ion-label>
+  <ion-input readonly="true"></ion-input>
+</ion-item>
+<ion-item>
+  <ion-textarea required="true" autoGrow="true" wrap="soft" spellcheck="true" [(ngModel)]="taskDetails.taskTitle"
+    [value]="taskDetails?.taskTitle"></ion-textarea>
+</ion-item>
+<ion-item>
+  <ion-label>
+    <ion-icon name="pricetags"></ion-icon>
+    Tags
+  </ion-label>
+  <ion-input [(ngModel)]="taskTag" [value]="taskTag" placeholder="Please enter keyword to add as tag"></ion-input>
+  <ion-buttons slot="end">
+    <ion-button slot="end" (click)="addTag()" color="medium">
+      <ion-icon slot="icon-only" name="add-circle-outline" size="large"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+</ion-item>
+<ion-item *ngIf="taskDetails?.tags?.length>0" lines="none" class="ion-text-wrap">
+  <ion-label class="ion-text-wrap">
+    <ion-chip *ngFor="let data of taskDetails?.tags; let i = index" outline="true" color="primary"
+      (click)="removeTag(i)">{{data}}</ion-chip>
+    <p><small>
+        <ion-text color="warning">Tap or click on the tag you wish to remove from the list</ion-text>
+      </small></p>
+  </ion-label>
+</ion-item>
+
+<ion-item lines="none">
+  <ion-label>
+    <ion-icon name="bookmark"></ion-icon> Status
+  </ion-label>
+  <ion-button slot="end"
+    [color]="taskDetails?.taskStatus=='OPEN'? 'warning' : taskDetails?.status=='RESOLVED' ? 'green' : 'primary'"
+    class="ion-padding-start ion-padding-end">
+    {{taskDetails?.taskStatus}}
+  </ion-button>
+</ion-item>
+<ion-segment *ngIf="editMode=='update'" mode="ios" [(ngModel)]="taskDetails.taskStatus"
+  (ionChange)="statusChanged($event)">
+  <ion-segment-button value="OPEN" layout="icon-start">
+    <ion-label color="warning">Open</ion-label>
+    <ion-icon name="ellipse-outline" color="warning"></ion-icon>
+  </ion-segment-button>
+  <ion-segment-button value="INPROGRESS" layout="icon-start">
+    <ion-label color="primary">Inprogress</ion-label>
+    <ion-icon name="checkmark-done" color="primary"></ion-icon>
+  </ion-segment-button>
+  <ion-segment-button value="CANCEL" layout="icon-start">
+    <ion-label color="danger">Resolved</ion-label>
+    <ion-icon name="close" color="danger"></ion-icon>
+  </ion-segment-button>
+</ion-segment>

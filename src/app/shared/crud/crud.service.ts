@@ -288,7 +288,7 @@ export class CrudService {
         riskImpact:dataObject.probability,
         riskMitigation:dataObject.mitigation,
         riskContingency:dataObject.contingency,
-        titleSearchMap: this._searchMap.createSearchMap(searchStrings),
+        searchMap: this._searchMap.createSearchMap(searchStrings),
         ownerInitiatorUidList:[
                               dataObject.ownerId.uid,
                               dataObject.selectedMembers[0].uid
@@ -318,7 +318,7 @@ export class CrudService {
         taskProbability :dataObject.probability,
         taskImpact:dataObject.probability,
         taskDetails:dataObject.notes,
-        titleSearchMap: this._searchMap.createSearchMap(searchStrings),
+        searchMap: this._searchMap.createSearchMap(searchStrings),
         ownerInitiatorUidList:[
                               dataObject.ownerId.uid,
                               dataObject.selectedMembers[0].uid

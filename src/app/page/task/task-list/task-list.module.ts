@@ -4,18 +4,18 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ModalPagePageRoutingModule } from './modal-page-routing.module';
+import { TaskListPageRoutingModule } from './task-list-routing.module';
 
-import { ModalPagePage } from './modal-page.page';
+import { TaskListPage } from './task-list.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ModalPagePageRoutingModule
+    TaskListPageRoutingModule
   ],
-  declarations: [ModalPagePage],
-  exports:[ModalPagePage]
+  declarations: [TaskListPage],
+  exports:[TaskListPage]
 })
-export class ModalPagePageModule {}
+export class TaskListPageModule {}

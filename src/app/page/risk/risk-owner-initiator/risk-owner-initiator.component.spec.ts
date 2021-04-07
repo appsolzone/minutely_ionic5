@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { ModalPagePage } from './modal-page.page';
+import { RiskOwnerInitiatorComponent } from './risk-owner-initiator.component';
 
-describe('ModalPagePage', () => {
-  let component: ModalPagePage;
-  let fixture: ComponentFixture<ModalPagePage>;
+describe('RiskOwnerInitiatorComponent', () => {
+  let component: RiskOwnerInitiatorComponent;
+  let fixture: ComponentFixture<RiskOwnerInitiatorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ModalPagePage ],
+      declarations: [ RiskOwnerInitiatorComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ModalPagePage);
+    fixture = TestBed.createComponent(RiskOwnerInitiatorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
