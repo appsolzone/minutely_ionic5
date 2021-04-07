@@ -1,220 +1,35 @@
 <ion-header>
-  <ion-toolbar color="success">
-    <ion-title color="light">Task <small> {{allTasks?.length}} {{activeSearch?'result shown':'tasks owned/initiated by
-        you'}} </small></ion-title>
-    <ion-button color="light" slot="end" fill="clear" size="small" (click)="naviageteAddPage()"
-      class="ion-hide-md-down">
-      <ion-icon name="add-outline"></ion-icon> Add
-    </ion-button>
-    <ion-button color="light" slot="end" fill="clear" size="small" (click)="toggleSearch(false)"
-      class="ion-hide-md-down">
-      <ion-icon name="search-outline"></ion-icon> Search
-    </ion-button>
+  <ion-toolbar olor="" class="ion-padding-end">
+    <ion-title>Task</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
   <ion-row>
-    <ion-col>
-    <ion-row>
-      <ion-col color="primary" class="ion-no-padding">
-        <ion-card color="primary" class="peachbg ion-no-border ion-no-padding">
-          <ion-card-header>
-            <h1>
-              <ion-icon slot="start" name="flag" color="light"></ion-icon> {{kpiData?.totalRisk}}
-            </h1>
-            <h1 class="ion-text-right">Risks</h1>
-          </ion-card-header>
-          <ion-card-content>
-            <ion-row class="ion-text-right">
-              <ion-col size="4">
-                {{kpiData?.openRisk}}
-              </ion-col>
-              <ion-col size="8">
-                Open
-              </ion-col>
-              <ion-col size="4">
-                {{kpiData?.inprogressRisk}}
-              </ion-col>
-              <ion-col size="8">
-                <ion-label class="ion-no-margin ion-no-padding">In-progress</ion-label>
-              </ion-col>
-              <ion-col size="4">
-                {{kpiData?.resolvedRisk}}
-              </ion-col>
-              <ion-col size="8">
-                <ion-label class="ion-no-margin ion-no-padding">Resolved</ion-label>
-              </ion-col>
-            </ion-row>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      <ion-col color="primary" class="ion-no-border ion-no-padding">
-        <ion-card color="primary" class="purplebg ion-no-border ion-no-padding">
-          <ion-card-header>
-            <h1>
-              <ion-icon slot="start" name="options" color="light"></ion-icon> {{kpiData?.totalIssue}}
-            </h1>
-            <h1 class="ion-text-right">Issues</h1>
-          </ion-card-header>
-          <ion-card-content>
-            <ion-row class="ion-text-right">
-              <ion-col size="4">
-                {{kpiData?.openIssue}}
-              </ion-col>
-              <ion-col size="8">
-                Open
-              </ion-col>
-              <ion-col size="4">
-                {{kpiData?.inprogressIssue}}
-              </ion-col>
-              <ion-col size="8">
-                <ion-label class="ion-no-margin ion-no-padding">In-progress</ion-label>
-              </ion-col>
-              <ion-col size="4">
-                {{kpiData?.resolvedIssue}}
-              </ion-col>
-              <ion-col size="8">
-                <ion-label class="ion-no-margin ion-no-padding">Resolved</ion-label>
-              </ion-col>
-            </ion-row>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      <ion-col size="12" class="ion-no-padding">
-        <ion-card color="light" class="ion-no-border ion-no-padding">
-          <ion-card-header>
-            <ion-title class="ion-text-left">
-              <ion-icon slot="start" name="stats" class="ion-padding-right"></ion-icon>Average Resolution Days
-            </ion-title>
-          </ion-card-header>
-          <ion-card-content>
-              <app-bargraph [graphX]="graphX">
-            </app-bargraph>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
+    <ion-col size="12" size-md="4" size-lg="5" size-xl="6">
+      <ion-row>
+        <ion-col size="12">
+          <app-kpi *ngIf="sessionInfo?.userProfile" [kpiTypes]="['task', 'issue','avgResolution']"></app-kpi>
+        </ion-col>
+        <ion-col size="12" class="ion-hide-lg-down">
+          <app-task-list showOnlyUpcommingTasks="true"></app-task-list>
+        </ion-col>
+      </ion-row>
     </ion-col>
-
-    <ion-col>
-      <!-- search option lg screen -->
-      <div *ngIf="activeSearch" class="ion-hide-md-down">
-        <!-- <app-search-component></app-search-component> -->
-        <ion-searchbar showCancelButton="focus" [(ngModel)]="searchTexts" (ionChange)="searchMood()"
-          (ionClear)="searchMood()">
-        </ion-searchbar>
-
-        <ion-segment (ionChange)="searchMood()" color="primary" value="all">
-          <ion-segment-button value="all">
-            <ion-label>Match all keywords</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="any">
-            <ion-label>Match any keyword</ion-label>
-          </ion-segment-button>
-        </ion-segment>
-      </div>
-      <!-- search option lg screen -->
-
-
-
-
-      <!-- list tasks -->
-      <ion-list>
-        <div *ngFor="let task of allTasks;let id=index">
-          <ion-card class="ion-no-padding" (click)="goToDetailsPage(task)">
-            <ion-item lines="none">
-              <ion-button size="small" slot="start" color="danger">
-                <ion-icon name="calendar" slot="start"></ion-icon>
-                {{ task?.taskInitiationDate}}
-              </ion-button>
-              <ion-button size="small" slot="start" color="light">
-                <ion-icon name="pencil" slot="start"></ion-icon>
-                {{ task?.targetCompletionDate}}
-              </ion-button>
-              <ion-button size="small" fill="clear" slot="end">
-                <ion-icon name="bookmark" [color]="task?.taskStatus == 'OPEN'?'warning':'primary'"></ion-icon>
-              </ion-button>
-            </ion-item>
-
-
-            <ion-card-content>
-              <ion-card-title class="ion-no-padding" color="danger">
-                <h1>{{task?.taskTitle}}</h1>
-              </ion-card-title>
-
-              <ion-row>
-                <!-- Owner + initiator data -->
-                <ion-col size="12">
-
-                  <ion-item class="ion-no-padding" lines="none">
-                    <ion-label color="dark">
-                      <ion-icon color="warning" class="ion-padding-right" name="person-circle"></ion-icon>
-                      <b>Initiator :</b>
-                    </ion-label>
-                    <ion-input type="text" disabled value="{{task?.taskInitiator.name}}"></ion-input>
-                  </ion-item>
-
-                  <ion-item class="ion-no-padding" lines="none">
-                    <ion-label color="dark">
-                      <ion-icon color="danger" name="hand-right" class="ion-padding-right"></ion-icon>
-                      <b>Owner :</b>
-                    </ion-label>
-                    <ion-input type="text" disabled value="{{task?.taskOwner.name}}"></ion-input>
-                  </ion-item>
-
-                  <p class="ion-text-start">
-                    <ion-icon slot="start" color="dark" name="crop" class="ion-margin-right"></ion-icon>
-                    Details :
-                  </p>
-                  <p class="twolines">{{task.taskDetails ? task.taskDetails : 'No details added yet'}}</p>
-
-
-                </ion-col>
-              </ion-row>
-
-              <ion-item class="ion-no-padding" lines="none">
-                <ion-avatar *ngIf="task?.latestComment.totalComment > 0">
-                  <img slot="start" *ngIf="task.latestComment.picUrl !== ''"
-                    [src]="task.latestComment.picUrl" style="height:40px; width:40px;border-radius:50%;" />
-                  <ion-icon *ngIf="task.latestComment.picUrl == ''" color="primary"
-                    name="person-circle" style="height:40px;width:40px;border-radius:50%">
-                  </ion-icon>
-                </ion-avatar>
-
-
-                <ion-icon *ngIf="task?.latestComment.totalComment == 0" slot="start" name="chatbubbles" [ngStyle]="{'height':'15px','width':'15px','border-radius':'50%'}"
-                  color="medium" class="ion-padding-right"></ion-icon>
-
-            
-                <ion-label>
-                  {{task.latestComment.totalComment == 0 ? 'Be the first person to post comment for the task' :
-                  task.latestComment.comment}}
-                </ion-label>
-           
-              </ion-item>
-            </ion-card-content>
-          </ion-card>
-        </div>
-      </ion-list>
-      <!-- list tasks -->
+    <ion-col size="12" size-md="8" size-lg="7" size-xl="6">
+      <app-task-list showOnlyUpcommingTasks="true" class="ion-hide-lg-up"></app-task-list>
+      <!-- </ion-col>
+          <ion-col size="12" size-md="8" size-lg="7" size-xl="6"> -->
+      <app-task-list class="ion-hide-lg-down"></app-task-list>
     </ion-col>
   </ion-row>
 
 
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="ion-hide-md-up">
-    <ion-fab-button>
-      <ion-icon name="ellipsis-vertical"></ion-icon>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button size="small" (click)="gotoAddTask()">
+      <ion-icon name="add-outline" size="large"></ion-icon>
     </ion-fab-button>
-    <ion-fab-list side="top">
-      <ion-fab-button (click)="naviageteAddPage()" color="primary">
-        <ion-icon name="add-outline"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button (click)="toggleSearch(false)" color="primary">
-        <ion-icon name="search-outline"></ion-icon>
-      </ion-fab-button>
-    </ion-fab-list>
   </ion-fab>
 </ion-content>

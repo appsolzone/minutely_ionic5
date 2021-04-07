@@ -25,7 +25,7 @@ export class SubscriberService {
                         noOfFreeLicense: 2,
                         noOfUserAllowed: 3,
                         address: '',
-                        companyLogo: '',
+                        picUrl: '',
                         tncVersion: null,
                         subscriptionType: 'Free',
                         subscriptionStart: this.db.frb.firestore.FieldValue.serverTimestamp(),

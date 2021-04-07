@@ -1,0 +1,106 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Edit Organization</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+<ion-row class="ion-no-padding ion-padding-bottom wave-background" >
+
+  <ion-col size="12">
+    <ion-row class="" >
+
+      <ion-col size="12" size-md>
+        <ion-card class="no-box-shadow">
+          <ion-card-header>
+            <ion-item>
+              <ion-label>
+                <h1>
+                  <ion-icon name="leaf" color="success" class="ion-padding-end"></ion-icon>Hi !
+                  {{userProfile.name}}
+                </h1>
+              </ion-label>
+
+              <ion-button fill="clear" slot="end" *ngIf="!editProfile  && userProfile" (click)="toggleEditMode()">
+                <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+              </ion-button>
+
+            </ion-item>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-item  lines="none">
+
+
+              <ion-avatar slot="start" (click)="takePhoto()" >
+
+                  <img src="{{orgProfile?.picUrl}}" *ngIf="orgProfile?.picUrl" >
+
+
+                  <h1 *ngIf="!orgProfile?.picUrl">
+                    <ion-icon color="primary" slot="icon-only" name="person-circle"
+                      [ngStyle]="{'height':'40px','width':'40px'}"  ></ion-icon>
+                  </h1>
+
+
+
+              </ion-avatar>
+
+            </ion-item>
+            <ion-list >
+
+              <ion-item lines="inset">
+                <ion-label>
+                  <ion-icon name="qr-code"></ion-icon>
+                </ion-label>
+                <ion-input type="text" [(ngModel)]="orgProfile.subscriberId" class="ion-text-right"
+                  [disabled]="editProfile" [readonly]="!editProfile"></ion-input>
+              </ion-item>
+              <ion-item lines="inset">
+                <ion-label>
+                  <ion-icon name="mail"></ion-icon>
+                </ion-label>
+                <ion-input type="email" [(ngModel)]="orgProfile.email" class="ion-text-right"
+                  placeholder="Please enter email" [disabled]="editProfile" [readonly]="!editProfile"></ion-input>
+              </ion-item>
+              <ion-item lines="inset">
+                <ion-label>
+                  <ion-icon name="person-circle"></ion-icon>
+                </ion-label>
+                <ion-input type="text" [(ngModel)]="orgProfile.companyName" class="ion-text-right"
+                  placeholder="Please enter your name" [readonly]="!editProfile"></ion-input>
+              </ion-item>
+
+              <ion-item lines="inset">
+                <ion-label>
+                  <ion-icon name="call"></ion-icon>
+                </ion-label>
+                <ion-input  type="number" inputmode="numeric" [(ngModel)]="orgProfile.phoneNo" class="ion-text-right hide-number-arrow"
+                  placeholder="Please enter phone no with country code" [readonly]="!editProfile"></ion-input>
+              </ion-item>
+              <ion-item lines="inset">
+                <ion-label>
+                  <ion-icon name="location"></ion-icon>
+                </ion-label>
+                <ion-input type="text" [(ngModel)]="orgProfile.address" class="ion-text-right"
+                  placeholder="Please enter you permanent address" [readonly]="!editProfile"></ion-input>
+              </ion-item>
+              <ion-item lines="none" class="ion-margin-top" *ngIf="editProfile">
+                <ion-button fill="clear" size="default" color="medium" slot="end" (click)="onSkip()">Cancel</ion-button>
+                <ion-button slot="end" size="default" (click)="onSubmit()">Submit</ion-button>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col size="2" [class]="(!userProfile ? 'ion-hide-lg-up ' : '') + ' ion-hide-md-down'">
+      </ion-col>
+    </ion-row>
+  </ion-col>
+  <ion-col size="1" class="ion-hide-xl-down">
+  </ion-col>
+</ion-row>
+</ion-content>

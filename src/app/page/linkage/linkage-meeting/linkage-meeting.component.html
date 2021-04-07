@@ -25,7 +25,7 @@
   [excludeList]="linkedMeetings"
   (onSelectMeeting)="linkSelectedMeeting($event)"
   ></app-meeting-list>
-<ion-item *ngIf="showSearchList && linkedMeetings?.length>0">
+<ion-item *ngIf="showSearchList && linkedMeetings?.length>0" color="light">
   <ion-icon slot="start" name="attach"></ion-icon>
   <ion-label>
     <h2>Selected linked meetings</h2>
@@ -43,7 +43,7 @@
       <ion-button *ngIf="m?.state!='delete'" slot="end" (click)="delinkSelectedMeeting(m,i)">
         <ion-icon slot="icon-only" name="trash-bin" color="danger"></ion-icon>
       </ion-button>
-      <ion-button *ngIf="m?.state=='delete'" slot="end" (click)="undoDelinkMeeting(m)">
+      <ion-button *ngIf="m?.state=='delete'" slot="end" (click)="undoDelinkMeeting(m,i)">
         <ion-icon slot="icon-only" name="arrow-undo" color="success"></ion-icon>
       </ion-button>
     </ion-buttons>

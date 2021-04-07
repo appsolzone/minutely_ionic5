@@ -29,9 +29,9 @@ export class AdminAddUsersService {
           console.log("======= first one ========");
           if(res.user.uid){
           this.db.SendAdminAuthVerificationMail();
-          this.sendNewUserEmail(newUserData,orgProfile); 
+          this.sendNewUserEmail(newUserData,orgProfile);
           // data collect and insert
-          return this.transitionCondition(res,newUserData,orgProfile,"two");          
+          return this.transitionCondition(res,newUserData,orgProfile,"two");
           }
         }).catch(err =>{
           // user create failed
@@ -70,7 +70,7 @@ export class AdminAddUsersService {
   }
 
   checkIfUserExitsInThisOrg(newUserData,orgProfile): Promise<any>{
-    console.log("======= checkIfUserExitsInThisOrg ========");  
+    console.log("======= checkIfUserExitsInThisOrg ========");
      let queryObj = [{
       field:'subscriberId',
       operator:'==',
@@ -96,7 +96,7 @@ export class AdminAddUsersService {
 
 
  async transitionCondition(userDetails,newUserData,orgProfile,type){
-  console.log("======= transitionCondition ========"); 
+  console.log("======= transitionCondition ========");
   this.componentService.hideLoader();
    let userId = '';
     if(type == "one"){
@@ -105,10 +105,10 @@ export class AdminAddUsersService {
       userId = userDetails.user.uid;
     }
     return await this.componentService.presentAlertConfirm(
-      "Warning",`Are you sure you want to register ${newUserData.name} in this organisation as ${newUserData.role}`
+      "Warning",`Are you sure you want to register ${newUserData.name} in ${orgProfile.companyName} as ${newUserData.role}`
       )
      .then(async function(res:any){
-      console.log("======= presentAlertConfirm ========");  
+      console.log("======= presentAlertConfirm ========");
       if(res){
         this.componentService.showLoader();
         await this.registerationService.joinSubscriber(userId,orgProfile.subscriberId, newUserData.name,newUserData.email,newUserData);
@@ -117,12 +117,12 @@ export class AdminAddUsersService {
      }.bind(this))
      .then(function(res)
       {
-        console.log("======= presentAlertConfirm ========"); 
+        console.log("======= presentAlertConfirm ========");
         if(res){
         let dataObj= {newUserData:{...newUserData},orgProfile:{...orgProfile}};
         return this.successAlert('New User added successfully',true,dataObj);
         }
-      }.bind(this))  
+      }.bind(this))
       .catch(err=>{
         return this.errorAlert(err);
     })
@@ -130,7 +130,7 @@ export class AdminAddUsersService {
   }
 
   checkInUseruidsColl(newUserData,orgProfile){
-   console.log("======= checkInUseruidsColl ========");  
+   console.log("======= checkInUseruidsColl ========");
    let queryObj = [{
       field:'email',
       operator:'==',
@@ -167,9 +167,9 @@ export class AdminAddUsersService {
   if(err == 'auth-table-error'){
     errorMsg = "The user can not be added. Please try again. If the problem persists please request the user to Sign up using his/her credentials.";
   }else if(err == 'already-exist-user'){
-    errorMsg = "The user exists for the organisation. Please check member list to take necessary action";   
+    errorMsg = "The user exists for the organisation. Please check member list to take necessary action";
   }else{
-    errorMsg = err;  
+    errorMsg = err;
   }
 
   this.componentService.hideLoader();
@@ -181,7 +181,7 @@ export class AdminAddUsersService {
   successAlert(msg,sendMail:boolean=false,dataObj?:any){
     this.componentService.hideLoader();
     this.componentService.presentToaster(msg);
-    if(sendMail)this.sendNewUserEmail(dataObj.newUserData,dataObj.orgProfile); 
+    if(sendMail)this.sendNewUserEmail(dataObj.newUserData,dataObj.orgProfile);
     return true;
   }
 

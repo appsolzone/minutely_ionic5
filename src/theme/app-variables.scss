@@ -26,7 +26,10 @@ ion-icon {
   width: 100%;
   // background: red; //#f8f8ff;
 }
-
+.margin-end-5px{
+  margin-right: 5px;
+  --margin-end: 5px;
+}
 .wave-background{
   min-height: 100%;
   background-image: url(/assets/app-assets/waveBackground.svg), linear-gradient(45deg, var(--ion-color-light),var(--ion-color-medium),var(--ion-color-light));

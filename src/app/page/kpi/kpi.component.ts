@@ -10,7 +10,7 @@ import { KpiService } from 'src/app/shared/kpi/kpi.service';
 })
 @Autounsubscribe()
 export class KpiComponent implements OnInit {
-  @Input() kpiTypes:any[]=['meeting','task','issue','risk']; //,'riskMatrix'];
+  @Input() kpiTypes:any[]=['meeting','task','issue','risk']; //,'riskMatrix', 'avgResolution'];
   // observables
   kpiSubs$;
   public kpiData:any;
@@ -19,6 +19,7 @@ export class KpiComponent implements OnInit {
     MediumMedium: null, LowHigh: null, HighLow: null,
     MediumHigh: null, HighMedium: null, HighHigh: null
   };
+  public averageGraphX: any;
 
   constructor(
     private kpi: KpiService,
@@ -29,12 +30,26 @@ export class KpiComponent implements OnInit {
         const {
             riskLowLow,riskLowMedium,riskMediumLow,
             riskMediumMedium,riskLowHigh,riskHighLow,
-            riskMediumHigh,riskHighMedium,riskHighHigh
+            riskMediumHigh,riskHighMedium,riskHighHigh,
+            averageResolutionTask, averageResolutionRisk,
+            averageResolutionIssue
           } = this.kpiData;
         this.highLightCells ={
-          LowLow: riskLowLow,LowMedium: riskLowMedium,MediumLow: riskMediumLow,
-          MediumMedium: riskMediumMedium,LowHigh: riskLowHigh,HighLow: riskHighLow,
-          MediumHigh: riskMediumHigh,HighMedium: riskHighMedium,HighHigh: riskHighHigh
+          LowLow: riskLowLow ? riskLowLow : '-',LowMedium: riskLowMedium ? riskLowMedium : '-',MediumLow: riskMediumLow ? riskMediumLow : '-',
+          MediumMedium: riskMediumMedium ? riskMediumMedium : '-',LowHigh: riskLowHigh ? riskLowHigh : '-',HighLow: riskHighLow ? riskHighLow : '-',
+          MediumHigh: riskMediumHigh ? riskMediumHigh : '-',HighMedium: riskHighMedium ? riskHighMedium : '-',HighHigh: riskHighHigh ? riskHighHigh : '-'
+        };
+        let maxValueOfX = Math.max(averageResolutionTask, averageResolutionRisk, averageResolutionIssue);
+         maxValueOfX =  maxValueOfX > 0 ?  maxValueOfX : 1;
+        this.averageGraphX = {
+           icon: 'analytics-outline',
+           title: 'Average resolution time (days)',
+           maxValue: 1,
+           data: [
+              {icon: 'body', label: 'Tasks completion', labelValue: averageResolutionTask.toFixed(1), stack: [{cssClass: 'green', width: (averageResolutionTask*100/maxValueOfX), height: 1}]},
+              {icon: 'flag', label: 'Risks resolution', labelValue: averageResolutionRisk.toFixed(1), stack: [{cssClass: 'warning', width: (averageResolutionRisk*100/maxValueOfX), height: 1}]},
+              {icon: 'options', label: 'Issues resolution', labelValue: averageResolutionIssue.toFixed(1), stack: [{cssClass: 'danger', width: (averageResolutionIssue*100/maxValueOfX), height: 1}]}
+            ],
         };
       }
       console.log("kpivalue", this.kpiData);

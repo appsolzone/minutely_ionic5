@@ -10,6 +10,14 @@ const routes: Routes = [
   },  {
     path: 'add-member',
     loadChildren: () => import('./add-member/add-member.module').then( m => m.AddMemberPageModule)
+  },
+  {
+    path: 'edit-organization',
+    loadChildren: () => import('./edit-organization/edit-organization.module').then( m => m.EditOrganizationPageModule)
+  },
+  {
+    path: 'broadcast-message',
+    loadChildren: () => import('./broadcast-message/broadcast-message.module').then( m => m.BroadcastMessagePageModule)
   }
 
 ];

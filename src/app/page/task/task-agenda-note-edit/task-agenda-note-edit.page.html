@@ -1,0 +1,31 @@
+<!-- <ion-card class="ion-no-padding ion-no-margin">
+  <ion-item>
+    <ion-label>
+      <ion-icon name="copy"></ion-icon>
+      Agenda
+    </ion-label>
+    <ion-input readonly="true"></ion-input>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-textarea autoGrow="true" wrap="soft" readonly="false" [(ngModel)]="riskDetails.riskMitigation"
+      [value]="riskDetails?.riskMitigation" color="medium">
+    </ion-textarea>
+  </ion-item>
+  <br />
+</ion-card>
+<br /> -->
+<ion-card class="ion-no-padding ion-no-margin">
+  <ion-item>
+    <ion-label>
+      <ion-icon name="create"></ion-icon>
+      Notes
+    </ion-label>
+    <ion-input readonly="true"></ion-input>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-textarea autoGrow="true" readonly="false" wrap="soft" [(ngModel)]="taskDetails.taskDetails"
+     [value]="taskDetails?.taskDetails" color="medium">
+    </ion-textarea>
+  </ion-item>
+  <br />
+</ion-card>

@@ -24,7 +24,7 @@ export class CrudService {
     object:{},      // initiate object
   }
   passingObj = {
-   // common to all 
+   // common to all
    title:'',
    startDate:'',
    startTime:'',
@@ -64,10 +64,10 @@ export class CrudService {
 
   //shallow copy
   //const foo: TYPE = { ...e };
-  
+
 
   refMeetingDetails:any= {};
-  refMeetingNotiBAsic:any; 
+  refMeetingNotiBAsic:any;
 
   detailsPagePasing$ = new BehaviorSubject<any|null>(undefined);
 
@@ -127,8 +127,8 @@ export class CrudService {
               this.refMeetingDetails.meetingDocId = eventId;
               this.refMeetingNotiBAsic = {
                 ...creationData,
-                ...eventDates, 
-                eventSequenceId: i, 
+                ...eventDates,
+                eventSequenceId: i,
                 eventId: totalSequenceId,
             //  titleSearchMap: this.searchTextImplementation(eventDates.startDateTime),
               status: 'OPEN', updatedAt: new Date(),
@@ -136,8 +136,8 @@ export class CrudService {
             }
             let setDataObject = {
               ...creationData,
-              ...eventDates, 
-              eventSequenceId: i, 
+              ...eventDates,
+              eventSequenceId: i,
               eventId: totalSequenceId,
           //  titleSearchMap: this.searchTextImplementation(eventDates.startDateTime),
             status: 'OPEN', updatedAt: new Date(),
@@ -185,7 +185,7 @@ export class CrudService {
     let year = moment(startDateTime).format('YYYY');
     let month = moment(startDateTime).format('MM');
     let yearMonth = moment(startDateTime).format('YYYYMM');
-   
+
     let testingObj = {
     startTime:startTime,
     endTime:endTime,
@@ -288,7 +288,7 @@ export class CrudService {
         riskImpact:dataObject.probability,
         riskMitigation:dataObject.mitigation,
         riskContingency:dataObject.contingency,
-        titleSearchMap: this._searchMap.createSearchMap(searchStrings),
+        searchMap: this._searchMap.createSearchMap(searchStrings),
         ownerInitiatorUidList:[
                               dataObject.ownerId.uid,
                               dataObject.selectedMembers[0].uid
@@ -318,7 +318,7 @@ export class CrudService {
         taskProbability :dataObject.probability,
         taskImpact:dataObject.probability,
         taskDetails:dataObject.notes,
-        titleSearchMap: this._searchMap.createSearchMap(searchStrings),
+        searchMap: this._searchMap.createSearchMap(searchStrings),
         ownerInitiatorUidList:[
                               dataObject.ownerId.uid,
                               dataObject.selectedMembers[0].uid
@@ -353,7 +353,7 @@ export class CrudService {
         },
       };
       this._componentsService.hideLoader();
-      this._notification.createNotifications(eventInfo);
+      // this._notification.createNotifications(eventInfo);
 
       let kpiServiceName = serviceName.charAt(0).toUpperCase() + serviceName.slice(1)
       this._kpi.updateKpiDuringCreation(kpiServiceName,1,orgProfile);
@@ -397,6 +397,5 @@ export class CrudService {
     }
 
 
- 
-}
 
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { LinkageService } from 'src/app/shared/linkage/linkage.service';
 
@@ -10,20 +10,22 @@ import { LinkageService } from 'src/app/shared/linkage/linkage.service';
 @Autounsubscribe()
 export class LinkageComponent implements OnInit {
   @Input() sessionInfo: any;
+  @Input() itemType: string = 'meeting';
   @Input() selectedObject: any;
   @Input() viewMode = '';
-  @Input() alllinkages: any = {
-                            meetings: [],
-                            tasks: [],
-                            issues: [],
-                            risks: []
-                          };
-  @Input() editedlinkages: any = {
-                            meetings: [],
-                            tasks: [],
-                            issues: [],
-                            risks: []
-                          };
+  // @Input() alllinkages: any = {
+  //                           meetings: [],
+  //                           tasks: [],
+  //                           issues: [],
+  //                           risks: []
+  //                         };
+  // @Input() editedlinkages: any = {
+  //                           meetings: [],
+  //                           tasks: [],
+  //                           issues: [],
+  //                           risks: []
+  //                         };
+  @Output() publishLinkage = new EventEmitter<any>();
   // observables
   meetingLinksSubs$;
   taskLinksSubs$;
@@ -37,12 +39,12 @@ export class LinkageComponent implements OnInit {
                             issues: null,
                             risks: null
                           };
-  // public editedlinkages: any = {
-  //                           meetings: [],
-  //                           tasks: [],
-  //                           issues: [],
-  //                           risks: []
-  //                         };
+  public editedlinkages: any = {
+                            meetings: [],
+                            tasks: [],
+                            issues: [],
+                            risks: []
+                          };
 
   constructor(
     private linkage: LinkageService
@@ -70,7 +72,7 @@ export class LinkageComponent implements OnInit {
   }
 
   getLinkages(){
-    return this.linkage.getLinkages(this.selectedObject.id, this.selectedItem)
+    return this.linkage.getLinkages(this.selectedObject.id, this.itemType, this.selectedItem)
                               .subscribe(act=>{
                                 let allItems = [];
                                 act.forEach((a: any) => {
@@ -82,9 +84,9 @@ export class LinkageComponent implements OnInit {
                                   }
                                 });
                                 this.linkages[this.selectedItem] =[...allItems, ...this.editedlinkages[this.selectedItem]];
-                                this.alllinkages[this.selectedItem] = [...this.linkages[this.selectedItem]]
+                                this.publishLinkage.emit({linkages: this.linkages, editedlinkages: this.editedlinkages});
                                 // this.linkages[this.selectedItem] = allItems;
-                                console.log("linkedMeetings", this.linkages[this.selectedItem]);
+                                console.log("linkedMeetings", this.selectedObject.id, this.itemType, this.selectedItem,this.linkages[this.selectedItem]);
                               });
   }
 
@@ -99,7 +101,6 @@ export class LinkageComponent implements OnInit {
       }
     });
     this.linkages[this.selectedItem] =[...allItems, ...this.editedlinkages[this.selectedItem]];
-    this.alllinkages[this.selectedItem] = [...this.linkages[this.selectedItem]]
     // this.linkages[this.selectedItem] = allItems;
     console.log("repopulateItems linkedMeetings", this.linkages[this.selectedItem]);
   }
@@ -128,6 +129,12 @@ export class LinkageComponent implements OnInit {
       }
     }
 
+  }
+
+  onEditLinkage(ev){
+    this.editedlinkages[this.selectedItem] = ev.editedlinkages;
+    this.repopulateItems();
+    this.publishLinkage.emit({linkages: this.linkages, editedlinkages: this.editedlinkages});
   }
 
 }

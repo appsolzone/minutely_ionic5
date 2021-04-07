@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { LinkageService } from 'src/app/shared/linkage/linkage.service';
@@ -11,11 +11,13 @@ import { LinkageService } from 'src/app/shared/linkage/linkage.service';
 export class LinkageMeetingComponent implements OnInit {
   @Input() sessionInfo: any;
   @Input() meetings: any[];
-  @Input() editedlinkedMeetings: any[];
+  // @Input() editedlinkedMeetings: any[];
   @Input() viewMode = '';
-  @Input() alllinkedMeetings: any[];
+  // @Input() alllinkedMeetings: any[];
+  @Output() onEditLinkage = new EventEmitter<any>();
   public showSearchList: boolean = false;
-  public linkedMeetings: any[];
+  public linkedMeetings: any[] =[];
+  public editedlinkedMeetings: any[] = [];
 
   constructor(
     private router:Router,
@@ -33,6 +35,7 @@ export class LinkageMeetingComponent implements OnInit {
 
   ngOnChanges() {
     if(this.meetings){
+      console.log("getLinkedMeetings....onngChange", this.meetings)
       this.getLinkedMeetings();
     }
   }
@@ -41,14 +44,21 @@ export class LinkageMeetingComponent implements OnInit {
     let newMeetings = this.meetings.map(m=>{
       const data = m.data;
       const id = m.id;
+      const state = m.state;
       const meetingStart = data.meetingStart?.seconds ? new Date(data.meetingStart?.seconds*1000) : data.meetingStart;
       const meetingEnd = data.meetingEnd?.seconds ? new Date(data.meetingEnd?.seconds*1000) : data.meetingEnd ? data.meetingEnd : null;
       // return {id, data: { ...data, startTime, endTime }};
-      return {id, data: {...data, meetingStart, meetingEnd }};
+      if(state){
+        return {id, data: {...data, meetingStart, meetingEnd }, state};
+      } else {
+        return {id, data: {...data, meetingStart, meetingEnd }};
+      }
+
     });
     // this.linkedMeetings =[];
     this.linkedMeetings = newMeetings.sort((a:any,b:any)=>a.data.meetingStart-b.data.meetingStart);
-    this.alllinkedMeetings = [...this.linkedMeetings];
+    this.editedlinkedMeetings = this.linkedMeetings.filter(m=>['pending','delete'].includes(m.state));
+    console.log("getLinkedMeetings....", this.linkedMeetings, this.editedlinkedMeetings)
   }
 
   openMeetingDetails(meeting){
@@ -73,12 +83,12 @@ export class LinkageMeetingComponent implements OnInit {
     // return {id, data: { ...data, startTime, endTime }};
     this.editedlinkedMeetings.push({...m,state: 'pending'});
     this.linkedMeetings.push({...m,state: 'pending'});
-    this.alllinkedMeetings = [...this.linkedMeetings];
+    this.onEditLinkage.emit({editedlinkages: this.editedlinkedMeetings});
     this.common.presentToaster("'"+m.data.meetingTitle+"' has been added to the list of linked meeting. It'll be saved when the changes are saved.")
-    console.log("linkSelectedMeeting", this.alllinkedMeetings, this.linkedMeetings, this.editedlinkedMeetings)
+    console.log("linkSelectedMeeting", this.linkedMeetings, this.editedlinkedMeetings)
   }
 
-  undoDelinkMeeting(m){
+  undoDelinkMeeting(m,i){
     // now check if the state is to be deleted 'delete'
     // then restore the linkage back
     const data = m.data;
@@ -86,7 +96,7 @@ export class LinkageMeetingComponent implements OnInit {
     let eidx = this.editedlinkedMeetings.findIndex(elm=>elm.id==id);
     this.editedlinkedMeetings.splice(eidx,1);
     delete m.state;
-    this.alllinkedMeetings = [...this.linkedMeetings];
+    this.onEditLinkage.emit({editedlinkages: this.editedlinkedMeetings});
     this.common.presentToaster("The linkage has been restored for '"+m.data.meetingTitle+"'. It'll be saved when the changes are saved.")
   }
 
@@ -98,13 +108,13 @@ export class LinkageMeetingComponent implements OnInit {
     if(m.state=='pending'){
       let eidx = this.editedlinkedMeetings.findIndex(elm=>elm.id==id);
       this.editedlinkedMeetings.splice(eidx,1);
-      this.linkedMeetings.splice(i,1);
+      // this.linkedMeetings.splice(i,1);
     } else {
       this.editedlinkedMeetings.push({...m,state: 'delete'});
       // now set the state as delete
-      m.state= 'delete';
+      // m.state= 'delete';
     }
-    this.alllinkedMeetings = [...this.linkedMeetings];
+    this.onEditLinkage.emit({editedlinkages: this.editedlinkedMeetings});
 
     this.common.presentToaster("'"+m.data.meetingTitle+"' has been removed from the list of linked meeting. It'll be saved when the changes are saved.")
     console.log("delinkSelectedMeeting", this.linkedMeetings, this.editedlinkedMeetings)

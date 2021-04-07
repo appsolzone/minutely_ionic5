@@ -32,7 +32,7 @@ export class MeetingAttendeesEditComponent implements OnInit {
     userList.forEach(u=>{
         const {name, picUrl, email, uid, attendance, accepted } = u;
         if(u.uid!=this.meetingDetails.ownerId.uid){
-          attendeeList.push({name, picUrl, email, uid, attendance: attendance ? attendance : false, accepted:  accepted ? accepted : 'invited'});
+          attendeeList.push({name, picUrl, email, uid, attendance: attendance ? attendance : null, accepted:  accepted ? accepted : 'invited'});
         }
       });
     this.meetingDetails.attendeeList = attendeeList;
@@ -52,6 +52,10 @@ export class MeetingAttendeesEditComponent implements OnInit {
     let attendeeUidList = this.meetingDetails.attendeeList.map(a=>a.uid);
     attendeeUidList.push(this.meetingDetails.ownerId.uid);
     this.meetingDetails.attendeeUidList = attendeeUidList;
+  }
+
+  recordAttendance(type, data, i){
+    data.attendance = type;
   }
 
 }

@@ -1,0 +1,16 @@
+<ion-item>
+  <ion-label>
+    <ion-icon name="person-circle"></ion-icon>
+    Initiator
+  </ion-label>
+  <ion-input readonly="true" type="text" [value]="taskDetails?.taskInitiator.name" class="ion-text-end" color="medium">
+  </ion-input>
+</ion-item>
+<ion-item>
+  <ion-label>
+    <ion-icon name="hand-right"></ion-icon>
+    Owner
+  </ion-label>
+  <ion-input readonly="true" type="text" [value]="taskDetails?.taskOwner.name" class="ion-text-end" color="medium">
+  </ion-input>
+</ion-item>

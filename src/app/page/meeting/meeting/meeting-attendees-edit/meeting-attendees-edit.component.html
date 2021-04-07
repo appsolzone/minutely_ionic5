@@ -48,20 +48,42 @@
   (onSelectionComplete)="processAttendeeList($event)"
   ></app-select-users>
 <ion-list *ngIf="!showSelectAttendees">
-  <ion-item *ngFor="let data of meetingDetails?.attendeeList; let i = index;">
-    <ion-avatar slot="start">
-      <img
-        src="{{(data.picUrl) ? data.picUrl : 'assets/shapes.svg'}}"
-        (error)="profileImgErrorHandler(data)"/>
-    </ion-avatar>
-    <ion-label>
-      <h3>{{data.name}}</h3>
-      <p><small>{{data.email}}</small></p>
+  <ion-item lines="none">
+    <ion-label class="ion-text-wrap">
+      <p>To record attendance click, tap on <ion-icon name="finger-print" slot="icon-only" size="small" class="ion-align-self-center"></ion-icon> or  slide each user card to right <ion-icon name="return-down-forward" slot="icon-only" size="small"  class="ion-align-self-center"></ion-icon></p>
     </ion-label>
-    <ion-buttons slot="end">
-      <ion-button slot="end" [color]="data.accepted=='accept' ? 'success' : data.accepted=='decline' ? 'danger' : 'medium'">
-        <ion-icon name="paw" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-item>
+  <ion-item-sliding #slide *ngFor="let data of meetingDetails?.attendeeList; let i = index; let c = count;">
+    <ion-item [lines]="i==c-1 ? 'none' : '' ">
+      <ion-avatar slot="start">
+        <img
+          src="{{(data.picUrl) ? data.picUrl : 'assets/shapes.svg'}}"
+          (error)="profileImgErrorHandler(data)"/>
+      </ion-avatar>
+      <ion-label>
+        <h3>{{data.name}}</h3>
+        <p><small>{{data.email}}</small></p>
+      </ion-label>
+      <ion-icon name="today" slot="end" [color]="data.accepted=='accept' ? 'success' : data.accepted=='decline' ? 'danger' : 'medium'" size="small"></ion-icon>
+      <!-- <ion-icon name="finger-print" slot="end" [color]="data.attendance=='present' ? 'success' : data.attendance=='absent' ? 'danger' : 'medium'"  size="small" (click)="slide.open();"></ion-icon> -->
+      <ion-buttons slot="end" class="ion-no-margin">
+        <!-- <ion-button slot="end" [color]="data.accepted=='accept' ? 'success' : data.accepted=='decline' ? 'danger' : 'medium'"  size="small">
+          <ion-icon name="today" slot="icon-only"  size="small"></ion-icon>
+        </ion-button> -->
+        <ion-button slot="end" [color]="data.attendance=='present' ? 'success' : data.attendance=='absent' ? 'danger' : 'medium'"  size="small" (click)="slide.open();">
+          <ion-icon name="finger-print" slot="icon-only"  size="small"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+    <ion-item-options side="start">
+      <ion-item-option color="success" (click)="recordAttendance('present', data, i); slide.close();">
+        <ion-icon slot="top" name="finger-print"></ion-icon>
+        Present
+      </ion-item-option>
+      <ion-item-option color="danger" (click)="recordAttendance('absent', data, i); slide.close();">
+        <ion-icon slot="top" name="finger-print"></ion-icon>
+        Absent
+      </ion-item-option>
+    </ion-item-options>
+  </ion-item-sliding>
 </ion-list>

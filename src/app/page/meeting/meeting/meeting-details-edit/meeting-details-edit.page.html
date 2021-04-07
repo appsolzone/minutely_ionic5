@@ -18,7 +18,7 @@
     </ion-col>
     <ion-col size="12" size-md="6">
       <app-meeting-agenda-note-edit *ngIf="sessionInfo && meeting" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-agenda-note-edit>
-      <app-linkage *ngIf="sessionInfo && meeting" viewMode="edit" [selectedObject]="meeting" [sessionInfo]="sessionInfo" [alllinkages]="alllinkages" [editedlinkages]="editedlinkages"> </app-linkage>
+      <app-linkage *ngIf="sessionInfo && meeting" viewMode="edit" [itemType]="'meeting'" [selectedObject]="meeting" [sessionInfo]="sessionInfo" (publishLinkage)="publishLinkage($event)"> </app-linkage>
     </ion-col>
   </ion-row>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">

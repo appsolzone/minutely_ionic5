@@ -6,6 +6,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { RiskMatrixModule } from 'src/app/page/risk-matrix/risk-matrix.module';
 
+import { BargraphModule } from 'src/app/page/bargraph/bargraph.module';
+
 import { KpiComponent } from './kpi.component';
 
 
@@ -15,6 +17,7 @@ import { KpiComponent } from './kpi.component';
     FormsModule,
     IonicModule,
     RiskMatrixModule,
+    BargraphModule,
   ],
   declarations: [
     KpiComponent

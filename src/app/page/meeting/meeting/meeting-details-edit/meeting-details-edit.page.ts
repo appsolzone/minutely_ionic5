@@ -103,6 +103,13 @@ export class MeetingDetailsEditPage implements OnInit {
 
   }
 
+  // edit linkage callback
+  publishLinkage(ev){
+    this.alllinkages = ev.linkages;
+    this.editedlinkages = ev.editedlinkages;
+    console.log("edited data received", this.alllinkages, this.editedlinkages);
+  }
+
   // saveMeeting
   async saveMeeting(){
     const { status, isOccurence, eventSequenceId, noOfOccurence } = this.meeting.data;

@@ -1,0 +1,34 @@
+<ion-item class="" lines="none">
+    <!-- <ion-buttons slot="start"> -->
+      <ion-button slot="start" class="ion-no-margin margin-end-5px" size="default"
+        color="{{taskDetails?.taskStatus=='RESOLVED' ? 'success' : taskDetails?.taskStatus=='OPEN' ? 'warning' : 'primary'}}">
+        <ion-icon slot="start" name="locate"></ion-icon>
+        {{taskDetails?.taskInitiationDate| date : 'mediumDate'}}
+
+      </ion-button>
+      <ion-button slot="start" color="light" class="ion-no-margin" size="default">
+        <ion-icon slot="start" name="pencil"></ion-icon>
+        {{taskDetails?.targetCompletionDate| date : 'mediumDate'}}
+      </ion-button>
+    <!-- </ion-buttons> -->
+</ion-item>
+<ion-item>
+  <ion-label class="ion-text-wrap">
+    <h1>
+      {{taskDetails?.taskTitle}}
+    </h1>
+  </ion-label>
+</ion-item>
+<ion-item *ngIf="taskDetails?.tags?.length>0" lines="none" class="ion-text-wrap">
+  <ion-chip *ngFor="let data of taskDetails?.tags; let i = index" outline="true" color="success">{{data}}</ion-chip>
+</ion-item>
+<ion-item lines="full">
+  <ion-label slot="start">
+    <ion-icon name="bookmark"></ion-icon> Status
+  </ion-label>
+  <ion-button slot="end"
+    [color]="taskDetails?.taskStatus=='OPEN'? 'warning' : taskDetails?.taskStatus=='RESOVLED' ? 'green' : 'primary'"
+    class="ion-padding-start ion-padding-end">
+    {{taskDetails?.taskStatus}}
+  </ion-button>
+</ion-item>

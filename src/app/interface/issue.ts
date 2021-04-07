@@ -22,6 +22,6 @@ export interface Issue {
     issueProbability :string,
     issueImpact:string,
     issueDetails:string,
-    titleSearchMap: any,
+    searchMap: any,
     ownerInitiatorUidList:Array<any>
 }

@@ -21,15 +21,15 @@ export class LinkageService {
   }
 
   // Read once
-  getLinkagesOnce(id: string, linkType: string){
-    let collection = this.db.allCollections.meeting + '/' +
+  getLinkagesOnce(id: string, itemType: string, linkType: string){
+    let collection = this.db.allCollections[itemType] + '/' +
                       id + '/' + linkType;
     return this.db.getAllDocuments(collection);
   }
 
   // Read and watch
-  getLinkages(id: string, linkType: string){
-    let collection = this.db.allCollections.meeting + '/' +
+  getLinkages(id: string, itemType: string, linkType: string){
+    let collection = this.db.allCollections[itemType] + '/' +
                       id + '/' + linkType;
     return this.db.getAllDocumentsSnapshot(collection);
   }
