@@ -54,15 +54,12 @@ export class RiskListPage implements OnInit,OnDestroy {
       if(!this.sessionInfo){
         this.router.navigate(['profile']);
       }
-      if( this.sessionInfo?.orgProfile.subscriberId && this.sessionInfo?.userProfile.uid && !this.risksSubs$){
+      if( this.sessionInfo?.orgProfile?.subscriberId && this.sessionInfo?.userProfile?.uid && !this.risksSubs$){
         this.getAllRisks();
       }
     });
   }
   ngOnDestroy(){
-    if(this.sessionInfo?.orgProfile.subscriberId && this.sessionInfo?.userProfile.uid){
-          this.getAllRisks();
-        }
   }
 
   ionViewDidEnter(){
@@ -168,7 +165,8 @@ export class RiskListPage implements OnInit,OnDestroy {
                   let actualCompletionDate =  data.actualCompletionDate ? new Date(data.actualCompletionDate.seconds*1000) : new Date(data.targetCompletionDate.seconds*1000);
                   let riskInitiationDate = new Date(data.riskInitiationDate.seconds*1000);
                   let overdue =  data.riskStatus != 'RESOLVED' && new Date(moment(targetCompletionDate).add(1,'d').format('YYYY-MM-DD')) < new Date(moment().format('YYYY-MM-DD')) ? 'overdue' : '';
-                return {id, data: {...data, targetCompletionDate, actualCompletionDate, riskInitiationDate, overdue}};
+                  const highLightCells = {[data.riskProbability+data.riskImpact]: ''};
+                return {id, data: {...data, targetCompletionDate, actualCompletionDate, riskInitiationDate, overdue}, highLightCells};
               })
             // if(this.viewRisksResult.length == 0) this.viewRisksResult = null;
             console.log('all risks are :',this.viewRisksResult);

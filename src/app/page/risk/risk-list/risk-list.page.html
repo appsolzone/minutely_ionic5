@@ -115,7 +115,9 @@
         </ion-buttons>
       </ion-item>
     </ion-toolbar>
-    <ion-card class="ion-no-padding" *ngFor="let m of viewRisksResult ? viewRisksResult : [null,null,null];"
+    <ion-card
+      [class]="'ion-no-padding ' + (showOnlyUpcommingRisks ? 'ion-no-margin ion-margin-bottom' : '')"
+      *ngFor="let m of viewRisksResult ? viewRisksResult : [null,null,null];"
       button="true" (click)="openRiskDetails(m)">
       <ion-item *ngIf="m" lines="none" color="transparent">
         <!-- <ion-buttons slot="start"> -->
@@ -156,21 +158,28 @@
             </p>
           </ion-label>
         </ion-item>
-        <ion-item class="ion-no-padding" lines="none" color="transparent">
-          <ion-icon *ngIf="!m?.data.riskOwner?.picUrl" color="green" name="person-circle" slot="start" size="large">
-          </ion-icon>
-          <img *ngIf="m?.data.riskOwner?.picUrl" slot="start"
-            src="{{(m?.data.riskOwner?.picUrl) ? m?.data.riskOwner?.picUrl : ''}}"
-            (error)="profileImgErrorHandler(m?.data.riskOwner)" style="height:30px; width:30px;border-radius:50%;" />
-          <ion-label>
-            <h2 *ngIf="m">Owner</h2>
-            <p *ngIf="m">
-              <ion-text color="medium">{{m.data.riskOwner.name}}</ion-text>
-            </p>
-            <ion-skeleton-text *ngIf="!m" animated style="width: 40%"></ion-skeleton-text>
-            <ion-skeleton-text *ngIf="!m" animated style="width: 60%"></ion-skeleton-text>
-          </ion-label>
-        </ion-item>
+        <ion-row class="ion-no-padding ion-no-margin">
+          <ion-col size="8" [sizeLg]="showOnlyUpcommingRisks ? '8' : '9'" size-xl="9">
+            <ion-item class="ion-no-padding" lines="none" color="transparent">
+              <ion-icon *ngIf="!m?.data.riskOwner?.picUrl" color="green" name="person-circle" slot="start" size="large">
+              </ion-icon>
+              <img *ngIf="m?.data.riskOwner?.picUrl" slot="start"
+                src="{{(m?.data.riskOwner?.picUrl) ? m?.data.riskOwner?.picUrl : ''}}"
+                (error)="profileImgErrorHandler(m?.data.riskOwner)" style="height:30px; width:30px;border-radius:50%;" />
+              <ion-label>
+                <h2 *ngIf="m">Owner</h2>
+                <p *ngIf="m">
+                  <ion-text color="medium">{{m.data.riskOwner.name}}</ion-text>
+                </p>
+                <ion-skeleton-text *ngIf="!m" animated style="width: 40%"></ion-skeleton-text>
+                <ion-skeleton-text *ngIf="!m" animated style="width: 60%"></ion-skeleton-text>
+              </ion-label>
+            </ion-item>
+          </ion-col>
+          <ion-col  size="4" [sizeLg]="showOnlyUpcommingRisks ? '4' : '3'" size-xl="3" class="ion-no-padding">
+            <app-risk-matrix *ngIf="m" [highLightCells]="m.highLightCells"></app-risk-matrix>
+          </ion-col>
+        </ion-row>
         <!-- <ion-item *ngIf="m" class="ion-no-padding" lines="none" color="transparent">
           <img *ngFor="let imgs of m.data.attendeeList | slice:0:3" src="{{(imgs.picUrl) ? imgs.picUrl : ''}}"
             (error)="profileImgErrorHandler(imgs)" style="height:20px; width:20px;border-radius:50%;" />

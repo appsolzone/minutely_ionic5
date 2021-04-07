@@ -35,15 +35,15 @@ export class KpiComponent implements OnInit {
             averageResolutionIssue
           } = this.kpiData;
         this.highLightCells ={
-          LowLow: riskLowLow,LowMedium: riskLowMedium,MediumLow: riskMediumLow,
-          MediumMedium: riskMediumMedium,LowHigh: riskLowHigh,HighLow: riskHighLow,
-          MediumHigh: riskMediumHigh,HighMedium: riskHighMedium,HighHigh: riskHighHigh
+          LowLow: riskLowLow ? riskLowLow : '-',LowMedium: riskLowMedium ? riskLowMedium : '-',MediumLow: riskMediumLow ? riskMediumLow : '-',
+          MediumMedium: riskMediumMedium ? riskMediumMedium : '-',LowHigh: riskLowHigh ? riskLowHigh : '-',HighLow: riskHighLow ? riskHighLow : '-',
+          MediumHigh: riskMediumHigh ? riskMediumHigh : '-',HighMedium: riskHighMedium ? riskHighMedium : '-',HighHigh: riskHighHigh ? riskHighHigh : '-'
         };
         let maxValueOfX = Math.max(averageResolutionTask, averageResolutionRisk, averageResolutionIssue);
          maxValueOfX =  maxValueOfX > 0 ?  maxValueOfX : 1;
         this.averageGraphX = {
            icon: 'analytics-outline',
-           title: 'Average resolution time',
+           title: 'Average resolution time (days)',
            maxValue: 1,
            data: [
               {icon: 'body', label: 'Tasks completion', labelValue: averageResolutionTask.toFixed(1), stack: [{cssClass: 'green', width: (averageResolutionTask*100/maxValueOfX), height: 1}]},

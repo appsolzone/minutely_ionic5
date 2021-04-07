@@ -10,6 +10,7 @@ import { LinkageService } from 'src/app/shared/linkage/linkage.service';
 @Autounsubscribe()
 export class LinkageComponent implements OnInit {
   @Input() sessionInfo: any;
+  @Input() itemType: string = 'meeting';
   @Input() selectedObject: any;
   @Input() viewMode = '';
   // @Input() alllinkages: any = {
@@ -71,7 +72,7 @@ export class LinkageComponent implements OnInit {
   }
 
   getLinkages(){
-    return this.linkage.getLinkages(this.selectedObject.id, this.selectedItem)
+    return this.linkage.getLinkages(this.selectedObject.id, this.itemType, this.selectedItem)
                               .subscribe(act=>{
                                 let allItems = [];
                                 act.forEach((a: any) => {
@@ -85,7 +86,7 @@ export class LinkageComponent implements OnInit {
                                 this.linkages[this.selectedItem] =[...allItems, ...this.editedlinkages[this.selectedItem]];
                                 this.publishLinkage.emit({linkages: this.linkages, editedlinkages: this.editedlinkages});
                                 // this.linkages[this.selectedItem] = allItems;
-                                console.log("linkedMeetings", this.linkages[this.selectedItem]);
+                                console.log("linkedMeetings", this.selectedObject.id, this.itemType, this.selectedItem,this.linkages[this.selectedItem]);
                               });
   }
 

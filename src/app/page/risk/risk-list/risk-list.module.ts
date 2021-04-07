@@ -6,6 +6,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { RiskListPageRoutingModule } from './risk-list-routing.module';
 
+import { RiskMatrixModule } from 'src/app/page/risk-matrix/risk-matrix.module';
+
 import { RiskListPage } from './risk-list.page';
 
 @NgModule({
@@ -13,7 +15,8 @@ import { RiskListPage } from './risk-list.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    RiskListPageRoutingModule
+    RiskListPageRoutingModule,
+    RiskMatrixModule
   ],
   declarations: [RiskListPage],
   exports:[RiskListPage]

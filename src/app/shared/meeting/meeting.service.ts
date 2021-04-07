@@ -436,7 +436,7 @@ export class MeetingService {
       Object.keys(linkages).forEach(async lt=>{
         if(!linkages[lt] || linkages[lt].length==0){
           // linkage data not yet fetched, so fetch it now
-          await this.link.getLinkagesOnce(id,lt)
+          await this.link.getLinkagesOnce(id,'meeting', lt)
                 .then(allDocs=>{
                   linkages[lt] = [];
                   allDocs.forEach((doc) => {

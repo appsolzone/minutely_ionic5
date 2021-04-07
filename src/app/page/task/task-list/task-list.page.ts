@@ -53,15 +53,12 @@ export class TaskListPage implements OnInit,OnDestroy {
       if(!this.sessionInfo){
         this.router.navigate(['profile']);
       }
-      if( this.sessionInfo?.orgProfile.subscriberId && this.sessionInfo?.userProfile.uid && !this.tasksSubs$){
+      if( this.sessionInfo?.orgProfile?.subscriberId && this.sessionInfo?.userProfile?.uid && !this.tasksSubs$){
         this.getAllTasks();
       }
     });
   }
   ngOnDestroy(){
-    if(this.sessionInfo?.orgProfile.subscriberId && this.sessionInfo?.userProfile.uid){
-          this.getAllTasks();
-        }
   }
 
   ionViewDidEnter(){

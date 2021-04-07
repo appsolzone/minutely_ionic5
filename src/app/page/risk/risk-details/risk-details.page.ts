@@ -29,8 +29,14 @@ export class RiskDetailsPage implements OnInit,OnDestroy {
                             issues: [],
                             risks: []
                           };
+  public editedlinkages: any = {
+                            meetings: [],
+                            tasks: [],
+                            issues: [],
+                            risks: []
+                          };
 
-  
+
   constructor(
     private router:Router,
     private session:SessionService,
@@ -93,13 +99,20 @@ export class RiskDetailsPage implements OnInit,OnDestroy {
 
   }
 
+  // edit linkage callback
+  publishLinkage(ev){
+    this.alllinkages = ev.linkages;
+    this.editedlinkages = ev.editedlinkages;
+    console.log("edited data received risk", this.alllinkages, this.editedlinkages);
+  }
+
 
 
 
   // goToCommentPage(risk){
   //  let passObj = {...risk,parentModule:'risk',navigateBack:'/risk/risk-details'};
   //  this.crud.detailsPagePasing$.next(passObj);
-  //  this.router.navigate(['/risk/risk-details/comments']); 
+  //  this.router.navigate(['/risk/risk-details/comments']);
   // }
 
     // editrisk
