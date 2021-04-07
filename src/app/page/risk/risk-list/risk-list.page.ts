@@ -17,7 +17,7 @@ export class RiskListPage implements OnInit,OnDestroy {
   // observables
   sessionSubs$;
   risksSubs$;
-  
+
   public showSearchModesforUpcomming: boolean = false;
   public sessionInfo: any;
   public searchText: string;
@@ -129,7 +129,7 @@ export class RiskListPage implements OnInit,OnDestroy {
 
   // return the result of observable
   getAllRisks(){
-    this.viewRisksResult = [];  
+    this.viewRisksResult = [];
 
     let searchTextObj = null;
     let queryObj = [];
@@ -155,27 +155,27 @@ export class RiskListPage implements OnInit,OnDestroy {
     if(this.searchText?.trim().length>=3 || !this.activeSearchMode){ // or dates selected
 
       console.log("passsed if condition");
-      this.viewRisksResult = null; 
+      this.viewRisksResult = null;
         this.risksSubs$ = this.riskService.getRisks(queryObj,searchTextObj)
           .subscribe(res=>{
             console.log("hjshdfljkahsd",res)
             this.viewRisksResult = res.map((b:any)=>{
                 let id = b.payload.doc.id;
                 let data = b.payload.doc.data();
-                
+
                   data.docId = id;
-                  data.targetCompletionDate = moment(data.targetCompletionDate.seconds*1000).format('ll');
-                  data.actualCompletionDate =  data.actualCompletionDate ? moment(data.actualCompletionDate.seconds*1000).format('ll') : moment(data.targetCompletionDate.seconds*1000).format('ll');
-                  data.riskInitiationDate = moment(data.riskInitiationDate.seconds*1000).format('ll');
-                  data.overdue =  data.riskStatus != 'RESOLVED' && new Date(data.targetCompletionDate.seconds*1000 + 23.9*3600000) < new Date(moment().format('YYYY-MM-DD')) ? 'overdue' : '';
-                return {id, data: {...data}};
+                  let targetCompletionDate = new Date(data.targetCompletionDate.seconds*1000);
+                  let actualCompletionDate =  data.actualCompletionDate ? new Date(data.actualCompletionDate.seconds*1000) : new Date(data.targetCompletionDate.seconds*1000);
+                  let riskInitiationDate = new Date(data.riskInitiationDate.seconds*1000);
+                  let overdue =  data.riskStatus != 'RESOLVED' && new Date(moment(targetCompletionDate).add(1,'d').format('YYYY-MM-DD')) < new Date(moment().format('YYYY-MM-DD')) ? 'overdue' : '';
+                return {id, data: {...data, targetCompletionDate, actualCompletionDate, riskInitiationDate, overdue}};
               })
             // if(this.viewRisksResult.length == 0) this.viewRisksResult = null;
             console.log('all risks are :',this.viewRisksResult);
           },
           err=>{
             console.log(err);
-          }); 
+          });
     }
 
   }

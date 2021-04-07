@@ -118,19 +118,20 @@
     <ion-card class="ion-no-padding" *ngFor="let m of viewRisksResult ? viewRisksResult : [null,null,null];"
       button="true" (click)="openRiskDetails(m)">
       <ion-item *ngIf="m" lines="none" color="transparent">
-        <ion-buttons slot="start">
-          <ion-button slot="start" fill="solid" color="{{m?.data.riskStatus=='OPEN' ? 'warning' : m?.data.riskStatus=='INPROGRESS' ? 'primary' : 'green'}}">
-            <ion-icon slot="start" name="locate"></ion-icon>
-            {{m?.data.targetCompletionDate | date : 'mediumDate'}}
+        <!-- <ion-buttons slot="start"> -->
+          <ion-button slot="start" fill="solid" class="ion-no-margin margin-end-5px"
+            color="{{m?.data.overdue=='overdue'? 'danger' : m?.data.riskStatus=='OPEN' ? 'warning' : m?.data.riskStatus=='INPROGRESS' ? 'primary' : 'green'}}">
+            <ion-icon slot="start" [name]=" m?.data.riskStatus=='RESOLVED' ? 'checkbox-outline' : 'locate'"></ion-icon>
+            {{(m?.data.taskStatus=='RESOLVED' ? m?.data.actualCompletionDate : m?.data.targetCompletionDate) | date : 'mediumDate'}}
             <ion-skeleton-text *ngIf="!m" animated style="width: 30%"></ion-skeleton-text>
           </ion-button>
-          <ion-button slot="start"  fill="solid" color="medium">
+          <ion-button slot="start"  fill="solid" class="ion-no-margin" color="light">
             <ion-icon slot="start" name="pencil"></ion-icon>
             {{m?.data.riskInitiationDate | date : 'mediumDate'}}
             <ion-skeleton-text *ngIf="!m" animated style="width: 30%"></ion-skeleton-text>
           </ion-button>
-        </ion-buttons>
-        <ion-icon slot="end" name="bookmark" size="small" color="{{m?.data.riskStatus=='OPEN' ? 'warning' : 'success'}}"></ion-icon>
+        <!-- </ion-buttons> -->
+        <ion-icon slot="end" name="bookmark" size="small" color="{{m?.data.overdue=='overdue'? 'danger' : m?.data.riskStatus=='OPEN' ? 'warning' : 'success'}}"></ion-icon>
       </ion-item>
       <!-- <ion-item lines="none" color="transparent">
         <ion-chip *ngIf="m" size="small" slot="start"
@@ -146,7 +147,7 @@
       <ion-card-content class="ion-no-padding ion-padding-start ion-padding-end">
         <ion-item lines="none" class="ion-no-padding" color="transparent">
           <ion-label class="ion-no-padding ion-no-margin ion-text-wrap">
-            <h1 *ngIf="m"><small>{{m.data.riskTitle}}</small></h1>
+            <h1 *ngIf="m"><small><ion-text [color]="m?.data.overdue=='overdue'? 'danger' : ''">{{m.data.riskTitle}}</ion-text></small></h1>
             <ion-skeleton-text *ngIf="!m" animated style="width: 80%"></ion-skeleton-text>
             <p class="app-therelines ion-text-justify">
               <ion-text *ngIf="m" color="medium">{{m.data.riskMitigation}}</ion-text>
@@ -162,7 +163,7 @@
             src="{{(m?.data.riskOwner?.picUrl) ? m?.data.riskOwner?.picUrl : ''}}"
             (error)="profileImgErrorHandler(m?.data.riskOwner)" style="height:30px; width:30px;border-radius:50%;" />
           <ion-label>
-            <h2 *ngIf="m">Organiser</h2>
+            <h2 *ngIf="m">Owner</h2>
             <p *ngIf="m">
               <ion-text color="medium">{{m.data.riskOwner.name}}</ion-text>
             </p>

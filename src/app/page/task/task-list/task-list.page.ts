@@ -16,7 +16,7 @@ export class TaskListPage implements OnInit,OnDestroy {
   // observables
   sessionSubs$;
   tasksSubs$;
-  
+
   public showSearchModesforUpcomming: boolean = false;
   public sessionInfo: any;
   public searchText: string;
@@ -128,7 +128,7 @@ export class TaskListPage implements OnInit,OnDestroy {
 
   // return the result of observable
   getAllTasks(){
-    this.viewTasksResult = [];  
+    this.viewTasksResult = [];
 
     let searchTextObj = null;
     let queryObj = [];
@@ -154,27 +154,27 @@ export class TaskListPage implements OnInit,OnDestroy {
     if(this.searchText?.trim().length>=3 || !this.activeSearchMode){ // or dates selected
 
       console.log("passsed if condition");
-      this.viewTasksResult = null; 
+      this.viewTasksResult = null;
         this.tasksSubs$ = this.taskService.getTasks(queryObj,searchTextObj)
           .subscribe(res=>{
             console.log("hjshdfljkahsd",res)
             this.viewTasksResult = res.map((b:any)=>{
                 let id = b.payload.doc.id;
                 let data = b.payload.doc.data();
-                
+
                   data.docId = id;
-                  data.targetCompletionDate = moment(data.targetCompletionDate.seconds*1000).format('ll');
-                  data.actualCompletionDate =  data.actualCompletionDate ? moment(data.actualCompletionDate.seconds*1000).format('ll') : moment(data.targetCompletionDate.seconds*1000).format('ll');
-                  data.taskInitiationDate = moment(data.taskInitiationDate.seconds*1000).format('ll');
-                  data.overdue =  data.taskStatus != 'RESOLVED' && new Date(data.targetCompletionDate.seconds*1000 + 23.9*3600000) < new Date(moment().format('YYYY-MM-DD')) ? 'overdue' : '';
-                return {id, data: {...data}};
+                  let targetCompletionDate = new Date(data.targetCompletionDate.seconds*1000);
+                  let actualCompletionDate =  data.actualCompletionDate ? new Date(data.actualCompletionDate.seconds*1000) : new Date(data.targetCompletionDate.seconds*1000);
+                  let taskInitiationDate = new Date(data.taskInitiationDate.seconds*1000);
+                  let overdue =  data.taskStatus != 'RESOLVED' && new Date(moment(targetCompletionDate).add(1,'d').format('YYYY-MM-DD')) < new Date(moment().format('YYYY-MM-DD')) ? 'overdue' : '';
+                return {id, data: {...data, targetCompletionDate, actualCompletionDate, taskInitiationDate, overdue}};
               })
             // if(this.viewRisksResult.length == 0) this.viewRisksResult = null;
             console.log('all tasks are :',this.viewTasksResult);
           },
           err=>{
             console.log(err);
-          }); 
+          });
     }
 
   }

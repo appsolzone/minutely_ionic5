@@ -4,11 +4,11 @@
       color="{{riskDetails?.riskStatus=='RESOLVED' ? 'success' : riskDetails?.riskStatus=='OPEN' ? 'warning' : 'primary'}}">
       <ion-icon slot="start" name="locate"></ion-icon>
       {{riskDetails?.riskInitiationDate| date : 'mediumDate'}}
-  
+
     </ion-button>
     <ion-button slot="start" fill="solid" color="medium">
       <ion-icon slot="start" name="pencil"></ion-icon>
-      {riskDetails?.targetCompletionDate| date : 'mediumDate'}}
+      {{riskDetails?.targetCompletionDate| date : 'mediumDate'}}
     </ion-button>
   </ion-buttons>
 
