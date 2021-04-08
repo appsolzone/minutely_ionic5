@@ -83,6 +83,7 @@ export class CreateMeetingPage implements OnInit {
         console.log("userprofile values, ", uid, email, name, picUrl)
         this.meeting.data.subscriberId =subscriberId;
         this.meeting.data.ownerId ={uid, email, name, picUrl};
+        this.meeting.data.attendeeUidList.push(uid);
         this.refInformation.ownerId = {uid, email, name, picUrl};
       }
       if(!this.sessionInfo){
@@ -107,6 +108,7 @@ export class CreateMeetingPage implements OnInit {
                            noOfOccurence: data.noOfOccurence,
                            ownerId: {...data.ownerId},
                            attendeeList: [...data.attendeeList],
+                           attendeeUidList: [...data.attendeeUidList],
                            meetingTitle: data.meetingTitle,
                            tags: [...data.tags],
                            toCascadeChanges: true};
@@ -115,6 +117,7 @@ export class CreateMeetingPage implements OnInit {
        console.log("userprofile values, ", uid, email, name, picUrl)
        this.meeting.data.subscriberId =subscriberId;
        this.meeting.data.ownerId ={uid, email, name, picUrl};
+       this.meeting.data.attendeeUidList.push(uid);
        this.refInformation.ownerId = {uid, email, name, picUrl};
      }
     console.log("meeting details", this.meeting);

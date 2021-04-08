@@ -108,13 +108,13 @@ export class LinkageMeetingComponent implements OnInit {
     if(m.state=='pending'){
       let eidx = this.editedlinkedMeetings.findIndex(elm=>elm.id==id);
       this.editedlinkedMeetings.splice(eidx,1);
-      // this.linkedMeetings.splice(i,1);
+      this.linkedMeetings.splice(i,1);
     } else {
       this.editedlinkedMeetings.push({...m,state: 'delete'});
       // now set the state as delete
       // m.state= 'delete';
     }
-    this.onEditLinkage.emit({editedlinkages: this.editedlinkedMeetings});
+    this.onEditLinkage.emit({linkages: this.linkedMeetings, editedlinkages: this.editedlinkedMeetings});
 
     this.common.presentToaster("'"+m.data.meetingTitle+"' has been removed from the list of linked meeting. It'll be saved when the changes are saved.")
     console.log("delinkSelectedMeeting", this.linkedMeetings, this.editedlinkedMeetings)

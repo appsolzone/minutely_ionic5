@@ -10,6 +10,7 @@ import { TaskDetailsEditPage } from './task-details-edit.page';
 import { TaskBasicInfoEditPageModule } from '../task-basic-info-edit/task-basic-info-edit.module';
 import { TaskOwnerInitiatorEditPageModule } from '../task-owner-initiator-edit/task-owner-initiator-edit.module';
 import { TaskAgendaNoteEditPageModule } from '../task-agenda-note-edit/task-agenda-note-edit.module';
+import { LinkageModule } from '../../linkage/linkage.module';
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import { TaskAgendaNoteEditPageModule } from '../task-agenda-note-edit/task-agen
     TaskDetailsEditPageRoutingModule,
     TaskBasicInfoEditPageModule,
     TaskAgendaNoteEditPageModule,
-    TaskOwnerInitiatorEditPageModule
+    TaskOwnerInitiatorEditPageModule,
+    LinkageModule
   ],
   declarations: [TaskDetailsEditPage],
   exports:[TaskDetailsEditPage]

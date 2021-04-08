@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { SessionService } from 'src/app/shared/session/session.service';
@@ -37,7 +38,7 @@ OnDestroy {
     private session: SessionService,
     private taskService: TaskService,
     private common: ComponentsService,
-  ) { 
+  ) {
         this.getSessionInfo();
   }
 
@@ -82,8 +83,8 @@ OnDestroy {
     // this.task = null;
     const data: any = taskStateData.data;
     const id: string = taskStateData.id;
-    const taskInitiationDate = null; //moment(data.taskInitiationDate).format('YYYY-MM-DDTHH:mm');
-    const targetCompletionDate = null; //moment(data.targetCompletionDate).format('YYYY-MM-DDTHH:mm');
+    const taskInitiationDate = moment(data.taskInitiationDate).format('YYYY-MM-DD');
+    const targetCompletionDate = moment(data.targetCompletionDate).format('YYYY-MM-DD');
     // const weekdays = data.weekdays ? data.weekdays : [false,false,false,false,false,false,false];
 
     this.task = {id, data: {...data, taskInitiationDate, targetCompletionDate
@@ -105,6 +106,13 @@ OnDestroy {
      }
     console.log("task details", this.task);
 
+  }
+
+  // edit linkage callback
+  publishLinkage(ev){
+    this.alllinkages = ev.linkages;
+    this.editedlinkages = ev.editedlinkages;
+    console.log("edited data received risk", this.alllinkages, this.editedlinkages);
   }
 
   // savetask

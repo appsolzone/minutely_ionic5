@@ -84,7 +84,7 @@ export class MeetingListComponent implements OnInit {
     this.limit = null;
     this.dateRange = {
                         startDate: new Date(), //moment().subtract(1,'y').format('YYYY-MM-DD')
-                        endDate: new Date(moment().add(1,'d').format('YYYY-MM-DD'))
+                        endDate: new Date(moment().add(7,'d').format('YYYY-MM-DD'))
                       };
     this.getMeetings();
   }

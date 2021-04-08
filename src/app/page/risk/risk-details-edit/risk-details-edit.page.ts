@@ -36,7 +36,7 @@ export class RiskDetailsEditPage implements OnInit,OnDestroy {
     private session: SessionService,
     private riskService: RiskService,
     private common: ComponentsService,
-  ) { 
+  ) {
         this.getSessionInfo();
   }
 
@@ -104,6 +104,10 @@ export class RiskDetailsEditPage implements OnInit,OnDestroy {
      }
     console.log("risk details", this.risk);
 
+  }
+
+  publishLinkage(ev){
+    // TBA
   }
 
   // saveRisk

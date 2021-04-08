@@ -11,6 +11,7 @@ import { RiskBasicInfoEditPageModule } from '../risk-basic-info-edit/risk-basic-
 import { RiskMitigationContingencyEditModule } from '../risk-mitigation-contingency-edit/risk-mitigation-contingency-edit.module';
 import { RiskProbabilityImpactEditPageModule } from '../risk-probability-impact-edit/risk-probability-impact-edit.module';
 import { RiskOwnerInitiatorEditPageModule } from '../risk-owner-initiator-edit/risk-owner-initiator-edit.module';
+import { LinkageModule } from '../../linkage/linkage.module';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { RiskOwnerInitiatorEditPageModule } from '../risk-owner-initiator-edit/r
     RiskBasicInfoEditPageModule,
     RiskMitigationContingencyEditModule,
     RiskProbabilityImpactEditPageModule,
-    RiskOwnerInitiatorEditPageModule
+    RiskOwnerInitiatorEditPageModule,
+    LinkageModule
   ],
   declarations: [RiskDetailsEditPage],
   exports:[RiskDetailsEditPage]

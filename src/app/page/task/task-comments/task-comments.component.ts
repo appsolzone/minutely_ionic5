@@ -21,4 +21,8 @@ export class TaskCommentsComponent implements OnInit {
     //   //this.checkAcceptence();
     // }
   }
+  
+  goToCommentPage(task){
+    // TBA
+  }
 }

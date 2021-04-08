@@ -70,7 +70,7 @@
         <!-- <ion-button slot="end" [color]="data.accepted=='accept' ? 'success' : data.accepted=='decline' ? 'danger' : 'medium'"  size="small">
           <ion-icon name="today" slot="icon-only"  size="small"></ion-icon>
         </ion-button> -->
-        <ion-button slot="end" [color]="data.attendance=='present' ? 'success' : data.attendance=='absent' ? 'danger' : 'medium'"  size="small" (click)="slide.open();">
+        <ion-button slot="end" [color]="data.attendance=='present' ? 'success' : data.attendance=='absent' ? 'danger' : 'medium'"  size="small" (click)="slide.open(undefined);">
           <ion-icon name="finger-print" slot="icon-only"  size="small"></ion-icon>
         </ion-button>
       </ion-buttons>
