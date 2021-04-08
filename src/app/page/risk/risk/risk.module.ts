@@ -7,7 +7,6 @@ import { IonicModule } from '@ionic/angular';
 import { RiskPageRoutingModule } from './risk-routing.module';
 
 import { RiskPage } from './risk.page';
-import { SearchComponentPageModule } from '../../search-component/search-component.module';
 import { KpiModule } from '../../kpi/kpi.module';
 import { RiskListPageModule } from '../risk-list/risk-list.module';
 
@@ -17,7 +16,6 @@ import { RiskListPageModule } from '../risk-list/risk-list.module';
     FormsModule,
     IonicModule,
     RiskPageRoutingModule,
-    SearchComponentPageModule,
     KpiModule,
     RiskListPageModule
   ],

@@ -133,6 +133,9 @@ export class LinkageComponent implements OnInit {
 
   onEditLinkage(ev){
     this.editedlinkages[this.selectedItem] = ev.editedlinkages;
+    if(ev.linkages){
+      this.linkages[this.selectedItem] = ev.linkages;
+    }
     this.repopulateItems();
     this.publishLinkage.emit({linkages: this.linkages, editedlinkages: this.editedlinkages});
   }

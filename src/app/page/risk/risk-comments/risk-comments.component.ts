@@ -21,5 +21,8 @@ export class RiskCommentsComponent implements OnInit {
     //   //this.checkAcceptence();
     // }
   }
+  goToCommentPage(risk){
+    // TBA
+  }
 
 }

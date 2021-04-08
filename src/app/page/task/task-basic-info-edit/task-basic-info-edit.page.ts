@@ -64,7 +64,7 @@ export class TaskBasicInfoEditPage implements OnInit {
   // edit mode methods
   initialiseEdit(){
     // min and max start date
-    this.minTaskDate = moment().format('YYYY-MM-DD');
+    this.minTaskDate = new Date(this.taskDetails.taskInitiationDate) > new Date() ? this.taskDetails.taskInitiationDate : moment().format('YYYY-MM-DD');
     this.defaultMaxDate = moment().add(5,'y').format('YYYY-MM-DD');
     this.taskDetails.taskInitiationDate = this.taskDetails.taskInitiationDate ? this.taskDetails.taskInitiationDate : null;
     this.taskDetails.targetCompletionDate = this.taskDetails.targetCompletionDate  ? this.taskDetails.targetCompletionDate   : null;
@@ -181,4 +181,3 @@ export class TaskBasicInfoEditPage implements OnInit {
   }
 
 }
-

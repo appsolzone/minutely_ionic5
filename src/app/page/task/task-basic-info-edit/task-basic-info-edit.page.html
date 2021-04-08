@@ -1,18 +1,19 @@
 <ion-item class="">
   <ion-label>
-    <ion-icon name="time-outline"></ion-icon> Task Initiate
+    <ion-icon name="pencil"></ion-icon> Initiation date
   </ion-label>
-  <ion-datetime displayFormat="DD MMM, YYYY HH:mm" [min]="minTaskDate"
+  <ion-datetime displayFormat="DD MMM, YYYY" disabled="true" [(ngModel)]="taskDetails.taskInitiationDate"></ion-datetime>
+  <!-- <ion-datetime displayFormat="DD MMM, YYYY HH:mm" [min]="minTaskDate" disabled="true"
     [max]="taskDetails.targetCompletionDate ? taskDetails.targetCompletionDate : defaultMaxDate"
     [(ngModel)]="taskDetails.taskInitiationDate" (ionChange)="dateChange()" placeholder="Please select task start time">
-  </ion-datetime>
+  </ion-datetime> -->
 </ion-item>
 <ion-item class="">
   <ion-label>
-    <ion-icon name="time-outline"></ion-icon> Task End
+    <ion-icon name="locate"></ion-icon> Target Date
   </ion-label>
-  <ion-datetime displayFormat="DD MMM, YYYY HH:mm" [min]="taskDetails.taskInitiationDate"
-    [(ngModel)]="taskDetails.targetCompletionDate" (ionChange)="dateChange()" placeholder="Please select task end time">
+  <ion-datetime displayFormat="DD MMM, YYYY" [min]="minTaskDate"
+    [(ngModel)]="taskDetails.targetCompletionDate" (ionChange)="dateChange()" placeholder="Please select target completion date">
   </ion-datetime>
 </ion-item>
 <ion-item lines="none">

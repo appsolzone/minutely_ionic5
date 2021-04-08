@@ -3,14 +3,18 @@
       <ion-button slot="start" class="ion-no-margin margin-end-5px" size="default"
         color="{{taskDetails?.taskStatus=='RESOLVED' ? 'success' : taskDetails?.taskStatus=='OPEN' ? 'warning' : 'primary'}}">
         <ion-icon slot="start" name="locate"></ion-icon>
-        {{taskDetails?.taskInitiationDate| date : 'mediumDate'}}
+        {{(taskDetails?.taskStatus=='RESOLVED' ? taskDetails?.actualCompletionDate : taskDetails?.targetCompletionDate)| date : 'mediumDate'}}
 
       </ion-button>
       <ion-button slot="start" color="light" class="ion-no-margin" size="default">
         <ion-icon slot="start" name="pencil"></ion-icon>
-        {{taskDetails?.targetCompletionDate| date : 'mediumDate'}}
+        {{taskDetails?.taskInitiationDate| date : 'mediumDate'}}
       </ion-button>
     <!-- </ion-buttons> -->
+</ion-item>
+<ion-item *ngIf="taskDetails?.taskStatus=='RESOLVED'">
+  <ion-label><ion-icon name="locate"></ion-icon> Initial target</ion-label>
+  <ion-input type="text" readonly="true" class="ion-text-end" value="{{taskDetails?.targetCompletionDate| date : 'mediumDate'}}"></ion-input>
 </ion-item>
 <ion-item>
   <ion-label class="ion-text-wrap">
@@ -27,7 +31,7 @@
     <ion-icon name="bookmark"></ion-icon> Status
   </ion-label>
   <ion-button slot="end"
-    [color]="taskDetails?.taskStatus=='OPEN'? 'warning' : taskDetails?.taskStatus=='RESOVLED' ? 'green' : 'primary'"
+    [color]="taskDetails?.taskStatus=='OPEN'? 'warning' : taskDetails?.taskStatus=='RESOLVED' ? 'green' : 'primary'"
     class="ion-padding-start ion-padding-end">
     {{taskDetails?.taskStatus}}
   </ion-button>

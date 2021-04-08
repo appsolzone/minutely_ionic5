@@ -27,8 +27,14 @@ export class TaskDetailsPage implements OnInit,OnDestroy {
                             issues: [],
                             risks: []
                           };
+  public editedlinkages: any = {
+                            meetings: [],
+                            tasks: [],
+                            issues: [],
+                            risks: []
+                          };
 
-  
+
   constructor(
     private router:Router,
     private session:SessionService,
@@ -83,12 +89,20 @@ export class TaskDetailsPage implements OnInit,OnDestroy {
                               const data: any = act.payload.data();
                               const id: string = act.payload.id;
                               const taskInitiationDate = new Date(data.taskInitiationDate?.seconds*1000);
+                              let actualCompletionDate =  data.actualCompletionDate ? new Date(data.actualCompletionDate.seconds*1000) : null;
                               const targetCompletionDate = data.targetCompletionDate?.seconds ? new Date(data.targetCompletionDate?.seconds*1000) : null;
-                              this.task = {id, data: {...data, targetCompletionDate, taskInitiationDate }};
+                              this.task = {id, data: {...data, targetCompletionDate, taskInitiationDate, actualCompletionDate }};
 
                               console.log("task details", this.task);
                           });
 
+  }
+
+  // edit linkage callback
+  publishLinkage(ev){
+    this.alllinkages = ev.linkages;
+    this.editedlinkages = ev.editedlinkages;
+    console.log("edited data received risk", this.alllinkages, this.editedlinkages);
   }
 
 
@@ -97,7 +111,7 @@ export class TaskDetailsPage implements OnInit,OnDestroy {
   // goToCommentPage(task){
   //  let passObj = {...task,parentModule:'task',navigateBack:'/task/task-details'};
   //  this.crud.detailsPagePasing$.next(passObj);
-  //  this.router.navigate(['/task/task-details/comments']); 
+  //  this.router.navigate(['/task/task-details/comments']);
   // }
 
     // edittask
@@ -117,6 +131,10 @@ export class TaskDetailsPage implements OnInit,OnDestroy {
   //                 ];
   //   this.common.presentAlert(response.title, response.body, buttons);
   // }
+
+  sendTaskDetails(){
+    // TBA
+  }
 
 
 }

@@ -133,5 +133,9 @@ export class RiskDetailsPage implements OnInit,OnDestroy {
   //   this.common.presentAlert(response.title, response.body, buttons);
   // }
 
+  sendRiskDetails(){
+    // TBA
+  }
+
 
 }

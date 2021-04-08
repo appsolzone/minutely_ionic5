@@ -50,4 +50,8 @@ export class MeetingBasicInfoComponent implements OnInit {
     }
   }
 
+  onActionClick(val){
+    // TBA
+  }
+
 }
