@@ -24,7 +24,7 @@ export class TaskOwnerInitiatorEditPage implements OnInit {
   }
 
   profileImgErrorHandler(user: any){
-    user.picUrl = '/assets/shapes.svg';
+    user.picUrl = '../../../../assets/shapes.svg';
   }
 
   processAttendeeList(userList){

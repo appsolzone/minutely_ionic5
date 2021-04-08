@@ -25,4 +25,8 @@ export class TaskCommentsComponent implements OnInit {
   goToCommentPage(task){
     // TBA
   }
+
+  profileImgErrorHandler(user: any){
+    user.picUrl = '../../../../assets/shapes.svg';
+  }
 }

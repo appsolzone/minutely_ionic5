@@ -1,14 +1,24 @@
 <ion-item>
   <ion-label>
-    <ion-icon name="person-circle"></ion-icon>
+    <ion-icon name="accessibility"></ion-icon>
     Initiator
   </ion-label>
   <ion-input readonly="true" type="text" [value]="taskDetails?.taskInitiator.name" class="ion-text-end" color="medium">
   </ion-input>
 </ion-item>
+<ion-item class="ion-no-padding ion-margin" lines="none" color="light">
+  <img src="{{(taskDetails?.taskInitiator.picUrl) ? taskDetails?.taskInitiator.picUrl : 'assets/shapes.svg'}}"
+    (error)="profileImgErrorHandler(taskDetails?.taskInitiator)" style="height:30px; width:30px;border-radius:50%;" />
+  <ion-label class="ion-padding-start">
+    <p *ngIf="taskDetails">
+      <ion-text color="medium">{{taskDetails?.taskInitiator.name}}</ion-text>
+      <ion-text color="medium">{{taskDetails?.taskInitiator.email}}</ion-text>
+    </p>
+  </ion-label>
+</ion-item>
 <ion-item>
   <ion-label>
-    <ion-icon name="person-circle"></ion-icon>
+    <ion-icon name="person"></ion-icon>
     Task Owner
   </ion-label>
   <ion-input readonly="true" type="text" [value]="taskDetails?.taskOwner.name" class="ion-text-end" color="medium">

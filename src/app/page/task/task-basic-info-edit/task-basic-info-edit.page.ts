@@ -68,8 +68,7 @@ export class TaskBasicInfoEditPage implements OnInit {
     this.defaultMaxDate = moment().add(5,'y').format('YYYY-MM-DD');
     this.taskDetails.taskInitiationDate = this.taskDetails.taskInitiationDate ? this.taskDetails.taskInitiationDate : null;
     this.taskDetails.targetCompletionDate = this.taskDetails.targetCompletionDate  ? this.taskDetails.targetCompletionDate   : null;
-    //this.noOfOccurenceOption.splice(0,this.taskDetails.noOfOccurence &&this.noOfOccurenceOption.length == 30? this.taskDetails.noOfOccurence-1 : 0);
-    // console.log("this.noOfOccurenceOption",this.noOfOccurenceOption);
+
   }
   // cascadechanges
   checkCascadeState(){
@@ -81,14 +80,7 @@ export class TaskBasicInfoEditPage implements OnInit {
     let title='';
     let body='';
     let startDateTime = new Date(this.taskDetails.taskInitiationDate);
-    // let isValidStartDate = !this.meetingDetails.isOccurence ||
-    //                        !this.refInformation.toCascadeChanges ||
-    //                       (this.meetingDetails.occurenceType!='daily'
-    //                         ||
-    //                         (this.meetingDetails.occurenceType=='daily'
-    //                          && this.meetingDetails.weekdays[parseInt(moment(startDateTime).format('e'))]
-    //                          )
-    //                       );
+
     if(
       (this.refInformation.taskInitiationDate == this.taskDetails.taskInitiationDate && this.refInformation.targetCompletionDate == this.taskDetails.targetCompletionDate ) ||
       (new Date() <= startDateTime)) {
@@ -96,19 +88,6 @@ export class TaskBasicInfoEditPage implements OnInit {
       return true;
     } else {
      if(showAlert){
-      //  if(!isValidStartDate){
-      //      title = "Invalid Meeting Start Date";
-      //      body = "Meeting start date should be on one of the weekdays selected for the meeting frequency. Please check and try again.";
-      //      let buttons: any[] = [
-      //                      {
-      //                        text: 'Dismiss',
-      //                        role: 'cancel',
-      //                        cssClass: '',
-      //                        handler: ()=>{}
-      //                      }
-      //                    ];
-      //      await this.common.presentAlert(title,body, buttons);
-      //   } else {
           title = "Invalid task Start Date";
           body = "task cannot be set in past. The task start time should be future time.";
           let buttons: any[] = [
@@ -120,7 +99,6 @@ export class TaskBasicInfoEditPage implements OnInit {
                           }
                         ];
           await this.common.presentAlert(title,body, buttons);
-      // }
      }
     }
     return false;
@@ -135,26 +113,26 @@ export class TaskBasicInfoEditPage implements OnInit {
     this.taskDetails.tags.splice(index,1);
   }
 
-  async onCascadeChanges(e){
-    if(this.refInformation.toCascadeChanges && this.taskDetails.taskStatus=='RESOLVED'){
-      let title = "Invalid Operation";
-      let body = "It seems you are trying to propagate changes for the future tasks while the task status is RESOLVED. \
-              This is not permitted, either cancel change propagation or change the task status as OPEN and try again.";
-      let buttons: any[] = [
-                      {
-                        text: 'Dismiss',
-                        role: 'cancel',
-                        cssClass: '',
-                        handler: ()=>{}
-                      }
-                    ];
-      await this.common.presentAlert(title,body, buttons);
-      this.refInformation.toCascadeChanges = false;
-      // this.toCascadeLinakges = false;
-    } else{
-      // this.toCascadeLinakges = false;
-    }
-  }
+  // async onCascadeChanges(e){
+  //   if(this.refInformation.toCascadeChanges && this.taskDetails.taskStatus=='RESOLVED'){
+  //     let title = "Invalid Operation";
+  //     let body = "It seems you are trying to propagate changes for the future tasks while the task status is RESOLVED. \
+  //             This is not permitted, either cancel change propagation or change the task status as OPEN and try again.";
+  //     let buttons: any[] = [
+  //                     {
+  //                       text: 'Dismiss',
+  //                       role: 'cancel',
+  //                       cssClass: '',
+  //                       handler: ()=>{}
+  //                     }
+  //                   ];
+  //     await this.common.presentAlert(title,body, buttons);
+  //     this.refInformation.toCascadeChanges = false;
+  //     // this.toCascadeLinakges = false;
+  //   } else{
+  //     // this.toCascadeLinakges = false;
+  //   }
+  // }
 
   async statusChanged(e)
   {

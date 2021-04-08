@@ -40,7 +40,7 @@ export class TaskService {
         picUrl:'',
       },
       tags:[],
-      taskDetails:'',
+      details:'',
       searchMap:{},
       ownerInitiatorUidList:[],
   }

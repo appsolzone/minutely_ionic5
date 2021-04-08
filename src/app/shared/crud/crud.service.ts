@@ -317,7 +317,7 @@ export class CrudService {
         tags:dataObject.tags,
         taskProbability :dataObject.probability,
         taskImpact:dataObject.probability,
-        taskDetails:dataObject.notes,
+        details:dataObject.notes,
         searchMap: this._searchMap.createSearchMap(searchStrings),
         ownerInitiatorUidList:[
                               dataObject.ownerId.uid,

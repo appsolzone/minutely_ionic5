@@ -16,8 +16,8 @@
 </ion-item>
 <ion-item lines="full" *ngIf="taskDetails?.latestComment.totalComment !== 0">
   <ion-avatar slot="start">
-    <img slot="start" *ngIf=" taskDetails?.latestComment.picUrl !== ''" [src]="taskDetails?.latestComment.picUrl"
-      style="height:40px; width:40px;border-radius:50%;" />
+    <img src="{{(taskDetails?.latestComment.picUrl) ? taskDetails?.latestComment.picUrl : 'assets/shapes.svg'}}"
+      (error)="profileImgErrorHandler(taskDetails?.latestComment)" style="height:40px; width:40px;border-radius:50%;" />
     <ion-icon *ngIf="taskDetails?.latestComment.picUrl == ''" color="primary" name="person-circle"
       style="height:40px; width:40px;border-radius:50%;">
     </ion-icon>
