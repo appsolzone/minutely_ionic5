@@ -19,9 +19,9 @@ export class TaskService {
         subscriberId:'',
         picUrl:'',
       },
-      taskInitiationDate :null,
+      taskInitiationDate :new Date(),
       taskEntryDate : null,
-      targetCompletionDate :null,
+      targetCompletionDate :new Date(),
       actualCompletionDate: null,
       taskStatus: 'OPEN',
       lastUpdateDate:null,
@@ -93,7 +93,7 @@ constructor(
     let status = true;
     let startDateTime = task.taskInitiationDate ? new Date(task.taskInitiationDate) : null;
     let endDateTime = task.targetCompletionDate ? new Date(task.targetCompletionDate) : null;
-
+    console.log(startDateTime,endDateTime);
 
     if(!startDateTime) {
       status = false;
@@ -107,11 +107,12 @@ constructor(
               (new Date() <= startDateTime && new Date() <= endDateTime)
             ) {
       status = true;
-    } else {
-          title = "Invalid task Dates";
-          body = "task cannot be set in past. The task start and end time should be future time.";
-          status= false;
-    }
+    } 
+    // else {
+    //       title = "Invalid task Dates";
+    //       body = "task cannot be set in past. The task start and end time should be future time.";
+    //       status= false;
+    // }
     return {status, title, body};
   }
 
@@ -144,8 +145,8 @@ constructor(
     let taskData = task.data;
     let type = task.id ? 'update' : 'new';
     //return this.transaction(taskData, refInformation, editedlinkages, sessionInfo, type, false);
+    console.log(taskData, refInformation, editedlinkages, sessionInfo, type, false)
   }
-
     searchTextImplementation(task){
     let status = task.taskStatus;
 
@@ -159,6 +160,10 @@ constructor(
                         moment(new Date(task.taskInitiationDate)).format("MMMM") + " " +
                         moment(new Date(task.taskInitiationDate)).format("MMM");
     return this.searchMap.createSearchMap(searchStrings);
+  }
+
+  transection(){
+    
   }
 
 }

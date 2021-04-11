@@ -1,17 +1,42 @@
 <ion-item>
   <ion-label>
-    <ion-icon name="person-circle"></ion-icon>
+    <ion-icon name="accessibility"></ion-icon>
     Initiator
   </ion-label>
   <ion-input readonly="true" type="text" [value]="riskDetails?.riskInitiator.name" class="ion-text-end" color="medium">
   </ion-input>
 </ion-item>
+
+<ion-item class="ion-no-padding ion-margin" lines="none" color="light">
+  <img src="{{(riskDetails?.riskInitiator.picUrl) ? riskDetails?.riskInitiator.picUrl : 'assets/shapes.svg'}}"
+    (error)="profileImgErrorHandler(riskDetails?.riskInitiator)" style="height:30px; width:30px;border-radius:50%;" />
+  <ion-label class="ion-padding-start">
+    <p *ngIf="riskDetails">
+      <ion-text color="medium">{{riskDetails?.riskInitiator.name}}</ion-text>
+    </p>
+  </ion-label>
+</ion-item>
+
 <ion-item>
   <ion-label>
-    <ion-icon name="hand-right"></ion-icon>
+    <ion-icon name="pesron"></ion-icon>
     Owner
   </ion-label>
   <ion-input readonly="true" type="text" [value]="riskDetails?.riskOwner.name" class="ion-text-end" color="medium">
   </ion-input>
 </ion-item>
+
+
+  <ion-item class="ion-no-padding ion-margin" lines="none" color="light">
+    <img src="{{(riskDetails?.riskOwner.picUrl) ? riskDetails?.riskOwner.picUrl : 'assets/shapes.svg'}}"
+      (error)="profileImgErrorHandler(riskDetails?.riskOwner)" style="height:30px; width:30px;border-radius:50%;" />
+    <ion-label class="ion-padding-start" *ngIf="riskDetails">
+      <h3>
+        <ion-text color="dark">{{riskDetails?.riskOwner.name}}</ion-text>
+      </h3>
+      <p><small>
+          <ion-text color="medium">{{riskDetails?.riskOwner.email}}</ion-text>
+        </small></p>
+    </ion-label>
+  </ion-item>
 

@@ -8,10 +8,12 @@ import { Component, Input, OnInit } from '@angular/core';
 export class TaskOwnerInitiatorEditPage implements OnInit {
   @Input() sessionInfo: any;
   @Input() task: any;
+  @Input() editMode:any = 'update';
   // form data
   public taskDetails: any;
   public showSelectAttendees: boolean = false;
   public showSelectOwner: boolean = false;
+
 
   constructor() { }
 

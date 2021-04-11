@@ -66,8 +66,8 @@ export class TaskBasicInfoEditPage implements OnInit {
     // min and max start date
     this.minTaskDate = new Date(this.taskDetails.taskInitiationDate) > new Date() ? this.taskDetails.taskInitiationDate : moment().format('YYYY-MM-DD');
     this.defaultMaxDate = moment().add(5,'y').format('YYYY-MM-DD');
-    this.taskDetails.taskInitiationDate = this.taskDetails.taskInitiationDate ? this.taskDetails.taskInitiationDate : null;
-    this.taskDetails.targetCompletionDate = this.taskDetails.targetCompletionDate  ? this.taskDetails.targetCompletionDate   : null;
+    this.taskDetails.taskInitiationDate = this.taskDetails.taskInitiationDate ? this.taskDetails.taskInitiationDate :   moment().format('YYYY-MM-DD');
+    this.taskDetails.targetCompletionDate = this.taskDetails.targetCompletionDate  ? this.taskDetails.targetCompletionDate   :  moment().add(1, 'd').format('YYYY-MM-DD');
 
   }
   // cascadechanges
@@ -87,7 +87,9 @@ export class TaskBasicInfoEditPage implements OnInit {
       this.checkCascadeState();
       return true;
     } else {
-     if(showAlert){
+      
+    
+      if(showAlert){
           title = "Invalid task Start Date";
           body = "task cannot be set in past. The task start time should be future time.";
           let buttons: any[] = [
@@ -139,11 +141,21 @@ export class TaskBasicInfoEditPage implements OnInit {
      let status = e.detail.value;
      let prevStatus = this.taskDetails.taskStatus;
      console.log("this.taskDetails.taskStatus", this.taskDetails.taskStatus, status);
-      if(status=='RESOLVED' && (this.refInformation.toCascadeChanges)){ //|| this.toCascadeLinakges)
-        let title = "Invalid Operation";
-        let body = "It seems you are trying to mark the task RESOLVED and propagate changes for the future tasks. \
-                    This is not permitted, either cancel change propagation or keep the task status as OPEN and try again.";
+      if(status=='RESOLVED'){ //|| this.toCascadeLinakges)
+        // let title = "Invalid Operation";
+        // let body = "It seems you are trying to mark the task RESOLVED and propagate changes for the future tasks. \
+        //             This is not permitted, either cancel change propagation or keep the task status as OPEN and try again.";
+        let title = "Are you sure ?";
+        let body = "It seems you are trying to mark the task RESOLVED and propagate changes for the future tasks.";            
         let buttons: any[] = [
+                       {
+                          text: 'Ok',
+                          role: 'ok',
+                          cssClass: '',
+                          handler: ()=>{
+                            this.taskDetails.taskStatus=status;
+                          }
+                        },
                         {
                           text: 'Dismiss',
                           role: 'cancel',
@@ -152,7 +164,7 @@ export class TaskBasicInfoEditPage implements OnInit {
                         }
                       ];
         await this.common.presentAlert(title,body, buttons);
-        this.taskDetails.taskStatus = 'OPEN';
+       // this.taskDetails.taskStatus = 'OPEN';
       } else {
         this.taskDetails.taskStatus=status;
       }

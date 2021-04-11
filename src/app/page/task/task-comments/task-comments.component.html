@@ -14,7 +14,7 @@
     <ion-icon name="send-outline"></ion-icon> Be the first person to post comment for the task
   </ion-label>
 </ion-item>
-<ion-item lines="full" *ngIf="taskDetails?.latestComment.totalComment !== 0">
+<ion-item lines="full" *ngIf="taskDetails?.latestComment.totalComment > 0">
   <ion-avatar slot="start">
     <img src="{{(taskDetails?.latestComment.picUrl) ? taskDetails?.latestComment.picUrl : 'assets/shapes.svg'}}"
       (error)="profileImgErrorHandler(taskDetails?.latestComment)" style="height:40px; width:40px;border-radius:50%;" />

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { TaskService } from 'src/app/shared/task/task.service';
@@ -71,9 +72,12 @@ export class CreateTaskPage implements OnInit {
     // this.task = null;
     const data: any = taskStateData.data;
     const id: string = taskStateData.id;
-    const taskInitiationDate = null; //moment(data.taskInitiationDate).format('YYYY-MM-DDTHH:mm');
-    const targetCompletionDate = null; //moment(data.targetCompletionDate).format('YYYY-MM-DDTHH:mm');
+    const taskInitiationDate = moment(data.taskInitiationDate,'YYYY-MM-DD').format('YYYY-MM-DD');//null; //moment(data.taskInitiationDate).format('YYYY-MM-DDTHH:mm');
+  
+    const targetCompletionDate = moment(data.taskInitiationDate,'YYYY-MM-DD').format('YYYY-MM-DD');//null; //moment(data.targetCompletionDate).format('YYYY-MM-DDTHH:mm');
     // const weekdays = data.weekdays ? data.weekdays : [false,false,false,false,false,false,false];
+
+    console.log(taskInitiationDate,targetCompletionDate);
 
     this.task = {id, data: {...data, taskInitiationDate, targetCompletionDate
     }};

@@ -2,7 +2,7 @@
   <ion-label>
     <ion-icon name="pencil"></ion-icon> Initiation date
   </ion-label>
-  <ion-datetime displayFormat="DD MMM, YYYY" disabled="true" [(ngModel)]="taskDetails.taskInitiationDate"></ion-datetime>
+  <ion-datetime displayFormat="DD MMM, YYYY" [disabled]="editMode == 'update'? true:false" [(ngModel)]="taskDetails.taskInitiationDate" placeholder="Please select task initiation date"></ion-datetime>
   <!-- <ion-datetime displayFormat="DD MMM, YYYY HH:mm" [min]="minTaskDate" disabled="true"
     [max]="taskDetails.targetCompletionDate ? taskDetails.targetCompletionDate : defaultMaxDate"
     [(ngModel)]="taskDetails.taskInitiationDate" (ionChange)="dateChange()" placeholder="Please select task start time">
@@ -14,7 +14,7 @@
   </ion-label>
   <ion-datetime displayFormat="DD MMM, YYYY" [min]="minTaskDate"
     [(ngModel)]="taskDetails.targetCompletionDate" (ionChange)="dateChange()" placeholder="Please select target completion date"
-    disabled="taskDetails?.taskStatus =='RESOLVED'? true : taskDetails?.taskStatus == refInformation?.status"
+    [disabled]="editMode == 'update'? this.sessionInfo?.userProfile.uid == taskDetails?.taskInitiator.uid ? taskDetails?.taskStatus =='RESOLVED'? true : false :false : false"
     >
   </ion-datetime>
 </ion-item>
@@ -32,7 +32,7 @@
 <ion-item>
   <ion-label>
     <ion-icon name="pricetags"></ion-icon>
-    Tags
+    Add tags
   </ion-label>
   <ion-input [(ngModel)]="taskTag" [value]="taskTag" placeholder="Please enter keyword to add as tag"></ion-input>
   <ion-buttons slot="end">

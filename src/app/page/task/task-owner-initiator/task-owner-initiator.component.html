@@ -7,7 +7,7 @@
   </ion-input>
 </ion-item>
 <ion-item class="ion-no-padding ion-margin" lines="none" color="light">
-  <img src="{{(taskDetails?.taskInitiator.picUrl) ? taskDetails?.taskInitiator.picUrl : 'assets/shapes.svg'}}"
+  <img src="{{ (taskDetails?.taskInitiator.picUrl) ? taskDetails?.taskInitiator.picUrl : 'assets/shapes.svg'}}"
     (error)="profileImgErrorHandler(taskDetails?.taskInitiator)" style="height:30px; width:30px;border-radius:50%;" />
   <ion-label class="ion-padding-start">
     <p *ngIf="taskDetails">
@@ -27,13 +27,7 @@
     <img src="{{(taskDetails?.taskOwner.picUrl) ? taskDetails?.taskOwner.picUrl : 'assets/shapes.svg'}}"
       (error)="profileImgErrorHandler(taskDetails?.taskOwner)" style="height:30px; width:30px;border-radius:50%;" />
     <ion-label class="ion-padding-start" *ngIf="taskDetails">
-      <!-- <h2 *ngIf="taskDetails">Owner</h2> -->
-      <!-- <p >
-        <ion-text color="medium">{{taskDetails?.taskOwner.name}}</ion-text>
-      </p> -->
       <h3><ion-text color="dark">{{taskDetails?.taskOwner.name}}</ion-text></h3>
       <p><small><ion-text color="medium">{{taskDetails?.taskOwner.email}}</ion-text></small></p>
-      <!-- <ion-skeleton-text *ngIf="!t" animated style="width: 40%"></ion-skeleton-text>
-      <ion-skeleton-text *ngIf="!t" animated style="width: 60%"></ion-skeleton-text> -->
     </ion-label>
   </ion-item>

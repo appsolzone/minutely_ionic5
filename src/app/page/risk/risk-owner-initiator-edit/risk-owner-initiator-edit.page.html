@@ -1,11 +1,21 @@
 <ion-item>
   <ion-label>
-    <ion-icon name="person-circle"></ion-icon>
+    <ion-icon name="accessibility"></ion-icon>
     Initiator
   </ion-label>
   <ion-input readonly="true" type="text" [value]="riskDetails?.riskInitiator.name" class="ion-text-end" color="medium">
   </ion-input>
 </ion-item>
+<ion-item class="ion-no-padding ion-margin" lines="none" color="light">
+  <img src="{{(riskDetails?.taskInitiator.picUrl) ? riskDetails?.riskInitiator.picUrl : 'assets/shapes.svg'}}"
+    (error)="profileImgErrorHandler(riskDetails?.riskInitiator)" style="height:30px; width:30px;border-radius:50%;" />
+  <ion-label class="ion-padding-start">
+    <p *ngIf="riskDetails">
+      <ion-text color="medium">{{riskDetails?.riskInitiator.name}}</ion-text>
+    </p>
+  </ion-label>
+</ion-item>
+
 <ion-item>
   <ion-label>
     <ion-icon name="person-circle"></ion-icon>
@@ -19,6 +29,8 @@
     </ion-button>
   </ion-buttons>
 </ion-item>
+
+
 <app-select-users *ngIf="showSelectOwner"        [sessionInfo]="sessionInfo"
   [alreadySelectedUserList]="riskDetails?.riskOwner? [riskDetails?.riskOwner] : []" [multiSelect]="false"
   (onSelectionComplete)="changeRiskOwner($event)"></app-select-users>

@@ -8,6 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class TaskAgendaNoteEditPage implements OnInit {
   @Input() sessionInfo: any;
   @Input() task: any;
+  @Input() editMode:any = 'update';
 
   // form data
   public taskDetails: any;
