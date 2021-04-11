@@ -14,7 +14,7 @@
   </ion-label>
   <ion-datetime displayFormat="DD MMM, YYYY" [min]="minTaskDate"
     [(ngModel)]="taskDetails.targetCompletionDate" (ionChange)="dateChange()" placeholder="Please select target completion date"
-    [disabled]="editMode == 'update'? this.sessionInfo?.userProfile.uid == taskDetails?.taskInitiator.uid ? taskDetails?.taskStatus =='RESOLVED'? true : false :false : false"
+    [disabled]="editMode !== 'update'? false: this.sessionInfo?.userProfile.uid == taskDetails?.taskInitiator.uid ? taskDetails?.taskStatus =='RESOLVED'? true : false : true"
     >
   </ion-datetime>
 </ion-item>

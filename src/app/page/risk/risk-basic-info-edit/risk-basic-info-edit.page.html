@@ -12,7 +12,9 @@
     <ion-icon name="time-outline"></ion-icon> Risk End
   </ion-label>
   <ion-datetime displayFormat="DD MMM, YYYY HH:mm" [min]="riskDetails.riskInitiationDate"
-    [(ngModel)]="riskDetails.targetCompletionDate" (ionChange)="dateChange()" placeholder="Please select risk end time">
+    [(ngModel)]="riskDetails.targetCompletionDate" (ionChange)="dateChange()" placeholder="Please select risk end time"
+    [disabled]="editMode !== 'update'? false: this.sessionInfo?.userProfile.uid == riskDetails?.riskInitiator.uid ? riskDetails?.riskStatus =='RESOLVED'? true : false : true"
+    >
   </ion-datetime>
 </ion-item>
 <ion-item lines="none">

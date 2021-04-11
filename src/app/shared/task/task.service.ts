@@ -144,8 +144,9 @@ constructor(
     // else changes to be propagated
     let taskData = task.data;
     let type = task.id ? 'update' : 'new';
-    //return this.transaction(taskData, refInformation, editedlinkages, sessionInfo, type, false);
+
     console.log(taskData, refInformation, editedlinkages, sessionInfo, type, false)
+    return this.transaction(taskData, refInformation, editedlinkages, sessionInfo, type, false);
   }
     searchTextImplementation(task){
     let status = task.taskStatus;
@@ -162,8 +163,58 @@ constructor(
     return this.searchMap.createSearchMap(searchStrings);
   }
 
-  transection(){
+  transaction(taskData, refCopy, editedlinkages, sessionInfo, type, silentMode: boolean = false){
+
+    console.log("getting data     :",taskData);
+    console.log("getting ref info :",refCopy);
+    console.log("getting linkage  :",editedlinkages);
+
+    const {subscriberId, uid}= sessionInfo;
+
+    let docId = subscriberId;
+    let docRef = this.db.afs.collection(this.db.allCollections.subscribers).doc(docId).ref;
     
+    return this.db.afs.firestore.runTransaction(function(transaction) {
+      return transaction.get(docRef).then(async function(regDoc) {
+      
+       let subscriber = regDoc.data();
+       let totalTask = type=='new' ?
+                                (subscriber.totalTask ? (subscriber.totalTask + 1) : 1)
+                                : subscriber.totalTask;
+
+      let taskRef = null;                          
+      if(type=='new' && !refCopy.id){
+      taskRef = this.db.afs.collection(this.db.allCollections.meeting).doc().ref;
+      }else{
+      taskRef = this.db.afs.collection(this.db.allCollections.meeting).doc(refCopy.id).ref;
+      }
+      let dataSave = {...taskData,
+                      searchMap: this.searchTextImplementation({...taskData}),
+                      updatedAt: new Date(),
+                    }
+
+      // let linkage = meeting.status!='CANCEL' && ((!toCascadeChanges && i==refEventSequenceId) || (toCascadeChanges)) ? // && this.toCascadeChanges && this.toCascadeLinakges)) ?
+      //                       {
+      //                         meetings:editedlinkages.meetings ? editedlinkages.meetings : [],
+      //                         risks: editedlinkages.risks ? editedlinkages.risks : [],
+      //                         tasks: editedlinkages.tasks ? editedlinkages.tasks : [],
+      //                         issues: editedlinkages.issues ? editedlinkages.issues : []
+      //                       }
+      //                     :
+      //                     {
+      //                       meetings:[],
+      //                       risks: [],
+      //                       tasks: [],
+      //                       issues: []
+      //                     };              
+      
+      
+      
+             
+       return true;
+
+      })
+    })
   }
 
 }
