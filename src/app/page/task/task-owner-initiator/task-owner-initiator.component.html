@@ -10,8 +10,11 @@
   <img src="{{ (taskDetails?.taskInitiator.picUrl) ? taskDetails?.taskInitiator.picUrl : 'assets/shapes.svg'}}"
     (error)="profileImgErrorHandler(taskDetails?.taskInitiator)" style="height:30px; width:30px;border-radius:50%;" />
   <ion-label class="ion-padding-start">
+    <h3 *ngIf="taskDetails">
+      {{taskDetails?.taskInitiator.name}}
+    </h3>
     <p *ngIf="taskDetails">
-      <ion-text color="medium">{{taskDetails?.taskInitiator.name}}</ion-text>
+      <ion-text color="medium">{{taskDetails?.taskInitiator.email}}</ion-text>
     </p>
   </ion-label>
 </ion-item>
@@ -28,6 +31,6 @@
       (error)="profileImgErrorHandler(taskDetails?.taskOwner)" style="height:30px; width:30px;border-radius:50%;" />
     <ion-label class="ion-padding-start" *ngIf="taskDetails">
       <h3><ion-text color="dark">{{taskDetails?.taskOwner.name}}</ion-text></h3>
-      <p><small><ion-text color="medium">{{taskDetails?.taskOwner.email}}</ion-text></small></p>
+      <p><ion-text color="medium">{{taskDetails?.taskOwner.email}}</ion-text></p>
     </ion-label>
   </ion-item>

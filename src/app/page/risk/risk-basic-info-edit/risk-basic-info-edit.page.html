@@ -2,7 +2,7 @@
   <ion-label>
     <ion-icon name="time-outline"></ion-icon> Risk Initiate
   </ion-label>
-  <ion-datetime displayFormat="DD MMM, YYYY HH:mm" [min]="minRiskDate"
+  <ion-datetime displayFormat="DD MMM, YYYY" [min]="minRiskDate"
     [max]="riskDetails.targetCompletionDate ? riskDetails.targetCompletionDate : defaultMaxDate"
     [(ngModel)]="riskDetails.riskInitiationDate" (ionChange)="dateChange()" placeholder="Please select risk start time">
   </ion-datetime>
@@ -11,7 +11,7 @@
   <ion-label>
     <ion-icon name="time-outline"></ion-icon> Risk End
   </ion-label>
-  <ion-datetime displayFormat="DD MMM, YYYY HH:mm" [min]="riskDetails.riskInitiationDate"
+  <ion-datetime displayFormat="DD MMM, YYYY" [min]="riskDetails.riskInitiationDate"
     [(ngModel)]="riskDetails.targetCompletionDate" (ionChange)="dateChange()" placeholder="Please select risk end time"
     [disabled]="editMode !== 'update'? false: this.sessionInfo?.userProfile.uid == riskDetails?.riskInitiator.uid ? riskDetails?.riskStatus =='RESOLVED'? true : false : true"
     >

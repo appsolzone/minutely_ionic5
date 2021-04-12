@@ -74,7 +74,7 @@ export class CreateTaskPage implements OnInit {
     const id: string = taskStateData.id;
     const taskInitiationDate = moment(data.taskInitiationDate,'YYYY-MM-DD').format('YYYY-MM-DD');//null; //moment(data.taskInitiationDate).format('YYYY-MM-DDTHH:mm');
   
-    const targetCompletionDate = moment(data.taskInitiationDate,'YYYY-MM-DD').format('YYYY-MM-DD');//null; //moment(data.targetCompletionDate).format('YYYY-MM-DDTHH:mm');
+    const targetCompletionDate = moment(data.taskInitiationDate,'YYYY-MM-DD').add(1,'days').format('YYYY-MM-DD');//null; //moment(data.targetCompletionDate).format('YYYY-MM-DDTHH:mm');
     // const weekdays = data.weekdays ? data.weekdays : [false,false,false,false,false,false,false];
 
     console.log(taskInitiationDate,targetCompletionDate);

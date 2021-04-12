@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { RiskService } from 'src/app/shared/risk/risk.service';
 import { SessionService } from 'src/app/shared/session/session.service';
@@ -71,8 +72,14 @@ export class CreateRiskPage implements OnInit {
     // this.risk = null;
     const data: any = riskStateData.data;
     const id: string = riskStateData.id;
-    const riskInitiationDate = null; //moment(data.riskInitiationDate).format('YYYY-MM-DDTHH:mm');
-    const targetCompletionDate = null; //moment(data.targetCompletionDate).format('YYYY-MM-DDTHH:mm');
+    //const riskInitiationDate = null; //moment(data.riskInitiationDate).format('YYYY-MM-DDTHH:mm');
+    //const targetCompletionDate = null; //moment(data.targetCompletionDate).format('YYYY-MM-DDTHH:mm');
+    // const weekdays = data.weekdays ? data.weekdays : [false,false,false,false,false,false,false];
+
+
+    const riskInitiationDate = moment(data.riskInitiationDate,'YYYY-MM-DD').format('YYYY-MM-DD');//null; //moment(data.riskInitiationDate).format('YYYY-MM-DDTHH:mm');
+  
+    const targetCompletionDate = moment(data.taskInitiationDate,'YYYY-MM-DD').add(1,'days').format('YYYY-MM-DD');//null; //moment(data.targetCompletionDate).format('YYYY-MM-DDTHH:mm');
     // const weekdays = data.weekdays ? data.weekdays : [false,false,false,false,false,false,false];
 
     this.risk = {id, data: {...data, riskInitiationDate, targetCompletionDate
