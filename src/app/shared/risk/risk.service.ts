@@ -153,8 +153,8 @@ constructor(
 
     let searchStrings = risk.riskTitle +" "+
                         risk.tags.join(' ') +' ' +
-                        risk.riskOwner.u.name + ' ' + risk.riskOwner.u.email + " " +
-                        risk.riskInitiator.u.name + ' ' + risk.riskInitiator.u.email + " " +
+                        risk.riskOwner.name + ' ' + risk.riskOwner.email + " " +
+                        risk.riskInitiator.name + ' ' + risk.riskInitiator.email + " " +
                         status+" ";
       searchStrings += moment(new Date(risk.riskInitiationDate)).format("D") + " "+
                         moment(new Date(risk.riskInitiationDate)).format("YYYY") + " "+
@@ -162,7 +162,90 @@ constructor(
                         moment(new Date(risk.riskInitiationDate)).format("MMM");
     return this.searchMap.createSearchMap(searchStrings);
   }
+transaction(riskData, refCopy, editedlinkages, sessionInfo, type, silentMode: boolean = false){
 
+    console.log("getting data     :",riskData);
+    console.log("getting ref info :",refCopy);
+    console.log("getting linkage  :",editedlinkages);
+
+    const {subscriberId, uid}= sessionInfo;
+
+    let docId = subscriberId;
+    let docRef = this.db.afs.collection(this.db.allCollections.kpi).doc(docId).ref;
+    let riskId = '';
+    return this.db.afs.firestore.runTransaction(function(transaction) {
+      return transaction.get(docRef).then(async function(regDoc) {
+      
+      let subscriber = regDoc.data();
+      let totalRisk = type=='new' ?
+                              (subscriber.totalRisk ? (subscriber.totalRisk + 1) : 1)
+                              : subscriber.totalRisk;
+
+      riskId = (type=='new' && !refCopy.id) ? this.db.afs.createId():refCopy.id; 
+      let riskRef = this.db.afs.collection(this.db.allCollections.risk).doc(riskId).ref;
+     
+      let dataToSave = {...riskData,
+                      searchMap: this.searchTextImplementation({...riskData}),
+                      updatedAt: new Date(),
+                    }
+       // If this is the very first instance of the series of risks, check for status change and subsequently
+       // update the records as required
+      if(type=='new'){
+        this.kpi.updateKpiDuringCreation('risk',1,sessionInfo)
+      } else {
+        let statusChanged = (refCopy.status!=riskData.status);
+        let prevStatus = refCopy.status;
+        if(statusChanged)
+          {
+            this.kpi.updateKpiDuringUpdate('risk',prevStatus,riskData.status,riskData,sessionInfo,1);
+          }
+      }
+      // Propagate linkage only if linkage propagation is true along with other propagation options
+      let linkage ={ meetings:editedlinkages.meetings ? editedlinkages.meetings : [],
+                        risks: editedlinkages.risks ? editedlinkages.risks : [],
+                        tasks: editedlinkages.risks ? editedlinkages.risks : [],
+                        issues: editedlinkages.issues ? editedlinkages.issues : []
+                      }
+      let statusChanged = (refCopy.status!=riskData.status);
+      let prevStatus = refCopy.status;
+      let selfLinkData = this.link.getLinkData('meetings', riskData);
+      console.log("runninh transaction", dataToSave, linkage , selfLinkData);
+      await this.link.saveDocumentData(this.db.allCollections.meeting, riskId, dataToSave, linkage , selfLinkData, transaction, type);
+      
+      
+      return true;
+
+      }.bind(this))
+    }.bind(this))
+    .then(function() {
+        if(!silentMode){
+          let infodata = riskData;
+          let eventInfo = {
+            origin: 'risks',
+            eventType: type=='new' ? 'add' : 'update',
+            data: {
+              id: riskId,
+              subscriberId: subscriberId,
+              ...infodata
+            },
+            prevData: refCopy,
+          };
+          let notifications = this.itemupdate.getNotifications(eventInfo);
+          this.notification.createNotifications(notifications);
+
+          // this.sendMail(meeting.attendeeList,refCopy.id,meeting.meetingStart,meeting.meetingEnd);
+
+
+          this.sfp.defaultAlert("Successful","risk Data updated successfully.");
+          console.log("runninh transaction", {status: 'success', title: "Successful", body: "Risk Data updated successfully."});
+          return {status: 'success', title: "Success", body: "risk " +  (type=='new' ? 'created' : 'updated') + " successfully."};
+
+        }
+    }.bind(this)).catch(function(error) {
+        console.log("running transaction failed",error);
+        return {status: 'failed', title: "Error", body: "Risk " + (type=='new' ? 'creation' : 'updation') + " failed. Please try again."};
+    }.bind(this));
+  }
 
 
 

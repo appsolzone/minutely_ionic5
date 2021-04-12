@@ -153,8 +153,8 @@ constructor(
 
     let searchStrings = task.taskTitle +" "+
                         task.tags.join(' ') +' ' +
-                        task.taskOwner.u.name + ' ' + task.taskOwner.u.email + " " +
-                        task.taskInitiator.u.name + ' ' + task.taskInitiator.u.email + " " +
+                        task.taskOwner.name + ' ' + task.taskOwner.email + " " +
+                        task.taskInitiator.name + ' ' + task.taskInitiator.email + " " +
                         status+" ";
       searchStrings += moment(new Date(task.taskInitiationDate)).format("D") + " "+
                         moment(new Date(task.taskInitiationDate)).format("YYYY") + " "+
@@ -184,7 +184,7 @@ constructor(
                               (subscriber.totalTask ? (subscriber.totalTask + 1) : 1)
                               : subscriber.totalTask;
 
-      taskId = (type=='new' && !refCopy.id) ? this.db.this.afs.createId():refCopy.id; 
+      taskId = (type=='new' && !refCopy.id) ? this.db.afs.createId():refCopy.id; 
       let taskRef = this.db.afs.collection(this.db.allCollections.task).doc(taskId).ref;
      
       let dataToSave = {...taskData,
