@@ -6,10 +6,12 @@
   <ion-input readonly="true" type="text" [value]="taskDetails?.taskInitiator.name" class="ion-text-end" color="medium">
   </ion-input>
 </ion-item>
-<ion-item class="ion-no-padding ion-margin" lines="none" color="light">
-  <img src="{{ (taskDetails?.taskInitiator.picUrl) ? taskDetails?.taskInitiator.picUrl : 'assets/shapes.svg'}}"
-    (error)="profileImgErrorHandler(taskDetails?.taskInitiator)" style="height:30px; width:30px;border-radius:50%;" />
-  <ion-label class="ion-padding-start">
+<ion-item>
+  <ion-avatar slot="start">
+    <img src="{{ (taskDetails?.taskInitiator.picUrl) ? taskDetails?.taskInitiator.picUrl : 'assets/shapes.svg'}}"
+      (error)="profileImgErrorHandler(taskDetails?.taskInitiator)" />
+  </ion-avatar>
+  <ion-label>
     <h3 *ngIf="taskDetails">
       {{taskDetails?.taskInitiator.name}}
     </h3>
@@ -26,10 +28,12 @@
   <ion-input readonly="true" type="text" [value]="taskDetails?.taskOwner.name" class="ion-text-end" color="medium">
   </ion-input>
 </ion-item>
-  <ion-item class="ion-no-padding ion-margin" lines="none" color="light">
-    <img src="{{(taskDetails?.taskOwner.picUrl) ? taskDetails?.taskOwner.picUrl : 'assets/shapes.svg'}}"
-      (error)="profileImgErrorHandler(taskDetails?.taskOwner)" style="height:30px; width:30px;border-radius:50%;" />
-    <ion-label class="ion-padding-start" *ngIf="taskDetails">
+  <ion-item>
+    <ion-avatar slot="start">
+      <img src="{{(taskDetails?.taskOwner.picUrl) ? taskDetails?.taskOwner.picUrl : 'assets/shapes.svg'}}"
+        (error)="profileImgErrorHandler(taskDetails?.taskOwner)" />
+    </ion-avatar>
+    <ion-label *ngIf="taskDetails">
       <h3><ion-text color="dark">{{taskDetails?.taskOwner.name}}</ion-text></h3>
       <p><ion-text color="medium">{{taskDetails?.taskOwner.email}}</ion-text></p>
     </ion-label>

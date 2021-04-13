@@ -6,13 +6,15 @@
   <ion-input readonly="true" type="text" [value]="taskDetails?.taskInitiator.name" class="ion-text-end" color="medium">
   </ion-input>
 </ion-item>
-<ion-item class="ion-no-padding ion-margin" lines="none" color="light" *ngIf="editMode =='update'">
-  <img src="{{(taskDetails?.taskInitiator.picUrl) ? taskDetails?.taskInitiator.picUrl : 'assets/shapes.svg'}}"
-    (error)="profileImgErrorHandler(taskDetails?.taskInitiator)" style="height:30px; width:30px;border-radius:50%;" />
-    <ion-label class="ion-padding-start" *ngIf="taskDetails">
-      <h3>{{taskDetails?.taskInitiator.name}}</h3>
-      <p><ion-text color="medium">{{taskDetails?.taskInitiator.email}}</ion-text></p>
-    </ion-label>
+<ion-item *ngIf="editMode =='update'">
+  <ion-avatar slot="start">
+    <img src="{{(taskDetails?.taskInitiator.picUrl) ? taskDetails?.taskInitiator.picUrl : 'assets/shapes.svg'}}"
+      (error)="profileImgErrorHandler(taskDetails?.taskInitiator)" />
+  </ion-avatar>
+  <ion-label *ngIf="taskDetails">
+    <h3>{{taskDetails?.taskInitiator.name}}</h3>
+    <p><ion-text color="medium">{{taskDetails?.taskInitiator.email}}</ion-text></p>
+  </ion-label>
 </ion-item>
 <ion-item>
   <ion-label>
