@@ -99,7 +99,7 @@ export class IssueListComponent implements OnInit {
 
   SearchOptionsChanged(e){
     this.searchMode = e.detail.value;
-    this.searchModeUser = 'all';
+    // this.searchModeUser = 'all';
     this.getIssues();
   }
 
@@ -133,9 +133,15 @@ export class IssueListComponent implements OnInit {
 
     queryObj = [{field: 'subscriberId',operator: '==', value: this.sessionInfo.subscriberId}];
 
-    if(this.searchModeUser=='user'){
+    // if(this.searchModeUser=='user'){
+    //   queryObj.push({field: 'ownerInitiatorUidList',operator: 'array-contains-any', value: [this.sessionInfo.uid]})
+    // }
+    if(!this.searchText?.trim() && this.searchModeUser=='user'){
       queryObj.push({field: 'ownerInitiatorUidList',operator: 'array-contains-any', value: [this.sessionInfo.uid]})
+    } else if(this.searchText?.trim() && this.searchModeUser=='user'){
+      queryObj.push({field: 'searchMap.'+this.sessionInfo.uid,operator: '==', value: true});
     }
+
     if(this.dateRange.startDate){
       queryObj.push({field: 'targetCompletionDate',operator: '>=', value: this.dateRange.startDate});
     }

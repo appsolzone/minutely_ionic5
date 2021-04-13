@@ -282,6 +282,7 @@ export class MeetingService {
 
   searchTextImplementation(meeting){
     let status = meeting.status;
+    let searchMap: any;
 
     let searchStrings = meeting.meetingTitle +" "+
                         meeting.tags.join(' ') +' ' +
@@ -291,7 +292,9 @@ export class MeetingService {
                         moment(new Date(meeting.meetingStart)).format("YYYY") + " "+
                         moment(new Date(meeting.meetingStart)).format("MMMM") + " " +
                         moment(new Date(meeting.meetingStart)).format("MMM");
-    return this.searchMap.createSearchMap(searchStrings);
+    searchMap = this.searchMap.createSearchMap(searchStrings);
+    meeting.attendeeUidList.forEach(uid=>searchMap[uid]=true);
+    return searchMap;
   }
 
   transaction(meeting, refCopy, editedlinkages, sessionInfo, type, silentMode: boolean = false){

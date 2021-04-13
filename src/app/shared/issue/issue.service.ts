@@ -160,6 +160,7 @@ export class IssueService {
 
   searchTextImplementation(issue){
     let status = issue.issueStatus;
+    let searchMap: any;
 
     let searchStrings = issue.issueTitle +" "+
                         issue.tags.join(' ') +' ' +
@@ -170,7 +171,9 @@ export class IssueService {
                         moment(new Date(issue.targetCompletionDate)).format("YYYY") + " "+
                         moment(new Date(issue.targetCompletionDate)).format("MMMM") + " " +
                         moment(new Date(issue.targetCompletionDate)).format("MMM");
-    return this.searchMap.createSearchMap(searchStrings);
+    searchMap = this.searchMap.createSearchMap(searchStrings);
+    issue.ownerInitiatorUidList.forEach(uid=>searchMap[uid]=true);
+    return searchMap;
   }
 
   transaction(issue, refCopy, editedlinkages, sessionInfo, type, silentMode: boolean = false){
