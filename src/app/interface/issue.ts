@@ -1,16 +1,30 @@
 export interface Issue {
-    issueId?:string,
-    id?:string,
+    // issueId?:string,
+    // id?:string,
     issueTitle : string,
-    issueOwner :any,
+    issueOwner :{
+      name:string,
+      uid:string,
+      picUrl:any,
+      subscriberId:string,
+      email:string
+    },
     issueInitiationDate : any,
-    issueEntryDate : any,
+    // issueEntryDate : any,
     targetCompletionDate : any,
     actualCompletionDate: any,
     issueStatus: 'OPEN',
     lastUpdateDate: any,
     subscriberId:string,
-    latestComment:any,
+    latestComment:{
+      author:string,
+      uid:string,
+      picUrl:any,
+      email:string,
+      comment: string,
+      date: any,
+      totalComments: number
+    },
     issueInitiator :{
       name:string,
       uid:string,
@@ -19,8 +33,6 @@ export interface Issue {
       email:string
     },
     tags:[],
-    issueProbability :string,
-    issueImpact:string,
     issueDetails:string,
     searchMap: any,
     ownerInitiatorUidList:Array<any>

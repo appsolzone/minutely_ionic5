@@ -12,18 +12,18 @@
 </ion-card>
 <ion-card class="ion-no-padding" *ngFor="let t of linkedTasks ? linkedTasks : [null,null];"  button="true" (click)="openTaskDetails(t)">
   <ion-item lines="none" color="transparent">
-    <ion-buttons slot="start">
-      <ion-button slot="start" fill="solid" color="green">
+    <!-- <ion-buttons slot="start"> -->
+      <ion-button slot="start" fill="solid" color="green" class="ion-no-margin margin-end-5px">
         <ion-icon slot="start" name="locate"></ion-icon>
         {{t?.data.targetCompletionDate| date : 'mediumDate'}}
         <ion-skeleton-text *ngIf="!t" animated style="width: 30%"></ion-skeleton-text>
       </ion-button>
-      <ion-button slot="start"  fill="solid" color="medium">
+      <ion-button slot="start"  fill="solid" color="light" class="ion-no-margin">
         <ion-icon slot="start" name="pencil"></ion-icon>
         {{t?.data.taskInitiationDate| date : 'mediumDate'}}
         <ion-skeleton-text *ngIf="!t" animated style="width: 30%"></ion-skeleton-text>
       </ion-button>
-    </ion-buttons>
+    <!-- </ion-buttons> -->
   </ion-item>
   <ion-card-content class="ion-no-padding ion-padding-start ion-padding-end">
     <ion-item lines="none" class="ion-no-padding"  color="transparent">

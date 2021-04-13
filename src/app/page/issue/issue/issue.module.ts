@@ -6,6 +6,9 @@ import { IonicModule } from '@ionic/angular';
 
 import { IssuePageRoutingModule } from './issue-routing.module';
 
+import { IssueListModule } from './issue-list/issue-list.module';
+import { KpiModule } from 'src/app/page/kpi/kpi.module';
+
 import { IssuePage } from './issue.page';
 
 @NgModule({
@@ -13,7 +16,9 @@ import { IssuePage } from './issue.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    IssuePageRoutingModule
+    IssuePageRoutingModule,
+    IssueListModule,
+    KpiModule
   ],
   declarations: [IssuePage]
 })

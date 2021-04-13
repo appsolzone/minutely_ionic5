@@ -26,9 +26,9 @@ export class ItemUpdatesService {
       // case 'tasks':
       //   return this.getTaskNotifications(eventInfo);
       //   break;
-      // case 'issues':
-      //   return this.getIssueNotifications(eventInfo);
-      //   break;
+      case 'issues':
+        return this.getIssueNotifications(eventInfo);
+        break;
       // case 'risks':
       //   return this.getRiskNotifications(eventInfo);
       //   break;
@@ -89,21 +89,21 @@ export class ItemUpdatesService {
   //
   // }
   //
-  // getIssuesMessage(eventInfo: any,userEventType: any) {
-  //   // eventInfo.data to include meeting start time, meeting end time
-  //   let message = '';
-  //   if(userEventType=='assignowner'){
-  //     message = "Issue '" + eventInfo.data.issueTitle +
-  //                   "' has been assigned to you. For further details, please open the app and check the Issues section.";
-  //
-  //   } else if (userEventType=='update') {
-  //     message = "The issue details of '" + eventInfo.data.issueTitle +
-  //                   "' has been updated. For further details, please open the app and check the Issues section.";
-  //   }
-  //
-  //   return message;
-  //
-  // }
+  getIssuesMessage(eventInfo: any,userEventType: any) {
+    // eventInfo.data to include meeting start time, meeting end time
+    let message = '';
+    if(userEventType=='assignowner'){
+      message = "Issue '" + eventInfo.data.issueTitle +
+                    "' has been assigned to you. For further details, please open the app and check the Issues section.";
+
+    } else if (userEventType=='update') {
+      message = "The issue details of '" + eventInfo.data.issueTitle +
+                    "' has been updated. For further details, please open the app and check the Issues section.";
+    }
+
+    return message;
+
+  }
   //
   // getRisksMessage(eventInfo: any,userEventType: any) {
   //   // eventInfo.data to include meeting start time, meeting end time
@@ -228,40 +228,52 @@ export class ItemUpdatesService {
   //
   // }
   //
-  // getIssueNotifications(eventInfo){
-  //   let newNotifications = [];
-  //   // List of users to send notifications
-  //   let issueFollowers = [];
-  //   issueFollowers.push({issueOwner: true, ...eventInfo.data.issueOwner});
-  //   if(eventInfo.eventType=='update' && eventInfo.updatedBy.uid != eventInfo.data.issueInitiator.uid){
-  //     issueFollowers.push({issueOwner: false, ...eventInfo.data.issueInitiator});
-  //   }
-  //   // need to create notifications for each of the task followers
-  //   issueFollowers.forEach((mp)=>{
-  //     if(mp.uid){
-  //       // lets check whether the user is newly added or existing user
-  //       let userEventType = (mp.issueOwner && eventInfo.eventType=='add') ||
-  //                           (mp.issueOwner && eventInfo.eventType=='update' && eventInfo.data.issueOwner.uid != eventInfo.prevData.issueOwner.uid)
-  //                           ? 'assignowner' : 'update';
-  //       let _newAlertObj=
-  //         {
-  //           notificationref: mp.uid+'_' + eventInfo.data.subscriberId,
-  //           notificationTime: this.db.frb.firestore.FieldValue.serverTimestamp(),
-  //           msgBody: this.getIssuesMessage(eventInfo,userEventType),
-  //           name:   mp.name,
-  //           Origin: eventInfo.origin,
-  //           docId:  eventInfo.data.id,
-  //           Actions: {Action1:'Dismiss',},
-  //           refValues:{ taskId: eventInfo.data.id, title:  eventInfo.data.issueTitle}
-  //         };
-  //         newNotifications.push(_newAlertObj);
-  //     }
-  //
-  //   });
-  //
-  //   return newNotifications;
-  //
-  // }
+  getIssueNotifications(eventInfo){
+    let newNotifications = [];
+    // List of users to send notifications
+    let issueFollowers = [];
+    issueFollowers.push({issueOwner: true, ...eventInfo.data.issueOwner});
+    if(eventInfo.eventType=='update' && eventInfo.updatedBy.uid != eventInfo.data.issueInitiator.uid){
+      issueFollowers.push({issueOwner: false, ...eventInfo.data.issueInitiator});
+    }
+    // need to create notifications for each of the task followers
+    issueFollowers.forEach((mp)=>{
+      if(mp.uid){
+        // lets check whether the user is newly added or existing user
+        let userEventType = (mp.issueOwner && eventInfo.eventType=='add') ||
+                            (mp.issueOwner && eventInfo.eventType=='update' && eventInfo.data.issueOwner.uid != eventInfo.prevData.issueOwner.uid)
+                            ? 'assignowner' : 'update';
+        let _newAlertObj=
+          {
+            ...this.notification.newNotification,
+            msgBody: this.getIssuesMessage(eventInfo,userEventType),
+            msgTitle: eventInfo.data.issueTitle ? eventInfo.data.issueTitle : 'Issue information',
+            origin: {label: 'Issue', icon: 'options', color: 'danger'},
+            actions: userEventType=="add" ?
+                    [{text: 'open', color: 'primary', href: 'issue/issue-details/'+eventInfo.data.id}, {text: 'clear', color: 'medium', href: 'clear'}]
+                    :
+                    [{text: 'clear', color: 'medium', href: 'clear'}],
+            refData: {id: eventInfo.data.id}, // data required for any action or oter purpose
+            subscriberId: eventInfo.data.subscriberId,
+            user: {uid: mp.uid, email: mp.email, name: mp.name}
+
+            // notificationref: mp.uid+'_' + eventInfo.data.subscriberId,
+            // notificationTime: this.db.frb.firestore.FieldValue.serverTimestamp(),
+            // msgBody: this.getIssuesMessage(eventInfo,userEventType),
+            // name:   mp.name,
+            // Origin: eventInfo.origin,
+            // docId:  eventInfo.data.id,
+            // Actions: {Action1:'Dismiss',},
+            // refValues:{ taskId: eventInfo.data.id, title:  eventInfo.data.issueTitle}
+          };
+          newNotifications.push(_newAlertObj);
+      }
+
+    });
+
+    return newNotifications;
+
+  }
   //
   // getRiskNotifications(eventInfo)
   // {

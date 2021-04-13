@@ -41,13 +41,13 @@
     ></ion-icon>
 </ion-item>
 <div *ngIf="meetingDetails?.isOccurence">
-  <ion-item class="">
+  <!-- <ion-item class="">
     <ion-label>
       <ion-icon name="sync" class="icons"></ion-icon>
       Recurring meeting no
     </ion-label>
     <ion-input class="ion-text-end" type="text" readonly="true" [value]="meetingDetails?.eventSequenceId"  color="medium"></ion-input>
-  </ion-item>
+  </ion-item> -->
   <ion-item class="">
     <ion-label>
       <ion-icon name="options" class="icons"></ion-icon>
@@ -70,11 +70,11 @@
       </ion-item>
       <ion-list *ngIf="meetingDetails?.occurenceType=='daily'">
         <ion-row>
-          <ion-col *ngFor="let day of ['SUN','MON','TUE','WED','THU','FRI','SAT'];let i=index;">
+          <ion-col *ngFor="let day of ['MON','TUE','WED','THU','FRI','SAT','SUN'];let i=index;">
             <ion-item lines="none">
               <ion-icon slot="start"
-                [name]="meetingDetails?.weekdays[i]? 'checkbox' : 'square-outline'"
-                [color]="meetingDetails?.weekdays[i]? 'primary' : 'medium'"></ion-icon>
+                [name]="meetingDetails?.weekdays[i==6? 0 : i+1]? 'checkbox' : 'square-outline'"
+                [color]="meetingDetails?.weekdays[i==6? 0 : i+1]? 'primary' : 'medium'"></ion-icon>
               <ion-label class="ion-no-margin">{{day}}</ion-label>
             </ion-item>
           </ion-col>

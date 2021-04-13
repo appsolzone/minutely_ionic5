@@ -9,7 +9,7 @@
     >
   </ion-datetime>
 </ion-item>
-<ion-item  class="">
+<ion-item  *ngIf="meetingDetails.meetingStart" class="">
   <ion-label>
     <ion-icon name="time-outline"></ion-icon> Meeting End
   </ion-label>
@@ -30,6 +30,7 @@
 <ion-item >
   <ion-textarea required="true" autoGrow="true" wrap="soft" spellcheck="true"
     [(ngModel)]="meetingDetails.meetingTitle"
+    placeholder="Please enter meeting title"
     [value]="meetingDetails?.meetingTitle"></ion-textarea>
 </ion-item>
 <ion-item >
@@ -39,6 +40,7 @@
   </ion-label>
   <ion-input [(ngModel)]="meetingTag" [value]="meetingTag"
     placeholder="Please enter keyword to add as tag"
+    (keyup.enter)="addTag()"
     ></ion-input>
   <ion-buttons slot="end">
     <ion-button slot="end" (click)="addTag()" color="medium">
@@ -74,19 +76,19 @@
     ></ion-toggle>
 </ion-item>
 <div *ngIf="meetingDetails?.isOccurence">
-  <ion-item class="" *ngIf="meetingDetails?.eventSequenceId">
+  <!-- <ion-item class="" *ngIf="meetingDetails?.eventSequenceId">
     <ion-label>
       <ion-icon name="sync" class="icons"></ion-icon>
       Recurring meeting no
     </ion-label>
     <ion-input class="ion-text-end" type="text" readonly="true" [value]="meetingDetails?.eventSequenceId"  color="medium"></ion-input>
-  </ion-item>
+  </ion-item> -->
   <ion-item class="">
     <ion-label>
       <ion-icon name="options" class="icons"></ion-icon>
       Total no of meetings
     </ion-label>
-    <ion-select interface="popover" [(ngModel)]="meetingDetails.noOfOccurence">
+    <ion-select  [interfaceOptions]="noOfMeetingsASOptions" interface="action-sheet" [(ngModel)]="meetingDetails.noOfOccurence">
       <ion-select-option *ngFor="let f of noOfOccurenceOption" [value]="f">{{f}}</ion-select-option>
     </ion-select>
   </ion-item>
@@ -111,9 +113,9 @@
 
       <ion-list *ngIf="meetingDetails?.occurenceType=='daily'">
         <ion-row>
-          <ion-col *ngFor="let day of ['SUN','MON','TUE','WED','THU','FRI','SAT'];let i=index;">
+          <ion-col *ngFor="let day of ['MON','TUE','WED','THU','FRI','SAT','SUN'];let i=index;">
             <ion-item lines="none">
-              <ion-checkbox slot="start" [(ngModel)]="meetingDetails.weekdays[i]" disabled="{{!refInformation?.toCascadeChanges}}"
+              <ion-checkbox slot="start" [(ngModel)]="meetingDetails.weekdays[i==6? 0 : i+1]" disabled="{{!refInformation?.toCascadeChanges}}"
                 ></ion-checkbox>
               <ion-label class="ion-no-margin">{{day}}</ion-label>
             </ion-item>
