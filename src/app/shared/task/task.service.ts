@@ -19,9 +19,9 @@ export class TaskService {
         subscriberId:'',
         picUrl:'',
       },
-      taskInitiationDate :null,
+      taskInitiationDate :new Date(),
       taskEntryDate : null,
-      targetCompletionDate :null,
+      targetCompletionDate :new Date(),
       actualCompletionDate: null,
       taskStatus: 'OPEN',
       lastUpdateDate:null,
@@ -40,7 +40,7 @@ export class TaskService {
         picUrl:'',
       },
       tags:[],
-      taskDetails:'',
+      details:'',
       searchMap:{},
       ownerInitiatorUidList:[],
   }
@@ -93,7 +93,7 @@ constructor(
     let status = true;
     let startDateTime = task.taskInitiationDate ? new Date(task.taskInitiationDate) : null;
     let endDateTime = task.targetCompletionDate ? new Date(task.targetCompletionDate) : null;
-
+    console.log(startDateTime,endDateTime);
 
     if(!startDateTime) {
       status = false;
@@ -107,11 +107,12 @@ constructor(
               (new Date() <= startDateTime && new Date() <= endDateTime)
             ) {
       status = true;
-    } else {
-          title = "Invalid task Dates";
-          body = "task cannot be set in past. The task start and end time should be future time.";
-          status= false;
-    }
+    } 
+    // else {
+    //       title = "Invalid task Dates";
+    //       body = "task cannot be set in past. The task start and end time should be future time.";
+    //       status= false;
+    // }
     return {status, title, body};
   }
 
@@ -143,22 +144,110 @@ constructor(
     // else changes to be propagated
     let taskData = task.data;
     let type = task.id ? 'update' : 'new';
-    //return this.transaction(taskData, refInformation, editedlinkages, sessionInfo, type, false);
-  }
 
+    console.log(taskData, refInformation, editedlinkages, sessionInfo, type, false)
+    return this.transaction(taskData, refInformation, editedlinkages, sessionInfo, type, false);
+  }
     searchTextImplementation(task){
     let status = task.taskStatus;
 
     let searchStrings = task.taskTitle +" "+
                         task.tags.join(' ') +' ' +
-                        task.taskOwner.u.name + ' ' + task.taskOwner.u.email + " " +
-                        task.taskInitiator.u.name + ' ' + task.taskInitiator.u.email + " " +
+                        task.taskOwner.name + ' ' + task.taskOwner.email + " " +
+                        task.taskInitiator.name + ' ' + task.taskInitiator.email + " " +
                         status+" ";
       searchStrings += moment(new Date(task.taskInitiationDate)).format("D") + " "+
                         moment(new Date(task.taskInitiationDate)).format("YYYY") + " "+
                         moment(new Date(task.taskInitiationDate)).format("MMMM") + " " +
                         moment(new Date(task.taskInitiationDate)).format("MMM");
     return this.searchMap.createSearchMap(searchStrings);
+  }
+
+
+
+  transaction(taskData, refCopy, editedlinkages, sessionInfo, type, silentMode: boolean = false){
+
+    console.log("getting data     :",taskData);
+    console.log("getting ref info :",refCopy);
+    console.log("getting linkage  :",editedlinkages);
+
+    const {subscriberId, uid}= sessionInfo;
+
+    let docId = subscriberId;
+    let docRef = this.db.afs.collection(this.db.allCollections.kpi).doc(docId).ref;
+    let taskId = '';
+    return this.db.afs.firestore.runTransaction(function(transaction) {
+      return transaction.get(docRef).then(async function(regDoc) {
+      
+      let subscriber = regDoc.data();
+      let totalTask = type=='new' ?
+                              (subscriber.totalTask ? (subscriber.totalTask + 1) : 1)
+                              : subscriber.totalTask;
+
+      taskId = (type=='new' && !refCopy.id) ? this.db.afs.createId():refCopy.id; 
+      let taskRef = this.db.afs.collection(this.db.allCollections.task).doc(taskId).ref;
+     
+      let dataToSave = {...taskData,
+                      searchMap: this.searchTextImplementation({...taskData}),
+                      updatedAt: new Date(),
+                    }
+       // If this is the very first instance of the series of tasks, check for status change and subsequently
+       // update the records as required
+      if(type=='new'){
+        this.kpi.updateKpiDuringCreation('Task',1,sessionInfo)
+      } else {
+        let statusChanged = (refCopy.status!=taskData.status);
+        let prevStatus = refCopy.status;
+        if(statusChanged)
+          {
+            this.kpi.updateKpiDuringUpdate('Task',prevStatus,taskData.status,taskData,sessionInfo,1);
+          }
+      }
+      // Propagate linkage only if linkage propagation is true along with other propagation options
+      let linkage ={ meetings:editedlinkages.meetings ? editedlinkages.meetings : [],
+                        risks: editedlinkages.risks ? editedlinkages.risks : [],
+                        tasks: editedlinkages.tasks ? editedlinkages.tasks : [],
+                        issues: editedlinkages.issues ? editedlinkages.issues : []
+                      }
+      let statusChanged = (refCopy.status!=taskData.status);
+      let prevStatus = refCopy.status;
+      let selfLinkData = this.link.getLinkData('meetings', taskData);
+      console.log("runninh transaction", dataToSave, linkage , selfLinkData);
+      await this.link.saveDocumentData(this.db.allCollections.meeting, taskId, dataToSave, linkage , selfLinkData, transaction, type);
+      
+      
+      return true;
+
+      }.bind(this))
+    }.bind(this))
+    .then(function() {
+        if(!silentMode){
+          let infodata = taskData;
+          let eventInfo = {
+            origin: 'tasks',
+            eventType: type=='new' ? 'add' : 'update',
+            data: {
+              id: taskId,
+              subscriberId: subscriberId,
+              ...infodata
+            },
+            prevData: refCopy,
+          };
+          let notifications = this.itemupdate.getNotifications(eventInfo);
+          this.notification.createNotifications(notifications);
+
+          // this.sendMail(meeting.attendeeList,refCopy.id,meeting.meetingStart,meeting.meetingEnd);
+
+
+          this.sfp.defaultAlert("Successful","Task Data updated successfully.");
+          console.log("runninh transaction", {status: 'success', title: "Successful", body: "Task Data updated successfully."});
+          return {status: 'success', title: "Success", body: "Task " +  (type=='new' ? 'created' : 'updated') + " successfully."};
+
+        }
+    }.bind(this)).catch(function(error) {
+        console.log("running transaction failed",error);
+        return {status: 'failed', title: "Error", body: "Task " + (type=='new' ? 'creation' : 'updation') + " failed. Please try again."};
+    }.bind(this));
   }
 
 }

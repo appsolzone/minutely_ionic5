@@ -37,9 +37,9 @@
       <!-- <app-task-location-edit *ngIf="showSection=='LOCATION' && sessionInfo && task" editMode="create"
         [task]="task" [sessionInfo]="sessionInfo"></app-task-location-edit> -->
       <app-task-owner-initiator-edit *ngIf="showSection=='OWNER' && sessionInfo && task" [task]="task"
-        [sessionInfo]="sessionInfo"></app-task-owner-initiator-edit>
+        [sessionInfo]="sessionInfo" editMode="create"></app-task-owner-initiator-edit>
       <app-task-agenda-note-edit *ngIf="showSection=='NOTES' && sessionInfo && task" [task]="task"
-        [sessionInfo]="sessionInfo"></app-task-agenda-note-edit>
+        [sessionInfo]="sessionInfo" editMode="create"></app-task-agenda-note-edit>
     </ion-col>
     <ion-col size="12" size-lg="4" class="ion-hide-lg-down">
       <ion-card>

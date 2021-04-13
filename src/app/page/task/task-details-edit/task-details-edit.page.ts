@@ -85,6 +85,9 @@ OnDestroy {
     const id: string = taskStateData.id;
     const taskInitiationDate = moment(data.taskInitiationDate).format('YYYY-MM-DD');
     const targetCompletionDate = moment(data.targetCompletionDate).format('YYYY-MM-DD');
+
+    console.log("initial date [basic edit]:",  data.taskInitiationDate);
+    console.log("complition date [basic edit]:",  data.targetCompletionDate);
     // const weekdays = data.weekdays ? data.weekdays : [false,false,false,false,false,false,false];
 
     this.task = {id, data: {...data, taskInitiationDate, targetCompletionDate

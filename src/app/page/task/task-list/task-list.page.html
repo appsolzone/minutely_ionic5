@@ -141,7 +141,7 @@
             <h1 *ngIf="m"><small><ion-text [color]="m?.data.overdue=='overdue'? 'danger' : ''">{{m.data.taskTitle}}</ion-text></small></h1>
             <ion-skeleton-text *ngIf="!m" animated style="width: 80%"></ion-skeleton-text>
             <p class="app-therelines ion-text-justify">
-              <ion-text *ngIf="m" color="medium">{{m.data.taskDetails}}</ion-text>
+              <ion-text *ngIf="m" color="medium">{{m.data.details}}</ion-text>
               <ion-skeleton-text *ngIf="!m" animated style="width: 100%"></ion-skeleton-text>
               <ion-skeleton-text *ngIf="!m" animated style="width: 100%"></ion-skeleton-text>
             </p>
@@ -158,6 +158,20 @@
             <p *ngIf="m">
               <ion-text color="medium">{{m.data.taskOwner.name}}</ion-text>
             </p>
+            <ion-skeleton-text *ngIf="!m" animated style="width: 40%"></ion-skeleton-text>
+            <ion-skeleton-text *ngIf="!m" animated style="width: 60%"></ion-skeleton-text>
+          </ion-label>
+        </ion-item>
+
+        <ion-item class="ion-no-padding" lines="none" color="transparent">
+          <ion-avatar slot="start">
+             <img  *ngIf="m?.data.latestComment.totalComments > 0"
+              src="{{(m?.data.latestComment.picUrl) ? m?.data.latestComment.picUrl : ''}}"
+              (error)="profileImgErrorHandler(m?.data.latestComment)"/>
+            <ion-icon name="chatbubbles" size="large" *ngIf="m?.data.latestComment.totalComments == 0"></ion-icon>
+          </ion-avatar>
+          <ion-label>
+            <p class="ion-text-wrap app-twolines">{{m?.data.latestComment.totalComments == 0 ? 'Be the first person to post comment for the task' : m?.data.latestComment.comment}}</p>
             <ion-skeleton-text *ngIf="!m" animated style="width: 40%"></ion-skeleton-text>
             <ion-skeleton-text *ngIf="!m" animated style="width: 60%"></ion-skeleton-text>
           </ion-label>

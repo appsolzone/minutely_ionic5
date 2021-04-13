@@ -12,14 +12,14 @@
     <ion-col size="12" size-md="6">
       <ion-card class="ion-no-padding ion-no-margin">
         <app-task-basic-info-edit *ngIf="sessionInfo && task" [task]="task" [sessionInfo]="sessionInfo"
-          [refInformation]="refInformation">
+          [refInformation]="refInformation" [editMode]="'update'">
         </app-task-basic-info-edit>
-        <app-task-owner-initiator-edit *ngIf="sessionInfo && task" [task]="task" [sessionInfo]="sessionInfo">
+        <app-task-owner-initiator-edit *ngIf="sessionInfo && task" [task]="task" [sessionInfo]="sessionInfo"  [editMode]="'update'">
         </app-task-owner-initiator-edit>
       </ion-card>
     </ion-col>
     <ion-col size="12" size-md="6">
-      <app-task-agenda-note-edit *ngIf="sessionInfo && task" [task]="task" [sessionInfo]="sessionInfo">
+      <app-task-agenda-note-edit *ngIf="sessionInfo && task" [task]="task" [sessionInfo]="sessionInfo"  [editMode]="'update'">
       </app-task-agenda-note-edit>
       <app-linkage *ngIf="sessionInfo && task" [selectedObject]="task" [itemType]="'task'" [sessionInfo]="sessionInfo" (publishLinkage)="publishLinkage($event)"> </app-linkage>
     </ion-col>

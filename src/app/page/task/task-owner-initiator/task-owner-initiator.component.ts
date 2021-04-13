@@ -21,4 +21,8 @@ export class TaskOwnerInitiatorComponent implements OnInit {
     //   //this.checkAcceptence();
     // }
   }
+
+  profileImgErrorHandler(user: any){
+    user.picUrl = '../../../../assets/shapes.svg';
+  }
 }

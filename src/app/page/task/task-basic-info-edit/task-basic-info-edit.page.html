@@ -2,7 +2,7 @@
   <ion-label>
     <ion-icon name="pencil"></ion-icon> Initiation date
   </ion-label>
-  <ion-datetime displayFormat="DD MMM, YYYY" disabled="true" [(ngModel)]="taskDetails.taskInitiationDate"></ion-datetime>
+  <ion-datetime displayFormat="DD MMM, YYYY" [disabled]="editMode == 'update'? true:false" [(ngModel)]="taskDetails.taskInitiationDate" placeholder="Please select task initiation date"></ion-datetime>
   <!-- <ion-datetime displayFormat="DD MMM, YYYY HH:mm" [min]="minTaskDate" disabled="true"
     [max]="taskDetails.targetCompletionDate ? taskDetails.targetCompletionDate : defaultMaxDate"
     [(ngModel)]="taskDetails.taskInitiationDate" (ionChange)="dateChange()" placeholder="Please select task start time">
@@ -13,7 +13,9 @@
     <ion-icon name="locate"></ion-icon> Target Date
   </ion-label>
   <ion-datetime displayFormat="DD MMM, YYYY" [min]="minTaskDate"
-    [(ngModel)]="taskDetails.targetCompletionDate" (ionChange)="dateChange()" placeholder="Please select target completion date">
+    [(ngModel)]="taskDetails.targetCompletionDate" (ionChange)="dateChange()" placeholder="Please select target completion date"
+    [disabled]="editMode !== 'update'? false: this.sessionInfo?.userProfile.uid == taskDetails?.taskInitiator.uid ? taskDetails?.taskStatus =='RESOLVED'? true : false : true"
+    >
   </ion-datetime>
 </ion-item>
 <ion-item lines="none">
@@ -30,7 +32,7 @@
 <ion-item>
   <ion-label>
     <ion-icon name="pricetags"></ion-icon>
-    Tags
+    Add tags
   </ion-label>
   <ion-input [(ngModel)]="taskTag" [value]="taskTag" placeholder="Please enter keyword to add as tag"></ion-input>
   <ion-buttons slot="end">
@@ -69,8 +71,8 @@
     <ion-label color="primary">Inprogress</ion-label>
     <ion-icon name="checkmark-done" color="primary"></ion-icon>
   </ion-segment-button>
-  <ion-segment-button value="CANCEL" layout="icon-start">
-    <ion-label color="danger">Resolved</ion-label>
-    <ion-icon name="close" color="danger"></ion-icon>
+  <ion-segment-button value="RESOLVED" layout="icon-start">
+    <ion-label color="green">Resolved</ion-label>
+    <ion-icon name="checkbox-outline" color="green"></ion-icon>
   </ion-segment-button>
 </ion-segment>
