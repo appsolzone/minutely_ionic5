@@ -28,6 +28,10 @@ const routes: Routes = [
     path: 'create-issue',
     loadChildren: () => import('./create-issue/create-issue.module').then( m => m.CreateIssuePageModule)
   },
+    {
+    path: 'comments',
+    loadChildren: () => import('./issue-user-comments/issue-user-comments.module').then( m => m.IssueUserCommentsPageModule)
+  },
 ];
 
 @NgModule({

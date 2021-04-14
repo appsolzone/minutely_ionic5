@@ -27,7 +27,11 @@ const routes: Routes = [
   {
     path: 'create-risk',
     loadChildren: () => import('./create-risk/create-risk.module').then( m => m.CreateRiskPageModule)
-  }
+  },
+  {
+    path: 'comments',
+    loadChildren: () => import('./risk-user-comments/risk-user-comments.module').then( m => m.RiskUserCommentsPageModule)
+  },
 ];
 
 @NgModule({

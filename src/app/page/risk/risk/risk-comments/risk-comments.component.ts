@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-risk-comments',
@@ -12,7 +13,9 @@ export class RiskCommentsComponent implements OnInit {
   // form data
   public riskDetails: any;
 
-  constructor() { }
+  constructor(
+    private router:Router
+  ) { }
 
   ngOnInit() {
    this.riskDetails = this.risk?.data;
@@ -22,11 +25,13 @@ export class RiskCommentsComponent implements OnInit {
     // }
   }
 
-  goToCommentPage(risk){
-    // TBA
-  }
 
   profileImgErrorHandler(user: any){
     user.picUrl = '../../../../assets/shapes.svg';
+  }
+
+  
+  goToCommentPage(risk){
+    this.router.navigate(['risk/comments'],{state: {data:{risk: risk}}});
   }
 }

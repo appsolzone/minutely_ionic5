@@ -27,7 +27,11 @@ const routes: Routes = [
   {
     path: 'create-task',
     loadChildren: () => import('./create-task/create-task.module').then( m => m.CreateTaskPageModule)
-  }
+  },
+  {
+    path: 'comments',
+    loadChildren: () => import('./task-user-comments/task-user-comments.module').then( m => m.TaskUserCommentsPageModule)
+  },
 ];
 
 @NgModule({

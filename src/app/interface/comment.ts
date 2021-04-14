@@ -4,5 +4,5 @@ export interface Comment{
   picUrl:string,
   uid:string,
   date:any,
-  totalComment?:number
+  totalComments?:number
 }

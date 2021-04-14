@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-task-comments',
@@ -12,18 +13,20 @@ export class TaskCommentsComponent implements OnInit {
   // form data
   public taskDetails: any;
 
-  constructor() { }
+  constructor(
+    private router:Router
+  ) { }
 
   ngOnInit() {
    this.taskDetails = this.task?.data;
     console.log("taskdetails", this.taskDetails);
-    // if(this.riskDetails){
+    // if(this.taskDetails){
     //   //this.checkAcceptence();
     // }
   }
   
   goToCommentPage(task){
-    // TBA
+    this.router.navigate(['task/comments'],{state: {data:{task: task}}});
   }
 
   profileImgErrorHandler(user: any){

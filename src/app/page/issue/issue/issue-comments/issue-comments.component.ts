@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-issue-comments',
@@ -13,7 +14,9 @@ export class IssueCommentsComponent implements OnInit {
   // form data
   public issueDetails: any;
 
-  constructor() { }
+  constructor(
+    private router:Router
+  ) { }
 
   ngOnInit() {
    this.issueDetails = this.issue?.data;
@@ -24,7 +27,7 @@ export class IssueCommentsComponent implements OnInit {
   }
 
   goToCommentPage(issue){
-    // TBA
+    this.router.navigate(['issue/comments'],{state: {data:{issue: issue}}});
   }
 
   profileImgErrorHandler(user: any){

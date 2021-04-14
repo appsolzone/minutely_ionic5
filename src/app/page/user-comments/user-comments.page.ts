@@ -112,7 +112,7 @@ export class UserCommentsPage implements OnInit,OnDestroy {
         picUrl:this.userProfile.picUrl,
         uid:this.userProfile.uid,
         date:this.db.frb.firestore.FieldValue.serverTimestamp(),
-        totalComment:this.db.frb.firestore.FieldValue.increment(1)
+        totalComments:this.db.frb.firestore.FieldValue.increment(1)
       }
       this.comment.addComment(commentObject,this.passObj)
       .then(res=>{

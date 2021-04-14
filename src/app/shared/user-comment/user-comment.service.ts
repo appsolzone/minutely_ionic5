@@ -9,25 +9,35 @@ import { SendEmailService } from '../send-email/send-email.service';
 })
 export class UserCommentService {
 
+
+
+  public newComment = {
+    author:'',
+    comment:'',
+    picUrl:'',
+    uid:'',
+    date:new Date(),
+    totalComments:this.db.frb.firestore.FieldValue.increment(1)
+  }
   constructor(
-    private _db:DatabaseService,
-    private _senDmail:SendEmailService,
+    private db:DatabaseService,
+    private senDmail:SendEmailService,
   ) { }
 
     fetchAllComments(collectionName,doc):Observable<any>{
-      return this._db.getAllDocumentsSnapshot(`${this._db.allCollections[collectionName]}/${doc}/${this._db.allCollections.comment}`);
+      return this.db.getAllDocumentsSnapshot(`${this.db.allCollections[collectionName]}/${doc}/${this.db.allCollections.comment}`);
     }
 
     addComment(commentObj,servicedoc){
-    let docRef = this._db.afs.collection(this._db.allCollections[servicedoc.parentModule]).doc(servicedoc.id).ref;
-    let commentRef = this._db.afs.collection(`${this._db.allCollections[servicedoc.parentModule]}/${servicedoc.id}/${this._db.allCollections.comment}`).doc().ref;
+    let docRef = this.db.afs.collection(this.db.allCollections[servicedoc.collectionName]).doc(servicedoc.id).ref;
+    let commentRef = this.db.afs.collection(`${this.db.allCollections[servicedoc.collectionName]}/${servicedoc.id}/${this.db.allCollections.comment}`).doc().ref;
 
-    return this._db.afs.firestore.runTransaction(function(transaction) {
+    return this.db.afs.firestore.runTransaction(function(transaction) {
       return transaction.get(docRef).then(function(regDoc) {
-        this._db.setTransactDocument(transaction,docRef,{latestComment:commentObj},true);
+        this.db.setTransactDocument(transaction,docRef,{latestComment:commentObj},true);
         
         delete commentObj.totalComment;
-        this._db.setTransactDocument(transaction,commentRef,commentObj,true);
+        this.db.setTransactDocument(transaction,commentRef,commentObj,true);
       }.bind(this))
     }.bind(this))
   }
@@ -37,7 +47,7 @@ export class UserCommentService {
   {
     for(var i = 0; i < members.length; i ++)
     {
-      this._senDmail.sendCustomEmail(this._senDmail.commentMailPath,
+      this.senDmail.sendCustomEmail(this.senDmail.commentMailPath,
         {
           toEmail:members[i].email,
           toName:members[i].name,
