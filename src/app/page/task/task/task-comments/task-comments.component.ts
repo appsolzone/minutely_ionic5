@@ -24,7 +24,14 @@ export class TaskCommentsComponent implements OnInit {
     //   //this.checkAcceptence();
     // }
   }
-  
+
+  ngOnChanges() {
+    this.taskDetails = this.task?.data;
+    if(this.taskDetails){
+      // TBA
+    }
+  }
+
   goToCommentPage(task){
     this.router.navigate(['task/comments'],{state: {data:{task: task}}});
   }

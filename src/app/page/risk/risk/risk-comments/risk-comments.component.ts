@@ -25,12 +25,19 @@ export class RiskCommentsComponent implements OnInit {
     // }
   }
 
+  ngOnChanges() {
+    this.riskDetails = this.risk?.data;
+    if(this.riskDetails){
+      // TBA
+    }
+  }
+
 
   profileImgErrorHandler(user: any){
     user.picUrl = '../../../../assets/shapes.svg';
   }
 
-  
+
   goToCommentPage(risk){
     this.router.navigate(['risk/comments'],{state: {data:{risk: risk}}});
   }

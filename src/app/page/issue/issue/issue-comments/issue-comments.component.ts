@@ -26,6 +26,13 @@ export class IssueCommentsComponent implements OnInit {
     // }
   }
 
+  ngOnChanges() {
+    this.issueDetails = this.issue?.data;
+    if(this.issueDetails){
+      // TBA
+    }
+  }
+
   goToCommentPage(issue){
     this.router.navigate(['issue/comments'],{state: {data:{issue: issue}}});
   }
