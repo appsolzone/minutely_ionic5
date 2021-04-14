@@ -8,7 +8,7 @@ import { SessionService } from 'src/app/shared/session/session.service';
 import { User } from 'src/app/interface/user';
 import { DatabaseService } from 'src/app/shared/database/database.service';
 import { UserCommentService } from 'src/app/shared/user-comment/user-comment.service';
-import { CrudService } from 'src/app/shared/crud/crud.service';
+
 @Component({
   selector: 'app-user-comments',
   templateUrl: './user-comments.page.html',
@@ -28,7 +28,6 @@ export class UserCommentsPage implements OnInit,OnDestroy {
   orgProfile:Object;
   emailReceiverMembers:any;
   constructor(
-    private crud:CrudService,
     private comment:UserCommentService,
     private componentService:ComponentsService,
     private router:Router,
@@ -37,7 +36,7 @@ export class UserCommentsPage implements OnInit,OnDestroy {
   ) { }
 
   ngOnInit() {
-   this.getSessionInfo() 
+   this.getSessionInfo()
   }
   ngOnDestroy(){}
 
@@ -58,22 +57,22 @@ export class UserCommentsPage implements OnInit,OnDestroy {
   ionViewWillEnter():void{
     this.allComments = [];
     this.componentService.showLoader()
-    this.passObj$ = this.crud.detailsPagePasing$.subscribe(
-      (res)=>{
-        if(res == undefined) this.router.navigate(["/profile"]);
-        this.passObj = res;
-        console.log("this details :",this.passObj);
-        this.setOwnerInitiator(this.passObj);
-        this.fetchAllComments();
-      },
-      (err)=>{
-        console.log(err);
-        this.componentService.hideLoader();
-      },
-      ()=>{
-        //this.componentService.hideLoader()
-      }
-      );
+    // this.passObj$ = this.crud.detailsPagePasing$.subscribe(
+    //   (res)=>{
+    //     if(res == undefined) this.router.navigate(["/profile"]);
+    //     this.passObj = res;
+    //     console.log("this details :",this.passObj);
+    //     this.setOwnerInitiator(this.passObj);
+    //     this.fetchAllComments();
+    //   },
+    //   (err)=>{
+    //     console.log(err);
+    //     this.componentService.hideLoader();
+    //   },
+    //   ()=>{
+    //     //this.componentService.hideLoader()
+    //   }
+    //   );
   }
   setOwnerInitiator(serviceObject){
     this.emailReceiverMembers = [];
@@ -83,7 +82,7 @@ export class UserCommentsPage implements OnInit,OnDestroy {
       {email:serviceObject[`${serviceObject.parentModule}Owner`].email,
       name:serviceObject[`${serviceObject.parentModule}Owner`].name});
 
-    console.log(this.emailReceiverMembers);  
+    console.log(this.emailReceiverMembers);
   }
 
   fetchAllComments(){
@@ -105,7 +104,7 @@ export class UserCommentsPage implements OnInit,OnDestroy {
                           this.componentService.hideLoader();
                         })
   }
-  add_cmt(){
+  addComment(){
     if(this.commentTxt != ''){
       let commentObject:Comment = {
         author:this.userProfile.name,
@@ -123,7 +122,7 @@ export class UserCommentsPage implements OnInit,OnDestroy {
         this.comment.sendEmail(this.emailReceiverMembers,commentObject,this.passObj)
       })
       .catch(err=>{console.log(err);this.componentService.presentAlert('Error',"Somting wents wrong! Please try again")});
-     
+
     }
 
   }

@@ -30,7 +30,11 @@
     <ion-label className="ion-text-wrap">
       <h2>{{comment.author}}</h2>
       <h3 color="medium">{{comment.date.toDate()|date:'medium'}}</h3>
-      <p className="ion-text-wrap">{{comment.comment}}</p>
+      <!-- <p className="ion-text-wrap">{{comment.comment}}</p> -->
+      <ion-textarea autoGrow="true" readonly="true" wrap="soft" [(ngModel)]="comment.comment"
+       placeholder="Post your comment"
+       [value]="comment?.comment">
+      </ion-textarea>
     </ion-label>
   </ion-item>
 </ion-list>
@@ -39,9 +43,15 @@
 </ion-content>
 <ion-footer>
   <ion-item lines="none">
-    <ion-button slot="end" fill="clear" color="medium" (click)="add_cmt()">
-      <ion-icon name="send"></ion-icon>
-    </ion-button>
-    <ion-textarea placeholder="Post your comment" #detailsTxt id="detailsTxt" type="text" [(ngModel)]="commentTxt"></ion-textarea>
+    <ion-buttons slot="end">
+      <ion-button slot="end" color="medium" (click)="addComment()">
+        <ion-icon name="send"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <!-- <ion-textarea placeholder="Post your comment" #detailsTxt id="detailsTxt" type="text" [(ngModel)]="commentTxt"></ion-textarea> -->
+    <ion-textarea autoGrow="true" readonly="false" wrap="soft" [(ngModel)]="commentTxt"
+     placeholder="Post your comment"
+     [value]="commentTxt">
+    </ion-textarea>
   </ion-item>
 </ion-footer>
