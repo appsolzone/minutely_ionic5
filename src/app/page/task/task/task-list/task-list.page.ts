@@ -85,7 +85,7 @@ export class TaskListPage implements OnInit {
   getUpcommingTasks(){
     this.limit = null;
     this.dateRange = {
-                        startDate: new Date(), //moment().subtract(1,'y').format('YYYY-MM-DD')
+                        startDate: new Date(moment().format('YYYY-MM-DD')), //moment().subtract(1,'y').format('YYYY-MM-DD')
                         endDate: new Date(moment().add(7,'d').format('YYYY-MM-DD'))
                       };
     this.getTasks();
