@@ -213,7 +213,7 @@ export class ItemUpdatesService {
           {
             ...this.notification.newNotification,
             msgBody: this.getTasksMessage(eventInfo,userEventType),
-            msgTitle: eventInfo.data.issueTitle ? eventInfo.data.issueTitle : 'Issue information',
+            msgTitle: eventInfo.data.taskTitle ? eventInfo.data.taskTitle : 'Task information',
             origin: {label: 'Task', icon: 'body', color: 'green'},
             actions: //userEventType=="add" ?
                     [{text: 'open', color: 'primary', href: 'task/task-details/'+eventInfo.data.id}, {text: 'clear', color: 'medium', href: 'clear'}]
@@ -312,7 +312,7 @@ export class ItemUpdatesService {
           {
             ...this.notification.newNotification,
             msgBody: this.getRisksMessage(eventInfo,userEventType),
-            msgTitle: eventInfo.data.issueTitle ? eventInfo.data.issueTitle : 'Issue information',
+            msgTitle: eventInfo.data.riskTitle ? eventInfo.data.riskTitle : 'Risk information',
             origin: {label: 'Risk', icon: 'flag', color: 'warning'},
             actions: //userEventType=="add" ?
                     [{text: 'open', color: 'primary', href: 'risk/risk-details/'+eventInfo.data.id}, {text: 'clear', color: 'medium', href: 'clear'}]
