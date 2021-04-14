@@ -13,6 +13,10 @@ const routes: Routes = [
     loadChildren: () => import('./meeting-details/meeting-details.module').then( m => m.MeetingDetailsPageModule)
   },
   {
+    path: 'meeting-details/:id',
+    loadChildren: () => import('./meeting-details/meeting-details.module').then( m => m.MeetingDetailsPageModule)
+  },
+  {
     path: 'meeting-details-linkage/:id',
     loadChildren: () => import('./meeting-details/meeting-details.module').then( m => m.MeetingDetailsPageModule)
   },

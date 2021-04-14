@@ -12,7 +12,10 @@ const routes: Routes = [
     path: 'task-details',
     loadChildren: () => import('./task-details/task-details.module').then( m => m.TaskDetailsPageModule)
   },
-
+  {
+    path: 'task-details/:id',
+    loadChildren: () => import('./task-details/task-details.module').then( m => m.TaskDetailsPageModule)
+  },
   {
     path: 'task-details-linkage/:id',
     loadChildren: () => import('./task-details/task-details.module').then( m => m.TaskDetailsPageModule)

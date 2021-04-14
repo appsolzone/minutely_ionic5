@@ -13,6 +13,10 @@ const routes: Routes = [
     loadChildren: () => import('./issue-details/issue-details.module').then( m => m.IssueDetailsPageModule)
   },
   {
+    path: 'issue-details/:id',
+    loadChildren: () => import('./issue-details/issue-details.module').then( m => m.IssueDetailsPageModule)
+  },
+  {
     path: 'issue-details-linkage/:id',
     loadChildren: () => import('./issue-details/issue-details.module').then( m => m.IssueDetailsPageModule)
   },
