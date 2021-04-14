@@ -19,7 +19,7 @@ export class TaskUserCommentsPage implements OnInit,OnDestroy {
   public sessionInfo: any;
   public task: any;
   public allComments:any;
-  public comment:string ='';
+  public postedComment:string ='';
   public commentObj;
   constructor(
     private router: Router,
@@ -66,40 +66,36 @@ export class TaskUserCommentsPage implements OnInit,OnDestroy {
     });
   }
 
-  backTaskDetails(task){
-    this.router.navigate(['task/task-details'],{state: {data:{task: task}}});
-
-  }
 
   getTaskComments(taskStateData){
     this.task = taskStateData;
     this.commentObj = {...this.commentServ.newComment};
-    let allComments = [];
-    this.allComments = [];
     this.taskComments$ = this.commentServ.fetchAllComments('task',taskStateData.id)
     .subscribe(res=>{
-        res.forEach((a: any) => {
+        this.allComments = [];
+        let comments = res.map((a: any) => {
         const data = a.payload.doc.data();
         const id = a.payload.doc.id;
-        data.date = new Date(data.date?.seconds*1000)
-        let obj = {id, data: {...data}} 
-        allComments.push(obj);
+        const date = new Date(data.date?.seconds*1000);
+        // let obj = {id, data: {...data}}
+        // allComments.push(obj);
+        return {...data,date};
       });
-      this.allComments = allComments.sort((a:any,b:any)=>a.data.date-a.data.date);
+      this.allComments = comments.sort((a:any,b:any)=>b.date-a.date);
       console.log(this.allComments);
     });
   }
   addComment(){
     let commentObj = {...this.commentServ.newComment};
     commentObj.author = this.sessionInfo.userProfile.name;
-    commentObj.comment = this.comment;
+    commentObj.comment = this.postedComment;
     commentObj.picUrl = this.sessionInfo.userProfile.picUrl;
     commentObj.uid = this.sessionInfo.userProfile.uid;
     let servicedoc = {collectionName:'task',id:this.task.id};
     this.commentServ.addComment(commentObj,servicedoc)
     .then((res)=>{
       console.log("comment add resposnse",res);
-      this.comment = '';
+      this.postedComment = '';
     })
     .catch(error=>console.log(error));
   }

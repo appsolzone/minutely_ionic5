@@ -33,7 +33,7 @@ export class TaskService {
         comment:'',
         date:null,
         picUrl:'',
-        totalComment:0
+        totalComments:0
       },
       taskInitiator :{
         name:'',

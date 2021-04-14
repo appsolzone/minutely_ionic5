@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-risk-owner-initiator',
   templateUrl: './risk-owner-initiator.component.html',
   styleUrls: ['./risk-owner-initiator.component.scss'],
 })
-export class RiskOwnerInitiatorComponent implements OnInit {
+export class RiskOwnerInitiatorComponent implements OnInit,OnChanges {
   @Input() sessionInfo: any;
   @Input() risk: any;
 
@@ -20,6 +20,9 @@ export class RiskOwnerInitiatorComponent implements OnInit {
     // if(this.riskDetails){
     //   //this.checkAcceptence();
     // }
+  }
+  ngOnChanges(){
+    this.riskDetails = this.risk?.data;
   }
 
   profileImgErrorHandler(user: any){

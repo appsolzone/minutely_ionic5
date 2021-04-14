@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-task-agenda-note',
   templateUrl: './task-agenda-note.component.html',
   styleUrls: ['./task-agenda-note.component.scss'],
 })
-export class TaskAgendaNoteComponent implements OnInit {
+export class TaskAgendaNoteComponent implements OnInit,OnChanges {
   @Input() sessionInfo: any;
   @Input() task: any;
 
@@ -21,4 +21,8 @@ export class TaskAgendaNoteComponent implements OnInit {
     //   //this.checkAcceptence();
     // }
   }
+  ngOnChanges(){
+   this.taskDetails = this.task?.data;  
+  }
+
 }

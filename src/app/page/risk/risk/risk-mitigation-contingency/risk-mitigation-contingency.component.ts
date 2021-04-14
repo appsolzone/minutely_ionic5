@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-risk-mitigation-contingency',
   templateUrl: './risk-mitigation-contingency.component.html',
   styleUrls: ['./risk-mitigation-contingency.component.scss'],
 })
-export class RiskMitigationContingencyComponent implements OnInit {
+export class RiskMitigationContingencyComponent implements OnInit,OnChanges {
   @Input() sessionInfo: any;
   @Input() risk: any;
 
@@ -20,5 +20,8 @@ export class RiskMitigationContingencyComponent implements OnInit {
     // if(this.riskDetails){
     //   //this.checkAcceptence();
     // }
+  }
+  ngOnChanges(){
+    this.riskDetails = this.risk?.data;
   }
 }

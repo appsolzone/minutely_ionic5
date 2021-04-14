@@ -33,7 +33,7 @@ export class RiskService {
         comment:'',
         date:null,
         picUrl:'',
-        totalComment:0
+        totalComments:0
       },
       riskInitiator :{
         name:'',

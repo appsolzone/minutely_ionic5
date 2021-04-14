@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-task-owner-initiator',
   templateUrl: './task-owner-initiator.component.html',
   styleUrls: ['./task-owner-initiator.component.scss'],
 })
-export class TaskOwnerInitiatorComponent implements OnInit {
+export class TaskOwnerInitiatorComponent implements OnInit,OnChanges {
   @Input() sessionInfo: any;
   @Input() task: any;
 
@@ -20,6 +20,9 @@ export class TaskOwnerInitiatorComponent implements OnInit {
     // if(this.riskDetails){
     //   //this.checkAcceptence();
     // }
+  }
+  ngOnChanges(){
+   this.taskDetails = this.task?.data;  
   }
 
   profileImgErrorHandler(user: any){

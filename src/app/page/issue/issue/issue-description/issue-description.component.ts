@@ -1,11 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'app-issue-description',
   templateUrl: './issue-description.component.html',
   styleUrls: ['./issue-description.component.scss'],
 })
-export class IssueDescriptionComponent implements OnInit {
+export class IssueDescriptionComponent implements OnInit,OnChanges {
 
   @Input() sessionInfo: any;
   @Input() issue: any;
@@ -22,5 +22,9 @@ export class IssueDescriptionComponent implements OnInit {
     //   //this.checkAcceptence();
     // }
   }
+  ngOnChanges(){
+   this.issueDetails = this.issue?.data;
+  }
+
 
 }

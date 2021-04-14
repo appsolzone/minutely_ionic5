@@ -66,10 +66,6 @@ export class RiskUserCommentsPage implements OnInit,OnDestroy {
     });
   }
 
-  backRiskDetails(risk){
-    this.router.navigate(['risk/risk-details'],{state: {data:{risk: risk}}});
-
-  }
 
   getRiskComments(riskStateData){
     this.risk = riskStateData;

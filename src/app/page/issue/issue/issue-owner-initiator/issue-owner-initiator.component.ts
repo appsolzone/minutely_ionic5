@@ -1,11 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'app-issue-owner-initiator',
   templateUrl: './issue-owner-initiator.component.html',
   styleUrls: ['./issue-owner-initiator.component.scss'],
 })
-export class IssueOwnerInitiatorComponent implements OnInit {
+export class IssueOwnerInitiatorComponent implements OnInit,OnChanges {
   @Input() sessionInfo: any;
   @Input() issue: any;
 
@@ -20,6 +20,9 @@ export class IssueOwnerInitiatorComponent implements OnInit {
     // if(this.riskDetails){
     //   //this.checkAcceptence();
     // }
+  }
+  ngOnChanges(){
+   this.issueDetails = this.issue?.data;
   }
 
   profileImgErrorHandler(user: any){

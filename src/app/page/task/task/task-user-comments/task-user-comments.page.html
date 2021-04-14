@@ -1,51 +1,61 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Users comment</ion-title>
+    <ion-title>Task comments</ion-title>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/task" (click)="backTaskDetails(task)"></ion-back-button>
+      <ion-back-button [defaultHref]="'/task'">
+      </ion-back-button>
     </ion-buttons>
   </ion-toolbar>
-
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-list-header>
-      all comments
-    </ion-list-header>
-    <ion-card *ngFor="let comment of allComments? allComments : [null];" class="ion-no-padding">
-      <ion-item lines="none">
+
+  <ion-item color="transparent">
+    <ion-icon name="chatbubbles" slot="start"></ion-icon>
+    <ion-label>
+      <h1><small>Related Comments</small></h1>
+    </ion-label>
+  </ion-item>
+
+  <ion-list *ngIf="allComments?.length > 0">
+    <ion-toolbar *ngFor="let comment of allComments;let i = index">
+      <ion-item lines="none" class="ion-no-margin">
+
         <ion-avatar slot="start">
-          <img *ngIf="comment?.data.picUrl" slot="start"
-            src="{{(comment?.data.picUrl) ? comment?.data.picUrl : '../../../../../assets/shapes.svg'}}"
-            (error)="profileImgErrorHandler(comment?.data)" style="height:30px; width:30px;border-radius:50%;">
+          <img *ngIf="comment.picUrl != ''" [src]="comment.picUrl" (error)="profileImgErrorHandler(comment?.data)" />
+          <ion-icon *ngIf="comment.picUrl == ''" color="primary" name="person-circle" size="large">
+          </ion-icon>
         </ion-avatar>
-        <ion-label>
-          <h2>{{comment?.data?.author}}</h2>
-          <p>{{comment?.data?.date | date:"medium"}}</p>
+
+        <ion-label className="ion-text-wrap">
+          <h2>{{comment.author}}</h2>
+          <ion-chip color="primary">{{comment.date|date:'medium'}}</ion-chip>
           <ion-skeleton-text *ngIf="!comment" animated style="width: 40%"></ion-skeleton-text>
-          <ion-skeleton-text *ngIf="!comment" animated style="width: 100%"></ion-skeleton-text>
+          <ion-skeleton-text *ngIf="!comment" animated style="width: 60%"></ion-skeleton-text>
         </ion-label>
       </ion-item>
-      <ion-card-content>
-        <p>
-          <ion-text color="medium">
-            {{comment?.data?.comment}}
-          </ion-text>
-        </p>
+      <ion-item>
+        <ion-textarea autoGrow="true" readonly="true" wrap="soft" color="medium" [(ngModel)]="comment.comment"
+          placeholder="No comment posted!" [value]="comment?.comment">
+        </ion-textarea>
         <ion-skeleton-text *ngIf="!comment" animated style="width: 100%"></ion-skeleton-text>
-        <ion-skeleton-text *ngIf="!comment" animated style="width: 100%"></ion-skeleton-text>
-      </ion-card-content>
-    </ion-card>
-  </ion-list>
-</ion-content>
 
-<ion-footer class="comment_section">
-  <ion-item>
-    <ion-textarea slot="start" autoGrow="true" readonly="false" wrap="soft" placeholder="Post your comment"
-      [(ngModel)]="comment"></ion-textarea>
-    <ion-button slot="end" fill="clear" color="primary" (click)="addComment()">
-      <ion-icon name="send"></ion-icon>
-    </ion-button>
+      </ion-item>
+    </ion-toolbar>
+  </ion-list>
+
+
+</ion-content>
+<ion-footer>
+  <ion-item lines="none">
+    <ion-buttons slot="end">
+      <ion-button slot="end" color="primary" (click)="addComment()" [disabled]="postedComment == ''">
+        <ion-icon name="send"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-textarea autoGrow="true" readonly="false" wrap="soft" [(ngModel)]="postedComment"
+      placeholder="Post your comment" [value]="postedComment">
+    </ion-textarea>
   </ion-item>
 </ion-footer>
