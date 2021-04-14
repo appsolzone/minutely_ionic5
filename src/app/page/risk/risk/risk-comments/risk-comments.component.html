@@ -1,0 +1,29 @@
+<ion-item lines="full">
+  <ion-label slot="start">
+    <ion-icon name="chatbubbles"></ion-icon> Latest Comment
+  </ion-label>
+  <ion-button slot="end" fill="outline" (click)="goToCommentPage(risk)">
+    <ion-icon name="chatbubbles"></ion-icon>{{riskDetails?.latestComment.totalComments > 0?
+    riskDetails.latestComment.totalComments +' comments':'add comment'}}
+  </ion-button>
+</ion-item>
+
+<ion-item lines="none" *ngIf="riskDetails?.latestComment.totalComments == 0" class="ion-margin-bottom">
+  <ion-icon name="send" slot="start"></ion-icon>
+  <ion-label>
+    <p class="ion-text-wrap app-twolines">Be the first person to post comment for the risk</p>
+  </ion-label>
+</ion-item>
+<ion-item lines="none" *ngIf="riskDetails?.latestComment.totalComments > 0" class="ion-margin-bottom">
+  <ion-avatar slot="start">
+    <img src="{{(riskDetails?.latestComment.picUrl) ? riskDetails?.latestComment.picUrl : 'assets/shapes.svg'}}"
+      (error)="profileImgErrorHandler(riskDetails?.latestComment)" />
+    <ion-icon *ngIf="riskDetails?.latestComment.picUrl == ''" color="primary" name="person-circle"
+      size="large">
+    </ion-icon>
+  </ion-avatar>
+  <ion-label>
+    <h2>{{riskDetails?.latestComment.author}}</h2>
+    <p class="ion-text-wrap app-twolines">{{riskDetails?.latestComment.comment}}</p>
+  </ion-label>
+</ion-item>

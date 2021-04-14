@@ -164,8 +164,8 @@ export class IssueService {
 
     let searchStrings = issue.issueTitle +" "+
                         issue.tags.join(' ') +' ' +
-                        issue.issueOwner.email + " " +
-                        issue.issueInitiator.email + " " +
+                        issue.issueOwner.name + " " + issue.issueOwner.email + " " +
+                        issue.issueInitiator.name + " " + issue.issueInitiator.email + " " +
                         status+" ";
       searchStrings += moment(new Date(issue.targetCompletionDate)).format("D") + " "+
                         moment(new Date(issue.targetCompletionDate)).format("YYYY") + " "+

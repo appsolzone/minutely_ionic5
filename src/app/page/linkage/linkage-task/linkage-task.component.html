@@ -1,4 +1,14 @@
-<ion-card *ngIf="linkedTasks?.length==0" class="ion-no-padding">
+<ion-item lines="none" *ngIf="viewMode=='edit'">
+  <ion-label class="ion-text-end">
+    <p><ion-text color="medium">Seach and link tasks</ion-text></p>
+  </ion-label>
+  <ion-buttons slot="end" *ngIf="linkedTasks">
+    <ion-button slot="end" (click)="showSearchList=!showSearchList">
+      <ion-icon slot="icon-only" [name]="showSearchList ? 'close' : 'search'"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+</ion-item>
+<ion-card *ngIf="!showSearchList && linkedTasks?.length==0" class="ion-no-padding">
   <ion-item lines="none">
     <ion-icon name="information-circle-outline"  slot="start" color="medium"></ion-icon>
     <ion-label class="ion-text-wrap" color="medium">
@@ -10,10 +20,22 @@
     </ion-label>
   </ion-item>
 </ion-card>
-<ion-card class="ion-no-padding" *ngFor="let t of linkedTasks ? linkedTasks : [null,null];"  button="true" (click)="openTaskDetails(t)">
+<app-task-list *ngIf="showSearchList"
+  viewMode="linkage"
+  [excludeList]="linkedTasks"
+  (onSelectTask)="linkSelectedTask($event)"
+  ></app-task-list>
+<ion-item *ngIf="showSearchList && linkedTasks?.length>0" color="light">
+  <ion-icon slot="start" name="attach"></ion-icon>
+  <ion-label>
+    <h2>Selected linked tasks</h2>
+  </ion-label>
+</ion-item>
+<ion-card class="ion-no-padding" *ngFor="let t of linkedTasks ? linkedTasks : [null,null];let i=index;"
+  [button]="viewMode=='edit' ? false : true" (click)="viewMode=='edit' ? null : openTaskDetails(t)">
   <ion-item lines="none" color="transparent">
     <!-- <ion-buttons slot="start"> -->
-      <ion-button slot="start" fill="solid" color="green" class="ion-no-margin margin-end-5px">
+      <ion-button slot="start" fill="solid" color="warning" class="ion-no-margin margin-end-5px">
         <ion-icon slot="start" name="locate"></ion-icon>
         {{t?.data.targetCompletionDate| date : 'mediumDate'}}
         <ion-skeleton-text *ngIf="!t" animated style="width: 30%"></ion-skeleton-text>
@@ -24,6 +46,14 @@
         <ion-skeleton-text *ngIf="!t" animated style="width: 30%"></ion-skeleton-text>
       </ion-button>
     <!-- </ion-buttons> -->
+    <ion-buttons *ngIf="viewMode=='edit'" slot="end">
+      <ion-button *ngIf="t?.state!='delete'" slot="end" (click)="delinkSelectedTask(t,i)">
+        <ion-icon slot="icon-only" name="trash-bin" color="danger"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="t?.state=='delete'" slot="end" (click)="undoDelinkTask(t,i)">
+        <ion-icon slot="icon-only" name="arrow-undo" color="success"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-item>
   <ion-card-content class="ion-no-padding ion-padding-start ion-padding-end">
     <ion-item lines="none" class="ion-no-padding"  color="transparent">

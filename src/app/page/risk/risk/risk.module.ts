@@ -8,7 +8,7 @@ import { RiskPageRoutingModule } from './risk-routing.module';
 
 import { RiskPage } from './risk.page';
 import { KpiModule } from '../../kpi/kpi.module';
-import { RiskListPageModule } from '../risk-list/risk-list.module';
+import { RiskListPageModule } from './risk-list/risk-list.module';
 
 @NgModule({
   imports: [

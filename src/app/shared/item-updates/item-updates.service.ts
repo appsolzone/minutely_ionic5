@@ -23,15 +23,15 @@ export class ItemUpdatesService {
       case 'meetings':
         return this.getMeetingNotifications(eventInfo);
         break;
-      // case 'tasks':
-      //   return this.getTaskNotifications(eventInfo);
-      //   break;
+      case 'tasks':
+        return this.getTaskNotifications(eventInfo);
+        break;
       case 'issues':
         return this.getIssueNotifications(eventInfo);
         break;
-      // case 'risks':
-      //   return this.getRiskNotifications(eventInfo);
-      //   break;
+      case 'risks':
+        return this.getRiskNotifications(eventInfo);
+        break;
       // case 'broadcast':
       //   return this.getBroadcastNotifications(eventInfo);
       //   break;
@@ -72,23 +72,23 @@ export class ItemUpdatesService {
     return message;
 
   }
-  //
-  // getTasksMessage(eventInfo: any,userEventType: any) {
-  //   // eventInfo.data to include meeting start time, meeting end time
-  //   let message = '';
-  //   if(userEventType=='assignowner'){
-  //     message = "Task '" + eventInfo.data.taskTitle +
-  //                   "' has been assigned to you. For further details, please open the app and check the Tasks section.";
-  //
-  //   } else if (userEventType=='update') {
-  //     message = "The task details of '" + eventInfo.data.taskTitle +
-  //                   "' has been updated. For further details, please open the app and check the Meetings section.";
-  //   }
-  //
-  //   return message;
-  //
-  // }
-  //
+
+  getTasksMessage(eventInfo: any,userEventType: any) {
+    // eventInfo.data to include meeting start time, meeting end time
+    let message = '';
+    if(userEventType=='assignowner'){
+      message = "Task '" + eventInfo.data.taskTitle +
+                    "' has been assigned to you. For further details, please open the app and check the Tasks section.";
+
+    } else if (userEventType=='update') {
+      message = "The task details of '" + eventInfo.data.taskTitle +
+                    "' has been updated. For further details, please open the app and check the Meetings section.";
+    }
+
+    return message;
+
+  }
+
   getIssuesMessage(eventInfo: any,userEventType: any) {
     // eventInfo.data to include meeting start time, meeting end time
     let message = '';
@@ -104,24 +104,24 @@ export class ItemUpdatesService {
     return message;
 
   }
-  //
-  // getRisksMessage(eventInfo: any,userEventType: any) {
-  //   // eventInfo.data to include meeting start time, meeting end time
-  //   let message = '';
-  //   if(userEventType=='assignowner'){
-  //     message = "Risk '" + eventInfo.data.riskTitle +
-  //                   "' has been assigned to you. For further details, please open the app and check the Risks section.";
-  //
-  //   } else if (userEventType=='update') {
-  //     message = "The risk details of '" + eventInfo.data.riskTitle +
-  //                   "' has been updated. For further details, please open the app and check the Risks section.";
-  //   }
-  //
-  //   return message;
-  //
-  // }
-  //
-  //
+
+  getRisksMessage(eventInfo: any,userEventType: any) {
+    // eventInfo.data to include meeting start time, meeting end time
+    let message = '';
+    if(userEventType=='assignowner'){
+      message = "Risk '" + eventInfo.data.riskTitle +
+                    "' has been assigned to you. For further details, please open the app and check the Risks section.";
+
+    } else if (userEventType=='update') {
+      message = "The risk details of '" + eventInfo.data.riskTitle +
+                    "' has been updated. For further details, please open the app and check the Risks section.";
+    }
+
+    return message;
+
+  }
+
+
   getMeetingNotifications(eventInfo)
   {
     let newNotifications = [];
@@ -165,10 +165,11 @@ export class ItemUpdatesService {
             msgBody: this.getMeetingsMessage(eventInfo,userEventType),
             msgTitle: eventInfo.data.meetingTitle ? eventInfo.data.meetingTitle : 'Meeting information',
             origin: {label: 'Meetings', icon: 'calendar', color: 'primary'},
-            actions: userEventType=="add" ?
+            actions: //userEventType=="add" ?
                     [{text: 'open', color: 'primary', href: 'meeting/meeting-details/'+eventInfo.data.id}, {text: 'clear', color: 'medium', href: 'clear'}]
-                    :
-                    [{text: 'clear', color: 'medium', href: 'clear'}],
+                    // :
+                    // [{text: 'clear', color: 'medium', href: 'clear'}]
+                    ,
             refData: {id: eventInfo.data.id}, // data required for any action or oter purpose
             subscriberId: eventInfo.data.subscriberId,
             user: {uid: mp.uid, email: mp.email, name: mp.name}
@@ -191,43 +192,58 @@ export class ItemUpdatesService {
     return newNotifications;
 
   }
-  //
-  // getTaskNotifications(eventInfo)
-  // {
-  //   let newNotifications = [];
-  //   // List of users to send notifications
-  //   let taskFollowers = [];
-  //   taskFollowers.push({taskOwner: true, ...eventInfo.data.taskOwner});
-  //   if(eventInfo.eventType=='update' && eventInfo.updatedBy.uid != eventInfo.data.taskInitiator.uid){
-  //     taskFollowers.push({taskOwner: false, ...eventInfo.data.taskInitiator});
-  //   }
-  //   // need to create notifications for each of the task followers
-  //   taskFollowers.forEach((mp)=>{
-  //     if(mp.uid){
-  //       // lets check whether the user is newly added or existing user
-  //       let userEventType = (mp.taskOwner && eventInfo.eventType=='add') ||
-  //                           (mp.taskOwner && eventInfo.eventType=='update' && eventInfo.data.taskOwner.uid != eventInfo.prevData.taskOwner.uid)
-  //                           ? 'assignowner' : 'update';
-  //       let _newAlertObj=
-  //         {
-  //           notificationref: mp.uid+'_' + eventInfo.data.subscriberId,
-  //           notificationTime: this.db.frb.firestore.FieldValue.serverTimestamp(),
-  //           msgBody: this.getTasksMessage(eventInfo,userEventType),
-  //           name:   mp.name,
-  //           Origin: eventInfo.origin,
-  //           docId:  eventInfo.data.id,
-  //           Actions: {Action1:'Dismiss',},
-  //           refValues:{ taskId: eventInfo.data.id, title:  eventInfo.data.taskTitle}
-  //         };
-  //         newNotifications.push(_newAlertObj);
-  //     }
-  //
-  //   });
-  //
-  //   return newNotifications;
-  //
-  // }
-  //
+
+  getTaskNotifications(eventInfo)
+  {
+    let newNotifications = [];
+    // List of users to send notifications
+    let taskFollowers = [];
+    taskFollowers.push({taskOwner: true, ...eventInfo.data.taskOwner});
+    if(eventInfo.eventType=='update' && eventInfo.updatedBy.uid != eventInfo.data.taskInitiator.uid){
+      taskFollowers.push({taskOwner: false, ...eventInfo.data.taskInitiator});
+    }
+    // need to create notifications for each of the task followers
+    taskFollowers.forEach((mp)=>{
+      if(mp.uid){
+        // lets check whether the user is newly added or existing user
+        let userEventType = (mp.taskOwner && eventInfo.eventType=='add') ||
+                            (mp.taskOwner && eventInfo.eventType=='update' && eventInfo.data.taskOwner.uid != eventInfo.prevData.taskOwner.uid)
+                            ? 'assignowner' : 'update';
+        let _newAlertObj=
+          {
+            ...this.notification.newNotification,
+            msgBody: this.getTasksMessage(eventInfo,userEventType),
+            msgTitle: eventInfo.data.issueTitle ? eventInfo.data.issueTitle : 'Issue information',
+            origin: {label: 'Task', icon: 'body', color: 'green'},
+            actions: //userEventType=="add" ?
+                    [{text: 'open', color: 'primary', href: 'task/task-details/'+eventInfo.data.id}, {text: 'clear', color: 'medium', href: 'clear'}]
+                    // :
+                    // [{text: 'clear', color: 'medium', href: 'clear'}]
+                    ,
+            refData: {id: eventInfo.data.id}, // data required for any action or oter purpose
+            subscriberId: eventInfo.data.subscriberId,
+            user: {uid: mp.uid, email: mp.email, name: mp.name}
+
+
+
+            // notificationref: mp.uid+'_' + eventInfo.data.subscriberId,
+            // notificationTime: this.db.frb.firestore.FieldValue.serverTimestamp(),
+            // msgBody: this.getTasksMessage(eventInfo,userEventType),
+            // name:   mp.name,
+            // Origin: eventInfo.origin,
+            // docId:  eventInfo.data.id,
+            // Actions: {Action1:'Dismiss',},
+            // refValues:{ taskId: eventInfo.data.id, title:  eventInfo.data.taskTitle}
+          };
+          newNotifications.push(_newAlertObj);
+      }
+
+    });
+
+    return newNotifications;
+
+  }
+
   getIssueNotifications(eventInfo){
     let newNotifications = [];
     // List of users to send notifications
@@ -249,10 +265,11 @@ export class ItemUpdatesService {
             msgBody: this.getIssuesMessage(eventInfo,userEventType),
             msgTitle: eventInfo.data.issueTitle ? eventInfo.data.issueTitle : 'Issue information',
             origin: {label: 'Issue', icon: 'options', color: 'danger'},
-            actions: userEventType=="add" ?
+            actions: //userEventType=="add" ?
                     [{text: 'open', color: 'primary', href: 'issue/issue-details/'+eventInfo.data.id}, {text: 'clear', color: 'medium', href: 'clear'}]
-                    :
-                    [{text: 'clear', color: 'medium', href: 'clear'}],
+                    // :
+                    // [{text: 'clear', color: 'medium', href: 'clear'}]
+                    ,
             refData: {id: eventInfo.data.id}, // data required for any action or oter purpose
             subscriberId: eventInfo.data.subscriberId,
             user: {uid: mp.uid, email: mp.email, name: mp.name}
@@ -274,42 +291,56 @@ export class ItemUpdatesService {
     return newNotifications;
 
   }
-  //
-  // getRiskNotifications(eventInfo)
-  // {
-  //   let newNotifications = [];
-  //   // List of users to send notifications
-  //   let riskFollowers = [];
-  //   riskFollowers.push({issueOwner: true, ...eventInfo.data.riskOwner});
-  //   if(eventInfo.eventType=='update' && eventInfo.updatedBy.uid != eventInfo.data.riskInitiator.uid){
-  //     riskFollowers.push({riskOwner: false, ...eventInfo.data.riskInitiator});
-  //   }
-  //   // need to create notifications for each of the task followers
-  //   riskFollowers.forEach((mp)=>{
-  //     if(mp.uid){
-  //       // lets check whether the user is newly added or existing user
-  //       let userEventType = (mp.riskOwner && eventInfo.eventType=='add') ||
-  //                           (mp.riskOwner && eventInfo.eventType=='update' && eventInfo.data.riskOwner.uid != eventInfo.prevData.riskOwner.uid)
-  //                           ? 'assignowner' : 'update';
-  //       let _newAlertObj=
-  //         {
-  //           notificationref: mp.uid+'_' + eventInfo.data.subscriberId,
-  //           notificationTime: this.db.frb.firestore.FieldValue.serverTimestamp(),
-  //           msgBody: this.getRisksMessage(eventInfo,userEventType),
-  //           name:   mp.name,
-  //           Origin: eventInfo.origin,
-  //           docId:  eventInfo.data.id,
-  //           Actions: {Action1:'Dismiss',},
-  //           refValues:{ riskId: eventInfo.data.id, title:  eventInfo.data.riskTitle}
-  //         };
-  //         newNotifications.push(_newAlertObj);
-  //     }
-  //
-  //   });
-  //
-  //   return newNotifications;
-  //
-  // }
+
+  getRiskNotifications(eventInfo)
+  {
+    let newNotifications = [];
+    // List of users to send notifications
+    let riskFollowers = [];
+    riskFollowers.push({issueOwner: true, ...eventInfo.data.riskOwner});
+    if(eventInfo.eventType=='update' && eventInfo.updatedBy.uid != eventInfo.data.riskInitiator.uid){
+      riskFollowers.push({riskOwner: false, ...eventInfo.data.riskInitiator});
+    }
+    // need to create notifications for each of the task followers
+    riskFollowers.forEach((mp)=>{
+      if(mp.uid){
+        // lets check whether the user is newly added or existing user
+        let userEventType = (mp.riskOwner && eventInfo.eventType=='add') ||
+                            (mp.riskOwner && eventInfo.eventType=='update' && eventInfo.data.riskOwner.uid != eventInfo.prevData.riskOwner.uid)
+                            ? 'assignowner' : 'update';
+        let _newAlertObj=
+          {
+            ...this.notification.newNotification,
+            msgBody: this.getRisksMessage(eventInfo,userEventType),
+            msgTitle: eventInfo.data.issueTitle ? eventInfo.data.issueTitle : 'Issue information',
+            origin: {label: 'Risk', icon: 'flag', color: 'warning'},
+            actions: //userEventType=="add" ?
+                    [{text: 'open', color: 'primary', href: 'risk/risk-details/'+eventInfo.data.id}, {text: 'clear', color: 'medium', href: 'clear'}]
+                    // :
+                    // [{text: 'clear', color: 'medium', href: 'clear'}]
+                    ,
+            refData: {id: eventInfo.data.id}, // data required for any action or oter purpose
+            subscriberId: eventInfo.data.subscriberId,
+            user: {uid: mp.uid, email: mp.email, name: mp.name}
+
+
+            // notificationref: mp.uid+'_' + eventInfo.data.subscriberId,
+            // notificationTime: this.db.frb.firestore.FieldValue.serverTimestamp(),
+            // msgBody: this.getRisksMessage(eventInfo,userEventType),
+            // name:   mp.name,
+            // Origin: eventInfo.origin,
+            // docId:  eventInfo.data.id,
+            // Actions: {Action1:'Dismiss',},
+            // refValues:{ riskId: eventInfo.data.id, title:  eventInfo.data.riskTitle}
+          };
+          newNotifications.push(_newAlertObj);
+      }
+
+    });
+
+    return newNotifications;
+
+  }
   //
   // recordMeetingResponse(notification: any,userData : any, response: any)
   // {

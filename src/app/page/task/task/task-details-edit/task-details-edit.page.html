@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Edit Task</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/task"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col size="12" size-md="6">
+      <ion-card class="ion-no-padding ion-no-margin">
+        <app-task-basic-info-edit *ngIf="sessionInfo && task" [task]="task" [sessionInfo]="sessionInfo" [refInformation]="refInformation"></app-task-basic-info-edit>
+        <app-task-owner-initiator-edit *ngIf="sessionInfo && task" [task]="task" [sessionInfo]="sessionInfo"></app-task-owner-initiator-edit>
+      </ion-card>
+    </ion-col>
+    <ion-col size="12" size-md="6">
+      <app-task-agenda-note-edit *ngIf="sessionInfo && task" [task]="task" [sessionInfo]="sessionInfo"></app-task-agenda-note-edit>
+      <!-- <app-task-comments *ngIf="sessionInfo && task" [task]="task" [sessionInfo]="sessionInfo"></app-task-comments> -->
+      <app-linkage *ngIf="sessionInfo && task" viewMode="edit" [selectedObject]="task" [itemType]="'task'" [sessionInfo]="sessionInfo" (publishLinkage)="publishLinkage($event)"> </app-linkage>
+    </ion-col>
+  </ion-row>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button  size="small" (click)="saveTask()">
+      <ion-icon name="checkmark-done" size="large"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

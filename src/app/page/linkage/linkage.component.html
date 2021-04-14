@@ -22,8 +22,8 @@
       </ion-segment-button>
     </ion-segment>
     <app-linkage-meeting *ngIf="selectedItem=='meetings'" [viewMode]="viewMode" [sessionInfo]="sessionInfo" [meetings]="linkages.meetings" (onEditLinkage)="onEditLinkage($event)"></app-linkage-meeting>
-    <app-linkage-task *ngIf="selectedItem=='tasks'" [viewMode]="viewMode" [sessionInfo]="sessionInfo" [tasks]="linkages.tasks"></app-linkage-task>
+    <app-linkage-task *ngIf="selectedItem=='tasks'" [viewMode]="viewMode" [sessionInfo]="sessionInfo" [tasks]="linkages.tasks" (onEditLinkage)="onEditLinkage($event)"></app-linkage-task>
     <app-linkage-issue *ngIf="selectedItem=='issues'" [viewMode]="viewMode" [sessionInfo]="sessionInfo" [issues]="linkages.issues" (onEditLinkage)="onEditLinkage($event)"></app-linkage-issue>
-    <app-linkage-risk *ngIf="selectedItem=='risks'" [viewMode]="viewMode" [sessionInfo]="sessionInfo" [risks]="linkages.risks"></app-linkage-risk>
+    <app-linkage-risk *ngIf="selectedItem=='risks'" [viewMode]="viewMode" [sessionInfo]="sessionInfo" [risks]="linkages.risks" (onEditLinkage)="onEditLinkage($event)"></app-linkage-risk>
   </ion-col>
 </ion-row>

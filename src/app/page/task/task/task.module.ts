@@ -8,8 +8,8 @@ import { TaskPageRoutingModule } from './task-routing.module';
 
 import { TaskPage } from './task.page';
 import { NotificationPageRoutingModule } from '../../notification/notification-routing.module';
-import { TaskDetailsPageModule } from '../task-details/task-details.module';
-import { TaskListPageModule } from '../task-list/task-list.module';
+import { TaskDetailsPageModule } from './task-details/task-details.module';
+import { TaskListPageModule } from './task-list/task-list.module';
 import { KpiModule } from '../../kpi/kpi.module';
 
 @NgModule({

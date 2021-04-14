@@ -191,7 +191,7 @@ export class IssueListComponent implements OnInit {
         if(idx==-1) {
           const issueInitiationDate = data.issueInitiationDate?.seconds ? new Date(data.issueInitiationDate?.seconds*1000) : data.issueInitiationDate;
           const targetCompletionDate = data.targetCompletionDate?.seconds ? new Date(data.targetCompletionDate?.seconds*1000) : data.targetCompletionDate ? data.targetCompletionDate : null;
-          allIssues.push({id, data: {...data, issueInitiationDate, targetCompletionDate }});
+          allIssues.push({id, data: {...data, issueInitiationDate, targetCompletionDate },overdue: a.overdue});
         }
       });
     }

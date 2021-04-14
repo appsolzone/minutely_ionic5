@@ -57,7 +57,7 @@
     <ion-icon name="bookmark"></ion-icon> Status
   </ion-label>
   <ion-button slot="end"
-    [color]="issueDetails?.issueStatus=='OPEN'? 'warning' : issueDetails?.status=='RESOLVED' ? 'green' : 'primary'"
+    [color]="issueDetails?.issueStatus=='OPEN'? 'warning' : issueDetails?.issueStatus=='RESOLVED' ? 'green' : 'primary'"
     class="ion-padding-start ion-padding-end">
     {{issueDetails?.issueStatus}}
   </ion-button>

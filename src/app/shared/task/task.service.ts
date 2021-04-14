@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
-import { DatabaseService } from '../database/database.service';
-import { KpiService } from '../kpi/kpi.service';
-import { LinkageService } from '../linkage/linkage.service';
-import { NotificationsService } from '../notifications/notifications.service';
-import { SendEmailService } from '../send-email/send-email.service';
-import { TextsearchService } from '../textsearch/textsearch.service';
+import { DatabaseService } from 'src/app/shared/database/database.service';
+import { TextsearchService } from 'src/app/shared/textsearch/textsearch.service';
+import { LinkageService } from 'src/app/shared/linkage/linkage.service';
+import { KpiService } from 'src/app/shared/kpi/kpi.service';
+import { NotificationsService } from 'src/app/shared/notifications/notifications.service';
+import { ItemUpdatesService } from 'src/app/shared/item-updates/item-updates.service';
+import { SendEmailService } from 'src/app/shared/send-email/send-email.service';
+import { Task } from 'src/app/interface/task';
 
 @Injectable({
   providedIn: 'root'
@@ -51,6 +53,7 @@ constructor(
     public link: LinkageService,
     public kpi: KpiService,
     public notification: NotificationsService,
+    public itemupdate: ItemUpdatesService,
     public sendmail: SendEmailService,
   ){
      // TBA
@@ -86,38 +89,37 @@ constructor(
     return {status, title, body};
   }
 
-    dateChange(m, refInformation){
+  dateChange(m, refInformation){
     let task = m.data;
     let title='Task Date';
     let body='';
     let status = true;
     let startDateTime = task.taskInitiationDate ? new Date(task.taskInitiationDate) : null;
     let endDateTime = task.targetCompletionDate ? new Date(task.targetCompletionDate) : null;
-    console.log(startDateTime,endDateTime);
+
 
     if(!startDateTime) {
       status = false;
-      title = "Invalid task Start Date";
-      body = "task start date cannot be empty. The task start time should be future time.";
+      title = "Invalid Task Initiation Date";
+      body = "Task start date cannot be empty. Please provide a valid task initiation date.";
     } else if(!endDateTime) {
       status = false;
-      title = "Invalid task End Date";
-      body = "task end date cannot be empty. The task end time should be future time.";
-    } else if((refInformation.taskInitiationDate == task.taskInitiationDate && refInformation.taskEnd == task.targetCompletionDate ) ||
-              (new Date() <= startDateTime && new Date() <= endDateTime)
+      title = "Invalid Task Due Date";
+      body = "Task target completion date cannot be empty. The task end time should be future time.";
+    } else if((refInformation.targetCompletionDate == task.targetCompletionDate) ||
+              (startDateTime <= endDateTime)
             ) {
       status = true;
-    } 
-    // else {
-    //       title = "Invalid task Dates";
-    //       body = "task cannot be set in past. The task start and end time should be future time.";
-    //       status= false;
-    // }
+    } else {
+
+      title = "Invalid Date";
+      body = "Task target completion date can not be earlier than the task initiation date.";
+      status= false;
+    }
     return {status, title, body};
   }
 
-
-   validateBasicInfo(task, refInformation){
+  validateBasicInfo(task, refInformation){
 
     let check = this.dateChange(task,refInformation);
 
@@ -135,7 +137,6 @@ constructor(
 
   }
 
-
   processTask(task, refInformation, editedlinkages, sessionInfo){
     // if task is cancelled, just change the status to cancel
 
@@ -144,90 +145,118 @@ constructor(
     // else changes to be propagated
     let taskData = task.data;
     let type = task.id ? 'update' : 'new';
-
-    console.log(taskData, refInformation, editedlinkages, sessionInfo, type, false)
     return this.transaction(taskData, refInformation, editedlinkages, sessionInfo, type, false);
   }
-    searchTextImplementation(task){
+
+  getTaskDates(refDetails: any = {}){
+
+    let taskInitiationDate = new Date(refDetails.taskInitiationDate);
+    let targetCompletionDate = new Date(refDetails.targetCompletionDate);
+    let actualCompletionDate = refDetails.taskStatus=='RESOLVED' ? new Date() : null;
+
+    return {taskInitiationDate, targetCompletionDate, actualCompletionDate} //, startDateTime, endDateTime, startTime, endTime, year, month, yearMonth};
+  }
+
+  searchTextImplementation(task){
     let status = task.taskStatus;
+    let searchMap: any;
 
     let searchStrings = task.taskTitle +" "+
                         task.tags.join(' ') +' ' +
-                        task.taskOwner.name + ' ' + task.taskOwner.email + " " +
-                        task.taskInitiator.name + ' ' + task.taskInitiator.email + " " +
+                        task.taskOwner.name + " " + task.taskOwner.email + " " +
+                        task.taskInitiator.name + " " + task.taskInitiator.email + " " +
                         status+" ";
-      searchStrings += moment(new Date(task.taskInitiationDate)).format("D") + " "+
-                        moment(new Date(task.taskInitiationDate)).format("YYYY") + " "+
-                        moment(new Date(task.taskInitiationDate)).format("MMMM") + " " +
-                        moment(new Date(task.taskInitiationDate)).format("MMM");
-    return this.searchMap.createSearchMap(searchStrings);
+      searchStrings += moment(new Date(task.targetCompletionDate)).format("D") + " "+
+                        moment(new Date(task.targetCompletionDate)).format("YYYY") + " "+
+                        moment(new Date(task.targetCompletionDate)).format("MMMM") + " " +
+                        moment(new Date(task.targetCompletionDate)).format("MMM");
+    searchMap = this.searchMap.createSearchMap(searchStrings);
+    task.ownerInitiatorUidList.forEach(uid=>searchMap[uid]=true);
+    return searchMap;
   }
 
-
-
-  transaction(taskData, refCopy, editedlinkages, sessionInfo, type, silentMode: boolean = false){
-
-    console.log("getting data     :",taskData);
-    console.log("getting ref info :",refCopy);
-    console.log("getting linkage  :",editedlinkages);
-
+  transaction(task, refCopy, editedlinkages, sessionInfo, type, silentMode: boolean = false){
     const {subscriberId, uid}= sessionInfo;
-
-    let docId = subscriberId;
-    let docRef = this.db.afs.collection(this.db.allCollections.kpi).doc(docId).ref;
     let taskId = '';
+    // we are handling type = 'update' && 'new' only
+    // let's lock the document we would like to create readlock
+    let docId = subscriberId;
+    let docRef = this.db.afs.collection(this.db.allCollections.subscribers).doc(docId).ref;
+    // transaction provide here
     return this.db.afs.firestore.runTransaction(function(transaction) {
+      // get the read consistency lock on the subscriber doc
       return transaction.get(docRef).then(async function(regDoc) {
-      
-      let subscriber = regDoc.data();
-      let totalTask = type=='new' ?
-                              (subscriber.totalTask ? (subscriber.totalTask + 1) : 1)
-                              : subscriber.totalTask;
+          let subscriber = regDoc.data();
+          // Note that we should start at the current event seq id to cascade the events
 
-      taskId = (type=='new' && !refCopy.id) ? this.db.afs.createId():refCopy.id; 
-      let taskRef = this.db.afs.collection(this.db.allCollections.task).doc(taskId).ref;
-     
-      let dataToSave = {...taskData,
-                      searchMap: this.searchTextImplementation({...taskData}),
-                      updatedAt: new Date(),
-                    }
-       // If this is the very first instance of the series of tasks, check for status change and subsequently
-       // update the records as required
-      if(type=='new'){
-        this.kpi.updateKpiDuringCreation('Task',1,sessionInfo)
-      } else {
-        let statusChanged = (refCopy.status!=taskData.status);
-        let prevStatus = refCopy.status;
-        if(statusChanged)
-          {
-            this.kpi.updateKpiDuringUpdate('Task',prevStatus,taskData.status,taskData,sessionInfo,1);
+          console.log("running transaction");
+          let taskDates = this.getTaskDates(this.status=='RESOLVED' ? refCopy : task);
+
+          // taskId = type=='new' ?
+          //           await this.db.generateDocuemnetRef(this.db.allCollections.task)
+          //           :
+          //           refCopy.id; //subscriberId + "_"+ (totalSequenceId +'_' + i);
+          if(type=='new'){
+            let taskRef = await this.db.generateDocuemnetRef(this.db.allCollections.task)
+            await transaction.get(taskRef.ref).then(doc=>{
+              console.log("taskId doc", doc.id, doc.data())
+              taskId = doc.id;
+              refCopy.id = taskId;
+            });
+          } else {
+            taskId = refCopy.id;
           }
-      }
-      // Propagate linkage only if linkage propagation is true along with other propagation options
-      let linkage ={ meetings:editedlinkages.meetings ? editedlinkages.meetings : [],
-                        risks: editedlinkages.risks ? editedlinkages.risks : [],
-                        tasks: editedlinkages.tasks ? editedlinkages.tasks : [],
-                        issues: editedlinkages.issues ? editedlinkages.issues : []
-                      }
-      let statusChanged = (refCopy.status!=taskData.status);
-      let prevStatus = refCopy.status;
-      let selfLinkData = this.link.getLinkData('meetings', taskData);
-      console.log("runninh transaction", dataToSave, linkage , selfLinkData);
-      await this.link.saveDocumentData(this.db.allCollections.meeting, taskId, dataToSave, linkage , selfLinkData, transaction, type);
-      
-      
-      return true;
+          // taskRef = this.db.afs.collection(this.db.allCollections.task).doc(taskId).ref;
 
-      }.bind(this))
-    }.bind(this))
-    .then(function() {
+          console.log("runninh transaction", taskId);
+          let dataToSave = {...task, ...taskDates,
+                             // date: moment(eventDates.startDateTime).format('YYYY-MM-DD'),
+                             searchMap: this.searchTextImplementation({...task, ...taskDates}),
+                             // status: type,
+                             updatedAt: new Date(),
+                           };
+          // Propagate linkage only if linkage propagation is true along with other propagation options
+          let linkage =  {
+                            meetings:editedlinkages.meetings ? editedlinkages.meetings : [],
+                            tasks: editedlinkages.tasks ? editedlinkages.tasks : [],
+                            issues: editedlinkages.issues ? editedlinkages.issues : [],
+                            risks: editedlinkages.risks ? editedlinkages.risks : []
+                          };
+          // console.log("linkage", linkage, task.linkage.tasks[0].id, task.linkage.tasks[0].id);
+          let statusChanged = (refCopy.taskStatus!=task.taskStatus);
+          let prevStatus = refCopy.taskStatus;
+          let selfLinkData = this.link.getLinkData('tasks', task);
+          console.log("runninh transaction", taskId, dataToSave, linkage , selfLinkData);
+          await this.link.saveDocumentData(this.db.allCollections.task, taskId, dataToSave, linkage , selfLinkData, transaction, type);
+
+
+
+          // If this is the very first instance of the series of tasks, check for status change and subsequently
+          // update the records as required
+          if(type=='new'){
+            this.kpi.updateKpiDuringCreation('Task',1,sessionInfo)
+          } else {
+            let statusChanged = (refCopy.taskStatus!=task.taskStatus);
+            let prevStatus = refCopy.taskStatus;
+            if(statusChanged)
+              {
+                this.kpi.updateKpiDuringUpdate('Task',prevStatus,task.taskStatus,task,sessionInfo);
+              }
+          }
+          console.log("running transaction end");
+      }.bind(this));
+    }.bind(this)).then(function() {
         if(!silentMode){
-          let infodata = taskData;
+
+          // this.taskExpand = this.taskExpand = this.riskExpand = this.taskExpand = false;
+          // what about seting the values of other fields which are required to be reset post update
+          let infodata = task;
           let eventInfo = {
             origin: 'tasks',
             eventType: type=='new' ? 'add' : 'update',
+            updatedBy: sessionInfo?.userProfile,
             data: {
-              id: taskId,
+              id: refCopy.id,
               subscriberId: subscriberId,
               ...infodata
             },
@@ -235,19 +264,79 @@ constructor(
           };
           let notifications = this.itemupdate.getNotifications(eventInfo);
           this.notification.createNotifications(notifications);
+          if(task.status != 'CANCEL'){
+            // this.sendMail(task.attendeeList,refCopy.id,task.taskStart,task.taskEnd);
+          }
 
-          // this.sendMail(meeting.attendeeList,refCopy.id,meeting.meetingStart,meeting.meetingEnd);
-
-
-          this.sfp.defaultAlert("Successful","Task Data updated successfully.");
+          // this.sfp.defaultAlert("Successful","Task Data updated successfully.");
+          // this.navData.loader = false;
           console.log("runninh transaction", {status: 'success', title: "Successful", body: "Task Data updated successfully."});
           return {status: 'success', title: "Success", body: "Task " +  (type=='new' ? 'created' : 'updated') + " successfully."};
 
         }
     }.bind(this)).catch(function(error) {
-        console.log("running transaction failed",error);
+        console.log("runninh transaction failed",error);
         return {status: 'failed', title: "Error", body: "Task " + (type=='new' ? 'creation' : 'updation') + " failed. Please try again."};
+        // this.sfp.defaultAlert("Error Update Task", "Task Data update failed. " + error);
+        // this.navData.loader = false;
     }.bind(this));
   }
+
+
+  // share task summary
+  // async shareTaskMinutes(task, linkages)
+  // {
+  //   if(task.data.status != 'COMPLETED'){
+  //     return {status: "warning", title: "Task status Open", body: "Task minutes can only be shared for COMPLETED tasks through email. Please mark the task COMPLETED and then share task minutes."};
+  //   } else {
+  //     let m = task.data;
+  //     let id = task.id;
+  //     Object.keys(linkages).forEach(async lt=>{
+  //       if(!linkages[lt] || linkages[lt].length==0){
+  //         // linkage data not yet fetched, so fetch it now
+  //         await this.link.getLinkagesOnce(id,'task', lt)
+  //               .then(allDocs=>{
+  //                 linkages[lt] = [];
+  //                 allDocs.forEach((doc) => {
+  //                       // doc.data() is never undefined for query doc snapshots
+  //                       let id = doc.id;
+  //                       let data = doc.data();
+  //                       // console.log(doc.id, " => ", doc.data());
+  //                       linkages[lt].push({id,data});
+  //                   });
+  //               })
+  //       }
+  //     })
+  //     let minutesObj = {
+  //       toEmail:m.attendeeList.map(a=>{return {email: a.email};}),
+  //       taskStart: moment.utc(new Date(m.taskStart)).format('MMM DD, YYYY h:mm a') + " UTC",
+  //       toName: m.ownerId.name,
+  //       taskTitle:m.taskTitle,
+  //       agendas:m.agendas,
+  //       notes: m.notes,
+  //       attendeeList: m.attendeeList,
+  //       meetingList: linkages.meetings,
+  //       riskList: linkages.risks,
+  //       taskList:linkages.tasks,
+  //       taskList:linkages.tasks,
+  //
+  //       // toEmail:senderEmail,
+  //       //   toName: senderName,
+  //       //   initiator:this.navData.name,
+  //       //   orgName:this.navData.subscriberId,
+  //       //   taskTitle:this.tasksChange.get("title").value,
+  //       //   initationDate:moment(this.tasksChange.get("initTime").value).format('MMM DD, YYYY'),
+  //       //   targetCompletionDate:moment(this.tasksChange.get("endTime").value).format('MMM DD, YYYY'),
+  //       //   status:this.status,
+  //     }
+  //     console.log("minutesObj email", minutesObj);
+  //     this.sendmail.sendCustomEmail(this.sendmail.shareTaskMinutesPath,minutesObj)
+  //     .then((sent: any)=>
+  //       {
+  //
+  //       });
+  //     return {status: "success", title: "Task Minutes", body: "Task minutes shared with attendees through email."};
+  //   }
+  // }
 
 }
