@@ -1,5 +1,5 @@
 {
-  "name": "commonModule",
+  "name": "Minutely",
   "integrations": {
     "capacitor": {}
   },

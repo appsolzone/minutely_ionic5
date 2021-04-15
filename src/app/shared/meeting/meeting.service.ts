@@ -474,4 +474,59 @@ export class MeetingService {
       return {status: "success", title: "Meeting Minutes", body: "Meeting minutes shared with attendees through email."};
     }
   }
+
+  // record response from attendees
+  recordMeetingResponse(id: any,userProfile : any, response: any)
+  {
+      // let meeting$ = this.db.afs.collection(this.db._COLL_MEETING).doc(notification.refValues.meetingId);
+      let rlDocRef = this.db.afs.firestore.collection(this.db.allCollections.meeting).doc(id);
+      let title="";
+      let body="";
+      return this.db.afs.firestore.runTransaction((transaction)=>{
+        // This code may get re-run multiple times if there are conflicts related to rlDocRef.
+        return transaction.get(rlDocRef).then((doc)=>{
+            if (doc.exists) {
+              let meetingData = doc.data();
+              let attendeeList=meetingData.attendeeList;
+              if(new Date(meetingData.meetingStart.seconds*1000) < new Date() && ["accept","decline"].includes(response))
+              {
+                  title= "Warning";
+                  body = "Please note that this meeting is over. You cannot accept or reject a meeting of the past.";
+                  return {status: false, title, body };
+              } else {
+                // Now check the attendee data and change it to
+                let attendeePos = attendeeList.findIndex((u,i)=>u.uid==userProfile.uid);
+
+                if(attendeePos != -1){
+                  let attendee = attendeeList[attendeePos];
+                  // change the acceptance to true
+                  Object.assign(attendee,{accepted: response});
+                  // now replace the array element with splice
+                  attendeeList.splice(attendeePos,1,attendee);
+
+                  // Now update the document with merge option true as we only intend to update the attendeelist
+
+                  //transaction.update(rlDocRef, {attendeeList: attendeeList});
+                  this.db.updateTransactDocument(transaction, rlDocRef, {attendeeList: attendeeList});
+                  // So remove the notification
+                  title= "Success";
+                  body = "Meeting response recorded successfully";
+                  return {status: false, title, body };
+                }
+              }
+            } else {
+                // doc.data() will be undefined in this case
+                title= "Warning";
+                body = "Please note that the meeting no longer exists.";
+                return {status: false, title, body };
+                // this.clearNotification(notification);
+            }
+        })
+    }).catch((error)=>{
+      title= "Error";
+      body = "Unable to complete the request, please try again.";
+      return {status: false, title, body };
+    });
+
+  }
 }
