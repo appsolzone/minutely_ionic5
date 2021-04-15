@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { KpiService } from 'src/app/shared/kpi/kpi.service';
 
@@ -22,6 +23,7 @@ export class KpiComponent implements OnInit {
   public averageGraphX: any;
 
   constructor(
+    private router: Router,
     private kpi: KpiService,
   ) {
     this.kpiSubs$ = this.kpi.watch().subscribe(value=>{
@@ -58,5 +60,9 @@ export class KpiComponent implements OnInit {
 
   ngOnInit() {}
   ngOnDestroy(){}
+
+  gotoItemPage(item){
+    this.router.navigate([item]);
+  }
 
 }

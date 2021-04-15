@@ -1,6 +1,6 @@
 {
   "appId": "dev.rnmm",
-  "appName": "commonModule",
+  "appName": "Minutely",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

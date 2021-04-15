@@ -1,35 +1,29 @@
-<ion-header>
-  <ion-toolbar olor="" class="ion-padding-end">
-    <ion-title>Task</ion-title>
+<ion-header class="">
+  <ion-toolbar color="" class="ion-padding-end">
+    <ion-title>Tasks</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
   <ion-row>
-    <ion-col size="12" size-md="4" size-lg="5" size-xl="6">
+    <ion-col size="12"  size-md="4" size-lg="5" size-xl="6">
       <ion-row>
         <ion-col size="12">
           <app-kpi *ngIf="sessionInfo?.userProfile" [kpiTypes]="['task', 'issue','avgResolution']"></app-kpi>
         </ion-col>
         <ion-col size="12" class="ion-hide-lg-down">
-          <app-task-list showOnlyUpcommingTasks="true"></app-task-list>
+          <app-task-list viewMode="upcoming"></app-task-list>
         </ion-col>
       </ion-row>
     </ion-col>
     <ion-col size="12" size-md="8" size-lg="7" size-xl="6">
-      <app-task-list showOnlyUpcommingTasks="true" class="ion-hide-lg-up"></app-task-list>
-      <!-- </ion-col>
-          <ion-col size="12" size-md="8" size-lg="7" size-xl="6"> -->
+      <app-task-list viewMode="upcoming" class="ion-hide-lg-up"></app-task-list>
       <app-task-list class="ion-hide-lg-down"></app-task-list>
     </ion-col>
   </ion-row>
-
-
-
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button size="small" (click)="gotoAddTask()">
-      <ion-icon name="add-outline" size="large"></ion-icon>
+    <ion-fab-button  size="small" (click)="gotoAddTask()">
+      <ion-icon name="add" size="large"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>

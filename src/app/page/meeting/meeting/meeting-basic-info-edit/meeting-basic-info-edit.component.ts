@@ -23,6 +23,11 @@ export class MeetingBasicInfoEditComponent implements OnInit {
   public showCascadeChange: boolean = false;
   // public toCascadeChanges: boolean = false;
   public meetingTag: string = '';
+  public noOfMeetingsASOptions: any = {
+    header: 'Select total no of meetings',
+    cssClass: 'app-select-no-of-meetings',
+    mode: "ios"
+  }
 
   constructor(
     private router: Router,

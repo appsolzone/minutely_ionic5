@@ -36,6 +36,10 @@ const routes: Routes = [
         loadChildren: () => import('../page/task/task/task.module').then( m => m.TaskPageModule)
       },
       {
+        path: 'issue',
+        loadChildren: () => import('../page/issue/issue/issue.module').then( m => m.IssuePageModule)
+      },
+      {
         path: '',
         redirectTo: 'profile',
         pathMatch: 'full'

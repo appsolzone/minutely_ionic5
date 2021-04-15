@@ -1,0 +1,44 @@
+<ion-item *ngIf="editMode =='update'">
+  <ion-label>
+    <ion-icon name="accessibility"></ion-icon>
+    Initiator
+  </ion-label>
+  <ion-input readonly="true" type="text" [value]="taskDetails?.taskInitiator.name" class="ion-text-end" color="medium">
+  </ion-input>
+</ion-item>
+<ion-item *ngIf="editMode =='update'">
+  <ion-avatar slot="start">
+    <img src="{{(taskDetails?.taskInitiator.picUrl) ? taskDetails?.taskInitiator.picUrl : 'assets/shapes.svg'}}"
+      (error)="profileImgErrorHandler(taskDetails?.taskInitiator)" />
+  </ion-avatar>
+  <ion-label *ngIf="taskDetails">
+    <h3>{{taskDetails?.taskInitiator.name}}</h3>
+    <p><ion-text color="medium">{{taskDetails?.taskInitiator.email}}</ion-text></p>
+  </ion-label>
+</ion-item>
+<ion-item>
+  <ion-label>
+    <ion-icon name="person"></ion-icon>
+    Task Owner
+  </ion-label>
+  <ion-input readonly="true" type="text" [value]="taskDetails?.taskOwner.name" class="ion-text-end" color="medium">
+  </ion-input>
+  <ion-buttons slot="end">
+    <ion-button slot="end" (click)="showSelectOwner=!showSelectOwner">
+      <ion-icon slot="icon-only" name="create-outline" color="primary"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+</ion-item>
+<app-select-users *ngIf="showSelectOwner" [sessionInfo]="sessionInfo"
+  [alreadySelectedUserList]="taskDetails?.taskOwner? [taskDetails?.taskOwner] : []" [multiSelect]="false"
+  (onSelectionComplete)="changeTaskOwner($event)"></app-select-users>
+<ion-item *ngIf="!showSelectOwner">
+  <ion-avatar slot="start">
+    <img src="{{(taskDetails?.taskOwner.picUrl) ? taskDetails?.taskOwner.picUrl : 'assets/shapes.svg'}}"
+      (error)="profileImgErrorHandler(taskDetails?.taskOwner)" />
+  </ion-avatar>
+  <ion-label>
+    <h3>{{taskDetails?.taskOwner.name}}</h3>
+    <p><ion-text color="medium">{{taskDetails?.taskOwner.email}}</ion-text></p>
+  </ion-label>
+</ion-item>

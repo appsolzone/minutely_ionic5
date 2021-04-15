@@ -1,4 +1,14 @@
-<ion-card *ngIf="linkedIssues?.length==0" class="ion-no-padding">
+<ion-item lines="none" *ngIf="viewMode=='edit'">
+  <ion-label class="ion-text-end">
+    <p><ion-text color="medium">Seach and link issues</ion-text></p>
+  </ion-label>
+  <ion-buttons slot="end" *ngIf="linkedIssues">
+    <ion-button slot="end" (click)="showSearchList=!showSearchList">
+      <ion-icon slot="icon-only" [name]="showSearchList ? 'close' : 'search'"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+</ion-item>
+<ion-card *ngIf="!showSearchList && linkedIssues?.length==0" class="ion-no-padding">
   <ion-item lines="none">
     <ion-icon name="information-circle-outline"  slot="start" color="medium"></ion-icon>
     <ion-label class="ion-text-wrap" color="medium">
@@ -10,18 +20,38 @@
     </ion-label>
   </ion-item>
 </ion-card>
-<ion-card class="ion-no-padding" *ngFor="let t of linkedIssues ? linkedIssues : [null,null];"  button="true" (click)="openIssueDetails(t)">
+<app-issue-list *ngIf="showSearchList"
+  viewMode="linkage"
+  [excludeList]="linkedIssues"
+  (onSelectIssue)="linkSelectedIssue($event)"
+  ></app-issue-list>
+<ion-item *ngIf="showSearchList && linkedIssues?.length>0" color="light">
+  <ion-icon slot="start" name="attach"></ion-icon>
+  <ion-label>
+    <h2>Selected linked issues</h2>
+  </ion-label>
+</ion-item>
+<ion-card class="ion-no-padding" *ngFor="let t of linkedIssues ? linkedIssues : [null,null];let i=index;"
+  [button]="viewMode=='edit' ? false : true" (click)="viewMode=='edit' ? null : openIssueDetails(t)">
   <ion-item lines="none" color="transparent">
-    <ion-buttons slot="start">
-      <ion-button slot="start" fill="solid" color="warning">
+    <!-- <ion-buttons slot="start"> -->
+      <ion-button slot="start" fill="solid" color="warning" class="ion-no-margin margin-end-5px">
         <ion-icon slot="start" name="locate"></ion-icon>
         {{t?.data.targetCompletionDate| date : 'mediumDate'}}
         <ion-skeleton-text *ngIf="!t" animated style="width: 30%"></ion-skeleton-text>
       </ion-button>
-      <ion-button slot="start"  fill="solid" color="medium">
+      <ion-button slot="start"  fill="solid" color="light" class="ion-no-margin">
         <ion-icon slot="start" name="pencil"></ion-icon>
         {{t?.data.issueInitiationDate| date : 'mediumDate'}}
         <ion-skeleton-text *ngIf="!t" animated style="width: 30%"></ion-skeleton-text>
+      </ion-button>
+    <!-- </ion-buttons> -->
+    <ion-buttons *ngIf="viewMode=='edit'" slot="end">
+      <ion-button *ngIf="t?.state!='delete'" slot="end" (click)="delinkSelectedIssue(t,i)">
+        <ion-icon slot="icon-only" name="trash-bin" color="danger"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="t?.state=='delete'" slot="end" (click)="undoDelinkIssue(t,i)">
+        <ion-icon slot="icon-only" name="arrow-undo" color="success"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-item>

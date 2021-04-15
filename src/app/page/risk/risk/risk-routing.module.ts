@@ -10,20 +10,28 @@ const routes: Routes = [
   },
   {
     path: 'risk-details',
-    loadChildren: () => import('../../risk/risk-details/risk-details.module').then( m => m.RiskDetailsPageModule)
+    loadChildren: () => import('./risk-details/risk-details.module').then( m => m.RiskDetailsPageModule)
+  },
+    {
+    path: 'risk-details/:id',
+    loadChildren: () => import('./risk-details/risk-details.module').then( m => m.RiskDetailsPageModule)
   },
     {
     path: 'risk-details-linkage/:id',
-    loadChildren: () => import('../../risk/risk-details/risk-details.module').then( m => m.RiskDetailsPageModule)
+    loadChildren: () => import('./risk-details/risk-details.module').then( m => m.RiskDetailsPageModule)
   },
   {
     path: 'risk-details-edit',
-    loadChildren: () => import('../../risk/risk-details-edit/risk-details-edit.module').then( m => m.RiskDetailsEditPageModule)
+    loadChildren: () => import('./risk-details-edit/risk-details-edit.module').then( m => m.RiskDetailsEditPageModule)
   },
   {
     path: 'create-risk',
-    loadChildren: () => import('../../risk/create-risk/create-risk.module').then( m => m.CreateRiskPageModule)
-  }
+    loadChildren: () => import('./create-risk/create-risk.module').then( m => m.CreateRiskPageModule)
+  },
+  {
+    path: 'comments',
+    loadChildren: () => import('./risk-user-comments/risk-user-comments.module').then( m => m.RiskUserCommentsPageModule)
+  },
 ];
 
 @NgModule({

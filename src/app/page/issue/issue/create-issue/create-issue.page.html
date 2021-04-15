@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Create Issue</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/issue"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col size="12" class="ion-padding-top">
+      <ion-segment mode="ios" [(ngModel)]="showSection" (ionChange)="sectionChanged($event)">
+        <ion-segment-button value="BASICINFO" layout="icon-start">
+          <ion-label>Issue</ion-label>
+          <ion-icon name="calendar" size="small"></ion-icon>
+        </ion-segment-button>
+        <ion-segment-button value="OWNER" layout="icon-start">
+          <ion-label>Owner</ion-label>
+          <ion-icon name="people-circle" size="small"></ion-icon>
+        </ion-segment-button>
+        <ion-segment-button value="NOTES" layout="icon-start">
+          <ion-label>Notes</ion-label>
+          <ion-icon name="document-text" size="small"></ion-icon>
+        </ion-segment-button>
+        <!-- <ion-segment-button value="SUMMERY" layout="icon-start">
+          <ion-label>Summery</ion-label>
+          <ion-icon name="call" size="small"></ion-icon>
+        </ion-segment-button> -->
+      </ion-segment>
+    </ion-col>
+    <ion-col size="12" size-lg="8" class="ion-margin-top">
+      <!-- <ion-card class="ion-no-padding ion-no-margin"> -->
+      <app-issue-basic-info-edit *ngIf="showSection=='BASICINFO' && sessionInfo && issue" editMode="create"
+        [issue]="issue" [sessionInfo]="sessionInfo" [refInformation]="refInformation"></app-issue-basic-info-edit>
+      <!-- </ion-card> -->
+      <!-- <app-issue-location-edit *ngIf="showSection=='LOCATION' && sessionInfo && issue" editMode="create"
+        [issue]="issue" [sessionInfo]="sessionInfo"></app-issue-location-edit> -->
+      <app-issue-owner-initiator-edit *ngIf="showSection=='OWNER' && sessionInfo && issue" [issue]="issue"
+        [sessionInfo]="sessionInfo"></app-issue-owner-initiator-edit>
+      <app-issue-description-edit *ngIf="showSection=='NOTES' && sessionInfo && issue" [issue]="issue"
+        [sessionInfo]="sessionInfo"></app-issue-description-edit>
+    </ion-col>
+    <ion-col size="12" size-lg="4" class="ion-hide-lg-down">
+      <ion-card>
+        <ion-card-header>
+          <ion-item class="ion-no-padding">
+            <ion-label>
+              <h1><small>How to create issue</small></h1>
+            </ion-label>
+          </ion-item>
+        </ion-card-header>
+        <ion-card-content>
+          <p>
+            <ion-icon name="calendar"></ion-icon> Provide issue basic information
+          </p>
+          <p>
+            <ion-icon name="people-circle"></ion-icon> Assign an owner
+          </p>
+          <p>
+            <ion-icon name="document-text"></ion-icon> Add issue description and notes, if any
+          </p>
+        </ion-card-content>
+      </ion-card>
+      <!-- <app-linkage *ngIf="sessionInfo && issue" viewMode="edit" [selectedObject]="issue" [sessionInfo]="sessionInfo" [alllinkages]="alllinkages" [editedlinkages]="editedlinkages"> </app-linkage> -->
+    </ion-col>
+  </ion-row>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button size="small" (click)="saveIssue()">
+      <ion-icon name="checkmark-done"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -162,6 +162,7 @@ export class MeetingDetailsEditPage implements OnInit {
               response = false;
               await this.common.presentAlertConfirm(title,body, continueButtons);
               toCascadeChanges = response;
+              this.refInformation.toCascadeChanges = toCascadeChanges;
 
           } else if(status == 'CANCEL' && isOccurence && eventSequenceId != noOfOccurence){
             title = toCascadeChanges ? 'WARNING' : 'ALERT';
@@ -172,6 +173,7 @@ export class MeetingDetailsEditPage implements OnInit {
             response = false;
             await this.common.presentAlertConfirm(title,body, continueButtons);
             toCascadeChanges = response;
+            this.refInformation.toCascadeChanges = toCascadeChanges;
           }
           // If we are not cascading changes we should not check any thing else check the date again
           validation = status=='CANCEL' ?

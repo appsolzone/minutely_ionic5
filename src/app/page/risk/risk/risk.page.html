@@ -1,35 +1,29 @@
-<ion-header>
-  <ion-toolbar olor="" class="ion-padding-end">
-    <ion-title>Risk</ion-title>
+<ion-header class="">
+  <ion-toolbar color="" class="ion-padding-end">
+    <ion-title>Risks</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
   <ion-row>
-      <ion-col size="12" size-md="4" size-lg="5" size-xl="6">
-        <ion-row>
-          <ion-col size="12">
-            <app-kpi *ngIf="sessionInfo?.userProfile" [kpiTypes]="['riskMatrix','risk', 'issue']"></app-kpi>
-          </ion-col>
-          <ion-col size="12" class="ion-hide-lg-down">
-            <app-risk-list showOnlyUpcommingRisks="true"></app-risk-list>
-          </ion-col>
-        </ion-row>
-      </ion-col>
-      <ion-col size="12" size-md="8" size-lg="7" size-xl="6">
-        <app-risk-list showOnlyUpcommingRisks="true" class="ion-hide-lg-up"></app-risk-list>
-        <!-- </ion-col>
-          <ion-col size="12" size-md="8" size-lg="7" size-xl="6"> -->
-        <app-risk-list class="ion-hide-lg-down"></app-risk-list>
-      </ion-col>
-    </ion-row>
-
-
-
+    <ion-col size="12"  size-md="4" size-lg="5" size-xl="6">
+      <ion-row>
+        <ion-col size="12">
+          <app-kpi *ngIf="sessionInfo?.userProfile" [kpiTypes]="['risk', 'issue','riskMatrix']"></app-kpi>
+        </ion-col>
+        <ion-col size="12" class="ion-hide-lg-down">
+          <app-risk-list viewMode="upcoming"></app-risk-list>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+    <ion-col size="12" size-md="8" size-lg="7" size-xl="6">
+      <app-risk-list viewMode="upcoming" class="ion-hide-lg-up"></app-risk-list>
+      <app-risk-list class="ion-hide-lg-down"></app-risk-list>
+    </ion-col>
+  </ion-row>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button size="small"  (click)="gotoAddRisk()">
-        <ion-icon name="add-outline"  size="large"></ion-icon>
-      </ion-fab-button>
+    <ion-fab-button  size="small" (click)="gotoAddRisk()">
+      <ion-icon name="add" size="large"></ion-icon>
+    </ion-fab-button>
   </ion-fab>
 </ion-content>

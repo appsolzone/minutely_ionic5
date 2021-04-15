@@ -1,0 +1,44 @@
+<ion-item class="" lines="none">
+    <!-- <ion-buttons slot="start"> -->
+      <ion-button slot="start" class="ion-no-margin margin-end-5px" size="default"
+        color="{{riskDetails?.riskStatus=='RESOLVED' ? 'success' : riskDetails?.riskStatus=='OPEN' ? 'warning' : 'primary'}}">
+        <ion-icon slot="start" name="locate"></ion-icon>
+        {{(riskDetails?.riskStatus=='RESOLVED' ? riskDetails?.actualCompletionDate : riskDetails?.targetCompletionDate)| date : 'mediumDate'}}
+
+      </ion-button>
+      <ion-button slot="start" color="light" class="ion-no-margin" size="default">
+        <ion-icon slot="start" name="pencil"></ion-icon>
+        {{riskDetails?.riskInitiationDate| date : 'mediumDate'}}
+      </ion-button>
+    <!-- </ion-buttons> -->
+</ion-item>
+<ion-item *ngIf="risk?.overdue=='overdue'" lines="none">
+  <ion-chip slot="start" color="danger">
+    <ion-icon name="alert-circle-outline"></ion-icon>
+    <ion-label>Overdue, was due {{ risk?.overdueby }} </ion-label>
+  </ion-chip>
+</ion-item>
+<ion-item *ngIf="riskDetails?.riskStatus=='RESOLVED'">
+  <ion-label><ion-icon name="locate"></ion-icon> Initial target</ion-label>
+  <ion-input type="text" readonly="true" class="ion-text-end" value="{{riskDetails?.targetCompletionDate| date : 'mediumDate'}}"></ion-input>
+</ion-item>
+<ion-item>
+  <ion-label class="ion-text-wrap">
+    <h1>
+      {{riskDetails?.riskTitle}}
+    </h1>
+  </ion-label>
+</ion-item>
+<ion-item *ngIf="riskDetails?.tags?.length>0" lines="none" class="ion-text-wrap">
+  <ion-chip *ngFor="let data of riskDetails?.tags; let i = index" outline="true" color="success">{{data}}</ion-chip>
+</ion-item>
+<ion-item lines="full">
+  <ion-label slot="start">
+    <ion-icon name="bookmark"></ion-icon> Status
+  </ion-label>
+  <ion-button slot="end"
+    [color]="riskDetails?.riskStatus=='OPEN'? 'warning' : riskDetails?.riskStatus=='RESOLVED' ? 'green' : 'primary'"
+    class="ion-padding-start ion-padding-end">
+    {{riskDetails?.riskStatus}}
+  </ion-button>
+</ion-item>

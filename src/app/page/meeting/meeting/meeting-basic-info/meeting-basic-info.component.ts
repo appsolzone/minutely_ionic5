@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
+import { MeetingService } from 'src/app/shared/meeting/meeting.service';
+import { ComponentsService } from 'src/app/shared/components/components.service';
 
 @Component({
   selector: 'app-meeting-basic-info',
@@ -17,6 +19,8 @@ export class MeetingBasicInfoComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private meetingservice: MeetingService,
+    private common: ComponentsService,
   ) { }
 
   ngOnInit() {
@@ -50,8 +54,18 @@ export class MeetingBasicInfoComponent implements OnInit {
     }
   }
 
-  onActionClick(val){
+  async onActionClick(val){
     // TBA
+    let buttons = [
+                    {
+                      text: 'Dismiss',
+                      role: 'cancel',
+                      cssClass: '',
+                      handler: ()=>{}
+                    }
+                  ];
+    let response = await this.meetingservice.recordMeetingResponse(this.meeting?.id, this.sessionInfo?.userProfile, val);
+    this.common.presentAlert(response.title, response.body, buttons);
   }
 
 }

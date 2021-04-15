@@ -100,7 +100,7 @@ export class NotificationPage implements OnInit {
    if(action.href=='clear'){
      this.notification.clearNotification(alert);
    } else {
-     this.router.navigate([action.href],{state: {data:{[alert.origin.label]: alert.data.refData}}});
+     this.router.navigate([action.href],{state: {data:{[alert.data.origin.label.toLowerCase()]: alert.data.refData}}});
    }
  }
 

@@ -11,6 +11,10 @@ ion-icon {
   pointer-events: none;
 }
 
+.app-select-no-of-meetings{
+  --max-height: 60%;
+}
+
 // masonic style of cards
 .section-masonic {
   column-count: var(--masonic-no-of-col-xl);
@@ -80,7 +84,7 @@ ion-icon {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     // line-height: 16px;
-    max-height: 34px;
+    max-height: 40px;
     -webkit-box-orient: vertical;
 }
 

@@ -1,0 +1,40 @@
+<ion-item lines="full">
+  <ion-label slot="start">
+    <ion-icon name="crop-outline"></ion-icon>Risk Probability
+  </ion-label>
+  <ion-label slot="end" color="medium" class="ion-text-right">
+    {{riskDetails?.riskProbability}}
+  </ion-label>
+</ion-item>
+<ion-segment [value]="riskDetails?.riskProbability" mode="ios">
+  <ion-segment-button [value]="'Low'" [disabled]="riskDetails?.riskProbability!='Low'">
+    <ion-label color="success">Low</ion-label>
+  </ion-segment-button>
+  <ion-segment-button [value]="'Medium'" [disabled]="riskDetails?.riskProbability!='Medium'">
+    <ion-label  color="warning">Medium</ion-label>
+  </ion-segment-button>
+  <ion-segment-button [value]="'High'" [disabled]="riskDetails?.riskProbability!='High'">
+    <ion-label  color="danger">High</ion-label>
+  </ion-segment-button>
+</ion-segment>
+
+
+<ion-item lines="full">
+  <ion-label slot="start">
+    <ion-icon name="apps-outline"></ion-icon> Risk Impact
+  </ion-label>
+  <ion-label slot="end" color="medium" class="ion-text-right">
+    {{riskDetails?.riskImpact}}
+  </ion-label>
+</ion-item>
+<ion-segment [value]="riskDetails?.riskImpact" mode="ios">
+  <ion-segment-button [value]="'Low'" [disabled]="riskDetails?.riskImpact!='Low'">
+    <ion-label color="success">Low</ion-label>
+  </ion-segment-button>
+  <ion-segment-button [value]="'Medium'" [disabled]="riskDetails?.riskImpact!='Medium'">
+    <ion-label color="warning">Medium</ion-label>
+  </ion-segment-button>
+  <ion-segment-button [value]="'High'"  [disabled]="riskDetails?.riskImpact!='High'">
+    <ion-label color="danger">High</ion-label>
+  </ion-segment-button>
+</ion-segment>

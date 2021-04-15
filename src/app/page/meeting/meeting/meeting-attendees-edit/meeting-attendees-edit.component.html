@@ -50,7 +50,7 @@
 <ion-list *ngIf="!showSelectAttendees">
   <ion-item lines="none">
     <ion-label class="ion-text-wrap">
-      <p>To record attendance click, tap on <ion-icon name="finger-print" slot="icon-only" size="small" class="ion-align-self-center"></ion-icon> or  slide each user card to right <ion-icon name="return-down-forward" slot="icon-only" size="small"  class="ion-align-self-center"></ion-icon></p>
+      <p>Select attendees for the meeting</p>
     </ion-label>
   </ion-item>
   <ion-item-sliding #slide *ngFor="let data of meetingDetails?.attendeeList; let i = index; let c = count;">

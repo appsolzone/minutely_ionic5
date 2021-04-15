@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
-import { DatabaseService } from '../database/database.service';
-import { KpiService } from '../kpi/kpi.service';
-import { LinkageService } from '../linkage/linkage.service';
-import { NotificationsService } from '../notifications/notifications.service';
-import { SendEmailService } from '../send-email/send-email.service';
-import { TextsearchService } from '../textsearch/textsearch.service';
+import { DatabaseService } from 'src/app/shared/database/database.service';
+import { TextsearchService } from 'src/app/shared/textsearch/textsearch.service';
+import { LinkageService } from 'src/app/shared/linkage/linkage.service';
+import { KpiService } from 'src/app/shared/kpi/kpi.service';
+import { NotificationsService } from 'src/app/shared/notifications/notifications.service';
+import { ItemUpdatesService } from 'src/app/shared/item-updates/item-updates.service';
+import { SendEmailService } from 'src/app/shared/send-email/send-email.service';
+import { Risk } from 'src/app/interface/risk';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +21,9 @@ export class RiskService {
         subscriberId:'',
         picUrl:'',
       },
-      riskInitiationDate :null,
-      riskEntryDate : null,
-      targetCompletionDate :null,
+      riskInitiationDate :new Date(),
+      riskEntryDate : new Date(),
+      targetCompletionDate :new Date(),
       actualCompletionDate: null,
       riskStatus: 'OPEN',
       lastUpdateDate:null,
@@ -31,7 +33,7 @@ export class RiskService {
         comment:'',
         date:null,
         picUrl:'',
-        totalComment:0
+        totalComments:0
       },
       riskInitiator :{
         name:'',
@@ -40,8 +42,8 @@ export class RiskService {
         picUrl:'',
       },
       tags:[],
-      riskProbability :'',
-      riskImpact:'',
+      riskProbability :'Low',
+      riskImpact:'Low',
       riskMitigation:'',
       riskContingency:'',
       searchMap:{},
@@ -54,6 +56,7 @@ constructor(
     public link: LinkageService,
     public kpi: KpiService,
     public notification: NotificationsService,
+    public itemupdate: ItemUpdatesService,
     public sendmail: SendEmailService,
   ){
      // TBA
@@ -89,7 +92,7 @@ constructor(
     return {status, title, body};
   }
 
-    dateChange(m, refInformation){
+  dateChange(m, refInformation){
     let risk = m.data;
     let title='Risk Date';
     let body='';
@@ -100,25 +103,26 @@ constructor(
 
     if(!startDateTime) {
       status = false;
-      title = "Invalid risk Start Date";
-      body = "Risk start date cannot be empty. The risk start time should be future time.";
+      title = "Invalid Risk Initiation Date";
+      body = "Risk start date cannot be empty. Please provide a valid risk initiation date.";
     } else if(!endDateTime) {
       status = false;
-      title = "Invalid risk End Date";
-      body = "Risk end date cannot be empty. The risk end time should be future time.";
-    } else if((refInformation.riskInitiationDate == risk.riskInitiationDate && refInformation.riskEnd == risk.targetCompletionDate ) ||
-              (new Date() <= startDateTime && new Date() <= endDateTime)
+      title = "Invalid Risk Due Date";
+      body = "Risk target completion date cannot be empty. The risk end time should be future time.";
+    } else if((refInformation.targetCompletionDate == risk.targetCompletionDate) ||
+              (startDateTime <= endDateTime)
             ) {
       status = true;
     } else {
-          title = "Invalid risk Dates";
-          body = "risk cannot be set in past. The risk start and end time should be future time.";
-          status= false;
+
+      title = "Invalid Date";
+      body = "Risk target completion date can not be earlier than the risk initiation date.";
+      status= false;
     }
     return {status, title, body};
   }
 
-    validateBasicInfo(risk, refInformation){
+  validateBasicInfo(risk, refInformation){
 
     let check = this.dateChange(risk,refInformation);
 
@@ -136,8 +140,7 @@ constructor(
 
   }
 
-
-   processRisk(risk, refInformation, editedlinkages, sessionInfo){
+  processRisk(risk, refInformation, editedlinkages, sessionInfo){
     // if risk is cancelled, just change the status to cancel
 
     // if changes are confined only to this instance, not be propagated, copy referenceInfomation for recurrence, if any
@@ -145,159 +148,198 @@ constructor(
     // else changes to be propagated
     let riskData = risk.data;
     let type = risk.id ? 'update' : 'new';
-    //return this.transaction(riskData, refInformation, editedlinkages, sessionInfo, type, false);
+    return this.transaction(riskData, refInformation, editedlinkages, sessionInfo, type, false);
   }
 
-    searchTextImplementation(risk){
+  getRiskDates(refDetails: any = {}){
+
+    let riskInitiationDate = new Date(refDetails.riskInitiationDate);
+    let targetCompletionDate = new Date(refDetails.targetCompletionDate);
+    let actualCompletionDate = refDetails.riskStatus=='RESOLVED' ? new Date() : null;
+
+    return {riskInitiationDate, targetCompletionDate, actualCompletionDate} //, startDateTime, endDateTime, startTime, endTime, year, month, yearMonth};
+  }
+
+  searchTextImplementation(risk){
     let status = risk.riskStatus;
+    let searchMap: any;
 
     let searchStrings = risk.riskTitle +" "+
                         risk.tags.join(' ') +' ' +
-                        risk.riskOwner.u.name + ' ' + risk.riskOwner.u.email + " " +
-                        risk.riskInitiator.u.name + ' ' + risk.riskInitiator.u.email + " " +
+                        risk.riskOwner.name + " " + risk.riskOwner.email + " " +
+                        risk.riskInitiator.name + " " + risk.riskInitiator.email + " " +
                         status+" ";
-      searchStrings += moment(new Date(risk.riskInitiationDate)).format("D") + " "+
-                        moment(new Date(risk.riskInitiationDate)).format("YYYY") + " "+
-                        moment(new Date(risk.riskInitiationDate)).format("MMMM") + " " +
-                        moment(new Date(risk.riskInitiationDate)).format("MMM");
-    return this.searchMap.createSearchMap(searchStrings);
+      searchStrings += moment(new Date(risk.targetCompletionDate)).format("D") + " "+
+                        moment(new Date(risk.targetCompletionDate)).format("YYYY") + " "+
+                        moment(new Date(risk.targetCompletionDate)).format("MMMM") + " " +
+                        moment(new Date(risk.targetCompletionDate)).format("MMM");
+    searchMap = this.searchMap.createSearchMap(searchStrings);
+    risk.ownerInitiatorUidList.forEach(uid=>searchMap[uid]=true);
+    return searchMap;
+  }
+
+  transaction(risk, refCopy, editedlinkages, sessionInfo, type, silentMode: boolean = false){
+    const {subscriberId, uid}= sessionInfo;
+    let riskId = '';
+    // we are handling type = 'update' && 'new' only
+    // let's lock the document we would like to create readlock
+    let docId = subscriberId;
+    let docRef = this.db.afs.collection(this.db.allCollections.subscribers).doc(docId).ref;
+    // transaction provide here
+    return this.db.afs.firestore.runTransaction(function(transaction) {
+      // get the read consistency lock on the subscriber doc
+      return transaction.get(docRef).then(async function(regDoc) {
+          let subscriber = regDoc.data();
+          // Note that we should start at the current event seq id to cascade the events
+
+          console.log("running transaction");
+          let riskDates = this.getRiskDates(this.status=='RESOLVED' ? refCopy : risk);
+
+          // riskId = type=='new' ?
+          //           await this.db.generateDocuemnetRef(this.db.allCollections.risk)
+          //           :
+          //           refCopy.id; //subscriberId + "_"+ (totalSequenceId +'_' + i);
+          if(type=='new'){
+            let riskRef = await this.db.generateDocuemnetRef(this.db.allCollections.risk)
+            await transaction.get(riskRef.ref).then(doc=>{
+              console.log("riskId doc", doc.id, doc.data())
+              riskId = doc.id;
+              refCopy.id = riskId;
+            });
+          } else {
+            riskId = refCopy.id;
+          }
+          // riskRef = this.db.afs.collection(this.db.allCollections.risk).doc(riskId).ref;
+
+          console.log("runninh transaction", riskId);
+          let dataToSave = {...risk, ...riskDates,
+                             // date: moment(eventDates.startDateTime).format('YYYY-MM-DD'),
+                             searchMap: this.searchTextImplementation({...risk, ...riskDates}),
+                             // status: type,
+                             updatedAt: new Date(),
+                           };
+          // Propagate linkage only if linkage propagation is true along with other propagation options
+          let linkage =  {
+                            meetings:editedlinkages.meetings ? editedlinkages.meetings : [],
+                            tasks: editedlinkages.tasks ? editedlinkages.tasks : [],
+                            issues: editedlinkages.issues ? editedlinkages.issues : [],
+                            risks: editedlinkages.risks ? editedlinkages.risks : []
+                          };
+          // console.log("linkage", linkage, risk.linkage.risks[0].id, risk.linkage.tasks[0].id);
+          let statusChanged = (refCopy.riskStatus!=risk.riskStatus);
+          let prevStatus = refCopy.riskStatus;
+          let selfLinkData = this.link.getLinkData('risks', risk);
+          console.log("runninh transaction", riskId, dataToSave, linkage , selfLinkData);
+          await this.link.saveDocumentData(this.db.allCollections.risk, riskId, dataToSave, linkage , selfLinkData, transaction, type);
+
+
+
+          // If this is the very first instance of the series of risks, check for status change and subsequently
+          // update the records as required
+          if(type=='new'){
+            this.kpi.updateKpiDuringCreation('Risk',1,sessionInfo)
+          } else {
+            let statusChanged = (refCopy.riskStatus!=risk.riskStatus);
+            let prevStatus = refCopy.riskStatus;
+            if(statusChanged)
+              {
+                this.kpi.updateKpiDuringUpdate('Risk',prevStatus,risk.riskStatus,risk,sessionInfo);
+              }
+          }
+          console.log("running transaction end");
+      }.bind(this));
+    }.bind(this)).then(function() {
+        if(!silentMode){
+
+          // this.riskExpand = this.riskExpand = this.riskExpand = this.taskExpand = false;
+          // what about seting the values of other fields which are required to be reset post update
+          let infodata = risk;
+          let eventInfo = {
+            origin: 'risks',
+            eventType: type=='new' ? 'add' : 'update',
+            updatedBy: sessionInfo?.userProfile,
+            data: {
+              id: refCopy.id,
+              subscriberId: subscriberId,
+              ...infodata
+            },
+            prevData: refCopy,
+          };
+          let notifications = this.itemupdate.getNotifications(eventInfo);
+          this.notification.createNotifications(notifications);
+          if(risk.status != 'CANCEL'){
+            // this.sendMail(risk.attendeeList,refCopy.id,risk.riskStart,risk.riskEnd);
+          }
+
+          // this.sfp.defaultAlert("Successful","Risk Data updated successfully.");
+          // this.navData.loader = false;
+          console.log("runninh transaction", {status: 'success', title: "Successful", body: "Risk Data updated successfully."});
+          return {status: 'success', title: "Success", body: "Risk " +  (type=='new' ? 'created' : 'updated') + " successfully."};
+
+        }
+    }.bind(this)).catch(function(error) {
+        console.log("runninh transaction failed",error);
+        return {status: 'failed', title: "Error", body: "Risk " + (type=='new' ? 'creation' : 'updation') + " failed. Please try again."};
+        // this.sfp.defaultAlert("Error Update Risk", "Risk Data update failed. " + error);
+        // this.navData.loader = false;
+    }.bind(this));
   }
 
 
-
-  //  transaction(risk, refCopy, editedlinkages, sessionInfo, type, silentMode: boolean = false){
-  //   const {subscriberId, uid}= sessionInfo;
-  //   // we are handling type = 'update' && 'new' only
-  //   let refEventSequenceId = risk.eventSequenceId;
-  //   // No of occurences is more than one if we have cascade flag true
-  //   //let noOfOccurence = risk.noOfOccurence;
-  //   let toCascadeChanges = refCopy.toCascadeChanges;
-  //   // let's lock the document we would like to create readlock
-  //   let docId = subscriberId;
-  //   let docRef = this.db.afs.collection(this.db.allCollections.subscribers).doc(docId).ref;
-  //   let eventId = null;
-  //   let eventRef = null;
-  //   // transaction provide here
-  //   return this.db.afs.firestore.runTransaction(function(transaction) {
-  //     // get the read consistency lock on the subscriber doc
-  //     return transaction.get(docRef).then(async function(regDoc) {
-  //         let subscriber = regDoc.data();
-  //         let totalSequenceId = type=='new' ?
-  //                               (subscriber.totalRisk ? (subscriber.totalRisk + 1) : 1)
-  //                               :
-  //                               risk.eventId;
-  //         // initialise the summary view object
-  //         let event = {...risk};
-  //         // Note that we should start at the current event seq id to cascade the events
-  //         // for(let i=refEventSequenceId; i<=(toCascadeChanges ? noOfOccurence : refEventSequenceId); i++){
-  //           console.log("runninh transaction");
-  //           //let eventDates = this.getEventStartAndEndDate((i-refEventSequenceId+1), risk.isOccurence,this.status=='CANCEL' ? refCopy : risk,type);
-
-  //           eventId = subscriberId + "_"+ (totalSequenceId);
-  //           eventRef = this.db.afs.collection(this.db.allCollections.risk).doc(eventId).ref;
-  //           if(type=='new' && !refCopy.id){
-  //             refCopy.id = eventId;
-  //           }
-  //           console.log("runninh transaction", eventId);
-  //           let dataToSave = risk.riskStatus!='CANCEL' ?
-  //                           {...event, 
-  //                             // ...eventDates, 
-  //                             // eventSequenceId: i, 
-  //                              eventId: totalSequenceId,
-  //                             // date: moment(eventDates.startDateTime).format('YYYY-MM-DD'),
-  //                             searchMap: this.searchTextImplementation({
-  //                               ...event, 
-  //                               //...eventDates,
-  //                                eventSequenceId: i, 
-  //                                eventId: totalSequenceId,
-  //                               }),
-  //                             // status: type,
-  //                             updatedAt: new Date(),
-  //                           }
-  //                           :
-  //                           {status: risk.status, //...eventDates, eventSequenceId: i, eventId: totalSequenceId,
-  //                                    // date: moment(eventDates.startDateTime).format('YYYY-MM-DD'),
-  //                                    searchMap: this.searchTextImplementation({...refCopy, status: risk.riskStatus}),
-  //                                    // status: type,
-  //                                    updatedAt: new Date(),
-  //                                  };
-  //           // Propagate linkage only if linkage propagation is true along with other propagation options
-  //           let linkage = risk.riskStatus!='RESOLVED' && ((!toCascadeChanges && i==refEventSequenceId) || (toCascadeChanges)) ? // && this.toCascadeChanges && this.toCascadeLinakges)) ?
-  //                           {
-  //                             risks:editedlinkages.risks ? editedlinkages.risks : [],
-  //                             meetings: editedlinkages.meetings ? editedlinkages.meetings : [],
-  //                             tasks: editedlinkages.tasks ? editedlinkages.tasks : [],
-  //                             issues: editedlinkages.issues ? editedlinkages.issues : []
-  //                           }
-  //                         :
-  //                         {
-  //                           risks:[],
-  //                           meetings: [],
-  //                           tasks: [],
-  //                           issues: []
-  //                         };
-  //           // console.log("linkage", linkage, risk.linkage.risks[0].id, risk.linkage.tasks[0].id);
-  //           let statusChanged = (refCopy.riskStatus!=risk.riskStatus);
-  //           let prevStatus = refCopy.riskStatus;
-  //           let selfLinkData = risk.riskStatus!='CANCEL' ? this.link.getLinkData('risks', risk) : {};
-  //           console.log("runninh transaction", eventId, dataToSave, linkage , selfLinkData);
-  //           await this.link.saveDocumentData(this.db.allCollections.risk, eventId, dataToSave, linkage , selfLinkData, transaction, type);
-
-  //        // }
-
-  //         // If this is the very first instance of the series of risks, check for status change and subsequently
-  //         // update the records as required
-  //         if(type=='new'){
-  //           this.kpi.updateKpiDuringCreation('risk',risk.noOfOccurence,sessionInfo)
-  //         } else {
-  //           let statusChanged = (refCopy.status!=risk.status);
-  //           let prevStatus = refCopy.status;
-  //           if(statusChanged)
-  //             {
-  //               this.kpi.updateKpiDuringUpdate('risk',prevStatus,risk.status,risk,sessionInfo, (toCascadeChanges ? risk.noOfOccurence - risk.eventSequenceId + 1 : 1));
-  //             }
-  //         }
-
-  //         // Complete the last transaction which is to be executed out of while loop
-
-  //         if(type=='new'){
-  //           transaction.set(docRef, {totalrisk: totalSequenceId}, {merge: true});
-  //         }
-  //         console.log("runninh transaction", totalSequenceId);
-  //     }.bind(this));
-  //   }.bind(this)).then(function() {
-  //       if(!silentMode){
-
-  //         // this.riskExpand = this.issueExpand = this.riskExpand = this.taskExpand = false;
-  //         // what about seting the values of other fields which are required to be reset post update
-  //         let infodata = (risk.status == 'CANCEL' ? risk : refCopy);
-  //         let eventInfo = {
-  //           origin: 'risks',
-  //           eventType: risk.status == 'CANCEL' ? 'cancel' : 'update',
-  //           data: {
-  //             id: refCopy.id,
-  //             subscriberId: subscriberId,
-  //             ...infodata
-  //           },
-  //           prevData: refCopy,
-  //         };
-  //         this.notification.createNotifications(eventInfo);
-  //         if(risk.status != 'CANCEL'){
-  //           // this.sendMail(risk.attendeeList,refCopy.id,risk.riskStart,risk.riskEnd);
-  //         }
-
-  //         // this.sfp.defaultAlert("Successful","risk Data updated successfully.");
-  //         // this.navData.loader = false;
-  //         console.log("runninh transaction", {status: 'success', title: "Successful", body: "risk Data updated successfully."});
-  //         return {status: 'success', title: "Success", body: "risk " +  (type=='new' ? 'created' : 'updated') + " successfully."};
-
+  // share risk summary
+  // async shareRiskMinutes(risk, linkages)
+  // {
+  //   if(risk.data.status != 'COMPLETED'){
+  //     return {status: "warning", title: "Risk status Open", body: "Risk minutes can only be shared for COMPLETED risks through email. Please mark the risk COMPLETED and then share risk minutes."};
+  //   } else {
+  //     let m = risk.data;
+  //     let id = risk.id;
+  //     Object.keys(linkages).forEach(async lt=>{
+  //       if(!linkages[lt] || linkages[lt].length==0){
+  //         // linkage data not yet fetched, so fetch it now
+  //         await this.link.getLinkagesOnce(id,'risk', lt)
+  //               .then(allDocs=>{
+  //                 linkages[lt] = [];
+  //                 allDocs.forEach((doc) => {
+  //                       // doc.data() is never undefined for query doc snapshots
+  //                       let id = doc.id;
+  //                       let data = doc.data();
+  //                       // console.log(doc.id, " => ", doc.data());
+  //                       linkages[lt].push({id,data});
+  //                   });
+  //               })
   //       }
-  //   }.bind(this)).catch(function(error) {
-  //       console.log("runninh transaction failed",error);
-  //       return {status: 'failed', title: "Error", body: "risk " + (type=='new' ? 'creation' : 'updation') + " failed. Please try again."};
-  //       // this.sfp.defaultAlert("Error Update risk", "risk Data update failed. " + error);
-  //       // this.navData.loader = false;
-  //   }.bind(this));
+  //     })
+  //     let minutesObj = {
+  //       toEmail:m.attendeeList.map(a=>{return {email: a.email};}),
+  //       riskStart: moment.utc(new Date(m.riskStart)).format('MMM DD, YYYY h:mm a') + " UTC",
+  //       toName: m.ownerId.name,
+  //       riskTitle:m.riskTitle,
+  //       agendas:m.agendas,
+  //       notes: m.notes,
+  //       attendeeList: m.attendeeList,
+  //       meetingList: linkages.meetings,
+  //       riskList: linkages.risks,
+  //       riskList:linkages.risks,
+  //       taskList:linkages.tasks,
+  //
+  //       // toEmail:senderEmail,
+  //       //   toName: senderName,
+  //       //   initiator:this.navData.name,
+  //       //   orgName:this.navData.subscriberId,
+  //       //   riskTitle:this.risksChange.get("title").value,
+  //       //   initationDate:moment(this.risksChange.get("initTime").value).format('MMM DD, YYYY'),
+  //       //   targetCompletionDate:moment(this.risksChange.get("endTime").value).format('MMM DD, YYYY'),
+  //       //   status:this.status,
+  //     }
+  //     console.log("minutesObj email", minutesObj);
+  //     this.sendmail.sendCustomEmail(this.sendmail.shareRiskMinutesPath,minutesObj)
+  //     .then((sent: any)=>
+  //       {
+  //
+  //       });
+  //     return {status: "success", title: "Risk Minutes", body: "Risk minutes shared with attendees through email."};
+  //   }
   // }
 
 }

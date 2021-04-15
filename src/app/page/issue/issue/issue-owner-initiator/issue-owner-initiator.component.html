@@ -1,0 +1,36 @@
+<ion-item>
+  <ion-label>
+    <ion-icon name="accessibility"></ion-icon>
+    Initiator
+  </ion-label>
+  <ion-input readonly="true" type="text" [value]="issueDetails?.issueInitiator.name" class="ion-text-end" color="medium">
+  </ion-input>
+</ion-item>
+<ion-item class="">
+  <ion-avatar slot="start">
+    <img src="{{(issueDetails?.issueInitiator.picUrl) ? issueDetails?.issueInitiator.picUrl : 'assets/shapes.svg'}}"
+      (error)="profileImgErrorHandler(issueDetails?.issueInitiator)" />
+    </ion-avatar>
+  <ion-label>
+    <h3>{{issueDetails?.issueInitiator?.name}}</h3>
+    <p>{{issueDetails?.issueInitiator?.email}}</p>
+  </ion-label>
+</ion-item>
+<ion-item>
+  <ion-label>
+    <ion-icon name="person"></ion-icon>
+    Owner
+  </ion-label>
+  <ion-input readonly="true" type="text" [value]="issueDetails?.issueOwner.name" class="ion-text-end" color="medium">
+  </ion-input>
+</ion-item>
+  <ion-item class="">
+    <ion-avatar slot="start">
+      <img src="{{(issueDetails?.issueOwner.picUrl) ? issueDetails?.issueOwner.picUrl : 'assets/shapes.svg'}}"
+        (error)="profileImgErrorHandler(issueDetails?.issueOwner)" />
+    </ion-avatar>
+    <ion-label>
+      <h3>{{issueDetails?.issueOwner?.name}}</h3>
+      <p>{{issueDetails?.issueOwner?.email}}</p>
+    </ion-label>
+  </ion-item>
