@@ -6,6 +6,7 @@ import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { RiskService } from 'src/app/shared/risk/risk.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-risk-details',
@@ -32,12 +33,13 @@ export class RiskDetailsPage implements OnInit {
                             issues: [],
                             risks: []
                           };
-
+  public sendTaskDetailsMode:boolean = false;
   constructor(
     private router: Router,
     private session: SessionService,
     private riskservice: RiskService,
     private common: ComponentsService,
+     public platform: Platform
   ) {
     this.getSessionInfo();
   }
@@ -109,9 +111,20 @@ export class RiskDetailsPage implements OnInit {
   editRisk(){
     this.router.navigate(['risk/risk-details-edit'],{state: {data:{risk: this.risk}}});
   }
+
+  sendTaskDetails(){
+    if(this.platform.is('desktop') || this.platform.is('tablet')){
+      this.sendTaskDetailsMode = !this.sendTaskDetailsMode;
+      console.log(this.platform.is('desktop') || this.platform.is('tablet'));
+    }else{
+      this.router.navigate(['risk/send-email'],{state: {data:{service: this.risk,linkages:this.alllinkages,parentsModule:'risk'}}});
+    }
+  }
+
   // share minutes
-  async sendRiskDetails(){
-    let response: any = {} //await this.riskservice.shareRiskMinutes(this.risk, this.alllinkages);
+  async shareTaskDetails(selectedMembers){
+    //console.log(selectedMembers);
+    let response: any = null;//await this.riskservice.shareRiskMinutes(this.risk, this.alllinkages,selectedMembers);
     let buttons = [
                     {
                       text: 'Dismiss',

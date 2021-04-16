@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
+import { PopoverController } from '@ionic/angular';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { User } from 'src/app/interface/user';
 import { ComponentsService } from 'src/app/shared/components/components.service';
@@ -17,6 +18,7 @@ export class SelectUsersComponent implements OnInit {
   @Input() alreadySelectedUserList: any[];
   @Input() multiSelect: boolean = false;
   @Input() buttonItem: any = { icon: 'checkmark-done', text: 'Done'}
+  @Input() popoverMode:boolean = false;
   @Output() onSelectionComplete= new EventEmitter<any>();
   // observables
   userSubs$;
@@ -32,6 +34,7 @@ export class SelectUsersComponent implements OnInit {
     private user: ManageuserService,
     private searchMap: TextsearchService,
     private router: Router,
+    public popoverController: PopoverController
   ) { }
 
   ngOnInit() {
@@ -123,11 +126,17 @@ export class SelectUsersComponent implements OnInit {
     // this.selectedUsers = [];
     // this.selectedUser = null;
     // this.textSearch ='';
+
+    if(this.popoverMode) this.closePopover();
   }
 
   gotoAddMemberPage(){
     let currentPath = window.location.pathname;
     this.router.navigate([currentPath+'/add-member']);
+  }
+  async closePopover() {
+     console.log("this.selectedUsers",this.selectedUser, this.selectedUsers);
+    await this.popoverController.dismiss(this.selectedUsers);
   }
 
 }

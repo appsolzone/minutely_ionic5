@@ -1,0 +1,14 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Send email</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="returnPath"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <app-select-users [sessionInfo]="sessionInfo"
+    [alreadySelectedUserList]="alreadySelectedUserList" [multiSelect]="true"
+    (onSelectionComplete)="shareDetails($event)"></app-select-users>
+</ion-content>

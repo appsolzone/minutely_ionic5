@@ -29,6 +29,11 @@
         <app-task-agenda-note *ngIf="sessionInfo && task" [task]="task" [sessionInfo]="sessionInfo"></app-task-agenda-note>
       </ion-card>
     </ion-col>
+    <!-- <ion-col size="12" size-md="6" class="ion-hide-md-down" *ngIf="sendTaskDetailsMode">
+      <app-select-users [sessionInfo]="sessionInfo"
+        [alreadySelectedUserList]="task?.data?.taskOwner? [task?.data?.taskOwner] : []" [multiSelect]="true"
+        (onSelectionComplete)="shareTaskDetails($event)"></app-select-users>
+    </ion-col> -->
     <ion-col size="12" size-md="6">
       <app-task-comments *ngIf="sessionInfo && task" [task]="task" [sessionInfo]="sessionInfo"></app-task-comments>
       <app-linkage *ngIf="sessionInfo && task" [selectedObject]="task" [itemType]="'task'" [sessionInfo]="sessionInfo" (publishLinkage)="publishLinkage($event)"> </app-linkage>

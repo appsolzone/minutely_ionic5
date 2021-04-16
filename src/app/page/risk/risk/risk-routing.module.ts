@@ -32,6 +32,10 @@ const routes: Routes = [
     path: 'comments',
     loadChildren: () => import('./risk-user-comments/risk-user-comments.module').then( m => m.RiskUserCommentsPageModule)
   },
+  {
+    path: 'send-email',
+    loadChildren: () => import('../../send-email/send-email.module').then( m => m.SendEmailPageModule)
+  },
 ];
 
 @NgModule({

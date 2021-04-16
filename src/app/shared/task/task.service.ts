@@ -284,59 +284,56 @@ constructor(
 
 
   // share task summary
-  // async shareTaskMinutes(task, linkages)
-  // {
-  //   if(task.data.status != 'COMPLETED'){
-  //     return {status: "warning", title: "Task status Open", body: "Task minutes can only be shared for COMPLETED tasks through email. Please mark the task COMPLETED and then share task minutes."};
-  //   } else {
-  //     let m = task.data;
-  //     let id = task.id;
-  //     Object.keys(linkages).forEach(async lt=>{
-  //       if(!linkages[lt] || linkages[lt].length==0){
-  //         // linkage data not yet fetched, so fetch it now
-  //         await this.link.getLinkagesOnce(id,'task', lt)
-  //               .then(allDocs=>{
-  //                 linkages[lt] = [];
-  //                 allDocs.forEach((doc) => {
-  //                       // doc.data() is never undefined for query doc snapshots
-  //                       let id = doc.id;
-  //                       let data = doc.data();
-  //                       // console.log(doc.id, " => ", doc.data());
-  //                       linkages[lt].push({id,data});
-  //                   });
-  //               })
-  //       }
-  //     })
-  //     let minutesObj = {
-  //       toEmail:m.attendeeList.map(a=>{return {email: a.email};}),
-  //       taskStart: moment.utc(new Date(m.taskStart)).format('MMM DD, YYYY h:mm a') + " UTC",
-  //       toName: m.ownerId.name,
-  //       taskTitle:m.taskTitle,
-  //       agendas:m.agendas,
-  //       notes: m.notes,
-  //       attendeeList: m.attendeeList,
-  //       meetingList: linkages.meetings,
-  //       riskList: linkages.risks,
-  //       taskList:linkages.tasks,
-  //       taskList:linkages.tasks,
-  //
-  //       // toEmail:senderEmail,
-  //       //   toName: senderName,
-  //       //   initiator:this.navData.name,
-  //       //   orgName:this.navData.subscriberId,
-  //       //   taskTitle:this.tasksChange.get("title").value,
-  //       //   initationDate:moment(this.tasksChange.get("initTime").value).format('MMM DD, YYYY'),
-  //       //   targetCompletionDate:moment(this.tasksChange.get("endTime").value).format('MMM DD, YYYY'),
-  //       //   status:this.status,
-  //     }
-  //     console.log("minutesObj email", minutesObj);
-  //     this.sendmail.sendCustomEmail(this.sendmail.shareTaskMinutesPath,minutesObj)
-  //     .then((sent: any)=>
-  //       {
-  //
-  //       });
-  //     return {status: "success", title: "Task Minutes", body: "Task minutes shared with attendees through email."};
-  //   }
-  // }
+  async shareTaskMinutes(task, linkages,selectedMembers)
+  {
+    console.log(task.data,task.data.taskStatus)
+    // if(task.data.taskStatus != 'RESOLVED'){
+    //   return {status: "warning", title: "Task status Open", body: "Task minutes can only be shared for RESOLVED tasks through email. Please mark the task RESOLVED and then share task minutes."};
+    // } else {
+      let m = task.data;
+      console.log(m);
+      let id = task.id;
+      Object.keys(linkages).forEach(async lt=>{
+        if(!linkages[lt] || linkages[lt].length==0){
+          // linkage data not yet fetched, so fetch it now
+          await this.link.getLinkagesOnce(id,'task', lt)
+                .then(allDocs=>{
+                  linkages[lt] = [];
+                  allDocs.forEach((doc) => {
+                        // doc.data() is never undefined for query doc snapshots
+                        let id = doc.id;
+                        let data = doc.data();
+                        // console.log(doc.id, " => ", doc.data());
+                        linkages[lt].push({id,data});
+                    });
+                })
+        }
+      })
+      let minutesObj = {
+        toEmail:selectedMembers.map(a=>{return {email: a.email};}),
+        taskStart: moment.utc(m.taskStart).format('MMM DD, YYYY h:mm a') + " UTC",
+        toName: m.taskInitiator.name,
+        taskTitle:m.taskTitle,
+        taskInitiationDate: moment(m.taskInitiationDate).format('MMM DD, YYYY'),
+        targetCompletionDate: moment(m.targetCompletionDate).format('MMM DD, YYYY'),
+        taskDetails: m.taskDetails,
+        taskStatus: m.taskStatus,
+        taskInitiator: m.taskInitiator,
+        taskOwner: m.taskOwner,
+        meetingList: linkages.meetings,
+        riskList: linkages.risks,
+        taskList:linkages.tasks,
+        issueList:linkages.issue,
+      }
+      console.log("minutesObj email", minutesObj);
+
+      this.sendmail.sendCustomEmail(this.sendmail.shareTaskPath,minutesObj)
+      .then((sent: any)=>
+        {
+  
+        });
+      return {status: "success", title: "Task Minutes", body: "Task minutes shared with attendees through email."};
+   // }
+  }
 
 }

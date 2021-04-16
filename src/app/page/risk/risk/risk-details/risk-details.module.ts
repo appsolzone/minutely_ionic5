@@ -13,6 +13,7 @@ import { RiskMitigationContingencyComponent } from '../risk-mitigation-contingen
 import { RiskCommentsComponent } from '../risk-comments/risk-comments.component';
 import { RiskProbabilityImpactComponent } from '../risk-probability-impact/risk-probability-impact.component';
 import { LinkageModule } from 'src/app/page/linkage/linkage.module';
+import { SelectUsersModule } from 'src/app/page/select-users/select-users.module';
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import { LinkageModule } from 'src/app/page/linkage/linkage.module';
     IonicModule,
     RiskDetailsPageRoutingModule,
     LinkageModule,
+    SelectUsersModule
   ],
   declarations: [
     RiskDetailsPage,
