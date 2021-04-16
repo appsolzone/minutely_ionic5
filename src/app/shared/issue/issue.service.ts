@@ -285,58 +285,55 @@ export class IssueService {
 
 
   // share issue summary
-  // async shareIssueMinutes(issue, linkages)
-  // {
-  //   if(issue.data.status != 'COMPLETED'){
-  //     return {status: "warning", title: "Issue status Open", body: "Issue minutes can only be shared for COMPLETED issues through email. Please mark the issue COMPLETED and then share issue minutes."};
-  //   } else {
-  //     let m = issue.data;
-  //     let id = issue.id;
-  //     Object.keys(linkages).forEach(async lt=>{
-  //       if(!linkages[lt] || linkages[lt].length==0){
-  //         // linkage data not yet fetched, so fetch it now
-  //         await this.link.getLinkagesOnce(id,'issue', lt)
-  //               .then(allDocs=>{
-  //                 linkages[lt] = [];
-  //                 allDocs.forEach((doc) => {
-  //                       // doc.data() is never undefined for query doc snapshots
-  //                       let id = doc.id;
-  //                       let data = doc.data();
-  //                       // console.log(doc.id, " => ", doc.data());
-  //                       linkages[lt].push({id,data});
-  //                   });
-  //               })
-  //       }
-  //     })
-  //     let minutesObj = {
-  //       toEmail:m.attendeeList.map(a=>{return {email: a.email};}),
-  //       issueStart: moment.utc(new Date(m.issueStart)).format('MMM DD, YYYY h:mm a') + " UTC",
-  //       toName: m.ownerId.name,
-  //       issueTitle:m.issueTitle,
-  //       agendas:m.agendas,
-  //       notes: m.notes,
-  //       attendeeList: m.attendeeList,
-  //       meetingList: linkages.meetings,
-  //       riskList: linkages.risks,
-  //       issueList:linkages.issues,
-  //       taskList:linkages.tasks,
-  //
-  //       // toEmail:senderEmail,
-  //       //   toName: senderName,
-  //       //   initiator:this.navData.name,
-  //       //   orgName:this.navData.subscriberId,
-  //       //   issueTitle:this.issuesChange.get("title").value,
-  //       //   initationDate:moment(this.issuesChange.get("initTime").value).format('MMM DD, YYYY'),
-  //       //   targetCompletionDate:moment(this.issuesChange.get("endTime").value).format('MMM DD, YYYY'),
-  //       //   status:this.status,
-  //     }
-  //     console.log("minutesObj email", minutesObj);
-  //     this.sendmail.sendCustomEmail(this.sendmail.shareIssueMinutesPath,minutesObj)
-  //     .then((sent: any)=>
-  //       {
-  //
-  //       });
-  //     return {status: "success", title: "Issue Minutes", body: "Issue minutes shared with attendees through email."};
-  //   }
-  // }
+  async shareIssueMinutes(issue, linkages,selectedMembers)
+  {
+    if(issue.data.status != 'RESOLVED'){
+      return {status: "warning", title: "Issue status Open", body: "Issue minutes can only be shared for RESOLVED issues through email. Please mark the issue RESOLVED and then share issue minutes."};
+    } else {
+      let m = issue.data;
+      let id = issue.id;
+      Object.keys(linkages).forEach(async lt=>{
+        if(!linkages[lt] || linkages[lt].length==0){
+          // linkage data not yet fetched, so fetch it now
+          await this.link.getLinkagesOnce(id,'issue', lt)
+                .then(allDocs=>{
+                  linkages[lt] = [];
+                  allDocs.forEach((doc) => {
+                        // doc.data() is never undefined for query doc snapshots
+                        let id = doc.id;
+                        let data = doc.data();
+                        // console.log(doc.id, " => ", doc.data());
+                        linkages[lt].push({id,data});
+                    });
+                })
+        }
+      })
+      let minutesObj = {
+        toEmail:selectedMembers.map(a=>{return {email: a.email};}),
+        toName: m.issueOwner.name,
+
+
+        meetingList: linkages.meetings,
+        riskList: linkages.risks,
+        issueList:linkages.issues,
+        taskList:linkages.tasks,
+
+        issueTitle:m.issueTitle,
+        issueInitiationDate: moment(m.issueInitiationDate).format('MMM DD, YYYY') + " UTC",
+        targetCompletionDate: moment(m.targetCompletionDate).format('MMM DD, YYYY') + " UTC",
+        issueInitiator: m.issueInitiator,
+        issueOwner: m.issueOwner,
+        issueStatus: m.issueStatus,
+        issueDetails: m.issueDetails,
+
+      }
+      console.log("minutesObj email", minutesObj);
+      this.sendmail.sendCustomEmail(this.sendmail.shareIssuePath,minutesObj)
+      .then((sent: any)=>
+        {
+  
+        });
+      return {status: "success", title: "Issue Minutes", body: "Issue minutes shared with attendees through email."};
+    }
+  }
 }

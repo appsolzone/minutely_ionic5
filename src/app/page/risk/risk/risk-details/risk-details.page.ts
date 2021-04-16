@@ -6,7 +6,8 @@ import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { RiskService } from 'src/app/shared/risk/risk.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
-import { Platform } from '@ionic/angular';
+import { Platform, PopoverController } from '@ionic/angular';
+import { SelectUsersComponent } from 'src/app/page/select-users/select-users.component';
 
 @Component({
   selector: 'app-risk-details',
@@ -33,13 +34,14 @@ export class RiskDetailsPage implements OnInit {
                             issues: [],
                             risks: []
                           };
-  public sendTaskDetailsMode:boolean = false;
+  public sendRiskDetailsMode:boolean = false;
   constructor(
     private router: Router,
     private session: SessionService,
     private riskservice: RiskService,
     private common: ComponentsService,
-     public platform: Platform
+    public platform: Platform,
+    public popoverController: PopoverController 
   ) {
     this.getSessionInfo();
   }
@@ -114,26 +116,51 @@ export class RiskDetailsPage implements OnInit {
 
   sendTaskDetails(){
     if(this.platform.is('desktop') || this.platform.is('tablet')){
-      this.sendTaskDetailsMode = !this.sendTaskDetailsMode;
+      this.sendRiskDetailsMode = !this.sendRiskDetailsMode;
       console.log(this.platform.is('desktop') || this.platform.is('tablet'));
+      this.presentPopover(null);
     }else{
       this.router.navigate(['risk/send-email'],{state: {data:{service: this.risk,linkages:this.alllinkages,parentsModule:'risk'}}});
     }
   }
 
-  // share minutes
+  // share task
   async shareTaskDetails(selectedMembers){
-    //console.log(selectedMembers);
-    let response: any = null;//await this.riskservice.shareRiskMinutes(this.risk, this.alllinkages,selectedMembers);
+    console.log("in parent module",selectedMembers);
+    let response: any = await this.riskservice.shareRiskMinutes(this.risk, this.alllinkages,selectedMembers);
     let buttons = [
                     {
                       text: 'Dismiss',
                       role: 'cancel',
                       cssClass: '',
-                      handler: ()=>{}
+                      handler: ()=>{} 
                     }
                   ];
     this.common.presentAlert(response.title, response.body, buttons);
   }
+  async presentPopover(ev: any) {
+    const popover = await this.popoverController.create({
+      component: SelectUsersComponent,
+      cssClass: 'customPopover',
+      event: ev,
+      translucent: true,
+      componentProps: { 
+        sessionInfo:this.sessionInfo, alreadySelectedUserList: this.risk.data.taskOwner? [this.risk.data.riskOwner] : [],
+        multiSelect:true,
+        popoverMode:true,
+       },
+      // mode:'ios',
+      backdropDismiss:false
+    });
+    
+   await popover.present();
 
+   popover.onDidDismiss().then((dataReturned) => {
+      //console.log("returnded selected members:",dataReturned.data);
+      if (dataReturned !== null) {
+        this.shareTaskDetails(dataReturned.data);
+        //alert('Modal Sent Data :'+ dataReturned);
+      }
+    });
+  }
 }

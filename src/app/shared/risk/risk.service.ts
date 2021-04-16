@@ -287,59 +287,57 @@ constructor(
 
 
   // share risk summary
-  // async shareRiskMinutes(risk, linkages)
-  // {
-  //   if(risk.data.status != 'COMPLETED'){
-  //     return {status: "warning", title: "Risk status Open", body: "Risk minutes can only be shared for COMPLETED risks through email. Please mark the risk COMPLETED and then share risk minutes."};
-  //   } else {
-  //     let m = risk.data;
-  //     let id = risk.id;
-  //     Object.keys(linkages).forEach(async lt=>{
-  //       if(!linkages[lt] || linkages[lt].length==0){
-  //         // linkage data not yet fetched, so fetch it now
-  //         await this.link.getLinkagesOnce(id,'risk', lt)
-  //               .then(allDocs=>{
-  //                 linkages[lt] = [];
-  //                 allDocs.forEach((doc) => {
-  //                       // doc.data() is never undefined for query doc snapshots
-  //                       let id = doc.id;
-  //                       let data = doc.data();
-  //                       // console.log(doc.id, " => ", doc.data());
-  //                       linkages[lt].push({id,data});
-  //                   });
-  //               })
-  //       }
-  //     })
-  //     let minutesObj = {
-  //       toEmail:m.attendeeList.map(a=>{return {email: a.email};}),
-  //       riskStart: moment.utc(new Date(m.riskStart)).format('MMM DD, YYYY h:mm a') + " UTC",
-  //       toName: m.ownerId.name,
-  //       riskTitle:m.riskTitle,
-  //       agendas:m.agendas,
-  //       notes: m.notes,
-  //       attendeeList: m.attendeeList,
-  //       meetingList: linkages.meetings,
-  //       riskList: linkages.risks,
-  //       riskList:linkages.risks,
-  //       taskList:linkages.tasks,
-  //
-  //       // toEmail:senderEmail,
-  //       //   toName: senderName,
-  //       //   initiator:this.navData.name,
-  //       //   orgName:this.navData.subscriberId,
-  //       //   riskTitle:this.risksChange.get("title").value,
-  //       //   initationDate:moment(this.risksChange.get("initTime").value).format('MMM DD, YYYY'),
-  //       //   targetCompletionDate:moment(this.risksChange.get("endTime").value).format('MMM DD, YYYY'),
-  //       //   status:this.status,
-  //     }
-  //     console.log("minutesObj email", minutesObj);
-  //     this.sendmail.sendCustomEmail(this.sendmail.shareRiskMinutesPath,minutesObj)
-  //     .then((sent: any)=>
-  //       {
-  //
-  //       });
-  //     return {status: "success", title: "Risk Minutes", body: "Risk minutes shared with attendees through email."};
-  //   }
-  // }
+  async shareRiskMinutes(risk, linkages,selectedMembers)
+  {
+    if(risk.data.status != 'COMPLETED'){
+      return {status: "warning", title: "Risk status Open", body: "Risk minutes can only be shared for COMPLETED risks through email. Please mark the risk COMPLETED and then share risk minutes."};
+    } else {
+      let m = risk.data;
+      let id = risk.id;
+      Object.keys(linkages).forEach(async lt=>{
+        if(!linkages[lt] || linkages[lt].length==0){
+          // linkage data not yet fetched, so fetch it now
+          await this.link.getLinkagesOnce(id,'risk', lt)
+                .then(allDocs=>{
+                  linkages[lt] = [];
+                  allDocs.forEach((doc) => {
+                        // doc.data() is never undefined for query doc snapshots
+                        let id = doc.id;
+                        let data = doc.data();
+                        // console.log(doc.id, " => ", doc.data());
+                        linkages[lt].push({id,data});
+                    });
+                })
+        }
+      })
+      let minutesObj = {
+        toEmail:selectedMembers.map(a=>{return {email: a.email};}),
+        toName: m.riskOwner.name,
+
+        meetingList: linkages.meetings,
+        riskList: linkages.risks,
+        issueList:linkages.issues,
+        taskList:linkages.tasks,
+  
+        riskTitle:m.riskTitle,
+        riskInitiationDate: moment(m.riskInitiationDate).format('MMM DD, YYYY') + " UTC",
+        targetCompletionDate: moment(m.targetCompletionDate).format('MMM DD, YYYY') + " UTC",
+        riskInitiator: m.riskInitiator,
+        riskOwner: m.riskOwner,
+        riskStatus: m.riskStatus,
+        riskImpact: m.riskImpact,
+        riskProbability: m.riskProbability,
+        riskContingency: m.riskContingency,
+        riskMitigation: m.riskMitigation,
+      }
+      console.log("minutesObj email", minutesObj);
+      this.sendmail.sendCustomEmail(this.sendmail.shareRiskPath,minutesObj)
+      .then((sent: any)=>
+        {
+  
+        });
+      return {status: "success", title: "Risk Minutes", body: "Risk minutes shared with attendees through email."};
+    }
+  }
 
 }

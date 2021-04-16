@@ -6,6 +6,8 @@ import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { IssueService } from 'src/app/shared/issue/issue.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { PopoverController, Platform } from '@ionic/angular';
+import { SelectUsersComponent } from 'src/app/page/select-users/select-users.component';
 
 @Component({
   selector: 'app-issue-details',
@@ -32,12 +34,14 @@ export class IssueDetailsPage implements OnInit {
                             issues: [],
                             risks: []
                           };
-
+  public sendIssueDetailsMode:boolean = false;
   constructor(
     private router: Router,
     private session: SessionService,
     private issueservice: IssueService,
     private common: ComponentsService,
+    public popoverController: PopoverController,
+    public platform: Platform, 
   ) {
     this.getSessionInfo();
   }
@@ -121,6 +125,57 @@ export class IssueDetailsPage implements OnInit {
                     }
                   ];
     this.common.presentAlert(response.title, response.body, buttons);
+  }
+
+
+  sendTaskDetails(){
+    if(this.platform.is('desktop') || this.platform.is('tablet')){
+      this.sendIssueDetailsMode = !this.sendIssueDetailsMode;
+      console.log(this.platform.is('desktop') || this.platform.is('tablet'));
+      this.presentPopover(null);
+    }else{
+      this.router.navigate(['issue/send-email'],{state: {data:{service: this.issue,linkages:this.alllinkages,parentsModule:'issue'}}});
+    }
+  }
+
+  // share task
+  async shareTaskDetails(selectedMembers){
+    console.log("in parent module",selectedMembers);
+    let response: any = await this.issueservice.shareIssueMinutes(this.issue, this.alllinkages,selectedMembers);
+    let buttons = [
+                    {
+                      text: 'Dismiss',
+                      role: 'cancel',
+                      cssClass: '',
+                      handler: ()=>{} 
+                    }
+                  ];
+    this.common.presentAlert(response.title, response.body, buttons);
+  }
+  async presentPopover(ev: any) {
+    const popover = await this.popoverController.create({
+      component: SelectUsersComponent,
+      cssClass: 'customPopover',
+      event: ev,
+      translucent: true,
+      componentProps: { 
+        sessionInfo:this.sessionInfo, alreadySelectedUserList: this.issue.data.taskOwner? [this.issue.data.riskOwner] : [],
+        multiSelect:true,
+        popoverMode:true,
+       },
+      // mode:'ios',
+      backdropDismiss:false
+    });
+    
+   await popover.present();
+
+   popover.onDidDismiss().then((dataReturned) => {
+      //console.log("returnded selected members:",dataReturned.data);
+      if (dataReturned !== null) {
+        this.shareTaskDetails(dataReturned.data);
+        //alert('Modal Sent Data :'+ dataReturned);
+      }
+    });
   }
 
 }

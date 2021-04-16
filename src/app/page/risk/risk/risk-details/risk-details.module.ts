@@ -22,7 +22,7 @@ import { SelectUsersModule } from 'src/app/page/select-users/select-users.module
     IonicModule,
     RiskDetailsPageRoutingModule,
     LinkageModule,
-    SelectUsersModule
+    SelectUsersModule,
   ],
   declarations: [
     RiskDetailsPage,

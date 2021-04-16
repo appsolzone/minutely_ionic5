@@ -29,11 +29,7 @@
         <app-risk-mitigation-contingency *ngIf="sessionInfo && risk" [risk]="risk" [sessionInfo]="sessionInfo"></app-risk-mitigation-contingency>
       </ion-card>
     </ion-col>
-    <ion-col size="12" size-md="6" class="ion-hide-md-down" *ngIf="sendTaskDetailsMode">
-      <app-select-users [sessionInfo]="sessionInfo"
-        [alreadySelectedUserList]="task?.data?.taskOwner? [task?.data?.taskOwner] : []" [multiSelect]="true"
-        (onSelectionComplete)="shareTaskDetails($event)"></app-select-users>
-    </ion-col>
+
     <ion-col size="12" size-md="6">
       <app-risk-probability-impact *ngIf="sessionInfo && risk" [risk]="risk" [sessionInfo]="sessionInfo"></app-risk-probability-impact>
       <app-risk-comments *ngIf="sessionInfo && risk" [risk]="risk" [sessionInfo]="sessionInfo"></app-risk-comments>

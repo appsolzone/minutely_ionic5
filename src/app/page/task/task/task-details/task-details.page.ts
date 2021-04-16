@@ -113,6 +113,8 @@ export class TaskDetailsPage implements OnInit {
   editTask(){
     this.router.navigate(['task/task-details-edit'],{state: {data:{task: this.task}}});
   }
+
+  
   sendTaskDetails(){
     if(this.platform.is('desktop') || this.platform.is('tablet')){
       this.sendTaskDetailsMode = !this.sendTaskDetailsMode;
@@ -123,7 +125,7 @@ export class TaskDetailsPage implements OnInit {
     }
   }
 
-  // share minutes
+  // share task
   async shareTaskDetails(selectedMembers){
     console.log("in parent module",selectedMembers);
     let response: any = await this.taskservice.shareTaskMinutes(this.task, this.alllinkages,selectedMembers);

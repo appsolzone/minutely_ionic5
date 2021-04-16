@@ -323,7 +323,7 @@ constructor(
         meetingList: linkages.meetings,
         riskList: linkages.risks,
         taskList:linkages.tasks,
-        issueList:linkages.issue,
+        issueList:linkages.issues,
       }
       console.log("minutesObj email", minutesObj);
 
