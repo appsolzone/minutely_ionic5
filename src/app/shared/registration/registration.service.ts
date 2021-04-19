@@ -7,10 +7,12 @@ import { SubscriberService } from '../subscriber/subscriber.service';
 
 
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class RegistrationService {
+
 
   constructor(
     public db: DatabaseService,
@@ -72,6 +74,7 @@ export class RegistrationService {
                                      {companyName: companyName,subscriberId: sId,email: email, address: address}
                                    );
            this.db.setTransactDocument(transaction, subscriberRef, newSubscriber);
+
          }
        }); // end of transaction callback
     }); // end of runTransaction
@@ -103,7 +106,7 @@ export class RegistrationService {
                                      }
                                    );
            // during admin user onboard
-           if(userOnbordData !== undefined){
+           if(userOnbordData != undefined){
            let subsUpdateObj = {
               'noOfFreeLicense': this.db.frb.firestore.FieldValue.increment(-1),
               }
