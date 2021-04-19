@@ -94,7 +94,7 @@ constructor(
     let title='Task Date';
     let body='';
     let status = true;
-    let startDateTime = task.taskInitiationDate ? new Date(task.taskInitiationDate) : null;
+    let startDateTime = task.taskInitiationDate ? new Date(moment(task.taskInitiationDate).format("YYYY-MM-DD")) : null;
     let endDateTime = task.targetCompletionDate ? new Date(moment(task.targetCompletionDate).format("YYYY-MM-DD")) : null;
 
 

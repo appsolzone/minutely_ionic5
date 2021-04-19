@@ -97,7 +97,7 @@ constructor(
     let title='Risk Date';
     let body='';
     let status = true;
-    let startDateTime = risk.riskInitiationDate ? new Date(risk.riskInitiationDate) : null;
+    let startDateTime = risk.riskInitiationDate ? new Date(moment(risk.riskInitiationDate).format("YYYY-MM-DD")) : null;
     let endDateTime = risk.targetCompletionDate ? new Date(moment(risk.targetCompletionDate).format("YYYY-MM-DD")) : null;
 
 

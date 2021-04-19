@@ -95,7 +95,7 @@ export class IssueService {
     let title='Issue Date';
     let body='';
     let status = true;
-    let startDateTime = issue.issueInitiationDate ? new Date(issue.issueInitiationDate) : null;
+    let startDateTime = issue.issueInitiationDate ? new Date(moment(issue.issueInitiationDate).format("YYYY-MM-DD")) : null;
     let endDateTime = issue.targetCompletionDate ? new Date(moment(issue.targetCompletionDate).format("YYYY-MM-DD")) : null;
 
 
