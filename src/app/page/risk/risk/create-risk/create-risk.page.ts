@@ -53,7 +53,10 @@ export class CreateRiskPage implements OnInit {
     //   this.router.navigate(['risk']);
     // } else{
     //   if(riskStateData?.id!=this.risk?.id){
-        let risk = {...this.riskservice.newRisk};
+        let risk = {...this.riskservice.newRisk,
+                    tags:[],
+                    ownerInitiatorUidList:[]
+                    };
         this.getrisk({id:null,data:risk});
     //   }
     // }
@@ -205,6 +208,29 @@ export class CreateRiskPage implements OnInit {
           }
         }
       }
+    }
+  }
+
+  gotoSection(action){
+    switch(action){
+      case 'back':
+        if(this.showSection=='OWNER'){
+          this.showSection = 'BASICINFO';
+        } else if(this.showSection=='PRIORITY'){
+          this.showSection = 'OWNER';
+        } else {
+          this.showSection = 'PRIORITY';
+        }
+        break;
+      case 'forward':
+        if(this.showSection=='BASICINFO'){
+          this.showSection = 'OWNER';
+        } else if(this.showSection=='OWNER'){
+          this.showSection = 'PRIORITY';
+        } else {
+          this.showSection = 'MITIGATION';
+        }
+        break;
     }
   }
 

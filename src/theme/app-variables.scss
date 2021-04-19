@@ -106,6 +106,12 @@ ion-icon {
   --max-height: 40%;
 }
 
+.customPopover {
+  .popover-content {
+    width: 450px; //auto !important;
+  }
+}
+
 /*
  * Dark Colors
  * -------------------------------------------

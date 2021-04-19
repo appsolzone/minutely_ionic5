@@ -49,7 +49,12 @@ export class CreateMeetingPage implements OnInit {
     //   console.log("ngOnInit")
     //   this.router.navigate(['meeting']);
     // } else{
-        let meeting = {...this.meetingservice.newMeeting};
+        let meeting = {...this.meetingservice.newMeeting,
+                        tags:[],
+                        attendeeList:[],
+                        attendeeUidList:[],
+                        weekdays:[false, false, false, false, false, false, false],
+                      };
         this.getMeeting({id:null,data:meeting});
     // }
   }
@@ -179,6 +184,29 @@ export class CreateMeetingPage implements OnInit {
       } else {
         this.showSection = 'ATTENDEES';
       }
+    }
+  }
+
+  gotoSection(action){
+    switch(action){
+      case 'back':
+        if(this.showSection=='ATTENDEES'){
+          this.showSection = 'BASICINFO';
+        } else if(this.showSection=='AGENDA'){
+          this.showSection = 'ATTENDEES';
+        } else {
+          this.showSection = 'AGENDA';
+        }
+        break;
+      case 'forward':
+        if(this.showSection=='BASICINFO'){
+          this.showSection = 'ATTENDEES';
+        } else if(this.showSection=='ATTENDEES'){
+          this.showSection = 'AGENDA';
+        } else {
+          this.showSection = 'LOCATION';
+        }
+        break;
     }
   }
 

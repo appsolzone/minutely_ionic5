@@ -114,51 +114,57 @@ export class TaskDetailsPage implements OnInit {
     this.router.navigate(['task/task-details-edit'],{state: {data:{task: this.task}}});
   }
 
-  
-  sendTaskDetails(){
-    if(this.platform.is('desktop') || this.platform.is('tablet')){
+
+  sendTaskDetails(ev: any){
+    // if(this.platform.is('desktop') || this.platform.is('tablet')){
       this.sendTaskDetailsMode = !this.sendTaskDetailsMode;
-      console.log(this.platform.is('desktop') || this.platform.is('tablet'));
-      this.presentPopover(null);
-    }else{
+      // console.log(this.platform.is('desktop') || this.platform.is('tablet'));
+      // this.presentPopover(ev);
+    // }else{
       this.router.navigate(['task/send-email'],{state: {data:{service: this.task,linkages:this.alllinkages,parentsModule:'task'}}});
-    }
+    // }
   }
 
   // share task
   async shareTaskDetails(selectedMembers){
     console.log("in parent module",selectedMembers);
-    let response: any = await this.taskservice.shareTaskMinutes(this.task, this.alllinkages,selectedMembers);
-    let buttons = [
-                    {
-                      text: 'Dismiss',
-                      role: 'cancel',
-                      cssClass: '',
-                      handler: ()=>{}
-                    }
-                  ];
-    this.common.presentAlert(response.title, response.body, buttons);
+    if (selectedMembers != null){
+      let response: any = await this.taskservice.shareTaskMinutes(this.task, this.alllinkages,selectedMembers);
+      let buttons = [
+                      {
+                        text: 'Dismiss',
+                        role: 'cancel',
+                        cssClass: '',
+                        handler: ()=>{}
+                      }
+                    ];
+      this.common.presentAlert(response.title, response.body, buttons);
+    }
   }
   async presentPopover(ev: any) {
+    this.sendTaskDetailsMode = !this.sendTaskDetailsMode;
     const popover = await this.popoverController.create({
       component: SelectUsersComponent,
       cssClass: 'customPopover',
       event: ev,
       translucent: true,
-      componentProps: { 
+      componentProps: {
         sessionInfo:this.sessionInfo, alreadySelectedUserList: this.task.data.taskOwner? [this.task.data.taskOwner] : [],
+        buttonItem: { icon: 'paper-plane-outline', text: 'Send mail'},
+        showAddUser: false,
+        sectionHeader: { icon: 'people', text: 'Select Users to send email ' },
         multiSelect:true,
         popoverMode:true,
        },
       // mode:'ios',
-      backdropDismiss:false
+      backdropDismiss:true //false
     });
-    
+
    await popover.present();
 
    popover.onDidDismiss().then((dataReturned) => {
       console.log("returnded selected members:",dataReturned.data);
-      if (dataReturned !== null) {
+      if (dataReturned != null) {
         this.shareTaskDetails(dataReturned.data);
         //alert('Modal Sent Data :'+ dataReturned);
       }

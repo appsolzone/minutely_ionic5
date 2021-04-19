@@ -98,7 +98,7 @@ constructor(
     let body='';
     let status = true;
     let startDateTime = risk.riskInitiationDate ? new Date(risk.riskInitiationDate) : null;
-    let endDateTime = risk.targetCompletionDate ? new Date(risk.targetCompletionDate) : null;
+    let endDateTime = risk.targetCompletionDate ? new Date(moment(risk.targetCompletionDate).format("YYYY-MM-DD")) : null;
 
 
     if(!startDateTime) {
@@ -289,9 +289,6 @@ constructor(
   // share risk summary
   async shareRiskMinutes(risk, linkages,selectedMembers)
   {
-    if(risk.data.status != 'COMPLETED'){
-      return {status: "warning", title: "Risk status Open", body: "Risk minutes can only be shared for COMPLETED risks through email. Please mark the risk COMPLETED and then share risk minutes."};
-    } else {
       let m = risk.data;
       let id = risk.id;
       Object.keys(linkages).forEach(async lt=>{
@@ -318,7 +315,7 @@ constructor(
         riskList: linkages.risks,
         issueList:linkages.issues,
         taskList:linkages.tasks,
-  
+
         riskTitle:m.riskTitle,
         riskInitiationDate: moment(m.riskInitiationDate).format('MMM DD, YYYY') + " UTC",
         targetCompletionDate: moment(m.targetCompletionDate).format('MMM DD, YYYY') + " UTC",
@@ -334,10 +331,9 @@ constructor(
       this.sendmail.sendCustomEmail(this.sendmail.shareRiskPath,minutesObj)
       .then((sent: any)=>
         {
-  
+
         });
-      return {status: "success", title: "Risk Minutes", body: "Risk minutes shared with attendees through email."};
-    }
+      return {status: "success", title: "Risk Minutes", body: "Risk details shared with selected users through email."};
   }
 
 }

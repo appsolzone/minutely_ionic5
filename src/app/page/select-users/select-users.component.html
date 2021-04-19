@@ -1,3 +1,9 @@
+<ion-item *ngIf="sectionHeader">
+  <ion-icon slot="start" [name]="sectionHeader.icon"></ion-icon>
+  <ion-label>
+    <h1><small>{{sectionHeader.text}}</small></h1>
+  </ion-label>
+</ion-item>
 <ion-row>
   <ion-col *ngIf="!filterdUserList">
     <ion-list>
@@ -26,8 +32,11 @@
           <ion-button *ngIf="multiSelect" slot="end" (click)="returnSelectedUsers()">
             <ion-icon [name]="buttonItem.icon" slot="icon-only"></ion-icon>
           </ion-button>
-          <ion-button slot="end" size="default" (click)="gotoAddMemberPage()">
+          <ion-button *ngIf="showAddUser" slot="end" size="default" (click)="gotoAddMemberPage()">
             <ion-icon name="person-add" slot="icon-only"></ion-icon>
+          </ion-button>
+          <ion-button *ngIf="popoverMode" slot="end" size="default" (click)="selectedUsers=null;closePopover()">
+            <ion-icon name="close" slot="icon-only"></ion-icon>
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
@@ -67,6 +76,9 @@
           </ion-checkbox>
         </ion-item>
         <ion-item lines="none">
+          <ion-button *ngIf="popoverMode" slot="end" fill="clear" color="medium" (click)="selectedUsers=null;closePopover()">
+            Cancel
+          </ion-button>
           <ion-button slot="end" (click)="returnSelectedUsers()">
             <ion-icon [name]="buttonItem.icon" slot="start"></ion-icon>
             {{buttonItem.text}}

@@ -96,7 +96,7 @@ export class IssueService {
     let body='';
     let status = true;
     let startDateTime = issue.issueInitiationDate ? new Date(issue.issueInitiationDate) : null;
-    let endDateTime = issue.targetCompletionDate ? new Date(issue.targetCompletionDate) : null;
+    let endDateTime = issue.targetCompletionDate ? new Date(moment(issue.targetCompletionDate).format("YYYY-MM-DD")) : null;
 
 
     if(!startDateTime) {
@@ -287,9 +287,6 @@ export class IssueService {
   // share issue summary
   async shareIssueMinutes(issue, linkages,selectedMembers)
   {
-    if(issue.data.status != 'RESOLVED'){
-      return {status: "warning", title: "Issue status Open", body: "Issue minutes can only be shared for RESOLVED issues through email. Please mark the issue RESOLVED and then share issue minutes."};
-    } else {
       let m = issue.data;
       let id = issue.id;
       Object.keys(linkages).forEach(async lt=>{
@@ -308,6 +305,7 @@ export class IssueService {
                 })
         }
       })
+
       let minutesObj = {
         toEmail:selectedMembers.map(a=>{return {email: a.email};}),
         toName: m.issueOwner.name,
@@ -331,9 +329,8 @@ export class IssueService {
       this.sendmail.sendCustomEmail(this.sendmail.shareIssuePath,minutesObj)
       .then((sent: any)=>
         {
-  
+
         });
-      return {status: "success", title: "Issue Minutes", body: "Issue minutes shared with attendees through email."};
-    }
+      return {status: "success", title: "Issue Minutes", body: "Issue details shared with selected users through email."};
   }
 }

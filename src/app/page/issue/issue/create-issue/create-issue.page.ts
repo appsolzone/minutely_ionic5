@@ -53,7 +53,10 @@ export class CreateIssuePage implements OnInit {
     //   this.router.navigate(['issue']);
     // } else{
     //   if(issueStateData?.id!=this.issue?.id){
-        let issue = {...this.issueservice.newIssue};
+        let issue = {...this.issueservice.newIssue,
+                      tags:[],
+                      ownerInitiatorUidList:[]
+                    };
         this.getissue({id:null,data:issue});
     //   }
     // }
@@ -205,6 +208,25 @@ export class CreateIssuePage implements OnInit {
           }
         }
       }
+    }
+  }
+
+  gotoSection(action){
+    switch(action){
+      case 'back':
+        if(this.showSection=='OWNER'){
+          this.showSection = 'BASICINFO';
+        } else {
+          this.showSection = 'OWNER';
+        }
+        break;
+      case 'forward':
+        if(this.showSection=='BASICINFO'){
+          this.showSection = 'OWNER';
+        } else {
+          this.showSection = 'NOTES';
+        }
+        break;
     }
   }
 

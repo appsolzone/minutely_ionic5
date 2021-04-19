@@ -40,6 +40,26 @@
         [sessionInfo]="sessionInfo"></app-issue-owner-initiator-edit>
       <app-issue-description-edit *ngIf="showSection=='NOTES' && sessionInfo && issue" [issue]="issue"
         [sessionInfo]="sessionInfo"></app-issue-description-edit>
+      <ion-toolbar class="ion-no-margin ion-no-padding">
+        <ion-item class="ion-margin-top ion-margin-bottom" color="transparent" lines="none">
+        </ion-item>
+        <ion-item class="ion-no-padding ion-margin-top ion-margin-bottom" color="transparent" lines="none">
+          <ion-buttons slot="start" *ngIf="showSection!='BASICINFO'">
+            <ion-button slot="start" color="primary" (click)="gotoSection('back')">
+              <ion-icon slot="icon-only"  size="large" name="arrow-back"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-buttons slot="end" *ngIf="showSection!='NOTES'">
+            <ion-button slot="end" color="primary" (click)="gotoSection('forward')">
+              <ion-icon slot="icon-only" size="large" name="arrow-forward"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-button *ngIf="showSection=='NOTES'" slot="end" color="primary" fill="solid" size="default" (click)="saveIssue()">
+            <ion-icon slot="start" name="checkmark-done"></ion-icon>
+             Save
+          </ion-button>
+        </ion-item>
+      </ion-toolbar>
     </ion-col>
     <ion-col size="12" size-lg="4" class="ion-hide-lg-down">
       <ion-card>
@@ -65,9 +85,9 @@
       <!-- <app-linkage *ngIf="sessionInfo && issue" viewMode="edit" [selectedObject]="issue" [sessionInfo]="sessionInfo" [alllinkages]="alllinkages" [editedlinkages]="editedlinkages"> </app-linkage> -->
     </ion-col>
   </ion-row>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button size="small" (click)="saveIssue()">
       <ion-icon name="checkmark-done"></ion-icon>
     </ion-fab-button>
-  </ion-fab>
+  </ion-fab> -->
 </ion-content>

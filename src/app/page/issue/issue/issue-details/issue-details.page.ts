@@ -41,7 +41,7 @@ export class IssueDetailsPage implements OnInit {
     private issueservice: IssueService,
     private common: ComponentsService,
     public popoverController: PopoverController,
-    public platform: Platform, 
+    public platform: Platform,
   ) {
     this.getSessionInfo();
   }
@@ -113,66 +113,57 @@ export class IssueDetailsPage implements OnInit {
   editIssue(){
     this.router.navigate(['issue/issue-details-edit'],{state: {data:{issue: this.issue}}});
   }
-  // share minutes
-  async sendIssueDetails(){
-    let response: any = {} //await this.issueservice.shareIssueMinutes(this.issue, this.alllinkages);
-    let buttons = [
-                    {
-                      text: 'Dismiss',
-                      role: 'cancel',
-                      cssClass: '',
-                      handler: ()=>{}
-                    }
-                  ];
-    this.common.presentAlert(response.title, response.body, buttons);
+  sendIssueDetails(ev: any){
+    // if(this.platform.is('desktop') || this.platform.is('tablet')){
+      this.sendIssueDetailsMode = !this.sendIssueDetailsMode;
+      // console.log(this.platform.is('desktop') || this.platform.is('tablet'));
+      // this.presentPopover(ev);
+    // }else{
+      this.router.navigate(['issue/send-email'],{state: {data:{service: this.issue,linkages:this.alllinkages,parentsModule:'issue'}}});
+    // }
   }
 
-
-  sendTaskDetails(){
-    if(this.platform.is('desktop') || this.platform.is('tablet')){
-      this.sendIssueDetailsMode = !this.sendIssueDetailsMode;
-      console.log(this.platform.is('desktop') || this.platform.is('tablet'));
-      this.presentPopover(null);
-    }else{
-      this.router.navigate(['issue/send-email'],{state: {data:{service: this.issue,linkages:this.alllinkages,parentsModule:'issue'}}});
+  // share issue
+  async shareIssueDetails(selectedMembers){
+    console.log("in parent module",selectedMembers);
+    if (selectedMembers != null){
+      let response: any = await this.issueservice.shareIssueMinutes(this.issue, this.alllinkages,selectedMembers);
+      let buttons = [
+                      {
+                        text: 'Dismiss',
+                        role: 'cancel',
+                        cssClass: '',
+                        handler: ()=>{}
+                      }
+                    ];
+      this.common.presentAlert(response.title, response.body, buttons);
     }
   }
-
-  // share task
-  async shareTaskDetails(selectedMembers){
-    console.log("in parent module",selectedMembers);
-    let response: any = await this.issueservice.shareIssueMinutes(this.issue, this.alllinkages,selectedMembers);
-    let buttons = [
-                    {
-                      text: 'Dismiss',
-                      role: 'cancel',
-                      cssClass: '',
-                      handler: ()=>{} 
-                    }
-                  ];
-    this.common.presentAlert(response.title, response.body, buttons);
-  }
   async presentPopover(ev: any) {
+    this.sendIssueDetailsMode = !this.sendIssueDetailsMode;
     const popover = await this.popoverController.create({
       component: SelectUsersComponent,
       cssClass: 'customPopover',
       event: ev,
       translucent: true,
-      componentProps: { 
-        sessionInfo:this.sessionInfo, alreadySelectedUserList: this.issue.data.taskOwner? [this.issue.data.riskOwner] : [],
+      componentProps: {
+        sessionInfo:this.sessionInfo, alreadySelectedUserList: this.issue.data.issueOwner? [this.issue.data.issueOwner] : [],
+        buttonItem: { icon: 'paper-plane-outline', text: 'Send mail'},
+        showAddUser: false,
+        sectionHeader: { icon: 'people', text: 'Select Users to send email ' },
         multiSelect:true,
         popoverMode:true,
        },
       // mode:'ios',
-      backdropDismiss:false
+      backdropDismiss:true //false
     });
-    
+
    await popover.present();
 
    popover.onDidDismiss().then((dataReturned) => {
-      //console.log("returnded selected members:",dataReturned.data);
-      if (dataReturned !== null) {
-        this.shareTaskDetails(dataReturned.data);
+      console.log("returnded selected members:",dataReturned.data);
+      if (dataReturned != null) {
+        this.shareIssueDetails(dataReturned.data);
         //alert('Modal Sent Data :'+ dataReturned);
       }
     });

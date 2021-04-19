@@ -53,7 +53,10 @@ export class CreateTaskPage implements OnInit {
     //   this.router.navigate(['task']);
     // } else{
     //   if(taskStateData?.id!=this.task?.id){
-        let task = {...this.taskservice.newTask};
+        let task = {...this.taskservice.newTask,
+                    tags:[],
+                    ownerInitiatorUidList:[]
+                    };
         this.gettask({id:null,data:task});
     //   }
     // }
@@ -205,6 +208,25 @@ export class CreateTaskPage implements OnInit {
           }
         }
       }
+    }
+  }
+
+  gotoSection(action){
+    switch(action){
+      case 'back':
+        if(this.showSection=='OWNER'){
+          this.showSection = 'BASICINFO';
+        } else {
+          this.showSection = 'OWNER';
+        }
+        break;
+      case 'forward':
+        if(this.showSection=='BASICINFO'){
+          this.showSection = 'OWNER';
+        } else {
+          this.showSection = 'NOTES';
+        }
+        break;
     }
   }
 

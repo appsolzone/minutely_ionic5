@@ -95,7 +95,7 @@ constructor(
     let body='';
     let status = true;
     let startDateTime = task.taskInitiationDate ? new Date(task.taskInitiationDate) : null;
-    let endDateTime = task.targetCompletionDate ? new Date(task.targetCompletionDate) : null;
+    let endDateTime = task.targetCompletionDate ? new Date(moment(task.targetCompletionDate).format("YYYY-MM-DD")) : null;
 
 
     if(!startDateTime) {
@@ -330,9 +330,9 @@ constructor(
       this.sendmail.sendCustomEmail(this.sendmail.shareTaskPath,minutesObj)
       .then((sent: any)=>
         {
-  
+
         });
-      return {status: "success", title: "Task Minutes", body: "Task minutes shared with attendees through email."};
+      return {status: "success", title: "Task Minutes", body: "Task details shared with selected users through email."};
    // }
   }
 

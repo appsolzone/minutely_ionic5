@@ -41,7 +41,7 @@ export class RiskDetailsPage implements OnInit {
     private riskservice: RiskService,
     private common: ComponentsService,
     public platform: Platform,
-    public popoverController: PopoverController 
+    public popoverController: PopoverController
   ) {
     this.getSessionInfo();
   }
@@ -114,51 +114,57 @@ export class RiskDetailsPage implements OnInit {
     this.router.navigate(['risk/risk-details-edit'],{state: {data:{risk: this.risk}}});
   }
 
-  sendTaskDetails(){
-    if(this.platform.is('desktop') || this.platform.is('tablet')){
+  sendRiskDetails(ev: any){
+    // if(this.platform.is('desktop') || this.platform.is('tablet')){
       this.sendRiskDetailsMode = !this.sendRiskDetailsMode;
-      console.log(this.platform.is('desktop') || this.platform.is('tablet'));
-      this.presentPopover(null);
-    }else{
+      // console.log(this.platform.is('desktop') || this.platform.is('tablet'));
+      // this.presentPopover(ev);
+    // }else{
       this.router.navigate(['risk/send-email'],{state: {data:{service: this.risk,linkages:this.alllinkages,parentsModule:'risk'}}});
-    }
+    // }
   }
 
-  // share task
-  async shareTaskDetails(selectedMembers){
+  // share risk
+  async shareRiskDetails(selectedMembers){
     console.log("in parent module",selectedMembers);
-    let response: any = await this.riskservice.shareRiskMinutes(this.risk, this.alllinkages,selectedMembers);
-    let buttons = [
-                    {
-                      text: 'Dismiss',
-                      role: 'cancel',
-                      cssClass: '',
-                      handler: ()=>{} 
-                    }
-                  ];
-    this.common.presentAlert(response.title, response.body, buttons);
+    if (selectedMembers != null){
+      let response: any = await this.riskservice.shareRiskMinutes(this.risk, this.alllinkages,selectedMembers);
+      let buttons = [
+                      {
+                        text: 'Dismiss',
+                        role: 'cancel',
+                        cssClass: '',
+                        handler: ()=>{}
+                      }
+                    ];
+      this.common.presentAlert(response.title, response.body, buttons);
+    }
   }
   async presentPopover(ev: any) {
+    this.sendRiskDetailsMode = !this.sendRiskDetailsMode;
     const popover = await this.popoverController.create({
       component: SelectUsersComponent,
       cssClass: 'customPopover',
       event: ev,
       translucent: true,
-      componentProps: { 
-        sessionInfo:this.sessionInfo, alreadySelectedUserList: this.risk.data.taskOwner? [this.risk.data.riskOwner] : [],
+      componentProps: {
+        sessionInfo:this.sessionInfo, alreadySelectedUserList: this.risk.data.riskOwner? [this.risk.data.riskOwner] : [],
+        buttonItem: { icon: 'paper-plane-outline', text: 'Send mail'},
+        showAddUser: false,
+        sectionHeader: { icon: 'people', text: 'Select Users to send email ' },
         multiSelect:true,
         popoverMode:true,
        },
       // mode:'ios',
-      backdropDismiss:false
+      backdropDismiss:true //false
     });
-    
+
    await popover.present();
 
    popover.onDidDismiss().then((dataReturned) => {
-      //console.log("returnded selected members:",dataReturned.data);
-      if (dataReturned !== null) {
-        this.shareTaskDetails(dataReturned.data);
+      console.log("returnded selected members:",dataReturned.data);
+      if (dataReturned != null) {
+        this.shareRiskDetails(dataReturned.data);
         //alert('Modal Sent Data :'+ dataReturned);
       }
     });

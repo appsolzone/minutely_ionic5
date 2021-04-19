@@ -17,8 +17,10 @@ export class SelectUsersComponent implements OnInit {
   @Input() sessionInfo: any;
   @Input() alreadySelectedUserList: any[];
   @Input() multiSelect: boolean = false;
-  @Input() buttonItem: any = { icon: 'checkmark-done', text: 'Done'}
+  @Input() buttonItem: any = { icon: 'checkmark-done', text: 'Done'};
   @Input() popoverMode:boolean = false;
+  @Input() showAddUser:boolean = true;
+  @Input() sectionHeader:any = null; //{ icon: 'people', text: 'Select Users to send email ' }
   @Output() onSelectionComplete= new EventEmitter<any>();
   // observables
   userSubs$;

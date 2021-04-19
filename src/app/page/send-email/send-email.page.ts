@@ -44,7 +44,7 @@ export class SendEmailPage implements OnInit,OnDestroy {
     if(!this.stateData){
       console.log("ngOnInit")
       this.router.navigate(['profile']);
-    } 
+    }
     // else{
     //   if(stateData?.id!=this.service?.id){
     //     this.getRiskComments(riskStateData);
@@ -63,7 +63,7 @@ export class SendEmailPage implements OnInit,OnDestroy {
     if(!this.stateData){
       console.log("ionViewDidEnter")
       this.router.navigate(['profile']);
-    } 
+    }
     // else {
     //   if(riskStateData?.id!=this.risk?.id){
     //     this.getRiskComments(riskStateData);
@@ -86,14 +86,14 @@ export class SendEmailPage implements OnInit,OnDestroy {
     let response: any
     if(this.parentsModule == 'task'){
      response = await this.taskService.shareTaskMinutes(this.stateData, this.allLinkages,selectedMembers);
-     this.successMsgAndReturn(response)
     }
-    // else if(this.parentsModule == 'issue'){
-    // response = await this.issueService.shareIssueMinutes(this.stateData, this.allLinkages,selectedMembers);
-    // }else{
-    //response = await this.riskService.shareRiskMinutes(this.stateData, this.allLinkages,selectedMembers);  
-    // }
-    
+    else if(this.parentsModule == 'issue'){
+    response = await this.issueService.shareIssueMinutes(this.stateData, this.allLinkages,selectedMembers);
+    }else{
+    response = await this.riskService.shareRiskMinutes(this.stateData, this.allLinkages,selectedMembers);
+    }
+
+    this.successMsgAndReturn(response);
 
   }
 
@@ -108,6 +108,6 @@ export class SendEmailPage implements OnInit,OnDestroy {
                     }
                   ];
     this.common.presentAlert(response.title, response.body, buttons);
-    this.router.navigate(['task/task-details'])
+    this.router.navigate([this.parentsModule+'/'+ this.parentsModule +'-details'])
   }
 }
