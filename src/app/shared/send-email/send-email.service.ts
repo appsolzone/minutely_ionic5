@@ -5,7 +5,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class SendEmailService {
-  EMAIL_BASE_URL: string = 'https://appsolzone.nonworking.com/mail/';
+  EMAIL_BASE_URL: string = 'https://appsolzone.com/mail/';
+  //'https://appsolzone.nonworking.com/mail/';
 
   // custom email configuration paths
   public testingPath = this.EMAIL_BASE_URL + 'index.php';

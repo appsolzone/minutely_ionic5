@@ -9,13 +9,6 @@
 //   tab: '<tab route>',
 // },
 export const appPages = [
-  {
-    title: 'Alerts',
-    url: 'notification',
-    icon: 'notifications',
-    tab: 'notification',
-    disabled: true,
-  },
   // {
   //   title: 'List',
   //   url: 'activitysearch',
@@ -34,6 +27,13 @@ export const appPages = [
     icon: 'person-circle',
     tab: 'profile',
     disabled: false,
+  },
+  {
+    title: 'Alerts',
+    url: 'notification',
+    icon: 'notifications',
+    tab: 'notification',
+    disabled: true,
   },
 
   // {
