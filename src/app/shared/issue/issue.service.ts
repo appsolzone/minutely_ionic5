@@ -331,6 +331,6 @@ export class IssueService {
         {
 
         });
-      return {status: "success", title: "Issue Minutes", body: "Issue details shared with selected users through email."};
+      return {status: "success", title: "Issue Details", body: "Issue details shared with selected users through email."};
   }
 }

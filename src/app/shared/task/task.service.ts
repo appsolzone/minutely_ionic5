@@ -332,7 +332,7 @@ constructor(
         {
 
         });
-      return {status: "success", title: "Task Minutes", body: "Task details shared with selected users through email."};
+      return {status: "success", title: "Task Details", body: "Task details shared with selected users through email."};
    // }
   }
 

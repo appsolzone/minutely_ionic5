@@ -333,7 +333,7 @@ constructor(
         {
 
         });
-      return {status: "success", title: "Risk Minutes", body: "Risk details shared with selected users through email."};
+      return {status: "success", title: "Risk Details", body: "Risk details shared with selected users through email."};
   }
 
 }
