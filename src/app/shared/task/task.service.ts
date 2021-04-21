@@ -219,7 +219,7 @@ constructor(
           let linkage =  {
                             meetings:editedlinkages.meetings ? editedlinkages.meetings : [],
                             tasks: editedlinkages.tasks ? editedlinkages.tasks : [],
-                            issues: editedlinkages.issues ? editedlinkages.issues : [],
+                            issues: editedlinkages.tasks ? editedlinkages.tasks : [],
                             risks: editedlinkages.risks ? editedlinkages.risks : []
                           };
           // console.log("linkage", linkage, task.linkage.tasks[0].id, task.linkage.tasks[0].id);
@@ -267,6 +267,8 @@ constructor(
           if(task.status != 'CANCEL'){
             // this.sendMail(task.attendeeList,refCopy.id,task.taskStart,task.taskEnd);
           }
+          //send mail during update and creation
+          this.sendMailDuringCreationUpdateToOwner(task,sessionInfo,type);
 
           // this.sfp.defaultAlert("Successful","Task Data updated successfully.");
           // this.navData.loader = false;
@@ -323,7 +325,7 @@ constructor(
         meetingList: linkages.meetings,
         riskList: linkages.risks,
         taskList:linkages.tasks,
-        issueList:linkages.issues,
+        issueList:linkages.tasks,
       }
       console.log("minutesObj email", minutesObj);
 
@@ -335,5 +337,22 @@ constructor(
       return {status: "success", title: "Task Details", body: "Task details shared with selected users through email."};
    // }
   }
+  sendMailDuringCreationUpdateToOwner(taskDetails,sessionInfo,type){
+   let taskObj = {
+    toEmail:taskDetails.taskOwner.email,
+    toName: taskDetails.taskOwner.name,
+    initiator:sessionInfo.userProfile.name,
+    orgName:sessionInfo.orgProfile.subscriberId,
+    taskTitle:taskDetails.taskTitle,
+    initationDate:moment(taskDetails.taskInitiationDate).format('MMM DD, YYYY'),
+    targetCompletionDate:moment(taskDetails.targetCompletionDate).format('MMM DD, YYYY'),
+    status:taskDetails.taskStatus,
+   };
+   let path = type == 'updated'? this.sendmail.updateTaskMailPath : this.sendmail.newTaskMailPath;
+   this.sendmail.sendCustomEmail(path,taskObj)
+      .then((sent: any)=>
+        {
 
+        }); 
+  }
 }

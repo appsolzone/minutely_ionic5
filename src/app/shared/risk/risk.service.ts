@@ -270,6 +270,8 @@ constructor(
           if(risk.status != 'CANCEL'){
             // this.sendMail(risk.attendeeList,refCopy.id,risk.riskStart,risk.riskEnd);
           }
+          //send mail during update and creation
+          this.sendMailDuringCreationUpdateToOwner(risk,sessionInfo,type);
 
           // this.sfp.defaultAlert("Successful","Risk Data updated successfully.");
           // this.navData.loader = false;
@@ -335,5 +337,24 @@ constructor(
         });
       return {status: "success", title: "Risk Details", body: "Risk details shared with selected users through email."};
   }
+  sendMailDuringCreationUpdateToOwner(riskDetails,sessionInfo,type){
+   let taskObj = {
+    toEmail:riskDetails.taskOwner.email,
+    toName: riskDetails.taskOwner.name,
+    initiator:sessionInfo.userProfile.name,
+    orgName:sessionInfo.orgProfile.subscriberId,
+    riskTitle:riskDetails.taskTitle,
+    initationDate:moment(riskDetails.riskInitiationDate).format('MMM DD, YYYY'),
+    targetCompletionDate:moment(riskDetails.targetCompletionDate).format('MMM DD, YYYY'),
+    status:riskDetails.riskStatus,
+    probability:riskDetails.riskProbability,
+    impact:riskDetails.riskImpact,
+   };
+   let path = type == 'updated'? this.sendmail.updateRiskMailPath : this.sendmail.newRiskMailPath;
+   this.sendmail.sendCustomEmail(path,taskObj)
+      .then((sent: any)=>
+        {
 
+        }); 
+  }
 }

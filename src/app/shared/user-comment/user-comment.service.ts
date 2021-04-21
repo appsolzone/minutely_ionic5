@@ -40,6 +40,9 @@ export class UserCommentService {
         this.db.setTransactDocument(transaction,commentRef,commentObj,true);
       }.bind(this))
     }.bind(this))
+    .then(()=>{
+      this.sendEmail(servicedoc.members,commentObj,servicedoc)
+    })
   }
 
 
@@ -52,8 +55,8 @@ export class UserCommentService {
           toEmail:members[i].email,
           toName:members[i].name,
           commenterName: commentObj.author,
-          commentCat:servicedoc.parentModule,
-          title:servicedoc[`${servicedoc.parentModule}Title`],
+          commentCat:servicedoc.collectionName,
+          title:servicedoc[`${servicedoc.collectionName}Title`],
           comment:commentObj.comment,
           commentedAt:moment.utc().format('MMM DD, YYYY h:mm a') + " UTC"
 
