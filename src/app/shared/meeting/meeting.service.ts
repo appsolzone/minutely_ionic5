@@ -454,7 +454,7 @@ export class MeetingService {
       })
       let minutesObj = {
         toEmail:m.attendeeList.map(a=>{return {email: a.email};}),
-        meetingStart: moment.utc(new Date(m.meetingStart)).format('MMM DD, YYYY h:mm a') + " UTC",
+        meetingStart: moment.utc(m.meetingStart).format('MMM DD, YYYY h:mm a') + " UTC",
         toName: m.ownerId.name,
         meetingTitle:m.meetingTitle,
         agendas:m.agendas,

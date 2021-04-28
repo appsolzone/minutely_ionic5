@@ -48,6 +48,7 @@ export class UserCommentService {
 
   sendEmail(members:any[],commentObj,servicedoc)
   {
+    console.log("calling sendEmail",members,commentObj,servicedoc);
     for(var i = 0; i < members.length; i ++)
     {
       this.senDmail.sendCustomEmail(this.senDmail.commentMailPath,
@@ -61,8 +62,8 @@ export class UserCommentService {
           commentedAt:moment.utc().format('MMM DD, YYYY h:mm a') + " UTC"
 
         }).then((sent: any)=>
-        {
-
+        { 
+          console.log("mail sent response:",sent);
         });
     }
   }

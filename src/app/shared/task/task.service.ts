@@ -20,6 +20,7 @@ export class TaskService {
         uid:'',
         subscriberId:'',
         picUrl:'',
+        email:'',
       },
       taskInitiationDate :new Date(),
       taskEntryDate : null,
@@ -40,6 +41,7 @@ export class TaskService {
         uid:'',
         subscriberId:'',
         picUrl:'',
+        email:'',
       },
       tags:[],
       details:'',
@@ -338,6 +340,9 @@ constructor(
    // }
   }
   sendMailDuringCreationUpdateToOwner(taskDetails,sessionInfo,type){
+
+   console.log("send mail function calling");
+   console.log("data task",taskDetails,type);
    let taskObj = {
     toEmail:taskDetails.taskOwner.email,
     toName: taskDetails.taskOwner.name,
@@ -348,11 +353,14 @@ constructor(
     targetCompletionDate:moment(taskDetails.targetCompletionDate).format('MMM DD, YYYY'),
     status:taskDetails.taskStatus,
    };
-   let path = type == 'updated'? this.sendmail.updateTaskMailPath : this.sendmail.newTaskMailPath;
+   let path = type == 'update'? this.sendmail.updateTaskMailPath : this.sendmail.newTaskMailPath;
+
+   console.log("path",path);
+   console.log("object send",taskObj);
    this.sendmail.sendCustomEmail(path,taskObj)
       .then((sent: any)=>
         {
-
+         console.log("sent mail res:",sent);
         }); 
   }
 }

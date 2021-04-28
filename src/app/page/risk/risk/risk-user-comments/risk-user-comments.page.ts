@@ -92,7 +92,7 @@ export class RiskUserCommentsPage implements OnInit,OnDestroy {
     commentObj.comment = this.postedComment;
     commentObj.picUrl = this.sessionInfo.userProfile.picUrl;
     commentObj.uid = this.sessionInfo.userProfile.uid;
-    let servicedoc = {collectionName:'risk',id:this.risk.id};
+    let servicedoc = {collectionName:'risk',id:this.risk.id,members:[{...this.risk.riskOwner},{...this.risk.riskInitiator}]};
     this.commentServ.addComment(commentObj,servicedoc)
     .then((res)=>{
       console.log("comment add resposnse",res);

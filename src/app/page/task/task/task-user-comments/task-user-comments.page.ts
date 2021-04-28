@@ -91,7 +91,7 @@ export class TaskUserCommentsPage implements OnInit,OnDestroy {
     commentObj.comment = this.postedComment;
     commentObj.picUrl = this.sessionInfo.userProfile.picUrl;
     commentObj.uid = this.sessionInfo.userProfile.uid;
-    let servicedoc = {collectionName:'task',id:this.task.id};
+    let servicedoc = {collectionName:'task',id:this.task.id,members:[{...this.task.taskOwner},{...this.task.taskInitiator}]};
     this.commentServ.addComment(commentObj,servicedoc)
     .then((res)=>{
       console.log("comment add resposnse",res);
