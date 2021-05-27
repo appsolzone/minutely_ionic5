@@ -20,25 +20,25 @@ export class UploadImageService {
     public common: ComponentsService,
     public session: SessionService,
     public alertController: AlertController,
-    public actionSheetCtrl:ActionSheetController,
+    public actionSheetCtrl: ActionSheetController,
     private sanitizer: DomSanitizer,
 
 
 
 
   ) {
-    this.session.watch().subscribe(value=>{
+    this.session.watch().subscribe(value => {
       this.sessionInfo = value;
-      console.log("Subscription got AttendancePage", this.sessionInfo);
-    })
+      console.log('Subscription got AttendancePage', this.sessionInfo);
+    });
 
    }
 
 
-   upload_profile_photo(base64Image,src)
+   async upload_profile_photo(base64Image, src)
    {
-     this.common.showLoader();
-     let storageRef = firebase.storage().ref();
+     await this.common.showLoader();
+     const storageRef = firebase.storage().ref();
     //  let loc_name = '';
     //  let collection = '';
     //  let document = '';
@@ -56,31 +56,31 @@ export class UploadImageService {
 
     //  }
 
-     const filename = this.sessionInfo?.userProfile.uid+'_'+this.sessionInfo?.userProfile.subscriberId;
+     const filename = this.sessionInfo?.userProfile.uid + '_' + this.sessionInfo?.userProfile.subscriberId;
 
      // Create a reference to 'images/todays-date.jpg'
      const imageRef = storageRef.child(`${src.location}/${filename}.jpg`);
 
      imageRef.putString(base64Image, firebase.storage.StringFormat.DATA_URL)
-       .then((snapshot)=> {
+       .then((snapshot) => {
          // Do something here when the data is succesfully uploaded!
-         snapshot.ref.getDownloadURL().then((downloadURL)=>{
+         snapshot.ref.getDownloadURL().then((downloadURL) => {
 
            this.db.updateDocument(src.collection, src.document , {
-               'picUrl': downloadURL, //imageRef.toString()
+               picUrl: downloadURL, // imageRef.toString()
              }
            )
-           .then((res)=>{
+           .then((res) => {
 
              // this.loader = false;
              this.common.hideLoader();
-             this.common.presentAlert("Success","Data updated successfully.");
+             this.common.presentAlert('Success', 'Data updated successfully.');
 
            })
-           .catch((err)=>{
+           .catch((err) => {
              // this.loader = false;
              this.common.hideLoader();
-             this.common.presentAlert("Error","Profile could not be updated successfully. Error: " + err.toString());
+             this.common.presentAlert('Error', 'Profile could not be updated successfully. Error: ' + err.toString());
            });
          });
      });
@@ -119,12 +119,12 @@ export class UploadImageService {
       allowEditing: false,
       resultType: CameraResultType.DataUrl,
       // source: source =='camera' ? CameraSource.Camera : CameraSource.Photos,
-      height:128,
-      width:128
+      height: 128,
+      width: 128
     });
 
-    this.photo = this.sanitizer.bypassSecurityTrustResourceUrl(image && (image.dataUrl))
-    console.log('image_dataUrl',image.dataUrl);
-    this.upload_profile_photo(image.dataUrl,src)
+    this.photo = this.sanitizer.bypassSecurityTrustResourceUrl(image && (image.dataUrl));
+    console.log('image_dataUrl', image.dataUrl);
+    this.upload_profile_photo(image.dataUrl, src);
   }
 }

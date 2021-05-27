@@ -55,7 +55,7 @@ export class EditOrganizationPage implements OnInit {
 
     }
     async onSubmit(){
-      this.componentService.showLoader("Saving profile data, please wait...");
+      await this.componentService.showLoader("Saving profile data, please wait...");
       await this.updateProfile(this.orgProfile.subscriberId, this.orgProfile);
       this.editProfile = false;
       // hide the loader now

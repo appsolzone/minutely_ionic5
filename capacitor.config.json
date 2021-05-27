@@ -13,7 +13,7 @@
         "profile",
         "email"
       ],
-      "serverClientId": "418702508352-g628lo5u4k76sf0fba2l0ui7m8tb00ln.apps.googleusercontent.com",
+      "serverClientId": "REPLACE.apps.googleusercontent.com",
       "forceCodeForRefreshToken": true
     }
   },

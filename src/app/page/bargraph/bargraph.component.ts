@@ -9,7 +9,7 @@ export class BargraphComponent implements OnInit {
 
   @Input() graphX: any;
   @Input() graphY: any;
-  public graphYLabelMark: number; //= Math.floor(this.graphY ? this.graphY.data.length/4 : 1);
+  public graphYLabelMark: number; // = Math.floor(this.graphY ? this.graphY.data.length/4 : 1);
   // structure of graphX and graphY
   // {
   //  icon: ,

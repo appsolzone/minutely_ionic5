@@ -21,8 +21,8 @@ export class AdminAddUsersService {
   ) {this.userDataForm = this.manageUserService.newUser}
 
   // new register
-  addNewUser(newUserData,orgProfile){
-  this.componentService.showLoader();
+  async addNewUser(newUserData,orgProfile){
+  await this.componentService.showLoader();
   this.systemGeneratedPassword = this.generatePassWord();
 
   return this.db.adminFrb.auth().createUserWithEmailAndPassword(newUserData.email, this.systemGeneratedPassword).then(res =>{
@@ -110,7 +110,7 @@ export class AdminAddUsersService {
      .then(async function(res:any){
       console.log("======= presentAlertConfirm ========");
       if(res){
-        this.componentService.showLoader();
+        await this.componentService.showLoader();
         await this.registerationService.joinSubscriber(userId,orgProfile.subscriberId, newUserData.name,newUserData.email,newUserData);
         return true;
         }
