@@ -14,12 +14,12 @@ export class PlanService {
 
   constructor(
     public db: DatabaseService,
-    private componentService:ComponentsService,
-    private router:Router
+    private componentService: ComponentsService,
+    private router: Router
   ) { }
 
-  getPlan(planName:string){
-    let queryObj = planName ? [{field: 'planName',operator: '==', value: planName}] : [];
+  getPlan(planName: string){
+    const queryObj = planName ? [{field: 'planName', operator: '==', value: planName}] : [];
     return this.db.getAllDocumentsSnapshotByQuery(this.db.allCollections.plans, queryObj);
   }
 
@@ -27,7 +27,7 @@ export class PlanService {
     return this.db.getAllDocuments(this.db.allCollections.plans);
   }
 
-  addPlan(planObj:any){
+  addPlan(planObj: any){
     return this.db.addDocument(this.db.allCollections.plans, planObj);
   }
 

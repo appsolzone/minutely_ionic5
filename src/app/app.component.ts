@@ -6,6 +6,8 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { appPages } from './shared/app-menu-pages';
 
+import { isDevMode } from '@angular/core';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -22,7 +24,9 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar
   ) {
-    this.initializeApp();
+    if (!isDevMode()) {
+        console.log = function () {};
+    }
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
     // Listen for changes to the prefers-color-scheme media query

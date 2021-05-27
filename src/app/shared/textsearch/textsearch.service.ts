@@ -24,22 +24,22 @@ export class TextsearchService {
   }
   createSearchMap(text: string){
 
-    let searchMap = { matchAny: [], };
-    let textTokens = this.tokenizeText(text);
-    textTokens.forEach((tt,i)=>{
+    const searchMap = { matchAny: [], };
+    const textTokens = this.tokenizeText(text);
+    textTokens.forEach((tt, i) => {
 
       // Note: Pure numbers are not given any doubleMetaphone values
       // Open question whether to include such cases for searchMap
 
       // Replace any '.' (dot) with '_' (underscore) to avoid conflict with
       // attribute access <attribute>.<attr>.<attr>
-      let t = tt.replace(/[.]/g,'_').toLowerCase();
-      let doubleMetaphones=this.getDoubleMetaphone(t);
-      doubleMetaphones.forEach((d,j)=>{
+      const t = tt.replace(/[.]/g, '_').toLowerCase();
+      const doubleMetaphones = this.getDoubleMetaphone(t);
+      doubleMetaphones.forEach((d, j) => {
 
-        if(d || (t && t.length > 1)){
-          searchMap[d ? d : t ]=true;
-          if(!searchMap.matchAny.includes(d ? d : t)){
+        if (d || (t && t.length > 1)){
+          searchMap[d ? d : t ] = true;
+          if (!searchMap.matchAny.includes(d ? d : t)){
             searchMap.matchAny.push(d ? d : t);
           }
         }
@@ -48,22 +48,22 @@ export class TextsearchService {
     return searchMap;
   }
 
-  getSearchMapQuery(collectionRef: any, seachField: string, text: any,searchOption: any='all'){
-    let textTokens = this.tokenizeText(text);
-    let searchany = [];
-    textTokens.forEach((tt,i)=>{
+  getSearchMapQuery(collectionRef: any, seachField: string, text: any, searchOption: any= 'all'){
+    const textTokens = this.tokenizeText(text);
+    const searchany = [];
+    textTokens.forEach((tt, i) => {
       // Replace any '.' (dot) with '_' (underscore) to avoid conflict with
       // attribute access <attribute>.<attr>.<attr>
-      let t = tt.replace(/[.]/g,'_').toLowerCase();
-      let doubleMetaphones=this.getDoubleMetaphone(t);
+      const t = tt.replace(/[.]/g, '_').toLowerCase();
+      const doubleMetaphones = this.getDoubleMetaphone(t);
       // Note: Pure numbers are not given any doubleMetaphone values
       // Open question whether to include such cases for searchMap
 
       // if searchOption 'any', then add both the distinct metaphone, if any
-      if(searchOption=='any') {
-        doubleMetaphones.forEach((d,j)=>{
-          if(d || (t && t.length > 1)){
-            if(!searchany.includes(d ? d : t)){
+      if (searchOption == 'any') {
+        doubleMetaphones.forEach((d, j) => {
+          if (d || (t && t.length > 1)){
+            if (!searchany.includes(d ? d : t)){
               searchany.push(d ? d : t);
             }
           }
@@ -74,14 +74,14 @@ export class TextsearchService {
         // since firestore does not have any OR query filter
         // This is the best approximation approach for now
 
-        if(doubleMetaphones[0] || (t && t.length > 1)){
-          collectionRef = collectionRef.where(seachField+'.'+(doubleMetaphones[0] ? doubleMetaphones[0] : t),"==",true);
+        if (doubleMetaphones[0] || (t && t.length > 1)){
+          collectionRef = collectionRef.where(seachField + '.' + (doubleMetaphones[0] ? doubleMetaphones[0] : t), '==', true);
         }
       }
 
     });
-    if(searchOption=='any') {
-      collectionRef = collectionRef.where(seachField+'.matchAny',"array-contains-any",searchany);
+    if (searchOption == 'any') {
+      collectionRef = collectionRef.where(seachField + '.matchAny', 'array-contains-any', searchany);
     }
     // this is the Query ref
     return collectionRef;

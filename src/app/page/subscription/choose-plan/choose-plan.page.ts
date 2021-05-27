@@ -22,7 +22,7 @@ export class ChoosePlanPage implements OnInit {
   getauthStateSubs$;
   subscriberChanged: boolean = false;
   allPlans:any;
-  generalPlans: any=[];
+  generalPlans: any=null;
   orgProfile: any;
   uid: string;
   newsubscriber: string;
@@ -45,8 +45,8 @@ export class ChoosePlanPage implements OnInit {
     if(data && data.newsubscriber){
       this.newsubscriber = data.newsubscriber;
     }
-    // this.componentService.hideLoader();
-    this.getSessionInfo();
+    // // this.componentService.hideLoader();
+    setTimeout(()=>this.getSessionInfo(),300);
     this.fetchAllPlans();
     this.fetchAllCoupons();
   }
@@ -60,7 +60,7 @@ export class ChoosePlanPage implements OnInit {
     let data = history.state.data;
     console.log("history data ionViewWillEnter", data);
     if(data && data.newsubscriber){
-      this.componentService.showLoader("Initiating new subscriber session ....");
+      // await this.componentService.showLoader("Initiating new subscriber session ....");
       this.subscriberChanged = false;
       this.orgProfile = undefined;
       this.newsubscriber = data.newsubscriber;
@@ -68,12 +68,14 @@ export class ChoosePlanPage implements OnInit {
         // unsubscribe if already subscribed
         await this.sessionSubs$.unsubscribe();
       }
-      this.getSessionInfo();
+      setTimeout(()=>this.getSessionInfo(),300);
 
     } else if(this.subscriberChanged){
       this.subscriberChanged = false;
       // we received the data so unset the value here
       this.newsubscriber = undefined;
+      // hide loader manually before navigating to another route
+      // this.componentService.hideLoader()
       // subscriber changed but no new subscription so back to subscription page
       this.router.navigate(['subscription']);
     }
@@ -108,25 +110,29 @@ export class ChoosePlanPage implements OnInit {
            console.log("ChoosePlanPage Session Subscription got matched newsubscriber allPlans", this.allPlans, this.newsubscriber);
            if(this.allPlans){
               console.log("Now hide loader");
-             setTimeout(()=>this.componentService.hideLoader(),250);
+             // setTimeout(()=>// this.componentService.hideLoader(),250);
+             // this.componentService.hideLoader();
            }
          }
        } else if(!this.orgProfile || !value){
+         // hide loader manually before navigating to another route
+         // this.componentService.hideLoader()
          // no profile info so go back to profile to login
          this.router.navigate(['profile']);
        }
        // at the end hide any loader if running when we have plan and subscriber id
        if(this.orgProfile?.subscriberId && this.allPlans){
-         console.log("getSessionInfo got all values let's hide loader now");
-         this.componentService.hideLoader();
+         console.log("getSessionInfo got all values let's hide loader now",this.orgProfile?.subscriberId, this.allPlans);
+         // this.componentService.hideLoader();
        }
      });
   }
 
-  fetchAllPlans(){
-    this.componentService.showLoader("Fetching plans...");
+  async fetchAllPlans(){
+    // await this.componentService.showLoader("Fetching plans...");
     this.planService.getAllPlans().then( plans=>{
       this.allPlans = [];
+      this.generalPlans = undefined;
       plans.forEach(p=>{
         console.log("response from Plans", p.id, p.data());
         let id = p.id;
@@ -137,7 +143,8 @@ export class ChoosePlanPage implements OnInit {
       this.generalPlans = this.allPlans.filter(p=>p.planType=='general' && p.status==true && p.planName!='Free').sort((a,b)=>a.price-b.price);
       if(!this.newsubscriber || (this.newsubscriber && this.newsubscriber == this.orgProfile?.subscriberId)){
         console.log("hide loader now");
-        setTimeout(()=>this.componentService.hideLoader(),250);
+        // setTimeout(()=>// this.componentService.hideLoader(),250);
+        // this.componentService.hideLoader();
       }
     });
 
@@ -145,17 +152,17 @@ export class ChoosePlanPage implements OnInit {
 
   paymentPage(plan) {
     if (plan.planName !== "Free") {
-      if(this.orgProfile.noOfUserAllowed - this.orgProfile.noOfFreeLicense > plan.allowedLicense){
-       this.componentService.presentAlert(`Error`,`Please note that there are ${this.orgProfile.noOfUserAllowed - this.orgProfile.noOfFreeLicense} active users. Selected plan allows ${plan.allowedLicense} users. Please select a plan which supports at least ${this.orgProfile.noOfUserAllowed - this.orgProfile.noOfFreeLicense} users.`)
-      }
-      else{
+      // if(this.orgProfile.noOfUserAllowed - this.orgProfile.noOfFreeLicense > plan.allowedLicense){
+      //  this.componentService.presentAlert(`Error`,`Please note that there are ${this.orgProfile.noOfUserAllowed - this.orgProfile.noOfFreeLicense} active users. Selected plan allows ${plan.allowedLicense} users. Please select a plan which supports at least ${this.orgProfile.noOfUserAllowed - this.orgProfile.noOfFreeLicense} users.`)
+      // }
+      // else{
        this.planService.choosePlan.next(plan);
        this.router.navigateByUrl('subscription/payment');
         // if (plan.planName === "Free" && this.platform == 'web') {
         // }else if(plan.planName === "Free" && this.platform == 'mobile'){
         // }else if(plan.planName === "Free" && this.platform == 'newregistration'){
         // }
-      }
+      // }
     }
   }
 

@@ -16,27 +16,27 @@ export class PaypalService {
 
   constructor(
     public db: DatabaseService,
-    private componentService:ComponentsService,
-    private router:Router
+    private componentService: ComponentsService,
+    private router: Router
   ) { }
 
 
   // render paypal button for the payment page
-  renderPaypalButtons(plan,userProfile, orgProfile){
+  renderPaypalButtons(plan, userProfile, orgProfile){
     const self = this;
-    //------------------------------------
-    //paypal button
-      paypal
+    // ------------------------------------
+    // paypal button
+    paypal
       .Buttons({
-        createSubscription: function (data, actions) {
+        createSubscription(data, actions) {
           return actions.subscription
             .create({
               plan_id: plan.paypalPlanId,
               // Quantity is now 1 as we are only buying a single plan with no of licences clubbed for a price tag
-              quantity: 1, //self.planMin,
+              quantity: plan.allowedLicense, // 1, //self.planMin,
             })
             .then((val) => {
-              //console.log(JSON.stringify(val));
+              // console.log(JSON.stringify(val));
               return self.storeInitalData(val, plan, userProfile, orgProfile).then((res) => {
                 if (res == true) {
                   return val;
@@ -44,52 +44,52 @@ export class PaypalService {
               });
             });
         },
-        onApprove: function (data, actions) {
-          console.log("on Approve :", data);
+        onApprove(data, actions) {
+          console.log('on Approve :', data);
           self.checkPreviousActivePlan(data, plan, userProfile, orgProfile);
         },
-        onCancel: function (data) {
+        onCancel(data) {
           // Show a cancel page, or return to cart
           self.componentService.presentAlert(
-            "Error",
-            "Paypal payment has been cancelled. Please try again.",
+            'Error',
+            'Paypal payment has been cancelled. Please try again.',
           );
           self.storeCancelRecord(data, plan, userProfile, orgProfile);
         },
-        onError: function (err) {
+        onError(err) {
           // Show an error page here, when an error occurs
            self.componentService.presentAlert(
-            "Error",
-            "Unfortunately something went wrong and we are not able to process the transaction. Please try again.",
+            'Error',
+            'Unfortunately something went wrong and we are not able to process the transaction. Please try again.',
           );
-          console.log(err);
+           console.log(err);
         },
       })
-      .render(document.getElementById("paypal"));
+      .render(document.getElementById('paypal'));
   }
 
   // check plan status
   async checkPreviousActivePlan(data, plan, userProfile, orgProfile){
 
-     this.componentService.showLoader();
-     let ref = {
-       userProfile:userProfile,
-       orgProfile:orgProfile,
-       plan:plan,
-     }
-     await this.getSubcriptionDetails(this.initiatedPaypalID,ref);
+     await this.componentService.showLoader();
+     const ref = {
+       userProfile,
+       orgProfile,
+       plan,
+     };
+     await this.getSubcriptionDetails(this.initiatedPaypalID, ref);
   }
 
   storeInitalData(val, plan, userProfile, orgProfile){
     this.initiatedPaypalID = val;
-    let objectPass = {
+    const objectPass = {
          initiated: val,
          oldValues: {
              noOfUserAllowed: orgProfile.noOfUserAllowed,
              subscriptionType: orgProfile.subscriptionType,
            },
          newValues: {
-             noOfUserAllowed: plan.allowedLicense, //parseInt(a.quantity),
+             noOfUserAllowed: plan.allowedLicense, // parseInt(a.quantity),
              subscriptionType: plan.planName,
            },
          initiator: {
@@ -98,14 +98,14 @@ export class PaypalService {
              email: userProfile.email,
          },
          coupon: plan.coupon ? plan.coupon : null,
-       }
+       };
     return this.storeCartInitalData(objectPass, orgProfile.subscriberId);
   }
 
-   //-------------------- store cancel recored in transaction--------
-   storeCancelRecord(data,plan,userProfile, orgProfile) {
-     let transectionObj = {
-       paymentStatus: "cancelled",
+   // -------------------- store cancel recored in transaction--------
+   storeCancelRecord(data, plan, userProfile, orgProfile) {
+     const transectionObj = {
+       paymentStatus: 'cancelled',
        timeStamp: new Date(),
        subscriberId: orgProfile.subscriberId,
        paypalId: this.initiatedPaypalID,
@@ -114,7 +114,7 @@ export class PaypalService {
          subscriptionType: orgProfile.subscriptionType,
        },
        newValues: {
-         noOfUserAllowed: plan.allowedLicense, //parseInt(a.quantity),
+         noOfUserAllowed: plan.allowedLicense, // parseInt(a.quantity),
          subscriptionType: plan.planName,
        },
        initiator: {
@@ -122,98 +122,98 @@ export class PaypalService {
              name: userProfile.name,
              email: userProfile.email,
        },
-     }
-     let cartObj = {
+     };
+     let cartObj:any = {
          initiated: null
-       }
-     if(orgProfile.paypalIDHas)cartObj['cancelled'] = orgProfile.paypalId;
-     this.storeCartCancelRecord(transectionObj,cartObj,orgProfile.subscriberId);
+       };
+     if (orgProfile.paypalIDHas) {cartObj.cancelled = orgProfile.paypalId; }
+     this.storeCartCancelRecord(transectionObj, cartObj, orgProfile.subscriberId);
    }
 
    // =========Start Get Subcription Details Method=======================
-    getSubcriptionDetails(paypalId,ref:any = null) {
+    getSubcriptionDetails(paypalId, ref: any = null) {
      const self = this;
      const xhttp = new XMLHttpRequest();
-     xhttp.onreadystatechange = function () {
+     xhttp.onreadystatechange = function() {
        if (this.readyState === 4 && this.status === 200) {
-        let a = JSON.parse(this.responseText);
-         console.log(this.responseText);
-         let result = a.status === "ACTIVE" ? true : false;
-         console.log('self.currPlanActiveOrNot',result);
-         self.currPlanActiveOrNot.next(result);
+        const a = JSON.parse(this.responseText);
+        console.log(this.responseText);
+        const result = a.status === 'ACTIVE' ? true : false;
+        console.log('self.currPlanActiveOrNot', result);
+        self.currPlanActiveOrNot.next(result);
 
-         if(ref!==null){
-           ref['newSubscription'] = a;
-           if(ref.orgProfile.paypalId){self.cancelSubcription(ref.orgProfile.paypalId,ref)}
+        if (ref !== null){
+           ref.newSubscription = a;
+           if (ref.orgProfile.paypalId){self.cancelSubcription(ref.orgProfile.paypalId, ref); }
            else{
              self.batchPerform(ref);
            }
          }
          // let data = {currPlanActiveOrNot,...a};
-         return self.currPlanActiveOrNot;
+        return self.currPlanActiveOrNot;
        } else {
          self.currPlanActiveOrNot.next(false);
          return self.currPlanActiveOrNot;
        }
      };
-     xhttp.open("GET", environment.paypalInfo.paypalBillingUrl + paypalId, true);
-     xhttp.setRequestHeader("Authorization", environment.paypalInfo.paypalBasicUrl);
+     xhttp.open('GET', environment.paypalInfo.paypalBillingUrl + paypalId, true);
+     xhttp.setRequestHeader('Authorization', environment.paypalInfo.paypalBasicUrl);
      xhttp.send();
    }
 
-   cancelSubcription(paypalId,ref:any = null) {
+   cancelSubcription(paypalId, ref: any = null) {
      const self = this;
      const xhttp = new XMLHttpRequest();
-     xhttp.onreadystatechange = function () {
+     xhttp.onreadystatechange = function() {
        if (this.readyState === 4 && this.status === 204) {
-         if(ref !== null){
+         if (ref !== null){
            self.batchPerform(ref);
          }
          return true;
        }
      };
      xhttp.open(
-       "POST",
-       environment.paypalInfo.paypalBillingUrl + paypalId + "/cancel",
+       'POST',
+       environment.paypalInfo.paypalBillingUrl + paypalId + '/cancel',
        true
      );
-     xhttp.setRequestHeader("Authorization", environment.paypalInfo.paypalBasicUrl);
-     xhttp.setRequestHeader("Content-Type", "Application/json");
+     xhttp.setRequestHeader('Authorization', environment.paypalInfo.paypalBasicUrl);
+     xhttp.setRequestHeader('Content-Type', 'Application/json');
      xhttp.send();
    }
 
   // ============Start Get getSubcriptionHistoryDetails Method========================
-  getSubcriptionHistoryDetails(subcriptionId,date) {
+  getSubcriptionHistoryDetails(subcriptionId, date) {
      // console.log("UTC",moment.utc());
      // console.log("UTC 1",moment(date).format('YYYY-MM-DDTHH:mm'));
      // console.log("UTC 2",moment().format('YYYY-MM-DDTHH:mm'));
      const self = this;
      const xhttp = new XMLHttpRequest();
-     const startTime = moment(date).format('YYYY-MM-DDTHH:mm');//2020-01-01T07:50:20.940Z;
-     const endTime =moment().format('YYYY-MM-DDTHH:mm')  ;//2020-12-31T07:50:20.940Z;
-     xhttp.onreadystatechange = function () {
+     const startTime = moment(date).format('YYYY-MM-DDTHH:mm'); // 2020-01-01T07:50:20.940Z;
+     const endTime = moment().format('YYYY-MM-DDTHH:mm')  ; // 2020-12-31T07:50:20.940Z;
+     xhttp.onreadystatechange = function() {
        if (this.readyState === 4 && this.status === 200) {
-         let a = JSON.parse(this.responseText);
+         const a = JSON.parse(this.responseText);
          console.log(this.responseText);
        }
      };
-     xhttp.open("GET", environment.paypalInfo.paypalBillingUrl + subcriptionId + "/transactions?start_time=" + startTime + "&end_time=" + endTime , true);
-     xhttp.setRequestHeader("Authorization",environment.paypalInfo.paypalBasicUrl);
+     xhttp.open('GET', environment.paypalInfo.paypalBillingUrl + subcriptionId + '/transactions?start_time=' + startTime + '&end_time=' + endTime , true);
+     xhttp.setRequestHeader('Authorization', environment.paypalInfo.paypalBasicUrl);
      xhttp.send();
    }
    // ============END Get Subcription Details Method========================
 
    async batchPerform(ref){
-       let {userProfile,orgProfile,plan,newSubscription} = ref;
-       //cart
-       let cartObj = {
+       const {userProfile, orgProfile, plan, newSubscription} = ref;
+       // cart
+       let cartObj:any = {
            initiated: null
-         }
-     if(orgProfile.paypalIDHas)cartObj['cancelled'] =orgProfile.paypalId;
+         };
+       if (orgProfile.paypalIDHas) {cartObj.cancelled = orgProfile.paypalId; }
 
        // transection
-       let transectionObj = {
-       paymentStatus: "success",
+       const transectionObj = {
+       paymentStatus: 'success',
        timeStamp: new Date(newSubscription.status_update_time),
        subscriberId: orgProfile.subscriberId,
        paypalId: newSubscription.id,
@@ -222,7 +222,7 @@ export class PaypalService {
          subscriptionType: orgProfile.subscriptionType,
        },
        newValues: {
-         noOfUserAllowed: plan.allowedLicense, //parseInt(a.quantity),
+         noOfUserAllowed: plan.allowedLicense, // parseInt(a.quantity),
          subscriptionType: plan.planName,
        },
        initiator: {
@@ -230,14 +230,14 @@ export class PaypalService {
              name: userProfile.name,
              email: userProfile.email,
        },
-     }
+     };
 
      // Check graceperiod
-     const subscriptionEnd = new Date(orgProfile.subscriptionEnd.toMillis());
-     const endDate =  new Date(orgProfile.subscriptionEnd.toMillis() + (15 * 24 * 60 * 60 * 1000));
-     let loginStart = await this.db.getServerTime(userProfile.uid);
-     const toDay = new Date(loginStart.serverTime);
-     let subsStatus = toDay > endDate ?
+       const subscriptionEnd = new Date(orgProfile.subscriptionEnd.toMillis());
+       const endDate =  new Date(orgProfile.subscriptionEnd.toMillis() + (15 * 24 * 60 * 60 * 1000));
+       const loginStart = await this.db.getServerTime(userProfile.uid);
+       const toDay = new Date(loginStart.serverTime);
+       const subsStatus = toDay > endDate ?
                        'renew'
                        :
                        (
@@ -246,70 +246,91 @@ export class PaypalService {
                          :
                          'valid'
                        );
-     //subscriber
-     let subscriberObj = {
+     // subscriber
+       const subscriberObj = {
              subscriptionType: plan.planName,
-             noOfUserAllowed: plan.allowedLicense, //parseInt(a.quantity),
+             noOfUserAllowed: plan.allowedLicense, // parseInt(a.quantity),
              noOfFreeLicense:
-               //parseInt(a.quantity) -
-               plan.allowedLicense -
-               orgProfile.noOfUserAllowed,
-             subscriptionEnd: subsStatus=='grace' ?
+               // parseInt(a.quantity) -
+               // Delta of users added + no of existing free license
+               (plan.allowedLicense - orgProfile.noOfUserAllowed + orgProfile.noOfFreeLicense),
+             subscriptionEnd: subsStatus == 'grace' ?
                              this.addDays(subscriptionEnd, 30)
                              :
                              this.addDays(new Date(newSubscription.status_update_time), 30),
              paypalId: newSubscription.id,
              couponCode: plan.coupon && plan.coupon.couponCode ? plan.coupon.couponCode : '',
+           };
+
+
+           // Lets set the freeKpiLimits according to the plan
+           // let  planFreeLimit = Perform deep merge using lodash _.merge
+       const freeLimitObj: any = {};
+       console.log('Plan data', plan?.planFreeLimit, Object.keys(plan.planFreeLimit));
+       if (plan?.planFreeLimit) {
+             // limits are per user, so loop through and set it for the no of license the user have got
+             Object.keys(plan.planFreeLimit).forEach(fId => {
+               freeLimitObj[fId] = {...plan.planFreeLimit[fId],
+                                 freeLimit: plan.planFreeLimit[fId].freeLimit ?
+                                            plan.planFreeLimit[fId].freeLimit * plan.allowedLicense
+                                            :
+                                            null
+                                 };
+             });
            }
-
-
-         var batch = this.db.afs.firestore.batch();
+       const batch = this.db.afs.firestore.batch();
          // cart collection
-         const cart = this.db.afs.collection(this.db.allCollections.cart).doc(transectionObj.subscriberId)
+       const cart = this.db.afs.collection(this.db.allCollections.cart).doc(transectionObj.subscriberId)
            .ref;
-           batch.set(cart, cartObj);
-         //transactions collection
-         const transactionsId = this.db.afs.createId();
-         const transactions = this.db.afs
+       batch.set(cart, cartObj);
+         // transactions collection
+       const transactionsId = this.db.afs.createId();
+       const transactions = this.db.afs
            .collection(this.db.allCollections.transactions)
            .doc(`${transactionsId}`).ref;
-         batch.set(transactions, transectionObj);
-         //subscriber collection
-         const subscriber = this.db.afs
+       batch.set(transactions, transectionObj);
+         // subscriber collection
+       const subscriber = this.db.afs
            .collection(this.db.allCollections.subscribers)
            .doc(`${transectionObj.subscriberId}`).ref;
-         batch.update(subscriber, subscriberObj);
+       batch.update(subscriber, subscriberObj);
+         // set the freelimits
+       console.log('Plan data freeLimitObj transectionObj.subscriberId ', freeLimitObj, transectionObj.subscriberId);
+       const subscriberFreeLimit = this.db.afs
+           .collection(this.db.allCollections.aclKpi)
+           .doc(`${transectionObj.subscriberId}`).ref;
+       batch.set(subscriberFreeLimit, freeLimitObj, {merge: true});
          // Now increase the count of reference for the coupon code
-         if(plan.coupon && plan.coupon.couponCode){
-           let couponRef = this.db.afs
+       if (plan.coupon && plan.coupon.couponCode){
+           const couponRef = this.db.afs
              .collection(this.db.allCollections.coupons)
              .doc(plan.coupon.id).ref;
-           batch.update(couponRef,{
+           batch.update(couponRef, {
              totalReferrals: this.db.frb.firestore.FieldValue.increment(1),
            });
          }
-         batch
+       batch
            .commit()
            .then((result) => {
              this.componentService.hideLoader();
-             this.componentService.presentToaster('Successfull !! new subscription done')
+             this.componentService.presentToaster('Successfull !! new subscription done');
              this.router.navigate(['subscription']);
            })
-           .catch((err)=>{
+           .catch((err) => {
              this.componentService.hideLoader();
-             console.log("final plan batch fail",err)
-           })
+             console.log('final plan batch fail', err);
+           });
    }
    // add days 30 days
    addDays(date, days) {
      return new Date(
-       moment(date.getTime() + days * 24 * 60 * 60 * 1000).format("YYYY-MM-DD")
+       moment(date.getTime() + days * 24 * 60 * 60 * 1000).format('YYYY-MM-DD')
      );
    }
 
-   //=====record initial data =========
-  storeCartInitalData(object,subscriberId){
-    return this.db.setDocument(this.db.allCollections.cart,subscriberId,object)
+   // =====record initial data =========
+  storeCartInitalData(object, subscriberId){
+    return this.db.setDocument(this.db.allCollections.cart, subscriberId, object)
       .then((result) => {
         return true;
       })
@@ -318,38 +339,42 @@ export class PaypalService {
         return false;
       });
   }
-  //===========store cancel record==========
-  storeCartCancelRecord(transObj,cartObj,sid){
-    var batch = this.db.afs.firestore.batch();
+  // ===========store cancel record==========
+  storeCartCancelRecord(transObj, cartObj, sid){
+    const batch = this.db.afs.firestore.batch();
     //  console.log("after cancel paypal", this.initiatedPaypalId);
     const transactionsId = this.db.afs.createId();
     const transactions = this.db
       .afs.collection(this.db.allCollections.transactions)
       .doc(`${transactionsId}`).ref;
-    batch.set(transactions,transObj);
+    batch.set(transactions, transObj);
     // cart collection
     const cart = this.db.afs.collection(this.db.allCollections.cart).doc(sid)
       .ref;
-      batch.set(cart,cartObj);
-      batch.commit().then(res=>{console.log('storeCancelRecord batch success',res)})
-      .catch(err=>{console.log('storeCancelRecord batch error',err)})
+    batch.set(cart, cartObj);
+    batch.commit().then(res => {console.log('storeCancelRecord batch success', res); })
+      .catch(err => {console.log('storeCancelRecord batch error', err); });
     }
 
-    //===================== Arnab Mitra update====================/
+    // ===================== Arnab Mitra update====================/
     checkPaypalPayment(comData: any, userData: any)
     {
-      let paypalId = comData?.paypalId;
-      if(!paypalId || comData?.subscriptionType=='FREE')
+      const paypalId = comData?.paypalId;
+      if (!paypalId || comData?.subscriptionType == 'FREE')
       {
         return false;
       } else {
         return this.getPaypalStatus(paypalId)
           .then(async function(res){
-  
-            if(res.status === "ACTIVE" && new Date(res.billing_info.last_payment.time) > new Date(comData.subscriptionEnd.seconds*1000))
+
+            console.log('then of getPaypalStatus response', res);
+
+            if (res.status === 'ACTIVE' && new Date(res.billing_info.last_payment.time) > new Date(comData.subscriptionEnd.seconds * 1000))
             {
-              let isUpdated = await this.updateSubscriptionEnd(comData,res);
+              const isUpdated = await this.updateSubscriptionEnd(comData, res);
               return isUpdated;
+            } else {
+              return false;
             }
           }.bind(this));
       }
@@ -360,25 +385,27 @@ export class PaypalService {
     {
       const xhttp = new XMLHttpRequest();
       return new Promise((res, rej) => {
-        xhttp.onreadystatechange = function () {
+        xhttp.onreadystatechange = function() {
           if (this.readyState === 4 && this.status === 200) {
-            let a = JSON.parse(this.responseText);
+            const a = JSON.parse(this.responseText);
             return res(a);
+          } else {
+            return res({});
           }
         };
-        xhttp.open("GET", environment.paypalInfo.paypalBillingUrl + paypalId, true);
-        xhttp.setRequestHeader("Authorization", environment.paypalInfo.paypalBasicUrl);
-  
+        xhttp.open('GET', environment.paypalInfo.paypalBillingUrl + paypalId, true);
+        xhttp.setRequestHeader('Authorization', environment.paypalInfo.paypalBasicUrl);
+
         xhttp.send();
       });
     }
-    updateSubscriptionEnd(comData: any,paypalRes)
+    updateSubscriptionEnd(comData: any, paypalRes)
     {
       return new Promise((result, rej) => {
-        if (paypalRes.status === "ACTIVE") {
+        if (paypalRes.status === 'ACTIVE') {
           // this.checkPayActive = true;
-          let obj = {subscriptionEnd: this.addDays(new Date(comData.subscriptionEnd.seconds*1000), 31)}
-          this.db.updateDocument(this.db.allCollections.subscribers, comData.subscriberId,obj)
+          const obj = {subscriptionEnd: this.addDays(new Date(comData.subscriptionEnd.seconds * 1000), 31)};
+          this.db.updateDocument(this.db.allCollections.subscribers, comData.subscriberId, obj)
           .then(() => {
               // this.checkPayActive = true;
               return result(true);

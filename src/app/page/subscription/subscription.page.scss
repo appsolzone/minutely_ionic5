@@ -1,0 +1,10 @@
+.large-title{
+  font-size: 2.4em;
+  line-height: 1.25;
+}
+
+@media (min-width: 1200px){
+  .large-title{
+    font-size: 2.8em;
+  }
+}
