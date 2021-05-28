@@ -116,7 +116,7 @@ export class AddSubscriberPage implements OnInit {
   ionInputSubscriberId(){
     this.subscriberExists = false;
     this.alreadyJoined = false;
-    Object.assign(this.orgProfile , {companyName: '', address: ''});
+    // Object.assign(this.orgProfile , {companyName: '', address: ''});
   }
 
   // check subscriber id
@@ -147,12 +147,12 @@ export class AddSubscriberPage implements OnInit {
             if (this.subscriberType == 'existing' && this.subscriberExists){
               this.orgProfile = {...this.allSubData[0].data};
             } else {
-              Object.assign(this.orgProfile , {companyName: '', address: ''});
+              // Object.assign(this.orgProfile , {companyName: '', address: ''});
             }
           });
       } else {
         this.subscriberExists = true;
-        Object.assign(this.orgProfile , {companyName: '', address: ''});
+        // Object.assign(this.orgProfile , {companyName: '', address: ''});
       }
     }
 

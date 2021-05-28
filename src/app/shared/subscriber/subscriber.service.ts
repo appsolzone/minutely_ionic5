@@ -62,7 +62,10 @@ export class SubscriberService {
     const endDate =  new Date(org?.subscriptionEnd.toMillis() + (15 * 24 * 60 * 60 * 1000));
     const loginStart = await this.db.getServerTime(userProfile?.uid);
     const toDay = new Date(loginStart?.serverTime);
-    const subsStatus = toDay > endDate ?
+    const subsStatus = org?.subscriptionType.toUpperCase() == 'FREE' ?
+                     'grace'
+                     :
+                     toDay > endDate ?
                      'renew'
                      :
                      (
