@@ -48,13 +48,6 @@
                 <ion-input type="email" [(ngModel)]="verifyEmail" debounce=500
                   (ionInput)="ionInputVerifyEmail()" (ionChange)="checkVerifyEmail($event)"></ion-input>
               </ion-item>
-              <ion-item lines="inset">
-                <ion-label position="floating">
-                  <ion-icon name="business" class="ion-margin-end"></ion-icon>Organisation name
-                </ion-label>
-                <ion-input type="text" [(ngModel)]="orgProfile.companyName" [disabled]="subscriberType=='existing'">
-                </ion-input>
-              </ion-item>
               <ion-item lines="none" *ngIf="requiredEmailCheck && (!verifyEmail || userData.providerData[0].email != verifyEmail)">
                 <ion-text [color]="!verifyEmail ? 'medium' : 'danger'">
                   <p>
@@ -64,6 +57,13 @@
                     </small>
                   </p>
                 </ion-text>
+              </ion-item>
+              <ion-item lines="inset">
+                <ion-label position="floating">
+                  <ion-icon name="business" class="ion-margin-end"></ion-icon>Organisation name
+                </ion-label>
+                <ion-input type="text" [(ngModel)]="orgProfile.companyName" [disabled]="subscriberType=='existing'">
+                </ion-input>
               </ion-item>
               <ion-item lines="inset">
                 <ion-label position="floating">
