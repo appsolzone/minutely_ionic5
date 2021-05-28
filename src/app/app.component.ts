@@ -27,6 +27,7 @@ export class AppComponent {
     if (!isDevMode()) {
         console.log = function () {};
     }
+    this.initializeApp();
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
     // Listen for changes to the prefers-color-scheme media query
