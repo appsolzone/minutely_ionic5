@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { DatabaseService } from 'src/app/shared/database/database.service';
 import { TextsearchService } from 'src/app/shared/textsearch/textsearch.service';
 import { LinkageService } from 'src/app/shared/linkage/linkage.service';
-import { KpiService } from 'src/app/shared/kpi/kpi.service';
+import { MinutelyKpiService } from 'src/app/shared/minutelykpi/minutelykpi.service';
 import { NotificationsService } from 'src/app/shared/notifications/notifications.service';
 import { ItemUpdatesService } from 'src/app/shared/item-updates/item-updates.service';
 import { SendEmailService } from 'src/app/shared/send-email/send-email.service';
@@ -55,7 +55,7 @@ export class IssueService {
     public db: DatabaseService,
     public searchMap: TextsearchService,
     public link: LinkageService,
-    public kpi: KpiService,
+    public kpi: MinutelyKpiService,
     public notification: NotificationsService,
     public itemupdate: ItemUpdatesService,
     public sendmail: SendEmailService,

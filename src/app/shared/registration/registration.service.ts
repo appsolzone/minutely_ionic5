@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 
 import { ManageuserService } from '../manageuser/manageuser.service';
 import { SubscriberService } from '../subscriber/subscriber.service';
-import { KpiService } from '../kpi/kpi.service';
+import { MinutelyKpiService } from '../minutelykpi/minutelykpi.service';
 
 
 
@@ -19,7 +19,7 @@ export class RegistrationService {
     public db: DatabaseService,
     public user: ManageuserService,
     public subscriber: SubscriberService,
-    private kpi:KpiService
+    private kpi:MinutelyKpiService
   ) {
     // TBA
   }

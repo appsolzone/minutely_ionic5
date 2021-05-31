@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
-import { KpiService } from 'src/app/shared/kpi/kpi.service';
+import { MinutelyKpiService } from 'src/app/shared/minutelykpi/minutelykpi.service';
 
 
 @Component({
@@ -24,7 +24,7 @@ export class KpiComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private kpi: KpiService,
+    private kpi: MinutelyKpiService,
   ) {
     this.kpiSubs$ = this.kpi.watch().subscribe(value=>{
       this.kpiData = value;

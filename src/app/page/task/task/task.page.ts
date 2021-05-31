@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { User } from 'src/app/interface/user';
-import { KpiService } from 'src/app/shared/kpi/kpi.service';
+import { MinutelyKpiService } from 'src/app/shared/minutelykpi/minutelykpi.service';
 import { SessionService } from 'src/app/shared/session/session.service';
 
 @Component({
@@ -19,7 +19,7 @@ export class TaskPage implements OnInit {
 
   constructor(
     private router: Router,
-    private kpi: KpiService,
+    private kpi: MinutelyKpiService,
     private session: SessionService
   ) { }
 
