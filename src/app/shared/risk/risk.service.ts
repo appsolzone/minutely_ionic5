@@ -331,6 +331,7 @@ constructor(
       this.sendmail.sendCustomEmail(this.sendmail.shareRiskPath,minutesObj)
       .then((sent: any)=>
         {
+          console.log("response from risk share email", sent);
 
         });
       return {status: "success", title: "Risk Details", body: "Risk details shared with selected users through email."};

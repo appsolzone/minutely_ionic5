@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: RiskDetailsEditPage
+  },
+  {
+    path: 'add-member',
+    loadChildren: () => import('src/app/page/admin/add-member/add-member.module').then( m => m.AddMemberPageModule)
   }
 ];
 

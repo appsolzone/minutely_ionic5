@@ -38,7 +38,7 @@
         <app-meeting-location-edit *ngIf="showSection=='LOCATION' && sessionInfo && meeting" editMode="create" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-location-edit>
         <app-meeting-attendees-edit *ngIf="showSection=='ATTENDEES' && sessionInfo && meeting" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-attendees-edit>
         <app-meeting-agenda-note-edit *ngIf="showSection=='AGENDA' && sessionInfo && meeting" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-agenda-note-edit>
-        <ion-toolbar class="ion-no-margin ion-no-padding">
+        <ion-toolbar class="ion-no-margin ion-no-padding ion-margin-top">
           <ion-item class="ion-margin-top ion-margin-bottom" color="transparent" lines="none">
           </ion-item>
           <ion-item class="ion-no-padding ion-margin-top ion-margin-bottom" color="transparent" lines="none">
