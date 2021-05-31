@@ -104,8 +104,8 @@ export class FeatureCheckDirective {
     const {aclFreeLimitKpi} = this.sessionInfo;
     return this.featureIdList.some(featureId => {
       const feature = aclFreeLimitKpi[featureId];
-      const freeLimit = feature?.freeLimit ?  feature?.freeLimit : -1;
-      const usedLimit = feature?.usedLimit ?  feature?.usedLimit : 0;
+      const freeLimit = feature?.freeLimit!=null ?  feature?.freeLimit : -1;
+      const usedLimit = feature?.usedLimit!=null ?  feature?.usedLimit : 0;
       const isWithinLimit = freeLimit == -1 ? true : freeLimit > usedLimit;
       console.log('isWithinKpiAclLimit', this.featureIdList, isWithinLimit, feature);
       if (!isWithinLimit){

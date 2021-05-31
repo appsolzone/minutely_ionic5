@@ -112,6 +112,10 @@ ion-icon {
   }
 }
 
+.background{
+  background: #fff;
+}
+
 /*
  * Dark Colors
  * -------------------------------------------
@@ -250,6 +254,9 @@ body.dark {
       color: var(--ion-color-step-650);
     }
   }
+  .background{
+    background: var(--ion-card-background);
+  }
 
 }
 
@@ -308,6 +315,9 @@ body.dark {
     button {
       color: var(--ion-color-step-650);
     }
+  }
+  .background{
+    background: var(--ion-card-background);
   }
 
 }

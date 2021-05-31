@@ -1,39 +1,87 @@
 <!-- graphX rendering -->
 <div *ngIf="graphX">
   <ion-item>
-    <h2><ion-icon *ngIf="graphX.icon" [name]="graphX.icon" color="primary" class="ion-padding-end"></ion-icon><small>{{' ' + graphX.title}}</small></h2>
+    <ion-icon *ngIf="graphX.icon" [name]="graphX.icon" color="primary" class="ion-padding-end" clot="start"></ion-icon>
+    <ion-label><h2>{{graphX.title}}</h2></ion-label>
   </ion-item>
   <div class="graphX">
-    <div class="eachSummary" *ngFor="let data of graphX.data; let i=index;">
-      <div class="floats">
+    <div class="eachSummary" (click)="clickX(data)" *ngFor="let data of graphX.data; let i=index;">
+      <ion-label>
+        <ion-row>
+          <ion-col>
+            <p class="ion-text-start"><ion-icon *ngIf="data.icon" [name]="data.icon"></ion-icon><ion-text color="medium"> {{data.label}}</ion-text></p>
+          </ion-col>
+          <ion-col size="3">
+            <p class="ion-text-end"><ion-text color="medium">{{(data.labelValue) ? data.labelValue : ''}}</ion-text></p>
+          </ion-col>
+        </ion-row>
+      </ion-label>
+      <!-- <div class="floats">
         <ion-row>
           <ion-col size="9" class="label">
-            <p><ion-icon *ngIf="data.icon" [name]="data.icon"></ion-icon> {{data.label}}</p>
+            <p><ion-icon *ngIf="data.icon" [name]="data.icon"></ion-icon><small> {{data.label}}</small></p>
           </ion-col>
           <ion-col size="3" class="value">
-            <p>{{(data.labelValue) ? data.labelValue : ''}}</p>
+            <p><small>{{(data.labelValue) ? data.labelValue : ''}}</small></p>
           </ion-col>
         </ion-row>
         <div class="clear"></div>
-      </div>
+      </div> -->
       <div class="rating">
         <div *ngFor="let bar of data.stack; let z=index;" [class]="bar.cssClass" [ngStyle]="{'width': bar.width+'%', 'z-index': data.stack.length - z}">
           <!-- <div [class]="bar.cssClass" [ngStyle]="{'width': bar.width+'%', 'z-index': data.stack.length - z}"></div> -->
         </div>
+      </div>
+      <br/>
     </div>
+  </div>
+</div>
+
+<!-- Graph YM rendering -->
+<div *ngIf="graphYM">
+  <ion-item>
+    <ion-icon *ngIf="graphYM.icon" [name]="graphYM.icon" color="primary" class="ion-padding-end" clot="start"></ion-icon>
+    <ion-label><h2>{{graphYM.title}}</h2></ion-label>
+  </ion-item>
+  <br/>
+  <div class="graphYP">
+    <div class="maxlabel"><small>{{graphYM.maxValue ? graphYM.maxValue : 1}}</small></div>
+    <div class="halfwaymark"><small>{{graphYM.maxValue ? graphYM.halfValue : 0.5}}</small></div>
+    <div class="eachbar " (click)="clickY(data)" [ngStyle]="{'width': (100/graphYM.data.length) +'%'}"  *ngFor="let data of graphYM.data; let i=index;">
+      <div *ngFor="let bar of data.stack; let z=index;">
+        <div [class]="bar.cssClass" [ngStyle]="{'height': (bar.height >= 0 ? bar.height : 0) +'%', 'z-index': data.stack.length - z + 1}"></div>
+      </div>
     </div>
+  </div>
+  <div class="xAxis">
+    <div class="eachbar" [ngStyle]="{'width': (100/graphYM.data.length) +'%'}"  *ngFor="let data of graphYM.data; let j=index;">
+      <div *ngIf="j%graphYM.xAxisFrequency==0" [ngStyle]="{'overflow': 'hidden'}"><small>{{data.label}}</small></div>
+    </div>
+  </div>
+  <div class="graphYN">
+    <div class="zerolabel">0</div>
+    <div class="halfwaymark"><small>{{graphYM.maxValue ? ('-'+graphYM.halfValue) : -0.5}}</small></div>
+    <div class="eachbar " (click)="clickY(data)" [ngStyle]="{'width': (100/graphYM.data.length) +'%'}"  *ngFor="let data of graphYM.data; let i=index;">
+      <div *ngFor="let bar of data.stack; let z=index;">
+        <div [class]="bar.cssClass" [ngStyle]="{'height': (bar.height< 0 ? z==0 ? '100%' : (100 - (-1*data.stack[z-1].height)+'%') : '0%'), 'z-index': z + 1}"></div>
+        <div *ngIf="z==data.stack.length -1" class="background" [ngStyle]="{'height': (bar.height < 0 ? 100 - (-1*bar.height) : 0) +'%', 'z-index': data.stack.length}"></div>
+      </div>
+    </div>
+    <div class="maxlabel"><small>{{graphYM.maxValue ? ('-' + graphYM.maxValue) : -1}}</small></div>
   </div>
 </div>
 
 <!-- Graph Y rendering -->
 <div *ngIf="graphY">
   <ion-item>
-    <h2><ion-icon *ngIf="graphY.icon" [name]="graphY.icon" color="primary" class="ion-padding-end"></ion-icon><small>{{graphY.title}}</small></h2>
+    <ion-icon *ngIf="graphY.icon" [name]="graphY.icon" color="primary" class="ion-padding-end" clot="start"></ion-icon>
+    <ion-label><h2>{{graphY.title}}</h2></ion-label>
   </ion-item>
+  <br/>
   <div class="graphY">
-    <div class="maxlabel">{{graphY.maxValue ? graphY.maxValue : 1}}</div>
-    <div class="halfwaymark">{{graphY.maxValue ? graphY.maxValue/2 : 0.5}}</div>
-    <div class="eachbar " [ngStyle]="{'width': (100/graphY.data.length) +'%'}"  *ngFor="let data of graphY.data; let i=index;">
+    <div class="maxlabel"><small>{{graphY.maxValue ? graphY.maxValue : 1}}</small></div>
+    <div class="halfwaymark"><small>{{graphY.maxValue ? graphY.halfValue : 0.5}}</small></div>
+    <div class="eachbar " (click)="clickY(data)" [ngStyle]="{'width': (100/graphY.data.length) +'%'}"  *ngFor="let data of graphY.data; let i=index;">
       <div *ngFor="let bar of data.stack; let z=index;">
         <div [class]="bar.cssClass" [ngStyle]="{'height': bar.height +'%', 'z-index': data.stack.length - z + 1}"></div>
       </div>
@@ -41,7 +89,7 @@
   </div>
   <div class="xAxis">
     <div class="eachbar" [ngStyle]="{'width': (100/graphY.data.length) +'%'}"  *ngFor="let data of graphY.data; let j=index;">
-      <div *ngIf="j%graphY.xAxisFrequency==0" [ngStyle]="{'overflow': 'hidden'}">{{data.label}}</div>
+      <div *ngIf="j%graphY.xAxisFrequency==0" [ngStyle]="{'overflow': 'hidden'}"><small>{{data.label}}</small></div>
     </div>
   </div>
 </div>

@@ -61,14 +61,14 @@ export class KpiService {
   // This is to increase the usage count for the object in concern
   // Pleaes note that we might have to call this multiple permission+feature combination as there may be fetchAllUsers
   // where same object may be created from different end point
-  updateKpiDuringCreation(feature: string, session: any, transactionRef: any) {
+  updateKpiDuringCreation(feature: string, session: any, transactionRef: any, quantity: number = 1) {
     const { subscriberId } = session;
     const freeLimitRef = this.database.afs.firestore
       .collection(this.database.allCollections.aclKpi)
       .doc(subscriberId);
     const freeLimitObj = {
       [feature]: {
-        usedLimit: this.database.frb.firestore.FieldValue.increment(+1),
+        usedLimit: this.database.frb.firestore.FieldValue.increment(quantity),
       },
     };
     // console.log("free limit obje......", freeLimitObj, feature);
