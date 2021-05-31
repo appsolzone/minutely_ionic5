@@ -93,7 +93,7 @@ export class IssueUserCommentsPage implements OnInit,OnDestroy {
     commentObj.comment = this.postedComment;
     commentObj.picUrl = this.sessionInfo.userProfile.picUrl;
     commentObj.uid = this.sessionInfo.userProfile.uid;
-    let servicedoc = {collectionName:'issue',id:this.issue.id};
+    let servicedoc = {collectionName:'issue',id:this.issue.id,members:[{...this.issue.issueOwner},{...this.issue.issueInitiator}]};
     this.commentServ.addComment(commentObj,servicedoc)
     .then((res)=>{
     //  console.log("comment add resposnse",res);

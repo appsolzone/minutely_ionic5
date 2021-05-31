@@ -39,8 +39,9 @@ export class SendEmailService {
   {
     return new Promise((resolve: any, reject: any)=>{
       this.httpClient.post(path, data, { responseType: 'text' as 'json'}).subscribe(res=>{
+        console.log(res);
         resolve(res);
-      })
+      },(err)=>console.log("mail send error: ",err));
     })
   }
 }

@@ -272,6 +272,9 @@ export class IssueService {
           // this.sfp.defaultAlert("Successful","Issue Data updated successfully.");
           // this.navData.loader = false;
           console.log("runninh transaction", {status: 'success', title: "Successful", body: "Issue Data updated successfully."});
+          //send mail during update and creation
+          this.sendMailDuringCreationUpdateToOwner(issue,sessionInfo,type);
+
           return {status: 'success', title: "Success", body: "Issue " +  (type=='new' ? 'created' : 'updated') + " successfully."};
 
         }
@@ -332,5 +335,26 @@ export class IssueService {
 
         });
       return {status: "success", title: "Issue Details", body: "Issue details shared with selected users through email."};
+  }
+
+
+
+  sendMailDuringCreationUpdateToOwner(issueDetails,sessionInfo,type){
+   let issueObj = {
+    toEmail:issueDetails.issueOwner.email,
+    toName: issueDetails.issueOwner.name,
+    initiator:sessionInfo.userProfile.name,
+    orgName:sessionInfo.orgProfile.subscriberId,
+    issueTitle:issueDetails.issueTitle,
+    initationDate:moment(issueDetails.issueInitiationDate).format('MMM DD, YYYY'),
+    targetCompletionDate:moment(issueDetails.targetCompletionDate).format('MMM DD, YYYY'),
+    status:issueDetails.issueStatus,
+   };
+   let path = type == 'updated'? this.sendmail.updateIssueMailPath : this.sendmail.newIssueMailPath;
+   this.sendmail.sendCustomEmail(path,issueObj)
+      .then((sent: any)=>
+        {
+
+        }); 
   }
 }
