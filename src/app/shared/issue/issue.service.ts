@@ -4,6 +4,7 @@ import { DatabaseService } from 'src/app/shared/database/database.service';
 import { TextsearchService } from 'src/app/shared/textsearch/textsearch.service';
 import { LinkageService } from 'src/app/shared/linkage/linkage.service';
 import { MinutelyKpiService } from 'src/app/shared/minutelykpi/minutelykpi.service';
+import { KpiService } from 'src/app/shared/kpi/kpi.service';
 import { NotificationsService } from 'src/app/shared/notifications/notifications.service';
 import { ItemUpdatesService } from 'src/app/shared/item-updates/item-updates.service';
 import { SendEmailService } from 'src/app/shared/send-email/send-email.service';
@@ -56,6 +57,7 @@ export class IssueService {
     public searchMap: TextsearchService,
     public link: LinkageService,
     public kpi: MinutelyKpiService,
+    public aclKpi: KpiService,
     public notification: NotificationsService,
     public itemupdate: ItemUpdatesService,
     public sendmail: SendEmailService,
@@ -172,7 +174,7 @@ export class IssueService {
                         moment(new Date(issue.targetCompletionDate)).format("MMMM") + " " +
                         moment(new Date(issue.targetCompletionDate)).format("MMM");
     searchMap = this.searchMap.createSearchMap(searchStrings);
-    issue.ownerInitiatorUidList.forEach(uid=>searchMap[uid]=true);
+    issue.ownerInitiatorUidList.forEach(uid=>{if(uid)searchMap[uid]=true;});
     return searchMap;
   }
 
@@ -235,7 +237,13 @@ export class IssueService {
           // If this is the very first instance of the series of issues, check for status change and subsequently
           // update the records as required
           if(type=='new'){
-            this.kpi.updateKpiDuringCreation('Issue',1,sessionInfo)
+            this.kpi.updateKpiDuringCreation('Issue',1,sessionInfo);
+            this.aclKpi.updateKpiDuringCreation(
+              'create-project-item',
+              sessionInfo,
+              transaction,
+              1
+            );
           } else {
             let statusChanged = (refCopy.issueStatus!=issue.issueStatus);
             let prevStatus = refCopy.issueStatus;
@@ -332,7 +340,12 @@ export class IssueService {
       this.sendmail.sendCustomEmail(this.sendmail.shareIssuePath,minutesObj)
       .then((sent: any)=>
         {
-
+          this.aclKpi.updateKpiDuringCreation(
+            'share-project-item',
+            {subscriberId: m.subscriberId} , //sessionInfo,
+            null,
+            selectedMembers.length
+          );
         });
       return {status: "success", title: "Issue Details", body: "Issue details shared with selected users through email."};
   }
@@ -355,6 +368,6 @@ export class IssueService {
       .then((sent: any)=>
         {
 
-        }); 
+        });
   }
 }

@@ -32,6 +32,7 @@
     "firebaseui": "^4.7.1",
     "ion2-calendar": "^3.5.0",
     "moment": "^2.24.0",
+    "papaparse": "^5.3.1",
     "rxjs": "~6.5.5",
     "talisman": "^1.1.4",
     "tslib": "^2.0.0",

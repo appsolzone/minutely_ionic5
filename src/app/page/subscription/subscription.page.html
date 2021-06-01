@@ -80,7 +80,7 @@
                     <ion-input type="text" [value]="orgProfile?.noOfUserAllowed - orgProfile?.noOfFreeLicense + ' of ' + orgProfile?.noOfUserAllowed + ' in use'" class="ion-text-right"
                       placeholder="No free license info" readonly></ion-input>
                   </ion-item>
-                  <ion-item lines="inset">
+                  <ion-item lines="inset" *ngIf="orgProfile?.subscriptionType!='Free'">
                     <ion-label>
                       <ion-icon name="power"></ion-icon>
                     </ion-label>
@@ -89,7 +89,7 @@
                   </ion-item>
 
                   <ion-item lines="none" class="ion-margin-top">
-                    <ion-button slot="end" size="default" (click)="upgradePlan()">Upgrade</ion-button>
+                    <ion-button slot="end" size="default" (click)="upgradePlan()">{{(orgProfile?.subscriptionType=='Free' || currPlanActiveOrNot) ? 'Upgrade' : 'Renew'}}</ion-button>
                   </ion-item>
                 </ion-list>
               </ion-card-content>
@@ -97,17 +97,18 @@
           </ion-col>
           <ion-col>
             <ion-card class="uniform-card-height">
-              <ion-item lines="none" color="transparent" style="background: {{orgPlan?.color}};">
+              <ion-item lines="none" color="transparent">
                 <h1>
-                    <ion-text color="white">{{ orgPlan?.planName }}</ion-text>
+                    <ion-text>{{ orgPlan?.planName }}</ion-text>
                 </h1>
-                <ion-text color="white" slot="end">$ {{orgPlan?.price}} / mo</ion-text>
+                <ion-text slot="end">$ {{orgPlan?.price * (orgProfile?.noOfUserAllowed ?  orgProfile.noOfUserAllowed : 1) | number:'1.2-2' }} / mo</ion-text>
               </ion-item>
+              <ion-progress-bar [color]="orgPlan?.color" value="1"></ion-progress-bar>
               <ion-card-content>
                 <ion-item no-lines>
                   <ion-label class="ion-text-center">
                     <h1>
-                      <ion-text class="large-title">$ {{ orgPlan?.price/orgPlan?.allowedLicense | number:'1.2-2'}}</ion-text> / mo <br/> <small>per user</small>
+                      <ion-text class="large-title">$ {{ orgPlan?.price | number:'1.2-2'}}</ion-text> / mo <br/> <small>per user</small>
                     </h1>
                   </ion-label>
                 </ion-item>

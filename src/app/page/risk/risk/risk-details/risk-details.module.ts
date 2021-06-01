@@ -15,6 +15,8 @@ import { RiskProbabilityImpactComponent } from '../risk-probability-impact/risk-
 import { LinkageModule } from 'src/app/page/linkage/linkage.module';
 import { SelectUsersModule } from 'src/app/page/select-users/select-users.module';
 
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -23,6 +25,7 @@ import { SelectUsersModule } from 'src/app/page/select-users/select-users.module
     RiskDetailsPageRoutingModule,
     LinkageModule,
     SelectUsersModule,
+    FeatureCheckDirectiveModule,
   ],
   declarations: [
     RiskDetailsPage,

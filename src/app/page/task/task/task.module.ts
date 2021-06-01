@@ -11,6 +11,7 @@ import { NotificationPageRoutingModule } from '../../notification/notification-r
 import { TaskDetailsPageModule } from './task-details/task-details.module';
 import { TaskListPageModule } from './task-list/task-list.module';
 import { KpiModule } from '../../kpi/kpi.module';
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { KpiModule } from '../../kpi/kpi.module';
     NotificationPageRoutingModule,
     TaskDetailsPageModule,
     TaskListPageModule,
-    KpiModule
+    KpiModule,
+    FeatureCheckDirectiveModule,
   ],
   declarations: [TaskPage]
 })

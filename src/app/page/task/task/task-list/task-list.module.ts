@@ -10,13 +10,16 @@ import { TaskListPage } from './task-list.page';
 
 import { CalendarModule } from 'ion2-calendar';
 
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
     TaskListPageRoutingModule,
-    CalendarModule
+    CalendarModule,
+    FeatureCheckDirectiveModule,
   ],
   declarations: [TaskListPage],
   exports:[TaskListPage]

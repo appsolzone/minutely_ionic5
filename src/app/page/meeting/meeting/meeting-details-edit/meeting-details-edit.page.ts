@@ -64,7 +64,7 @@ export class MeetingDetailsEditPage implements OnInit {
       console.log("ionViewDidEnter")
       this.router.navigate(['meeting']);
     } else {
-      if(meetingStateData?.id!=this.meeting?.id){
+      if(meetingStateData?.id!=this.meeting?.id || !meetingStateData?.id){
         this.getMeeting(meetingStateData);
       }
     }
@@ -139,7 +139,7 @@ export class MeetingDetailsEditPage implements OnInit {
     let validation = status=='CANCEL' ?
                      {status: true, title: 'cancel', body: 'cancel meeting'}
                      :
-                     this.meetingservice.validateBasicInfo(this.meeting, this.refInformation);
+                     this.meetingservice.validateBasicInfo(this.meeting, this.refInformation, this.sessionInfo);
 
     if(!validation.status){
       await this.common.presentAlertConfirm(validation.title,validation.body, buttons);
@@ -179,7 +179,7 @@ export class MeetingDetailsEditPage implements OnInit {
           validation = status=='CANCEL' ?
                            {status: true, title: 'cancel', body: 'cancel meeting'}
                            :
-                           this.meetingservice.validateBasicInfo(this.meeting, this.refInformation);
+                           this.meetingservice.validateBasicInfo(this.meeting, this.refInformation, this.sessionInfo);
           if(!toCascadeChanges || status == 'CANCEL' || validation.status){
             // Now run the process as required
             // this.navData.loader = true;

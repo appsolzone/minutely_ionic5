@@ -8,12 +8,15 @@ import { UserCommentsPageRoutingModule } from './user-comments-routing.module';
 
 import { UserCommentsPage } from './user-comments.page';
 
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    UserCommentsPageRoutingModule
+    UserCommentsPageRoutingModule,
+    FeatureCheckDirectiveModule,
   ],
   declarations: [UserCommentsPage]
 })

@@ -92,7 +92,7 @@ export class TaskUserCommentsPage implements OnInit,OnDestroy {
     commentObj.picUrl = this.sessionInfo.userProfile.picUrl;
     commentObj.uid = this.sessionInfo.userProfile.uid;
     let servicedoc = {collectionName:'task',id:this.task.id,members:[{...this.task.taskOwner},{...this.task.taskInitiator}]};
-    this.commentServ.addComment(commentObj,servicedoc)
+    this.commentServ.addComment(commentObj,servicedoc,this.sessionInfo)
     .then((res)=>{
       console.log("comment add resposnse",res);
       this.postedComment = '';
@@ -104,4 +104,3 @@ export class TaskUserCommentsPage implements OnInit,OnDestroy {
     user.picUrl = '/assets/shapes.svg';
   }
 }
-

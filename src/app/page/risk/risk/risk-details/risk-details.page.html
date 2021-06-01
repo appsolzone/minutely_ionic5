@@ -10,10 +10,18 @@
         (click)="editRisk()">
         <ion-icon name="create-outline" slot="icon-only"></ion-icon>
       </ion-button>
-      <ion-button slot="end" class="ion-hide-md-up" (click)="sendRiskDetails($event)">
+      <ion-button slot="end" class="ion-hide-md-up"
+      (featureClick)="sendRiskDetails($event)"
+      appFeatureCheck
+      [featureIdList]="['share-project-item']"
+      >
         <ion-icon name="paper-plane-outline" slot="icon-only"></ion-icon>
       </ion-button>
-      <ion-button slot="end"  class="ion-hide-md-down" (click)="presentPopover($event)">
+      <ion-button slot="end"  class="ion-hide-md-down"
+      (featureClick)="presentPopover($event)"
+      appFeatureCheck
+      [featureIdList]="['share-project-item']"
+      >
         <ion-icon name="paper-plane-outline" slot="icon-only"></ion-icon>
       </ion-button>
       <ion-button slot="end" disabled="true" class="ion-hide-lg-up">

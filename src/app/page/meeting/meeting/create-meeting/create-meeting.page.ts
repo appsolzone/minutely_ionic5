@@ -158,7 +158,7 @@ export class CreateMeetingPage implements OnInit {
     let validation = status=='CANCEL' ?
                      {status: true, title: 'cancel', body: 'cancel meeting'}
                      :
-                     this.meetingservice.validateBasicInfo(this.meeting, this.refInformation);
+                     this.meetingservice.validateBasicInfo(this.meeting, this.refInformation, this.sessionInfo);
 
     if(!validation.status){
       await this.common.presentAlertConfirm(validation.title,validation.body, buttons);

@@ -4,6 +4,7 @@ import { DatabaseService } from 'src/app/shared/database/database.service';
 import { TextsearchService } from 'src/app/shared/textsearch/textsearch.service';
 import { LinkageService } from 'src/app/shared/linkage/linkage.service';
 import { MinutelyKpiService } from 'src/app/shared/minutelykpi/minutelykpi.service';
+import { KpiService } from 'src/app/shared/kpi/kpi.service';
 import { NotificationsService } from 'src/app/shared/notifications/notifications.service';
 import { ItemUpdatesService } from 'src/app/shared/item-updates/item-updates.service';
 import { SendEmailService } from 'src/app/shared/send-email/send-email.service';
@@ -55,6 +56,7 @@ constructor(
     public searchMap: TextsearchService,
     public link: LinkageService,
     public kpi: MinutelyKpiService,
+    public aclKpi: KpiService,
     public notification: NotificationsService,
     public itemupdate: ItemUpdatesService,
     public sendmail: SendEmailService,
@@ -174,7 +176,7 @@ constructor(
                         moment(new Date(risk.targetCompletionDate)).format("MMMM") + " " +
                         moment(new Date(risk.targetCompletionDate)).format("MMM");
     searchMap = this.searchMap.createSearchMap(searchStrings);
-    risk.ownerInitiatorUidList.forEach(uid=>searchMap[uid]=true);
+    risk.ownerInitiatorUidList.forEach(uid=>{if(uid)searchMap[uid]=true;});
     return searchMap;
   }
 
@@ -237,7 +239,13 @@ constructor(
           // If this is the very first instance of the series of risks, check for status change and subsequently
           // update the records as required
           if(type=='new'){
-            this.kpi.updateKpiDuringCreation('Risk',1,sessionInfo)
+            this.kpi.updateKpiDuringCreation('Risk',1,sessionInfo);
+            this.aclKpi.updateKpiDuringCreation(
+              'create-project-item',
+              sessionInfo,
+              transaction,
+              1
+            );
           } else {
             let statusChanged = (refCopy.riskStatus!=risk.riskStatus);
             let prevStatus = refCopy.riskStatus;
@@ -333,6 +341,12 @@ constructor(
       this.sendmail.sendCustomEmail(this.sendmail.shareRiskPath,minutesObj)
       .then((sent: any)=>
         {
+          this.aclKpi.updateKpiDuringCreation(
+            'share-project-item',
+            {subscriberId: m.subscriberId} , //sessionInfo,
+            null,
+            selectedMembers.length
+          );
           console.log("response from risk share email", sent);
 
         });
@@ -340,11 +354,11 @@ constructor(
   }
   sendMailDuringCreationUpdateToOwner(riskDetails,sessionInfo,type){
    let taskObj = {
-    toEmail:riskDetails.taskOwner.email,
-    toName: riskDetails.taskOwner.name,
+    toEmail:riskDetails.riskOwner.email,
+    toName: riskDetails.riskOwner.name,
     initiator:sessionInfo.userProfile.name,
     orgName:sessionInfo.orgProfile.subscriberId,
-    riskTitle:riskDetails.taskTitle,
+    riskTitle:riskDetails.riskTitle,
     initationDate:moment(riskDetails.riskInitiationDate).format('MMM DD, YYYY'),
     targetCompletionDate:moment(riskDetails.targetCompletionDate).format('MMM DD, YYYY'),
     status:riskDetails.riskStatus,
@@ -356,6 +370,6 @@ constructor(
       .then((sent: any)=>
         {
 
-        }); 
+        });
   }
 }

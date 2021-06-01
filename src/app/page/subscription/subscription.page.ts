@@ -59,7 +59,7 @@ export class SubscriptionPage implements OnInit {
          this.orgProfile?.subscriberType !== 'Free'
          && this.orgProfile?.subscriberId !== value?.orgProfile?.subscriberId
        ){
-         // this.componentService.showLoader();
+         // await this.componentService.showLoader();
           this.currPlanActiveOrNot = undefined;
           this.paypal.getSubcriptionDetails(value?.orgProfile?.paypalId);
        }

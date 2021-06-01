@@ -13,7 +13,7 @@ import { TaskAgendaNoteComponent } from '../task-agenda-note/task-agenda-note.co
 import { TaskCommentsComponent } from '../task-comments/task-comments.component';
 import { LinkageModule } from 'src/app/page/linkage/linkage.module';
 import { SelectUsersModule } from 'src/app/page/select-users/select-users.module';
-
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
 
 @NgModule({
   imports: [
@@ -22,7 +22,8 @@ import { SelectUsersModule } from 'src/app/page/select-users/select-users.module
     IonicModule,
     TaskDetailsPageRoutingModule,
     LinkageModule,
-    SelectUsersModule
+    SelectUsersModule,
+    FeatureCheckDirectiveModule,
   ],
   declarations: [
     TaskDetailsPage,

@@ -27,6 +27,7 @@ export class UserCommentsPage implements OnInit,OnDestroy {
   userProfile:User;
   orgProfile:Object;
   emailReceiverMembers:any;
+  sessionInfo: any;
   constructor(
     private comment:UserCommentService,
     private componentService:ComponentsService,
@@ -46,6 +47,7 @@ export class UserCommentsPage implements OnInit,OnDestroy {
        if(value?.userProfile){
        // Nothing to do just display details
        // Re populate the values as required
+       this.sessionInfo = value;
        this.userProfile = value?.userProfile;
        this.orgProfile = value?.orgProfile;
        } else {
@@ -114,14 +116,14 @@ export class UserCommentsPage implements OnInit,OnDestroy {
         date:this.db.frb.firestore.FieldValue.serverTimestamp(),
         totalComments:this.db.frb.firestore.FieldValue.increment(1)
       }
-      this.comment.addComment(commentObject,this.passObj)
+      this.comment.addComment(commentObject,this.passObj, this.sessionInfo)
       .then(res=>{
         console.log(res);
         this.commentTxt = '';
         this.componentService.presentToaster('Your comment add successfully!!');
         this.comment.sendEmail(this.emailReceiverMembers,commentObject,this.passObj)
       })
-      .catch(err=>{console.log(err);this.componentService.presentAlert('Error',"Somting wents wrong! Please try again")});
+      .catch(err=>{console.log(err);this.componentService.presentAlert('Error',"Somthing wents wrong! Please try again")});
 
     }
 

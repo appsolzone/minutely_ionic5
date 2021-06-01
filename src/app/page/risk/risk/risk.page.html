@@ -22,7 +22,11 @@
     </ion-col>
   </ion-row>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button  size="small" (click)="gotoAddRisk()">
+    <ion-fab-button  size="small"
+    (featureClick)="gotoAddRisk()"
+    appFeatureCheck
+    [featureIdList]="['create-project-item']"
+    >
       <ion-icon name="add" size="large"></ion-icon>
     </ion-fab-button>
   </ion-fab>

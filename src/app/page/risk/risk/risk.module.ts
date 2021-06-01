@@ -9,6 +9,7 @@ import { RiskPageRoutingModule } from './risk-routing.module';
 import { RiskPage } from './risk.page';
 import { KpiModule } from '../../kpi/kpi.module';
 import { RiskListPageModule } from './risk-list/risk-list.module';
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { RiskListPageModule } from './risk-list/risk-list.module';
     IonicModule,
     RiskPageRoutingModule,
     KpiModule,
-    RiskListPageModule
+    RiskListPageModule,
+    FeatureCheckDirectiveModule,
   ],
   declarations: [RiskPage]
 })

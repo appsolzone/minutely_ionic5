@@ -15,6 +15,8 @@ import { LinkageModule } from 'src/app/page/linkage/linkage.module';
 
 import { MeetingDetailsPage } from './meeting-details.page';
 
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -26,7 +28,8 @@ import { MeetingDetailsPage } from './meeting-details.page';
     MeetingBasicInfoModule,
     MeetingAttendeesModule,
     MeetingAgendaNoteModule,
-    MeetingLocationModule
+    MeetingLocationModule,
+    FeatureCheckDirectiveModule
   ],
   declarations: [
     MeetingDetailsPage,

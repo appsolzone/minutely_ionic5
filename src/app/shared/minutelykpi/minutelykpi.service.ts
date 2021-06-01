@@ -54,10 +54,10 @@ export class MinutelyKpiService {
 
   // Read and watch
   getKpis(queryObj:any[], textSearchObj: any = null){
-    return this.database.getAllDocumentsSnapshotByQuery(this.database.allCollections.kpi, queryObj, textSearchObj);
+    return this.database.getAllDocumentsSnapshotByQuery(this.database.allCollections.minutelykpi, queryObj, textSearchObj);
   }
   getKpisByDocId(docId: string){
-    return this.database.getDocumentSnapshotById(this.database.allCollections.kpi, docId);
+    return this.database.getDocumentSnapshotById(this.database.allCollections.minutelykpi, docId);
   }
 
   async initialiseKpi(sessionInfo){
@@ -93,7 +93,7 @@ export class MinutelyKpiService {
     {
       const batch = this.database.afs.firestore.batch();
       const kpiRef = this.database.afs
-        .collection(this.database.allCollections.kpi)
+        .collection(this.database.allCollections.minutelykpi)
         .doc(navData.subscriberId).ref;
 
       batch.update(kpiRef, {
@@ -113,7 +113,7 @@ export class MinutelyKpiService {
     var currS = currStatus.toLowerCase();
     var typeL = type.toLowerCase();
 
-    let rlDocRef = this.database.afs.firestore.collection(this.database.allCollections.kpi).doc(navData.subscriberId);
+    let rlDocRef = this.database.afs.firestore.collection(this.database.allCollections.minutelykpi).doc(navData.subscriberId);
     this.database.afs.firestore.runTransaction(function(transaction){
       // This code may get re-run multiple times if there are conflicts related to rlDocRef.
       return transaction.get(rlDocRef).then((doc)=>{
@@ -172,7 +172,7 @@ export class MinutelyKpiService {
     return new Promise((res, rej) => {
       var batch = this.database.afs.firestore.batch();
       const a = this.database.afs
-        .collection(this.database.allCollections.kpi)
+        .collection(this.database.allCollections.minutelykpi)
         .doc(navData.subscriberId).ref;
 
       //------------------only for risk------------
@@ -206,7 +206,7 @@ export class MinutelyKpiService {
 
   getKpiData(subscriberId: string)
   {
-    return this.database.getDocumentSnapshotById(this.database.allCollections.kpi,subscriberId)
+    return this.database.getDocumentSnapshotById(this.database.allCollections.minutelykpi,subscriberId)
       .pipe(
         map((a) => {
           const data = a.payload.data();

@@ -51,12 +51,13 @@ export const environment = {
   },
 
   paypalInfo: {
-      paypalBillingUrl: "https://api.sandbox.paypal.com/v1/billing/subscriptions/",
-      paypalBasicUrl:
-        "Basic " +
-        btoa(
-          "ATackO0tNdQfaa8uPjXYp35BV9zVqddJfxJs8yuNzmfVt1SMexC-B1X91VDmHLbo2RpGYWbNkVE-DJIb:EIyViahIsCTMXugf4SOx1D3mWLsU6DS8C3wdSJ-M5PfMke5o-DJEa7fOdVsixXEY3HT7IToB3KLLkZ96"
-        ),
+    paypalBillingUrl:
+      'https://api.sandbox.paypal.com/v1/billing/subscriptions/',
+    paypalBasicUrl:
+      'Basic ' +
+      btoa(
+        'ATackO0tNdQfaa8uPjXYp35BV9zVqddJfxJs8yuNzmfVt1SMexC-B1X91VDmHLbo2RpGYWbNkVE-DJIb:EIyViahIsCTMXugf4SOx1D3mWLsU6DS8C3wdSJ-M5PfMke5o-DJEa7fOdVsixXEY3HT7IToB3KLLkZ96'
+      ),
   },
 };
 

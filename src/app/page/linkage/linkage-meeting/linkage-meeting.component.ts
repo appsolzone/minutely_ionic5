@@ -46,7 +46,7 @@ export class LinkageMeetingComponent implements OnInit {
       const id = m.id;
       const state = m.state;
       // const meetingStart = data.meetingStart?.seconds ? new Date(data.meetingStart?.seconds*1000) : data.meetingStart? data.meetingStart : null;
-      const meetingStart = new Date(data.meetingStart?.seconds*1000);
+      const meetingStart = data.meetingStart?.seconds ? new Date(data.meetingStart?.seconds*1000) : data.meetingStart ? data.meetingStart : null;
       const meetingEnd = data.meetingEnd?.seconds ? new Date(data.meetingEnd?.seconds*1000) : data.meetingEnd ? data.meetingEnd : null;
       // return {id, data: { ...data, startTime, endTime }};
       if(state){

@@ -64,7 +64,7 @@ export class NotificationsService {
           {
             ...this.newNotification,
             msgBody: msg.msgBody,
-            msgTitle: msg.msgTitle ? msg.msgTitle : 'Boradcast message',
+            msgTitle: msg.msgTitle ? msg.msgTitle : 'Broadcast message',
             origin: {label: 'Broadcasts', icon: 'megaphone', color: 'secondary'},
             actions: [{text: 'clear', color: 'medium', href: 'clear'}],
             refData: {}, // data required for any action or oter purpose
