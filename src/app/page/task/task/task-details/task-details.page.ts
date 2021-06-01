@@ -155,6 +155,7 @@ export class TaskDetailsPage implements OnInit {
         sectionHeader: { icon: 'people', text: 'Select Users to send email ' },
         multiSelect:true,
         popoverMode:true,
+        showAddNonPermUser: true,
        },
       // mode:'ios',
       backdropDismiss:true //false
