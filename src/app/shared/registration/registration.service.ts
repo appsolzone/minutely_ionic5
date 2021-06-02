@@ -147,61 +147,72 @@ export class RegistrationService {
 
     return this.db.afs.firestore.runTransaction((transaction) => {
       return transaction.get(subscriberRef).then((subsDoc) => {
-        // add user as part of the subscriber
-        const newUser = Object.assign(
-          {},
-          { ...this.user.newUser },
-          {
-            uid: uId,
-            name,
-            email,
-            subscriberId: sId,
-            // address: address,
-            role: userOnbordData !== undefined ? userOnbordData.role : 'USER',
-            status: userOnbordData !== undefined ? 'ACTIVE' : 'REGISTERED',
-            jobTitle:
-              userOnbordData !== undefined && userOnbordData?.jobTitle
-                ? userOnbordData?.jobTitle
-                : null,
-            phoneNumber:
-              userOnbordData !== undefined && userOnbordData?.phoneNumber
-                ? userOnbordData?.phoneNumber
-                : null,
+        let subscriber = subsDoc.data();
+        if (subscriber.noOfFreeLicense<=0) {
+          // raise alert it should fail as we are trying to add a new subscriber which already exists
+          console.log(
+            'Unable to add new user, please check the available no of free license and try again',
+            subscriber
+          );
+          throw new Error('Unable to add new user, please check the available no of free license and try again!');
+        } else {
+          // add user as part of the subscriber
+          const newUser = Object.assign(
+            {},
+            { ...this.user.newUser },
+            {
+              uid: uId,
+              name,
+              email,
+              subscriberId: sId,
+              // address: address,
+              role: userOnbordData !== undefined ? userOnbordData.role : 'USER',
+              status: userOnbordData !== undefined ? 'ACTIVE' : 'REGISTERED',
+              jobTitle:
+                userOnbordData !== undefined && userOnbordData?.jobTitle
+                  ? userOnbordData?.jobTitle
+                  : null,
+              phoneNumber:
+                userOnbordData !== undefined && userOnbordData?.phoneNumber
+                  ? userOnbordData?.phoneNumber
+                  : null,
+            }
+          );
+          // during admin user onboard
+          if (userOnbordData != undefined) {
+            const subsUpdateObj = {
+              noOfFreeLicense: this.db.frb.firestore.FieldValue.increment(-1),
+            };
+            this.db.setTransactDocument(
+              transaction,
+              subscriberRef,
+              subsUpdateObj,
+              true
+            );
           }
-        );
-        // during admin user onboard
-        if (userOnbordData != undefined) {
-          const subsUpdateObj = {
-            noOfFreeLicense: this.db.frb.firestore.FieldValue.increment(-1),
-          };
+
+          this.db.setTransactDocument(transaction, userRef, newUser);
+          // add user to useruids list
+          const newuseruids = { uid: uId, email };
+          this.db.setTransactDocument(transaction, useruids, newuseruids);
+          // create the notification area
+          const newNotification = Object.assign(
+            {},
+            // {...this.subscriber.newSubscriber},
+            {
+              uid: uId,
+              name,
+              totalAlerts: 0,
+              totalAlertsUnread: 0,
+            }
+          );
           this.db.setTransactDocument(
             transaction,
-            subscriberRef,
-            subsUpdateObj,
-            true
+            notificationRef,
+            newNotification
           );
         }
 
-        this.db.setTransactDocument(transaction, userRef, newUser);
-        // add user to useruids list
-        const newuseruids = { uid: uId, email };
-        this.db.setTransactDocument(transaction, useruids, newuseruids);
-        // create the notification area
-        const newNotification = Object.assign(
-          {},
-          // {...this.subscriber.newSubscriber},
-          {
-            uid: uId,
-            name,
-            totalAlerts: 0,
-            totalAlertsUnread: 0,
-          }
-        );
-        this.db.setTransactDocument(
-          transaction,
-          notificationRef,
-          newNotification
-        );
       }); // end of transaction callback
     }); // end of runTransaction
   }

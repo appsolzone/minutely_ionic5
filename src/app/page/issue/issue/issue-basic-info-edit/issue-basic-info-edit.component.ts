@@ -87,8 +87,10 @@ export class IssueBasicInfoEditComponent implements OnInit {
   }
 
   addTag(){
-    this.issueDetails.tags.push(this.issueTag);
-    this.issueTag = '';
+    if(this.issueTag){
+      this.issueDetails.tags.push(this.issueTag);
+      this.issueTag = '';
+    }
   }
 
   removeTag(index){

@@ -173,7 +173,7 @@ export class CreateIssuePage implements OnInit {
       await this.common.presentAlertConfirm(validation.title,validation.body, buttons);
     } else {
       title = 'Confirmation';
-      body = "You are about to create a new issue. Are you sure that you want to continue to create the issue?";
+      body = "Are you sure that you want to continue to create the issue?";
       response = false;
       await this.common.presentAlertConfirm(title,body, continueButtons);
       console.log("response", response);

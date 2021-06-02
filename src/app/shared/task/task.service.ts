@@ -152,11 +152,11 @@ constructor(
     return this.transaction(taskData, refInformation, editedlinkages, sessionInfo, type, false);
   }
 
-  getTaskDates(refDetails: any = {}){
+  getTaskDates(refDetails: any = {}, taskStatus){
 
     let taskInitiationDate = new Date(refDetails.taskInitiationDate);
     let targetCompletionDate = new Date(refDetails.targetCompletionDate);
-    let actualCompletionDate = refDetails.taskStatus=='RESOLVED' ? new Date() : null;
+    let actualCompletionDate = taskStatus=='RESOLVED' ? new Date() : null;
 
     return {taskInitiationDate, targetCompletionDate, actualCompletionDate} //, startDateTime, endDateTime, startTime, endTime, year, month, yearMonth};
   }
@@ -194,7 +194,7 @@ constructor(
           // Note that we should start at the current event seq id to cascade the events
 
           console.log("running transaction");
-          let taskDates = this.getTaskDates(this.status=='RESOLVED' ? refCopy : task);
+          let taskDates = this.getTaskDates(task.taskStatus=='RESOLVED' ? refCopy : task, task.taskStatus);
 
           // taskId = type=='new' ?
           //           await this.db.generateDocuemnetRef(this.db.allCollections.task)
@@ -210,6 +210,13 @@ constructor(
           } else {
             taskId = refCopy.id;
           }
+          // Get the minutelyKpi details
+          let widgetData: any = {};
+          let rlDocRef = this.db.afs.collection(this.db.allCollections.minutelykpi).doc(subscriberId).ref;
+          await transaction.get(rlDocRef).then(doc=>{
+            console.log("minutley kpi data doc", doc.id, doc.data())
+            widgetData = doc.data();
+          });
           // taskRef = this.db.afs.collection(this.db.allCollections.task).doc(taskId).ref;
 
           console.log("runninh transaction", taskId);
@@ -250,7 +257,7 @@ constructor(
             let prevStatus = refCopy.taskStatus;
             if(statusChanged)
               {
-                this.kpi.updateKpiDuringUpdate('Task',prevStatus,task.taskStatus,task,sessionInfo);
+                this.kpi.updateKpiDuringUpdate('Task',prevStatus,dataToSave.taskStatus,dataToSave,sessionInfo, null, widgetData, transaction, refCopy);
               }
           }
           console.log("running transaction end");

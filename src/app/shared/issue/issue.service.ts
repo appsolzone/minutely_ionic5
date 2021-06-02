@@ -151,11 +151,11 @@ export class IssueService {
     return this.transaction(issueData, refInformation, editedlinkages, sessionInfo, type, false);
   }
 
-  getIssueDates(refDetails: any = {}){
+  getIssueDates(refDetails: any = {}, issueStatus){
 
     let issueInitiationDate = new Date(refDetails.issueInitiationDate);
     let targetCompletionDate = new Date(refDetails.targetCompletionDate);
-    let actualCompletionDate = refDetails.issueStatus=='RESOLVED' ? new Date() : null;
+    let actualCompletionDate = issueStatus=='RESOLVED' ? new Date() : null;
 
     return {issueInitiationDate, targetCompletionDate, actualCompletionDate} //, startDateTime, endDateTime, startTime, endTime, year, month, yearMonth};
   }
@@ -192,8 +192,8 @@ export class IssueService {
           let subscriber = regDoc.data();
           // Note that we should start at the current event seq id to cascade the events
 
-          console.log("running transaction");
-          let issueDates = this.getIssueDates(this.status=='RESOLVED' ? refCopy : issue);
+          console.log("running issue transaction status", issue.issueStatus, refCopy);
+          let issueDates = this.getIssueDates(issue.issueStatus=='RESOLVED' ? refCopy : issue, issue.issueStatus);
 
           // issueId = type=='new' ?
           //           await this.db.generateDocuemnetRef(this.db.allCollections.issue)
@@ -209,9 +209,16 @@ export class IssueService {
           } else {
             issueId = refCopy.id;
           }
+          // Get the minutelyKpi details
+          let widgetData: any = {};
+          let rlDocRef = this.db.afs.collection(this.db.allCollections.minutelykpi).doc(subscriberId).ref;
+          await transaction.get(rlDocRef).then(doc=>{
+            console.log("minutley kpi data doc", doc.id, doc.data())
+            widgetData = doc.data();
+          });
           // issueRef = this.db.afs.collection(this.db.allCollections.issue).doc(issueId).ref;
 
-          console.log("runninh transaction", issueId);
+          console.log("running issue transaction issueId, issueDates", issueId, issueDates);
           let dataToSave = {...issue, ...issueDates,
                              // date: moment(eventDates.startDateTime).format('YYYY-MM-DD'),
                              searchMap: this.searchTextImplementation({...issue, ...issueDates}),
@@ -245,11 +252,12 @@ export class IssueService {
               1
             );
           } else {
-            let statusChanged = (refCopy.issueStatus!=issue.issueStatus);
+            let statusChanged = (refCopy.issueStatus!=dataToSave.issueStatus);
             let prevStatus = refCopy.issueStatus;
+            console.log("statusChanged",statusChanged, prevStatus,dataToSave.issueStatus, issue.issueStatus,refCopy)
             if(statusChanged)
               {
-                this.kpi.updateKpiDuringUpdate('Issue',prevStatus,issue.issueStatus,issue,sessionInfo);
+                await this.kpi.updateKpiDuringUpdate('Issue',prevStatus,dataToSave.issueStatus,dataToSave,sessionInfo, null, widgetData, transaction, refCopy);
               }
           }
           console.log("running transaction end");
@@ -273,7 +281,7 @@ export class IssueService {
           };
           let notifications = this.itemupdate.getNotifications(eventInfo);
           this.notification.createNotifications(notifications);
-          if(issue.status != 'CANCEL'){
+          if(issue.issueStatus != 'CANCEL'){
             // this.sendMail(issue.attendeeList,refCopy.id,issue.issueStart,issue.issueEnd);
           }
 

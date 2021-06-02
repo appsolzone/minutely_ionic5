@@ -173,7 +173,7 @@ export class CreateTaskPage implements OnInit {
       await this.common.presentAlertConfirm(validation.title,validation.body, buttons);
     } else {
       title = 'Confirmation';
-      body = "You are about to create a new task. Are you sure that you want to continue to create the task?";
+      body = "Are you sure that you want to continue to create the task?";
       response = false;
       await this.common.presentAlertConfirm(title,body, continueButtons);
       console.log("response", response);

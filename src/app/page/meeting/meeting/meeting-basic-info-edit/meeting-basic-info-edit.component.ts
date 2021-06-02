@@ -135,8 +135,10 @@ export class MeetingBasicInfoEditComponent implements OnInit {
   }
 
   addTag(){
-    this.meetingDetails.tags.push(this.meetingTag);
-    this.meetingTag = '';
+    if(this.meetingTag){
+      this.meetingDetails.tags.push(this.meetingTag);
+      this.meetingTag = '';
+    }
   }
 
   removeTag(index){

@@ -186,7 +186,7 @@ export class AddSubscriberPage implements OnInit {
               value: JSON.stringify(userProfile),
             });
             this.componentService.hideLoader();
-            this.componentService.presentToaster('Success!! Organisation created successfully');
+            this.componentService.presentToaster('Success!! Organization created successfully');
             this.router.navigate(['subscription/choose-plan'], {state: {data: {newsubscriber: this.orgProfile.subscriberId.trim().toUpperCase()}}});
             // });
 

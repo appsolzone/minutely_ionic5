@@ -48,7 +48,7 @@ export class KpiService {
     });
   }
 
-  // create new kpi object for this organisation
+  // create new kpi object for this organization
   setAclKpi(subscriberId, kpiObject = null) {
     this.database.setDocument(
       this.database.allCollections.aclKpi,

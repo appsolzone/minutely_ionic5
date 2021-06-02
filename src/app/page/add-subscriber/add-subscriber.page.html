@@ -34,10 +34,10 @@
               </ion-list-header>
               <ion-segment [(ngModel)]="subscriberType" (ionChange)="segmentChanged($event)" color="success">
                 <ion-segment-button value="new">
-                  <ion-label class="ion-text-capitalize">New organisation</ion-label>
+                  <ion-label class="ion-text-capitalize">New organization</ion-label>
                 </ion-segment-button>
                 <ion-segment-button value="existing">
-                  <ion-label class="ion-text-capitalize">Join organisation</ion-label>
+                  <ion-label class="ion-text-capitalize">Join organization</ion-label>
                 </ion-segment-button>
               </ion-segment>
               <ion-item lines="inset" *ngIf="requiredEmailCheck">
@@ -60,7 +60,7 @@
               </ion-item>
               <ion-item lines="inset">
                 <ion-label position="floating">
-                  <ion-icon name="business" class="ion-margin-end"></ion-icon>Organisation name
+                  <ion-icon name="business" class="ion-margin-end"></ion-icon>Organization name
                 </ion-label>
                 <ion-input type="text" [(ngModel)]="orgProfile.companyName" [disabled]="subscriberType=='existing'">
                 </ion-input>
@@ -68,7 +68,7 @@
               <ion-item lines="inset">
                 <ion-label position="floating">
                   <ion-icon name="qr-code" class="ion-margin-end"></ion-icon> {{subscriberType=='existing' ? 'Enter' :
-                  'Choose'}} Organisation ID
+                  'Choose'}} Organization ID
                 </ion-label>
                 <ion-input type="text" [(ngModel)]="orgProfile.subscriberId" debounce=500 minlength=3 maxlength=20
                   (ionInput)="ionInputSubscriberId()" (ionChange)="checkSubscriberId($event)"></ion-input>
@@ -77,16 +77,16 @@
                 <ion-text [color]="subscriberExists || subsriberIdContainsBlankSpace ? 'danger' : 'medium'">
                   <p>
                     <small>
-                      <span *ngIf="subsriberIdContainsBlankSpace">Organisation id can not contain blank space. Please check and try again.</span>
-                      <span *ngIf="subscriberType=='new' && subscriberExists">Organisation id is not available.</span>
+                      <span *ngIf="subsriberIdContainsBlankSpace">Organization id can not contain blank space. Please check and try again.</span>
+                      <span *ngIf="subscriberType=='new' && subscriberExists">Organization id is not available.</span>
                       <span *ngIf="subscriberType=='existing' && subscriberExists">
-                        <ion-text [color]="alreadyJoined ? 'danger' : 'success'">Organisation id found.{{alreadyJoined ?
-                          'You have already joined this organisation' : ''}}</ion-text>
+                        <ion-text [color]="alreadyJoined ? 'danger' : 'success'">Organization id found.{{alreadyJoined ?
+                          'You have already joined this organization' : ''}}</ion-text>
                       </span>
                       <span *ngIf="(subscriberType=='new' || (subscriberType=='existing' && !subscriberExists)) && !subsriberIdContainsBlankSpace">
                         {{
                         subscriberType=='existing' ?
-                        'Enter the organisation id. If you do not have the organisation id, please check with your
+                        'Enter the organization id. If you do not have the organization id, please check with your
                         administrator'
                         :
                         'Choose an unique id for the organization. It may contain alphabets, numbers and should be

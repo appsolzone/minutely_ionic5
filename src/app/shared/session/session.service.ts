@@ -103,8 +103,8 @@ export class SessionService {
   }
 
   // get User profile
-  // post authState getprofile either user select the organisation i.e subscriberId,
-  // or if its the oly organisation auto login using the subscriberId
+  // post authState getprofile either user select the organization i.e subscriberId,
+  // or if its the oly organization auto login using the subscriberId
   getSessionInfo(subscriberId) {
     if (!subscriberId || subscriberId == null || subscriberId == 'undefined') {
       // no user index so publish the data

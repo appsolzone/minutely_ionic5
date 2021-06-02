@@ -44,7 +44,7 @@
         <div *ngIf="showAddTempUser">
           <ion-item>
             <ion-label>
-              <p>Adding non permanent user to the list</p>
+              <p>Adding external user to the list</p>
             </ion-label>
             <ion-buttons slot="end">
               <ion-button slot="end" (click)="showHideAddTempUser()">
@@ -69,7 +69,7 @@
         </div>
         <ion-button *ngIf="!showAddTempUser" expand="block" size="default" fill="outline" (click)="showHideAddTempUser()">
           <ion-icon name="person-add-outline" slot="start"></ion-icon>
-          Add non permanent user to the list
+          Add external user to the list
         </ion-button>
         <ion-button expand="block">
           <ion-icon lazy="true" slot="start" name="cloud-upload"></ion-icon>

@@ -352,6 +352,13 @@ export class MeetingService {
                                 meeting.eventId;
           // initialise the summary view object
           let event = {...meeting};
+          // Get the minutelyKpi details
+          let widgetData: any = {};
+          let rlDocRef = this.db.afs.collection(this.db.allCollections.minutelykpi).doc(subscriberId).ref;
+          await transaction.get(rlDocRef).then(doc=>{
+            console.log("minutley kpi data doc", doc.id, doc.data())
+            widgetData = doc.data();
+          });
           // Note that we should start at the current event seq id to cascade the meetings
           for(let i=refEventSequenceId; i<=(toCascadeChanges ? noOfOccurence : refEventSequenceId); i++){
             console.log("runninh transaction", i);
@@ -412,7 +419,10 @@ export class MeetingService {
             let prevStatus = refCopy.status;
             if(statusChanged)
               {
-                this.kpi.updateKpiDuringUpdate('Meeting',prevStatus,meeting.status,meeting,sessionInfo, (toCascadeChanges ? meeting.noOfOccurence - meeting.eventSequenceId + 1 : 1));
+                this.kpi.updateKpiDuringUpdate('Meeting',prevStatus,meeting.status,meeting,sessionInfo, (toCascadeChanges ? meeting.noOfOccurence - meeting.eventSequenceId + 1 : 1), widgetData, transaction, null);
+              } else {
+                // status has not changed so add the new meetings as count increased
+                this.kpi.updateKpiDuringCreation('Meeting',meeting.noOfOccurence - refCopy.noOfOccurence,sessionInfo)
               }
           }
 
@@ -426,7 +436,7 @@ export class MeetingService {
             meeting.status=='CANCEL' ?
               (toCascadeChanges ? -1*(refCopy.noOfOccurence - refEventSequenceId +1) : -1)
               :
-              meeting.noOfOccurence - refCopy.noOfOccurence // if there is a new meeting sequences added, it will automatically detect the diff and increase the count
+              (type=='new' ? meeting.noOfOccurence : meeting.noOfOccurence - refCopy.noOfOccurence)// if there is a new meeting sequences added, it will automatically detect the diff and increase the count
           );
 
           // Complete the last transaction which is to be executed out of while loop

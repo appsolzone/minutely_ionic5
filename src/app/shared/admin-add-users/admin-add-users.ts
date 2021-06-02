@@ -167,7 +167,7 @@ export class AdminAddUsersService {
   if(err == 'auth-table-error'){
     errorMsg = "The user can not be added. Please try again. If the problem persists please request the user to Sign up using his/her credentials.";
   }else if(err == 'already-exist-user'){
-    errorMsg = "The user exists for the organisation. Please check member list to take necessary action";
+    errorMsg = "The user exists for the organization. Please check member list to take necessary action";
   }else{
     errorMsg = err;
   }

@@ -107,18 +107,18 @@ export class MinutelyKpiService {
     });
   }
 
-  updateKpiDuringUpdate( type,prevStatus: string,currStatus: string,data:any,navData:any,counter:any=1)
+  updateKpiDuringUpdate( type,prevStatus: string,currStatus: string,data:any,navData:any,counter:any=1, widgetData, transaction, refData:any = null)
   {
     var prevS = prevStatus.toLowerCase();
     var currS = currStatus.toLowerCase();
     var typeL = type.toLowerCase();
 
     let rlDocRef = this.database.afs.firestore.collection(this.database.allCollections.minutelykpi).doc(navData.subscriberId);
-    this.database.afs.firestore.runTransaction(function(transaction){
-      // This code may get re-run multiple times if there are conflicts related to rlDocRef.
-      return transaction.get(rlDocRef).then((doc)=>{
-          if (doc.exists) {
-            this.widgetData = doc.data();
+    // this.database.afs.firestore.runTransaction(function(transaction){
+    //   // This code may get re-run multiple times if there are conflicts related to rlDocRef.
+    //   return transaction.get(rlDocRef).then((doc)=>{
+    //       if (doc.exists) {
+    //         this.widgetData = doc.data();
             if (![currStatus,prevStatus].includes("RESOLVED"))
             {
               transaction.update(rlDocRef, {
@@ -134,37 +134,39 @@ export class MinutelyKpiService {
               let currAvgRes = currStatus == "RESOLVED" ?
                                moment(data.actualCompletionDate).diff(data[typeL + 'InitiationDate'], "days") + 1
                                :
-                               moment(data.actualCompletionDate.seconds*1000).diff(data[typeL + 'InitiationDate'], "days") + 1
+                               moment(refData.actualCompletionDate).diff(refData[typeL + 'InitiationDate'], "days") + 1
                                ;
 
               // This is to handle re-open of already RESOLVED caseses , we have to rebaseline average resolution days for this
               let avgFinal = currStatus == "RESOLVED" ?
-                (this.widgetData[currS + type] * this.widgetData['averageResolution' + type] + currAvgRes) / (this.widgetData[currS + type] + 1)
+                (widgetData[currS + type] * widgetData['averageResolution' + type] + currAvgRes) / (widgetData[currS + type] + 1)
                 :
-                (this.widgetData[prevS + type] * this.widgetData['averageResolution' + type] - currAvgRes) / (this.widgetData[prevS + type] - 1);;
+                (widgetData[prevS + type] * widgetData['averageResolution' + type] - currAvgRes) / (widgetData[prevS + type] == 1 ? 1 : widgetData[prevS + type] - 1);;
               // Lets round it to 2 decimal places as we do not require anything precise than this
               avgFinal = Math.round( avgFinal * 100 + Number.EPSILON ) / 100;
 
               //----------------------------------------------------------
-              transaction.update(rlDocRef, {
+              transaction.set(rlDocRef, {
                 [prevS + type]: this.database.frb.firestore.FieldValue.increment(-1),
                 [currS + type]: this.database.frb.firestore.FieldValue.increment(1),
                 ['averageResolution' + type]: avgFinal,
-              });
+              },
+              {merge: true}
+            );
             }
-          } else {
-              // doc.data() will be undefined in this case
-
-          }
-      });
-    }.bind(this)).then(function(res){
-        // Now safely delete the ference from the queue
-
-        return true;
-    }.bind(this)).catch(function(error){
-
-        return false;
-    }.bind(this));
+          // } else {
+          //     // doc.data() will be undefined in this case
+          //
+          // }
+    //   });
+    // }.bind(this)).then(function(res){
+    //     // Now safely delete the ference from the queue
+    //
+    //     return true;
+    // }.bind(this)).catch(function(error){
+    //
+    //     return false;
+    // }.bind(this));
 
   }
 

@@ -25,7 +25,7 @@
                 <ion-icon name="add"></ion-icon>
               </ion-button>
               <ion-label>
-                <h1>Select organisation</h1>
+                <h1>Select organization</h1>
               </ion-label>
             </ion-item>
           </ion-card-header>
@@ -94,7 +94,7 @@
                 <ion-progress-bar type="indeterminate"></ion-progress-bar>
               </ion-label>
               <ion-label color="primary" *ngIf="allProfiles && !userProfile && !editProfile">
-                <h2 class="ion-text-wrap">Select an organisation to continue</h2>
+                <h2 class="ion-text-wrap">Select an organization to continue</h2>
               </ion-label>
               <ion-label *ngIf="userProfile && !editProfile">
                 <h1 class="ion-text-wrap">{{userProfile.name? userProfile.name : 'Guest'}}</h1>

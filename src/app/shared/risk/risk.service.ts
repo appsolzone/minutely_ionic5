@@ -153,11 +153,11 @@ constructor(
     return this.transaction(riskData, refInformation, editedlinkages, sessionInfo, type, false);
   }
 
-  getRiskDates(refDetails: any = {}){
+  getRiskDates(refDetails: any = {}, riskStatus){
 
     let riskInitiationDate = new Date(refDetails.riskInitiationDate);
     let targetCompletionDate = new Date(refDetails.targetCompletionDate);
-    let actualCompletionDate = refDetails.riskStatus=='RESOLVED' ? new Date() : null;
+    let actualCompletionDate = riskStatus=='RESOLVED' ? new Date() : null;
 
     return {riskInitiationDate, targetCompletionDate, actualCompletionDate} //, startDateTime, endDateTime, startTime, endTime, year, month, yearMonth};
   }
@@ -195,7 +195,7 @@ constructor(
           // Note that we should start at the current event seq id to cascade the events
 
           console.log("running transaction");
-          let riskDates = this.getRiskDates(this.status=='RESOLVED' ? refCopy : risk);
+          let riskDates = this.getRiskDates( risk.riskStatus=='RESOLVED' ? refCopy : risk,  risk.riskStatus);
 
           // riskId = type=='new' ?
           //           await this.db.generateDocuemnetRef(this.db.allCollections.risk)
@@ -211,6 +211,13 @@ constructor(
           } else {
             riskId = refCopy.id;
           }
+          // Get the minutelyKpi details          
+          let widgetData: any = {};
+          let rlDocRef = this.db.afs.collection(this.db.allCollections.minutelykpi).doc(subscriberId).ref;
+          await transaction.get(rlDocRef).then(doc=>{
+            console.log("minutley kpi data doc", doc.id, doc.data())
+            widgetData = doc.data();
+          });
           // riskRef = this.db.afs.collection(this.db.allCollections.risk).doc(riskId).ref;
 
           console.log("runninh transaction", riskId);
@@ -251,7 +258,7 @@ constructor(
             let prevStatus = refCopy.riskStatus;
             if(statusChanged)
               {
-                this.kpi.updateKpiDuringUpdate('Risk',prevStatus,risk.riskStatus,risk,sessionInfo);
+                this.kpi.updateKpiDuringUpdate('Risk',prevStatus,dataToSave.riskStatus,dataToSave,sessionInfo, null, widgetData, transaction, refCopy);
               }
           }
           console.log("running transaction end");

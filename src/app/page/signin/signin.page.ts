@@ -23,7 +23,7 @@ export class SigninPage implements OnInit {
   public showGooglesignin: boolean = true;
   public hideFirebaseUiGoogleButton: boolean = false;
   public signInWelcomeTxt: string = 'Manage meetings and projects with greater efficiency with Minutely. \
-  It connects resources of your organisation and helps in managing and tracking meetings. Easy to generate \
+  It connects resources of your organization and helps in managing and tracking meetings. Easy to generate \
   minutes and circulating MoM. You can link other project items like issues, tasks and \
   risk in one place to boost productivity and efficiency.';
   signinUi: any;

@@ -85,12 +85,13 @@ export class MeetingDetailsEditPage implements OnInit {
     // this.meeting = null;
     const data: any = meetingStateData.data;
     const id: string = meetingStateData.id;
-    const meetingStart = moment(data.meetingStart).format('YYYY-MM-DDTHH:mm');
-    const meetingEnd = moment(data.meetingEnd).format('YYYY-MM-DDTHH:mm');
+    const meetingStart = id ? moment(data.meetingStart).format('YYYY-MM-DDTHH:mm') : null;
+    const meetingEnd = id ? moment(data.meetingEnd).format('YYYY-MM-DDTHH:mm') : null;
     const weekdays = data.weekdays ? data.weekdays : [false,false,false,false,false,false,false];
     this.meeting = {id, data: {...data, meetingStart, meetingEnd, weekdays}};
     this.refInformation = {id, meetingStart, meetingEnd,
                            status: data.status,
+                           isOccurence: data.isOccurence,
                            occurenceType: data.occurenceType,
                            weekdays: [...weekdays],
                            noOfOccurence: data.noOfOccurence,

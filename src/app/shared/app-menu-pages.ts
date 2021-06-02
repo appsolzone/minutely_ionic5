@@ -71,7 +71,7 @@ export const appPages = [
   //   tab: 'region',
   // },
   {
-    title: 'Organisation',
+    title: 'Organization',
     url: 'admin',
     icon: 'people',
     tab: 'admin',

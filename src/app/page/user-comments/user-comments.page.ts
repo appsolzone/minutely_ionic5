@@ -106,8 +106,9 @@ export class UserCommentsPage implements OnInit,OnDestroy {
                           this.componentService.hideLoader();
                         })
   }
-  addComment(){
+  async addComment(){
     if(this.commentTxt != ''){
+      await this.componentService.showLoader('Adding your comment, please wait...');
       let commentObject:Comment = {
         author:this.userProfile.name,
         comment:this.commentTxt,
@@ -119,11 +120,15 @@ export class UserCommentsPage implements OnInit,OnDestroy {
       this.comment.addComment(commentObject,this.passObj, this.sessionInfo)
       .then(res=>{
         console.log(res);
+        this.componentService.hideLoader();
         this.commentTxt = '';
         this.componentService.presentToaster('Your comment add successfully!!');
         this.comment.sendEmail(this.emailReceiverMembers,commentObject,this.passObj)
       })
-      .catch(err=>{console.log(err);this.componentService.presentAlert('Error',"Somthing wents wrong! Please try again")});
+      .catch(err=>{
+        this.componentService.hideLoader();
+        console.log(err);this.componentService.presentAlert('Error',"Somthing wents wrong! Please try again")
+      });
 
     }
 
