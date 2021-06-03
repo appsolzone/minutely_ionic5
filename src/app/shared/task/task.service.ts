@@ -245,7 +245,7 @@ constructor(
           // If this is the very first instance of the series of tasks, check for status change and subsequently
           // update the records as required
           if(type=='new'){
-            this.kpi.updateKpiDuringCreation('Task',1,sessionInfo);
+            this.kpi.updateKpiDuringCreation('Task',1,sessionInfo, transaction);
             this.aclKpi.updateKpiDuringCreation(
               'create-project-item',
               sessionInfo,
@@ -255,9 +255,10 @@ constructor(
           } else {
             let statusChanged = (refCopy.taskStatus!=task.taskStatus);
             let prevStatus = refCopy.taskStatus;
+            console.log("statusChanged before transaction end", statusChanged, refCopy.taskStatus, task.taskStatus);
             if(statusChanged)
               {
-                this.kpi.updateKpiDuringUpdate('Task',prevStatus,dataToSave.taskStatus,dataToSave,sessionInfo, null, widgetData, transaction, refCopy);
+                this.kpi.updateKpiDuringUpdate('Task',prevStatus,dataToSave.taskStatus,dataToSave,sessionInfo, 1, widgetData, transaction, refCopy);
               }
           }
           console.log("running transaction end");

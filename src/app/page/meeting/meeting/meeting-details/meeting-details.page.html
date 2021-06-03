@@ -13,11 +13,11 @@
         >
         <ion-icon name="copy-outline" slot="icon-only"></ion-icon>
       </ion-button>
-      <ion-button slot="end" *ngIf="meeting?.data.ownerId.uid == sessionInfo?.uid"
+      <ion-button slot="end" *ngIf="meeting?.data.ownerId.uid == sessionInfo?.uid && meeting?.data.status!='CANCEL'"
         (click)="editMeeting()">
         <ion-icon name="create-outline" slot="icon-only"></ion-icon>
       </ion-button>
-      <ion-button slot="end"
+      <ion-button *ngIf="meeting?.data.status!='CANCEL'" slot="end"
       (featureClick)="sendMinutes()"
       appFeatureCheck
       [featureIdList]="['share-meeting']"

@@ -122,7 +122,7 @@ export class UserCommentsPage implements OnInit,OnDestroy {
         console.log(res);
         this.componentService.hideLoader();
         this.commentTxt = '';
-        this.componentService.presentToaster('Your comment add successfully!!');
+        this.componentService.presentToaster('Your comment added successfully!!');
         this.comment.sendEmail(this.emailReceiverMembers,commentObject,this.passObj)
       })
       .catch(err=>{

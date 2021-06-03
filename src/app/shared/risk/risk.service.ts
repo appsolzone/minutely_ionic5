@@ -211,7 +211,7 @@ constructor(
           } else {
             riskId = refCopy.id;
           }
-          // Get the minutelyKpi details          
+          // Get the minutelyKpi details
           let widgetData: any = {};
           let rlDocRef = this.db.afs.collection(this.db.allCollections.minutelykpi).doc(subscriberId).ref;
           await transaction.get(rlDocRef).then(doc=>{
@@ -246,7 +246,7 @@ constructor(
           // If this is the very first instance of the series of risks, check for status change and subsequently
           // update the records as required
           if(type=='new'){
-            this.kpi.updateKpiDuringCreation('Risk',1,sessionInfo);
+            this.kpi.updateKpiDuringCreation('Risk',1,sessionInfo, transaction, dataToSave);
             this.aclKpi.updateKpiDuringCreation(
               'create-project-item',
               sessionInfo,
@@ -258,7 +258,9 @@ constructor(
             let prevStatus = refCopy.riskStatus;
             if(statusChanged)
               {
-                this.kpi.updateKpiDuringUpdate('Risk',prevStatus,dataToSave.riskStatus,dataToSave,sessionInfo, null, widgetData, transaction, refCopy);
+                this.kpi.updateKpiDuringUpdate('Risk',prevStatus,dataToSave.riskStatus,dataToSave,sessionInfo, 1, widgetData, transaction, refCopy);
+              } else {
+                await this.kpi.updateRiskMetrix(refCopy, dataToSave, sessionInfo, transaction)
               }
           }
           console.log("running transaction end");

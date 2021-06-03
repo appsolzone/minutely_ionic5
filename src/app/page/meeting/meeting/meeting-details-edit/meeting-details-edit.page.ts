@@ -88,6 +88,7 @@ export class MeetingDetailsEditPage implements OnInit {
     const meetingStart = id ? moment(data.meetingStart).format('YYYY-MM-DDTHH:mm') : null;
     const meetingEnd = id ? moment(data.meetingEnd).format('YYYY-MM-DDTHH:mm') : null;
     const weekdays = data.weekdays ? data.weekdays : [false,false,false,false,false,false,false];
+    const attendeeUidList = [...data.attendeeUidList];
     this.meeting = {id, data: {...data, meetingStart, meetingEnd, weekdays}};
     this.refInformation = {id, meetingStart, meetingEnd,
                            status: data.status,
@@ -99,6 +100,7 @@ export class MeetingDetailsEditPage implements OnInit {
                            attendeeList: [...data.attendeeList],
                            meetingTitle: data.meetingTitle,
                            tags: [...data.tags],
+                           attendeeUidList: attendeeUidList,
                            toCascadeChanges: false};
     console.log("meeting details", this.meeting);
 

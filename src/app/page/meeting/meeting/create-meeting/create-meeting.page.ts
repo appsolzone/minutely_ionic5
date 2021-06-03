@@ -173,6 +173,7 @@ export class CreateMeetingPage implements OnInit {
       }
       if(response){
         // this.meetingservice.processMeeting(this.meeting, this.refInformation, this.alllinkages, this.sessionInfo);
+        await this.common.showLoader("Creating meeting, please wait...");
         let processMeetingstatus: any = await this.meetingservice.processMeeting(this.meeting, this.refInformation, this.alllinkages, this.sessionInfo);
         console.log("this.meeting to be saved", this.meeting, this.alllinkages, this.refInformation, processMeetingstatus);
         this.common.hideLoader();

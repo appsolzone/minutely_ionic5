@@ -244,7 +244,7 @@ export class IssueService {
           // If this is the very first instance of the series of issues, check for status change and subsequently
           // update the records as required
           if(type=='new'){
-            this.kpi.updateKpiDuringCreation('Issue',1,sessionInfo);
+            this.kpi.updateKpiDuringCreation('Issue',1,sessionInfo, transaction);
             this.aclKpi.updateKpiDuringCreation(
               'create-project-item',
               sessionInfo,
@@ -257,7 +257,7 @@ export class IssueService {
             console.log("statusChanged",statusChanged, prevStatus,dataToSave.issueStatus, issue.issueStatus,refCopy)
             if(statusChanged)
               {
-                await this.kpi.updateKpiDuringUpdate('Issue',prevStatus,dataToSave.issueStatus,dataToSave,sessionInfo, null, widgetData, transaction, refCopy);
+                await this.kpi.updateKpiDuringUpdate('Issue',prevStatus,dataToSave.issueStatus,dataToSave,sessionInfo, 1, widgetData, transaction, refCopy);
               }
           }
           console.log("running transaction end");

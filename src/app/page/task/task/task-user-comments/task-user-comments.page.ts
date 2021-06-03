@@ -100,7 +100,7 @@ export class TaskUserCommentsPage implements OnInit,OnDestroy {
       console.log("comment add resposnse",res);
       this.postedComment = '';
       this.componentService.hideLoader();
-      this.componentService.presentToaster('Your comment add successfully!!');
+      this.componentService.presentToaster('Your comment added successfully!!');
     })
     .catch(error=>{
       this.componentService.hideLoader();

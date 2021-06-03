@@ -87,27 +87,35 @@ export class MinutelyKpiService {
   poke(t) { this.kpi$.next(t); }
   clear() { this.poke(undefined); }
 
-  updateKpiDuringCreation(type: any,counter:any,navData:any)
+  updateKpiDuringCreation(type: any,counter:any,navData:any, transaction=null, currData=null)
   {
-    return new Promise((res, rej) =>
+    return new Promise(async (res, rej) =>
     {
-      const batch = this.database.afs.firestore.batch();
+      const batch = transaction ? transaction : this.database.afs.firestore.batch();
       const kpiRef = this.database.afs
         .collection(this.database.allCollections.minutelykpi)
         .doc(navData.subscriberId).ref;
-
+      let riskMatrix = {};
+      if(type=="Risk"){
+        riskMatrix = this.updateRiskMetrix(null, currData, navData);
+      }
       batch.update(kpiRef, {
         [`total${type}`]: this.database.frb.firestore.FieldValue.increment(counter),
         [`open${type}`]: this.database.frb.firestore.FieldValue.increment(counter),
+        ...riskMatrix
       });
-      batch
+      if(!transaction){
+        batch
         .commit()
         .then(() => res(true))
         .catch((err) => {});
+      } else {
+        res(true)
+      }
     });
   }
 
-  updateKpiDuringUpdate( type,prevStatus: string,currStatus: string,data:any,navData:any,counter:any=1, widgetData, transaction, refData:any = null)
+  async updateKpiDuringUpdate( type,prevStatus: string,currStatus: string,data:any,navData:any,counter:any=1, widgetData, transaction, refData:any = null)
   {
     var prevS = prevStatus.toLowerCase();
     var currS = currStatus.toLowerCase();
@@ -119,11 +127,18 @@ export class MinutelyKpiService {
     //   return transaction.get(rlDocRef).then((doc)=>{
     //       if (doc.exists) {
     //         this.widgetData = doc.data();
+            let riskMatrix = {};
+            if(type=="Risk"){
+              riskMatrix = this.updateRiskMetrix(refData, data, navData);
+            }
+            console.log("inside update kpi", type, counter, currStatus,prevStatus,widgetData, prevS + type, widgetData[prevS + type],  currS + type, widgetData[currS + type])
+
             if (![currStatus,prevStatus].includes("RESOLVED"))
             {
               transaction.update(rlDocRef, {
-                [prevS + type]: this.database.frb.firestore.FieldValue.increment(-counter),
-                [currS + type]: this.database.frb.firestore.FieldValue.increment(counter),
+                [prevS + type]: widgetData[prevS + type] ?  widgetData[prevS + type] -  counter : 0, //this.database.frb.firestore.FieldValue.increment(-counter),
+                [currS + type]: widgetData[currS + type] ?  widgetData[currS + type] +  counter : counter, //this.database.frb.firestore.FieldValue.increment(counter),
+                ...riskMatrix
               });
             } else
             {
@@ -146,12 +161,14 @@ export class MinutelyKpiService {
               avgFinal = Math.round( avgFinal * 100 + Number.EPSILON ) / 100;
 
               //----------------------------------------------------------
-              transaction.set(rlDocRef, {
-                [prevS + type]: this.database.frb.firestore.FieldValue.increment(-1),
-                [currS + type]: this.database.frb.firestore.FieldValue.increment(1),
+              transaction.update(rlDocRef, {
+                [prevS + type]: widgetData[prevS + type] ?  widgetData[prevS + type] -  1 : 0,
+                [currS + type]: widgetData[currS + type] ?  widgetData[currS + type] +  1 : 1,
+                // [prevS + type]: this.database.frb.firestore.FieldValue.increment(-1),
+                // [currS + type]: this.database.frb.firestore.FieldValue.increment(1),
                 ['averageResolution' + type]: avgFinal,
-              },
-              {merge: true}
+                ...riskMatrix
+              }
             );
             }
           // } else {
@@ -170,40 +187,90 @@ export class MinutelyKpiService {
 
   }
 
-  updateRiskMetrix(riskPrevData = null, riskCurrData, navData) {
-    return new Promise((res, rej) => {
-      var batch = this.database.afs.firestore.batch();
-      const a = this.database.afs
-        .collection(this.database.allCollections.minutelykpi)
-        .doc(navData.subscriberId).ref;
+  updateRiskMetrix(riskPrevData = null, riskCurrData, navData, transaction= null) {
+    console.log("updateRiskMetrix", riskPrevData, riskCurrData, riskPrevData?.riskStatus, riskCurrData.riskStatus)
+    // return new Promise((res, rej) => {
+    //   var batch = transaction ?  transaction : this.database.afs.firestore.batch();
+    //   const a = this.database.afs
+    //     .collection(this.database.allCollections.minutelykpi)
+    //     .doc(navData.subscriberId).ref;
 
       //------------------only for risk------------
-      if(riskPrevData !== null && (riskPrevData.riskProbability != riskCurrData.riskProbability ||
+      let riskMatrix = {};
+      if(riskCurrData.riskStatus=='RESOLVED'){
+          // batch.update(a, {
+          //    ["risk" +
+          //    riskCurrData.riskProbability +
+          //    riskCurrData.riskImpact]: this.database.frb.firestore.FieldValue.increment(-1),
+          //  });
+          riskMatrix = {
+                  ["risk" +
+                  riskCurrData.riskProbability +
+                  riskCurrData.riskImpact]: this.database.frb.firestore.FieldValue.increment(-1)
+                };
+      }else if(riskCurrData.riskStatus!='RESOLVED' && riskPrevData?.riskStatus=='RESOLVED'){
+          // batch.update(a, {
+          //    ["risk" +
+          //    riskCurrData.riskProbability +
+          //    riskCurrData.riskImpact]: this.database.frb.firestore.FieldValue.increment(1),
+          //  });
+          riskMatrix = {
+             ["risk" +
+             riskCurrData.riskProbability +
+             riskCurrData.riskImpact]: this.database.frb.firestore.FieldValue.increment(1),
+           };
+      } else if(riskPrevData?.id && (riskPrevData.riskProbability != riskCurrData.riskProbability ||
          riskPrevData.riskImpact != riskCurrData.riskImpact))
       {
-           batch.update(a, {
+           // batch.update(a, {
+           //   ["risk" +
+           //   riskPrevData.riskProbability +
+           //   riskPrevData.riskImpact]: this.database.frb.firestore.FieldValue.increment(-1),
+           //   ["risk" +
+           //   riskCurrData.riskProbability +
+           //   riskCurrData.riskImpact]: this.database.frb.firestore.FieldValue.increment(1),
+           // });
+           riskMatrix = {
              ["risk" +
              riskPrevData.riskProbability +
              riskPrevData.riskImpact]: this.database.frb.firestore.FieldValue.increment(-1),
              ["risk" +
              riskCurrData.riskProbability +
              riskCurrData.riskImpact]: this.database.frb.firestore.FieldValue.increment(1),
-           });
+           };
 
-      }else{
-          batch.update(a, {
+      }else if(!riskPrevData){
+          // batch.update(a, {
+          //    ["risk" +
+          //    riskCurrData.riskProbability +
+          //    riskCurrData.riskImpact]: this.database.frb.firestore.FieldValue.increment(1),
+          //  });
+          riskMatrix =  {
              ["risk" +
              riskCurrData.riskProbability +
              riskCurrData.riskImpact]: this.database.frb.firestore.FieldValue.increment(1),
-           });
+           };
+      }
+
+      if(transaction){
+        const a = this.database.afs
+            .collection(this.database.allCollections.minutelykpi)
+            .doc(navData.subscriberId).ref;
+        transaction.update(a, {
+           ...riskMatrix
+         });
+      } else {
+        return riskMatrix;
       }
 
       //------------------only for risk------------
-      batch
-        .commit()
-        .then(() => res(true))
-        .catch((err) => {});
-    });
+    //   if(!transaction){
+    //     batch
+    //     .commit()
+    //     .then(() => res(true))
+    //     .catch((err) => {});
+    //   }
+    // });
   }
 
   getKpiData(subscriberId: string)

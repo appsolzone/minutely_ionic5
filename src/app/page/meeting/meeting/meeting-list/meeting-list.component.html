@@ -138,7 +138,7 @@
           <h3 *ngIf="m">{{m.data.meetingStart| date : 'mediumDate'}}</h3>
           <ion-skeleton-text *ngIf="!m" animated style="width: 70%"></ion-skeleton-text>
         </ion-label>
-        <ion-icon slot="end" name="bookmark" size="small" color="{{m?.data.status=='OPEN' ? 'warning' : 'success'}}"></ion-icon>
+        <ion-icon slot="end" name="bookmark" size="small" color="{{m?.data.status=='OPEN' ? 'warning' : m?.data.status=='CANCEL' ? 'danger' : 'green'}}"></ion-icon>
       </ion-item>
       <ion-card-content class="ion-no-padding ion-padding-start ion-padding-end">
         <ion-item lines="none" class="ion-no-padding"  color="transparent">

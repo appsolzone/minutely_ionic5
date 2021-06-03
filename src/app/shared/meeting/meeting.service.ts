@@ -413,7 +413,7 @@ export class MeetingService {
           // If this is the very first instance of the series of meetings, check for status change and subsequently
           // update the records as required
           if(type=='new'){
-            this.kpi.updateKpiDuringCreation('Meeting',meeting.noOfOccurence,sessionInfo)
+            this.kpi.updateKpiDuringCreation('Meeting',meeting.noOfOccurence,sessionInfo, transaction)
           } else {
             let statusChanged = (refCopy.status!=meeting.status);
             let prevStatus = refCopy.status;
@@ -422,22 +422,22 @@ export class MeetingService {
                 this.kpi.updateKpiDuringUpdate('Meeting',prevStatus,meeting.status,meeting,sessionInfo, (toCascadeChanges ? meeting.noOfOccurence - meeting.eventSequenceId + 1 : 1), widgetData, transaction, null);
               } else {
                 // status has not changed so add the new meetings as count increased
-                this.kpi.updateKpiDuringCreation('Meeting',meeting.noOfOccurence - refCopy.noOfOccurence,sessionInfo)
+                this.kpi.updateKpiDuringCreation('Meeting',meeting.noOfOccurence - refCopy.noOfOccurence,sessionInfo, transaction)
               }
           }
 
           // Complete the last transaction which is to be executed out of while loop
           // if it's a new event or no of events changed we have increase or decrease the usage counts
           // so during cleanup or cancellation it'll decrese the count, and while adding it'll increase the count
-          this.aclKpi.updateKpiDuringCreation(
-            'create-meeting',
-            sessionInfo,
-            transaction,
-            meeting.status=='CANCEL' ?
-              (toCascadeChanges ? -1*(refCopy.noOfOccurence - refEventSequenceId +1) : -1)
-              :
+          if(  meeting.status!='CANCEL'){
+            this.aclKpi.updateKpiDuringCreation(
+              'create-meeting',
+              sessionInfo,
+              transaction,
               (type=='new' ? meeting.noOfOccurence : meeting.noOfOccurence - refCopy.noOfOccurence)// if there is a new meeting sequences added, it will automatically detect the diff and increase the count
-          );
+            );
+          }
+
 
           // Complete the last transaction which is to be executed out of while loop
 
