@@ -70,6 +70,8 @@ export class AddSubscriberPage implements OnInit {
       } else {
         Object.assign(this.orgProfile , {companyName: '', address: ''});
       }
+    } else{
+      Object.assign(this.orgProfile , {companyName: '', address: ''});
     }
     // console.log("orgprofile",this.orgProfile,this.subscriberType);
   }

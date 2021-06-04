@@ -193,14 +193,6 @@ constructor(
       return transaction.get(docRef).then(async function(regDoc) {
           let subscriber = regDoc.data();
           // Note that we should start at the current event seq id to cascade the events
-
-          console.log("running transaction");
-          let riskDates = this.getRiskDates( risk.riskStatus=='RESOLVED' ? refCopy : risk,  risk.riskStatus);
-
-          // riskId = type=='new' ?
-          //           await this.db.generateDocuemnetRef(this.db.allCollections.risk)
-          //           :
-          //           refCopy.id; //subscriberId + "_"+ (totalSequenceId +'_' + i);
           if(type=='new'){
             let riskRef = await this.db.generateDocuemnetRef(this.db.allCollections.risk)
             await transaction.get(riskRef.ref).then(doc=>{
@@ -210,7 +202,38 @@ constructor(
             });
           } else {
             riskId = refCopy.id;
+            let taskRef = this.db.afs.collection(this.db.allCollections.risk).doc(riskId).ref;
+            await transaction.get(taskRef).then(doc=>{
+              const data: any = doc.data();
+              const id: string = doc.id;
+
+              const riskInitiationDate = moment(data.riskInitiationDate?.seconds*1000).format('YYYY-MM-DD');
+              const targetCompletionDate = moment(data.targetCompletionDate?.seconds ? new Date(data.targetCompletionDate?.seconds*1000) : null).format('YYYY-MM-DD');
+              const actualCompletionDate = data.actualCompletionDate?.seconds ? new Date(data.actualCompletionDate?.seconds*1000) : null;
+              const overdue =  data.riskStatus != 'RESOLVED' && new Date(moment(targetCompletionDate).add(1,'d').format('YYYY-MM-DD')) < new Date(moment().format('YYYY-MM-DD')) ? 'overdue' : '';
+              const overdueby = overdue=='overdue' ? moment(moment(targetCompletionDate).add(1,'d').format('YYYY-MM-DD')).fromNow() : '';
+              refCopy = {id, riskInitiationDate, targetCompletionDate, actualCompletionDate,
+                                     riskStatus: data.riskStatus,
+                                     riskInitiator: {...data.riskInitiator},
+                                     riskOwner: {...data.riskOwner},
+                                     ownerInitiatorUidList: [...data.ownerInitiatorUidList],
+                                     taskTitle: data.riskTitle,
+                                     tags: [...data.tags],
+                                     riskProbability: data.riskProbability,
+                                     riskImpact: data.riskImpact
+                                   };
+              console.log("minutley risk data refCopy", doc.id, refCopy)
+            });
           }
+
+          console.log("running transaction");
+          let riskDates = this.getRiskDates( risk.riskStatus=='RESOLVED' ? refCopy : risk,  risk.riskStatus);
+
+          // riskId = type=='new' ?
+          //           await this.db.generateDocuemnetRef(this.db.allCollections.risk)
+          //           :
+          //           refCopy.id; //subscriberId + "_"+ (totalSequenceId +'_' + i);
+
           // Get the minutelyKpi details
           let widgetData: any = {};
           let rlDocRef = this.db.afs.collection(this.db.allCollections.minutelykpi).doc(subscriberId).ref;

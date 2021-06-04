@@ -1,0 +1,18 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import { IonicModule } from '@ionic/angular';
+
+import { RiskProbabilityImpactComponent } from './risk-probability-impact.component';
+
+@NgModule({
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+  ],
+  declarations: [RiskProbabilityImpactComponent],
+  exports:[RiskProbabilityImpactComponent]
+})
+export class RiskProbabilityImpactComponentModule {}

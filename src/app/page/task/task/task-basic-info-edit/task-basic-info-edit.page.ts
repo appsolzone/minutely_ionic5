@@ -87,7 +87,7 @@ export class TaskBasicInfoEditPage implements OnInit {
   }
 
   addTag(){
-    if(this.taskTag){
+    if(this.taskTag.trim()){
       this.taskDetails.tags.push(this.taskTag);
       this.taskTag = '';
     }

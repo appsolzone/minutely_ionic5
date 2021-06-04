@@ -82,7 +82,7 @@ export class ItemUpdatesService {
 
     } else if (userEventType=='update') {
       message = "The task details of '" + eventInfo.data.taskTitle +
-                    "' has been updated. For further details, please open the app and check the Meetings section.";
+                    "' has been updated. For further details, please open the app and check the Tasks section.";
     }
 
     return message;
@@ -132,7 +132,7 @@ export class ItemUpdatesService {
           ...this.notification.newNotification,
           msgBody: this.getMeetingsMessage(eventInfo,'assignowner'),
           msgTitle: eventInfo.data.meetingTitle ? eventInfo.data.meetingTitle : 'Meeting information',
-          origin: {label: 'Meetings', icon: 'calendar', color: 'primary'},
+          origin: {label: 'Meeting', icon: 'calendar', color: 'primary'},
           actions: [{text: 'clear', color: 'medium', href: 'clear'}],
           refData: {id: eventInfo.data.id}, // data required for any action or oter purpose
           subscriberId: eventInfo.data.subscriberId,
@@ -164,7 +164,7 @@ export class ItemUpdatesService {
             ...this.notification.newNotification,
             msgBody: this.getMeetingsMessage(eventInfo,userEventType),
             msgTitle: eventInfo.data.meetingTitle ? eventInfo.data.meetingTitle : 'Meeting information',
-            origin: {label: 'Meetings', icon: 'calendar', color: 'primary'},
+            origin: {label: 'Meeting', icon: 'calendar', color: 'primary'},
             actions: //userEventType=="add" ?
                     [{text: 'open', color: 'primary', href: 'meeting/meeting-details/'+eventInfo.data.id}, {text: 'clear', color: 'medium', href: 'clear'}]
                     // :

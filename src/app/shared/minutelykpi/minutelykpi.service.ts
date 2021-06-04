@@ -197,7 +197,7 @@ export class MinutelyKpiService {
 
       //------------------only for risk------------
       let riskMatrix = {};
-      if(riskCurrData.riskStatus=='RESOLVED'){
+      if(riskCurrData.riskStatus=='RESOLVED' && riskPrevData?.riskStatus!='RESOLVED'){
           // batch.update(a, {
           //    ["risk" +
           //    riskCurrData.riskProbability +
@@ -205,8 +205,8 @@ export class MinutelyKpiService {
           //  });
           riskMatrix = {
                   ["risk" +
-                  riskCurrData.riskProbability +
-                  riskCurrData.riskImpact]: this.database.frb.firestore.FieldValue.increment(-1)
+                  riskPrevData.riskProbability +
+                  riskPrevData.riskImpact]: this.database.frb.firestore.FieldValue.increment(-1)
                 };
       }else if(riskCurrData.riskStatus!='RESOLVED' && riskPrevData?.riskStatus=='RESOLVED'){
           // batch.update(a, {

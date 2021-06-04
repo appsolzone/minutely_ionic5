@@ -58,11 +58,11 @@
                   </p>
                 </ion-text>
               </ion-item>
-              <ion-item lines="inset">
+              <ion-item *ngIf="subscriberType=='new'" lines="inset">
                 <ion-label position="floating">
                   <ion-icon name="business" class="ion-margin-end"></ion-icon>Organization name
                 </ion-label>
-                <ion-input type="text" [(ngModel)]="orgProfile.companyName" [disabled]="subscriberType=='existing'">
+                <ion-input type="text" [(ngModel)]="orgProfile.companyName">
                 </ion-input>
               </ion-item>
               <ion-item lines="inset">
@@ -96,6 +96,13 @@
                     </small>
                   </p>
                 </ion-text>
+              </ion-item>
+              <ion-item *ngIf="subscriberType=='existing'" lines="inset">
+                <ion-label position="floating">
+                  <ion-icon name="business" class="ion-margin-end"></ion-icon>Organization name
+                </ion-label>
+                <ion-input type="text" [(ngModel)]="orgProfile.companyName" [disabled]="subscriberType=='existing'">
+                </ion-input>
               </ion-item>
               <ion-item lines="inset">
                 <ion-label position="floating" class="ion-margin-end">

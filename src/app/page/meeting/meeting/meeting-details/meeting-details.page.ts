@@ -106,7 +106,8 @@ export class MeetingDetailsPage implements OnInit {
   }
   // share minutes
   async sendMinutes(){
-    let response = await this.meetingservice.shareMeetingMinutes(this.meeting, this.alllinkages);
+    let selectedAttendee = this.meeting?.data.ownerId.uid == this.sessionInfo?.uid ? this.sessionInfo?.uid : null;
+    let response = await this.meetingservice.shareMeetingMinutes(this.meeting, this.alllinkages, selectedAttendee);
     let buttons = [
                     {
                       text: 'Dismiss',

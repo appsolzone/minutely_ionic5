@@ -76,7 +76,7 @@
           <p>To search tasks by <b>keywords</b>, enter one or more keywords.</p>
           <p class="ion-text-center"><ion-text color="medium"><small>Here are few tips to help you with searching ... <br/>
             Try searching words appear in task title, name or tags<br/>
-            Try searching status e.g. <b>open</b>, <b>cancel</b> or <b>completed</b><br/>
+            Try searching status e.g. <b>open</b>, <b>inprogress</b> or <b>resolved</b><br/>
             Try seraching one or two words<br/>
             Try <b>match any keyword</b> option for wider search result <br/></small></ion-text>
           </p>
@@ -145,7 +145,7 @@
           <ion-skeleton-text *ngIf="!m" animated style="width: 30%"></ion-skeleton-text>
         </ion-button>
         <ion-icon slot="end" name="bookmark" size="small"
-          color="{{m?.overdue=='overdue'? 'danger' : m?.data.taskStatus=='OPEN' ? 'warning' : 'success'}}">
+          color="{{m?.overdue=='overdue'? 'danger' : m?.data.taskStatus=='OPEN' ? 'warning' : m?.data.taskStatus=='INPROGRESS' ? 'primary' : 'green'}}">
         </ion-icon>
       </ion-item>
       <ion-card-content class="ion-no-padding ion-padding-start ion-padding-end">

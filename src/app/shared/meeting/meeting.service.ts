@@ -185,7 +185,7 @@ export class MeetingService {
     const feature = aclFreeLimitKpi['create-meeting'];
     const freeLimit = feature?.freeLimit!=null ?  feature?.freeLimit : -1;
     const usedLimit = feature?.usedLimit!=null ?  feature?.usedLimit : 0;
-    const isWithinLimit = freeLimit == -1 ? true : freeLimit > (usedLimit + noOfOccurence - mRef.noOfOccurence ? mRef.noOfOccurence : 0);
+    const isWithinLimit = freeLimit == -1 ? true : freeLimit > (usedLimit + noOfOccurence - (mRef.noOfOccurence ? mRef.noOfOccurence : 0));
     console.log('isWithinKpiAclLimit', isWithinLimit, feature);
     if (!isWithinLimit){
       status = false;
@@ -484,7 +484,7 @@ export class MeetingService {
 
 
   // share meeting summary
-  async shareMeetingMinutes(meeting, linkages)
+  async shareMeetingMinutes(meeting, linkages, selectedAttendee:any=null)
   {
     if(meeting.data.status != 'COMPLETED'){
       return {status: "warning", title: "Meeting status Open", body: "Meeting minutes can only be shared for COMPLETED meetings through email. Please mark the meeting COMPLETED and then share meeting minutes."};
@@ -507,8 +507,9 @@ export class MeetingService {
                 })
         }
       })
+      let attendeeList = selectedAttendee ? m.attendeeList.filter(a=>a.uid==selectedAttendee) : m.attendeeList;
       let minutesObj = {
-        toEmail:m.attendeeList.map(a=>{return {email: a.email};}),
+        toEmail: attendeeList.map(a=>{return {email: a.email};}),
         meetingStart: moment.utc(m.meetingStart).format('MMM DD, YYYY h:mm a') + " UTC",
         toName: m.ownerId.name,
         meetingTitle:m.meetingTitle,

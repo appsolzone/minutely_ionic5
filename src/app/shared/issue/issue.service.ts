@@ -191,14 +191,6 @@ export class IssueService {
       return transaction.get(docRef).then(async function(regDoc) {
           let subscriber = regDoc.data();
           // Note that we should start at the current event seq id to cascade the events
-
-          console.log("running issue transaction status", issue.issueStatus, refCopy);
-          let issueDates = this.getIssueDates(issue.issueStatus=='RESOLVED' ? refCopy : issue, issue.issueStatus);
-
-          // issueId = type=='new' ?
-          //           await this.db.generateDocuemnetRef(this.db.allCollections.issue)
-          //           :
-          //           refCopy.id; //subscriberId + "_"+ (totalSequenceId +'_' + i);
           if(type=='new'){
             let issueRef = await this.db.generateDocuemnetRef(this.db.allCollections.issue)
             await transaction.get(issueRef.ref).then(doc=>{
@@ -208,7 +200,37 @@ export class IssueService {
             });
           } else {
             issueId = refCopy.id;
+            let taskRef = this.db.afs.collection(this.db.allCollections.issue).doc(issueId).ref;
+            await transaction.get(taskRef).then(doc=>{
+              console.log("minutley task data doc", doc.id, doc.data())
+              const data: any = doc.data();
+              const id: string = doc.id;
+
+              const issueInitiationDate = moment(data.issueInitiationDate?.seconds*1000).format('YYYY-MM-DD');
+              const targetCompletionDate = moment(data.targetCompletionDate?.seconds ? new Date(data.targetCompletionDate?.seconds*1000) : null).format('YYYY-MM-DD');
+              const actualCompletionDate = data.actualCompletionDate?.seconds ? new Date(data.actualCompletionDate?.seconds*1000) : null;
+              const overdue =  data.issueStatus != 'RESOLVED' && new Date(moment(targetCompletionDate).add(1,'d').format('YYYY-MM-DD')) < new Date(moment().format('YYYY-MM-DD')) ? 'overdue' : '';
+              const overdueby = overdue=='overdue' ? moment(moment(targetCompletionDate).add(1,'d').format('YYYY-MM-DD')).fromNow() : '';
+              refCopy = {id, issueInitiationDate, targetCompletionDate, actualCompletionDate,
+                                     issueStatus: data.issueStatus,
+                                     issueInitiator: {...data.issueInitiator},
+                                     issueOwner: {...data.issueOwner},
+                                     ownerInitiatorUidList: [...data.ownerInitiatorUidList],
+                                     taskTitle: data.issueTitle,
+                                     tags: [...data.tags]
+                                   };
+              console.log("minutley issue data refCopy", doc.id, refCopy)
+            });
           }
+
+          console.log("running issue transaction status", issue.issueStatus, refCopy);
+          let issueDates = this.getIssueDates(issue.issueStatus=='RESOLVED' ? refCopy : issue, issue.issueStatus);
+
+          // issueId = type=='new' ?
+          //           await this.db.generateDocuemnetRef(this.db.allCollections.issue)
+          //           :
+          //           refCopy.id; //subscriberId + "_"+ (totalSequenceId +'_' + i);
+
           // Get the minutelyKpi details
           let widgetData: any = {};
           let rlDocRef = this.db.afs.collection(this.db.allCollections.minutelykpi).doc(subscriberId).ref;

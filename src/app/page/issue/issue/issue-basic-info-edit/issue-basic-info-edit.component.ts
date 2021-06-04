@@ -87,7 +87,7 @@ export class IssueBasicInfoEditComponent implements OnInit {
   }
 
   addTag(){
-    if(this.issueTag){
+    if(this.issueTag.trim()){
       this.issueDetails.tags.push(this.issueTag);
       this.issueTag = '';
     }

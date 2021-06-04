@@ -87,7 +87,7 @@ export class RiskBasicInfoEditPage implements OnInit {
   }
 
   addTag(){
-    if(this.riskTag){
+    if(this.riskTag.trim()){
       this.riskDetails.tags.push(this.riskTag);
       this.riskTag = '';
     }

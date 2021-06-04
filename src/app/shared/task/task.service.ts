@@ -192,14 +192,6 @@ constructor(
       return transaction.get(docRef).then(async function(regDoc) {
           let subscriber = regDoc.data();
           // Note that we should start at the current event seq id to cascade the events
-
-          console.log("running transaction");
-          let taskDates = this.getTaskDates(task.taskStatus=='RESOLVED' ? refCopy : task, task.taskStatus);
-
-          // taskId = type=='new' ?
-          //           await this.db.generateDocuemnetRef(this.db.allCollections.task)
-          //           :
-          //           refCopy.id; //subscriberId + "_"+ (totalSequenceId +'_' + i);
           if(type=='new'){
             let taskRef = await this.db.generateDocuemnetRef(this.db.allCollections.task)
             await transaction.get(taskRef.ref).then(doc=>{
@@ -209,7 +201,37 @@ constructor(
             });
           } else {
             taskId = refCopy.id;
+            let taskRef = this.db.afs.collection(this.db.allCollections.task).doc(taskId).ref;
+            await transaction.get(taskRef).then(doc=>{
+              console.log("minutley task data doc", doc.id, doc.data())
+              const data: any = doc.data();
+              const id: string = doc.id;
+
+              const taskInitiationDate = moment(data.taskInitiationDate?.seconds*1000).format('YYYY-MM-DD');
+              const targetCompletionDate = moment(data.targetCompletionDate?.seconds ? new Date(data.targetCompletionDate?.seconds*1000) : null).format('YYYY-MM-DD');
+              const actualCompletionDate = data.actualCompletionDate?.seconds ? new Date(data.actualCompletionDate?.seconds*1000) : null;
+              const overdue =  data.taskStatus != 'RESOLVED' && new Date(moment(targetCompletionDate).add(1,'d').format('YYYY-MM-DD')) < new Date(moment().format('YYYY-MM-DD')) ? 'overdue' : '';
+              const overdueby = overdue=='overdue' ? moment(moment(targetCompletionDate).add(1,'d').format('YYYY-MM-DD')).fromNow() : '';
+              refCopy = {id, taskInitiationDate, targetCompletionDate, actualCompletionDate,
+                                     taskStatus: data.taskStatus,
+                                     taskInitiator: {...data.taskInitiator},
+                                     taskOwner: {...data.taskOwner},
+                                     ownerInitiatorUidList: [...data.ownerInitiatorUidList],
+                                     taskTitle: data.taskTitle,
+                                     tags: [...data.tags]
+                                   };
+              console.log("minutley task data refCopy", doc.id, refCopy)
+            });
           }
+
+          console.log("running transaction");
+          let taskDates = this.getTaskDates(task.taskStatus=='RESOLVED' ? refCopy : task, task.taskStatus);
+
+          // taskId = type=='new' ?
+          //           await this.db.generateDocuemnetRef(this.db.allCollections.task)
+          //           :
+          //           refCopy.id; //subscriberId + "_"+ (totalSequenceId +'_' + i);
+
           // Get the minutelyKpi details
           let widgetData: any = {};
           let rlDocRef = this.db.afs.collection(this.db.allCollections.minutelykpi).doc(subscriberId).ref;

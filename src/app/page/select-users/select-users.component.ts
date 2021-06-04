@@ -175,7 +175,7 @@ export class SelectUsersComponent implements OnInit {
     let resCsvData = res || '';
     let extractMembers = [];
     await papa.parse(resCsvData, {
-      complete: parsedData => {
+      complete: async parsedData => {
         let headerRow = parsedData.data.splice(0, 1)[0];
         let csvData = parsedData.data;
         //  console.log("header",headerRow);
@@ -192,16 +192,21 @@ export class SelectUsersComponent implements OnInit {
           };
           for(var i = 0; i < splitText.length; i++) {
             var data = splitText[i];
-            if(data.trim()){obj[headerRow[i].trim()] = data.trim();}
+            if(data.trim()){obj[headerRow[i].trim().toLowerCase()] = data.trim();}
           }
           console.log(obj);
           if(obj.name && obj.email){extractMembers.push(obj);}
         })
         // add all those users
-          console.log("Now the object is:",extractMembers);
-          this.userList = [...this.userList,...extractMembers];
-          this.selectedUsers = [...this.selectedUsers,...extractMembers];
-          this.onSearchUser();
+          if(extractMembers.length==0){
+            this.common.presentAlert("Warning", "No valid user found in the selected file. Please check and try again.");
+          } else {
+            await this.common.presentToaster("Attendee list uploaded successfully");
+            console.log("Now the object is:",extractMembers);
+            this.userList = [...this.userList,...extractMembers];
+            this.selectedUsers = [...this.selectedUsers,...extractMembers];
+            this.onSearchUser();
+          }
 
           console.log(this.userList,this.selectedUsers);
           //this.showHideAddTempUser();
@@ -209,7 +214,9 @@ export class SelectUsersComponent implements OnInit {
         }
     });
 
-    await this.common.presentToaster("Attendee list uploaded successfully")
+    // if(extractMembers.length > 0){
+    //   await this.common.presentToaster("Attendee list uploaded successfully");
+    // }
   }
 
 }
