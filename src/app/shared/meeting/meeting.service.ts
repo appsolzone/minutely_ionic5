@@ -217,10 +217,13 @@ export class MeetingService {
       return check;
     }
 
-    check = this.isKpiAclLimitExhausted(meeting, refInformation, sessionInfo);
+    // Run this check only when we are creating a new event or adding new instances
+    if(!refInformation?.id || (refInformation?.id && meeting?.data?.noOfOccurence != refInformation?.noOfOccurence)){
+      check = this.isKpiAclLimitExhausted(meeting, refInformation, sessionInfo);
 
-    if(!check.status){
-      return check;
+      if(!check.status){
+        return check;
+      }
     }
 
     return {status: true, title: 'Valid Basic Info', body: 'Valid Basic Info'};
