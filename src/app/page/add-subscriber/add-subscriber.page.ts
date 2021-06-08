@@ -211,6 +211,10 @@ export class AddSubscriberPage implements OnInit {
         }).catch(err => {
           this.componentService.hideLoader();
           console.log('error', err);
+          this.componentService.presentAlert("Warning",
+                "Unable to complete the join organisation process, please contact the admin of " + this.orgProfile.companyName +
+                ". It may happen due to the restriction for new user onboarding."
+              );
         });
 
       // console.log('join part');

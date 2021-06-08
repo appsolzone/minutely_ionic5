@@ -58,7 +58,7 @@
     <ion-item class="ion-no-padding" lines="none"  color="transparent">
       <img src="{{(m?.data.ownerId.picUrl) ? m?.data.ownerId?.picUrl : 'assets/shapes.svg'}}"
       (error)="profileImgErrorHandler(m.data.ownerId)"
-        style="height:30px; width:30px;border-radius:50%;"
+        style="height:30px; width:30px;border-radius:50%;object-fit: cover; overflow: hidden;"
         />
       <ion-label class="ion-padding-start">
         <h2  *ngIf="m">Organiser</h2>

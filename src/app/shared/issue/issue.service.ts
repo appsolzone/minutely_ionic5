@@ -311,7 +311,7 @@ export class IssueService {
           // this.navData.loader = false;
           console.log("runninh transaction", {status: 'success', title: "Successful", body: "Issue Data updated successfully."});
           //send mail during update and creation
-          this.sendMailDuringCreationUpdateToOwner(issue,sessionInfo,type);
+          // this.sendMailDuringCreationUpdateToOwner(issue,sessionInfo,type);
 
           return {status: 'success', title: "Success", body: "Issue " +  (type=='new' ? 'created' : 'updated') + " successfully."};
 

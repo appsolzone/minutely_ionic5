@@ -308,7 +308,7 @@ constructor(
             // this.sendMail(task.attendeeList,refCopy.id,task.taskStart,task.taskEnd);
           }
           //send mail during update and creation
-          this.sendMailDuringCreationUpdateToOwner(task,sessionInfo,type);
+          // this.sendMailDuringCreationUpdateToOwner(task,sessionInfo,type);
 
           // this.sfp.defaultAlert("Successful","Task Data updated successfully.");
           // this.navData.loader = false;

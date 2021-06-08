@@ -167,7 +167,7 @@
               <img *ngIf="m?.data.taskOwner?.picUrl" slot="start"
                 src="{{(m?.data.taskOwner?.picUrl) ? m?.data.taskOwner?.picUrl : ''}}"
                 (error)="profileImgErrorHandler(m?.data.taskOwner)"
-                style="height:30px; width:30px;border-radius:50%;"
+                style="height:30px; width:30px;border-radius:50%;object-fit: cover; overflow: hidden;"
                 />
               <ion-label>
                 <h2  *ngIf="m">Owner</h2>
@@ -197,7 +197,7 @@
         <ion-item class="ion-no-padding" lines="none" color="transparent">
          <img *ngIf="m?.data.latestComment.totalComments > 0"
           src="{{(m?.data.latestComment.picUrl) ? m?.data.latestComment.picUrl : ''}}"
-          (error)="profileImgErrorHandler(m?.data.latestComment)" style="height:30px; width:30px;border-radius:50%;" />
+          (error)="profileImgErrorHandler(m?.data.latestComment)" style="height:30px; width:30px;border-radius:50%;object-fit: cover; overflow: hidden;" />
           <ion-icon slot="start" name="chatbubbles" class="ion-no-margin" *ngIf="m?.data.latestComment.totalComments == 0"></ion-icon>
           <ion-label class="ion-no-padding ion-margin ion-text-wrap">
             <p class="app-twolines">{{m?.data.latestComment.totalComments == 0 ? 'Be the first person to post comment for the task' : m?.data.latestComment.comment}}</p>

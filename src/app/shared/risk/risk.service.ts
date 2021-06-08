@@ -311,7 +311,7 @@ constructor(
             // this.sendMail(risk.attendeeList,refCopy.id,risk.riskStart,risk.riskEnd);
           }
           //send mail during update and creation
-          this.sendMailDuringCreationUpdateToOwner(risk,sessionInfo,type);
+          // this.sendMailDuringCreationUpdateToOwner(risk,sessionInfo,type);
 
           // this.sfp.defaultAlert("Successful","Risk Data updated successfully.");
           // this.navData.loader = false;

@@ -192,7 +192,7 @@ export class SelectUsersComponent implements OnInit {
           };
           for(var i = 0; i < splitText.length; i++) {
             var data = splitText[i];
-            if(data.trim()){obj[headerRow[i].trim().toLowerCase()] = data.trim();}
+            if(data?.trim()){obj[headerRow[i]?.trim().toLowerCase()] = data?.trim();}
           }
           console.log(obj);
           if(obj.name && obj.email){extractMembers.push(obj);}

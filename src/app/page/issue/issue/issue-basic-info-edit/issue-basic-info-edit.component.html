@@ -27,7 +27,9 @@
 <ion-item>
   <ion-textarea required="true" autoGrow="true" wrap="soft" spellcheck="true" [(ngModel)]="issueDetails.issueTitle"
   placeholder="Please enter issue title"
-    [value]="issueDetails?.issueTitle"></ion-textarea>
+    [value]="issueDetails?.issueTitle"
+    [readonly]="issueDetails?.issueStatus =='RESOLVED' || refInformation?.issueInitiator?.uid != sessionInfo?.userProfile?.uid"
+    ></ion-textarea>
 </ion-item>
 <ion-item>
   <ion-label>
