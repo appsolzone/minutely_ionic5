@@ -83,7 +83,7 @@ export class AddSubscriberPage implements OnInit {
         this.requiredEmailCheck = this.userData.providerData[0].providerId !== 'google.com';
         const regex = /.(?=[^@]*?@)/g; // /(?<=.{1}).(?=[^@]*?@)/g;
         const {displayName, email, phoneNumber} = this.userData.providerData[0];
-        this.maskedEmail = email.replace(regex, '*');
+        this.maskedEmail = email.substr(0,1) + email.replace(regex, '*').substr(1,);
         this.orgProfile = {
           subscriberId: '',
           companyName: '',
@@ -163,10 +163,10 @@ export class AddSubscriberPage implements OnInit {
     if (this.subscriberType == 'new'){
 
       if (this.orgProfile.subscriberId == ''
-          || this.orgProfile.address == ''
-          || this.orgProfile.companyName == ''
+          // || this.orgProfile.address == ''
+          // || this.orgProfile.companyName == ''
         ){
-          this.componentService.presentAlert('Error', 'cannnot submit, fill all the fields');
+          this.componentService.presentAlert('Error', 'Please enter a valid account id to continue');
           console.log('cannnot submit, fill all the fields');
         }
       else{

@@ -83,4 +83,23 @@ export class ManageuserService {
         }.bind(this)); // end of transaction callback
      }); // end of runTransaction
   }
+
+  processAuthData(userData){
+    const { displayName, email, phoneNumber } = userData.providerData[0];
+    let uid = userData.uid;
+    console.log("authUserData", userData);
+    let newuseruids = {
+      uid: uid,
+      name: displayName,
+      email,
+      phoneNumber: phoneNumber ? phoneNumber : '',
+      lastAccessTimeStamp: this.db.frb.firestore.FieldValue.serverTimestamp()
+    };
+    this.db.setDocument(
+      this.db.allCollections.useruids,
+      uid,
+      newuseruids,
+      true
+    );
+  }
 }

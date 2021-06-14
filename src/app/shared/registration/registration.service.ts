@@ -77,7 +77,7 @@ export class RegistrationService {
           this.db.setTransactDocument(transaction, userRef, newUser);
           // add user to useruids list
           const newuseruids = { uid: uId, email };
-          this.db.setTransactDocument(transaction, useruids, newuseruids);
+          this.db.setTransactDocument(transaction, useruids, newuseruids, true);
           // create the notification area
           const newNotification = Object.assign(
             {},
@@ -194,7 +194,7 @@ export class RegistrationService {
           this.db.setTransactDocument(transaction, userRef, newUser);
           // add user to useruids list
           const newuseruids = { uid: uId, email };
-          this.db.setTransactDocument(transaction, useruids, newuseruids);
+          this.db.setTransactDocument(transaction, useruids, newuseruids, true);
           // create the notification area
           const newNotification = Object.assign(
             {},

@@ -34,7 +34,7 @@
               </ion-list-header>
               <ion-segment [(ngModel)]="subscriberType" (ionChange)="segmentChanged($event)" color="success">
                 <ion-segment-button value="new">
-                  <ion-label class="ion-text-capitalize">New organization</ion-label>
+                  <ion-label class="ion-text-capitalize">New account</ion-label>
                 </ion-segment-button>
                 <ion-segment-button value="existing">
                   <ion-label class="ion-text-capitalize">Join organization</ion-label>
@@ -58,17 +58,17 @@
                   </p>
                 </ion-text>
               </ion-item>
-              <ion-item *ngIf="subscriberType=='new'" lines="inset">
+              <!-- <ion-item *ngIf="subscriberType=='new'" lines="inset">
                 <ion-label position="floating">
                   <ion-icon name="business" class="ion-margin-end"></ion-icon>Organization name
                 </ion-label>
                 <ion-input type="text" [(ngModel)]="orgProfile.companyName">
                 </ion-input>
-              </ion-item>
+              </ion-item> -->
               <ion-item lines="inset">
                 <ion-label position="floating">
                   <ion-icon name="qr-code" class="ion-margin-end"></ion-icon> {{subscriberType=='existing' ? 'Enter' :
-                  'Choose'}} Organization ID
+                  'Choose'}} Account ID
                 </ion-label>
                 <ion-input type="text" [(ngModel)]="orgProfile.subscriberId" debounce=500 minlength=3 maxlength=20
                   (ionInput)="ionInputSubscriberId()" (ionChange)="checkSubscriberId($event)"></ion-input>
@@ -77,19 +77,19 @@
                 <ion-text [color]="subscriberExists || subsriberIdContainsBlankSpace ? 'danger' : 'medium'">
                   <p>
                     <small>
-                      <span *ngIf="subsriberIdContainsBlankSpace">Organization id can not contain blank space. Please check and try again.</span>
-                      <span *ngIf="subscriberType=='new' && subscriberExists">Organization id is not available.</span>
+                      <span *ngIf="subsriberIdContainsBlankSpace">Account id can not contain blank space. Please check and try again.</span>
+                      <span *ngIf="subscriberType=='new' && subscriberExists">Account id is not available.</span>
                       <span *ngIf="subscriberType=='existing' && subscriberExists">
-                        <ion-text [color]="alreadyJoined ? 'danger' : 'success'">Organization id found.{{alreadyJoined ?
+                        <ion-text [color]="alreadyJoined ? 'danger' : 'success'">Account id found.{{alreadyJoined ?
                           'You have already joined this organization' : ''}}</ion-text>
                       </span>
                       <span *ngIf="(subscriberType=='new' || (subscriberType=='existing' && !subscriberExists)) && !subsriberIdContainsBlankSpace">
                         {{
                         subscriberType=='existing' ?
-                        'Enter the organization id. If you do not have the organization id, please check with your
+                        'Enter the account id. If you do not have the account id, please check with your
                         administrator'
                         :
-                        'Choose an unique id for the organization. It may contain alphabets, numbers and should be
+                        'Choose an unique id for your account. It may contain alphabets, numbers and should be
                         between 3 and 20 characters'
                         }}
                       </span>
@@ -104,7 +104,7 @@
                 <ion-input type="text" [(ngModel)]="orgProfile.companyName" [disabled]="subscriberType=='existing'">
                 </ion-input>
               </ion-item>
-              <ion-item lines="inset">
+              <ion-item *ngIf="subscriberType=='existing'" lines="inset">
                 <ion-label position="floating" class="ion-margin-end">
                   <ion-icon name="location"></ion-icon>Address
                 </ion-label>

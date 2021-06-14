@@ -190,6 +190,9 @@ export class ManageprofilePage implements OnInit {
     ) {
       // if everything is fine just go to activity page directly
       this.onDismissClick(instruction);
+    } else if(this.sessionInfo?.orgProfile?.subscriptionType.toUpperCase() == 'FREE'){
+      this.common.presentToaster(instruction.body);
+      this.onDismissClick(instruction);
     } else {
       await this.common.presentAlert(
         instruction.title,
@@ -286,7 +289,7 @@ export class ManageprofilePage implements OnInit {
     if (data.userData && !this.userData) {
       //// console.log("if data.userData && this.userData", data.userData, this.userData);
       this.userData = data.userData;
-      this.session.getProfiles(this.userData.uid);
+      this.session.getProfiles(this.userData.uid, this.userData);
     } else if (data.userData && this.userData) {
       //// console.log("else if", data.userData, this.userData);
       this.userData = data.userData;

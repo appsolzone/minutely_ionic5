@@ -61,9 +61,13 @@ export class SessionService {
 
   // subscribe user profile database
   // this should be called inside authState call back before setting the subscriber/sessionInfo
-  async getProfiles(uid) {
+  async getProfiles(uid, authUserData: any = null) {
     // clear the existing session$ values as we have logged in using a new uid
     this.clear();
+    // log entries for user access time details
+    if(authUserData) {
+      this.user.processAuthData(authUserData);
+    }
     // if any residual subscription, unsubscribe it
     if (this.getProfileSubs$?.unsubscribe) {
       await this.getProfileSubs$.unsubscribe();

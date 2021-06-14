@@ -15,6 +15,9 @@
       ],
       "serverClientId": "REPLACE.apps.googleusercontent.com",
       "forceCodeForRefreshToken": true
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
     }
   },
   "cordova": {}
