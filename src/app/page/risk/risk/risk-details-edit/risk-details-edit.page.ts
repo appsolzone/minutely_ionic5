@@ -98,7 +98,9 @@ export class RiskDetailsEditPage implements OnInit {
                            riskOwner: {...data.riskOwner},
                            ownerInitiatorUidList: [...data.ownerInitiatorUidList],
                            riskTitle: data.riskTitle,
-                           tags: [...data.tags]
+                           tags: [...data.tags],
+                           riskProbability: data.riskProbability,
+                           riskImpact: data.riskImpact
                          };
     console.log("risk details", this.risk);
 

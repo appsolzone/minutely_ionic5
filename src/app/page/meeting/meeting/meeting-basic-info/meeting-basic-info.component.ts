@@ -56,6 +56,7 @@ export class MeetingBasicInfoComponent implements OnInit {
 
   async onActionClick(val){
     // TBA
+    await this.common.showLoader("Registering response, please wait...");
     let buttons = [
                     {
                       text: 'Dismiss',
@@ -65,6 +66,7 @@ export class MeetingBasicInfoComponent implements OnInit {
                     }
                   ];
     let response = await this.meetingservice.recordMeetingResponse(this.meeting?.id, this.sessionInfo?.userProfile, val);
+    this.common.hideLoader()
     this.common.presentAlert(response.title, response.body, buttons);
   }
 

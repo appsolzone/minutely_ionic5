@@ -64,7 +64,7 @@ export class RiskBasicInfoEditPage implements OnInit {
     if(
       (this.refInformation.riskInitiationDate == this.riskDetails.riskInitiationDate && this.refInformation.targetCompletionDate == this.riskDetails.targetCompletionDate) ||
       // (new Date() <= startDateTime)
-      (new Date(this.riskDetails.riskInitiationDate) <= new Date(this.riskDetails.targetCompletionDate))
+      (new Date(moment(this.riskDetails.riskInitiationDate).format('YYYY-MM-DD')) <= new Date(moment(this.riskDetails.targetCompletionDate).format('YYYY-MM-DD')))
     ) {
       return true;
     } else {
@@ -87,8 +87,10 @@ export class RiskBasicInfoEditPage implements OnInit {
   }
 
   addTag(){
-    this.riskDetails.tags.push(this.riskTag);
-    this.riskTag = '';
+    if(this.riskTag.trim()){
+      this.riskDetails.tags.push(this.riskTag);
+      this.riskTag = '';
+    }
   }
 
   removeTag(index){

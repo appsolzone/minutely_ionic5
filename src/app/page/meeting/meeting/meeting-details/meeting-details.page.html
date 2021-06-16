@@ -6,11 +6,22 @@
       <ion-back-button defaultHref="/meeting"></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="end" class="ion-padding-end ion-margin-end">
-      <ion-button slot="end" *ngIf="meeting?.data.ownerId.uid == sessionInfo?.uid"
+      <ion-button slot="end"
+        (featureClick)="copyMeeting()"
+        appFeatureCheck
+        [featureIdList]="['clone-meeting']"
+        >
+        <ion-icon name="copy-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button slot="end" *ngIf="meeting?.data.ownerId.uid == sessionInfo?.uid && meeting?.data.status!='CANCEL'"
         (click)="editMeeting()">
         <ion-icon name="create-outline" slot="icon-only"></ion-icon>
       </ion-button>
-      <ion-button slot="end" (click)="sendMinutes()">
+      <ion-button *ngIf="meeting?.data.status!='CANCEL'" slot="end"
+      (featureClick)="sendMinutes()"
+      appFeatureCheck
+      [featureIdList]="['share-meeting']"
+      >
         <ion-icon name="paper-plane-outline" slot="icon-only"></ion-icon>
       </ion-button>
       <ion-button slot="end" disabled="true" class="ion-hide-lg-up">

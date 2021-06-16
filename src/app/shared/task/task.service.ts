@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import { DatabaseService } from 'src/app/shared/database/database.service';
 import { TextsearchService } from 'src/app/shared/textsearch/textsearch.service';
 import { LinkageService } from 'src/app/shared/linkage/linkage.service';
+import { MinutelyKpiService } from 'src/app/shared/minutelykpi/minutelykpi.service';
 import { KpiService } from 'src/app/shared/kpi/kpi.service';
 import { NotificationsService } from 'src/app/shared/notifications/notifications.service';
 import { ItemUpdatesService } from 'src/app/shared/item-updates/item-updates.service';
@@ -20,6 +21,7 @@ export class TaskService {
         uid:'',
         subscriberId:'',
         picUrl:'',
+        email:'',
       },
       taskInitiationDate :new Date(),
       taskEntryDate : null,
@@ -40,6 +42,7 @@ export class TaskService {
         uid:'',
         subscriberId:'',
         picUrl:'',
+        email:'',
       },
       tags:[],
       details:'',
@@ -51,7 +54,8 @@ constructor(
     public db: DatabaseService,
     public searchMap: TextsearchService,
     public link: LinkageService,
-    public kpi: KpiService,
+    public kpi: MinutelyKpiService,
+    public aclKpi: KpiService,
     public notification: NotificationsService,
     public itemupdate: ItemUpdatesService,
     public sendmail: SendEmailService,
@@ -94,8 +98,8 @@ constructor(
     let title='Task Date';
     let body='';
     let status = true;
-    let startDateTime = task.taskInitiationDate ? new Date(task.taskInitiationDate) : null;
-    let endDateTime = task.targetCompletionDate ? new Date(task.targetCompletionDate) : null;
+    let startDateTime = task.taskInitiationDate ? new Date(moment(task.taskInitiationDate).format("YYYY-MM-DD")) : null;
+    let endDateTime = task.targetCompletionDate ? new Date(moment(task.targetCompletionDate).format("YYYY-MM-DD")) : null;
 
 
     if(!startDateTime) {
@@ -148,11 +152,11 @@ constructor(
     return this.transaction(taskData, refInformation, editedlinkages, sessionInfo, type, false);
   }
 
-  getTaskDates(refDetails: any = {}){
+  getTaskDates(refDetails: any = {}, taskStatus){
 
     let taskInitiationDate = new Date(refDetails.taskInitiationDate);
     let targetCompletionDate = new Date(refDetails.targetCompletionDate);
-    let actualCompletionDate = refDetails.taskStatus=='RESOLVED' ? new Date() : null;
+    let actualCompletionDate = taskStatus=='RESOLVED' ? new Date() : null;
 
     return {taskInitiationDate, targetCompletionDate, actualCompletionDate} //, startDateTime, endDateTime, startTime, endTime, year, month, yearMonth};
   }
@@ -171,7 +175,7 @@ constructor(
                         moment(new Date(task.targetCompletionDate)).format("MMMM") + " " +
                         moment(new Date(task.targetCompletionDate)).format("MMM");
     searchMap = this.searchMap.createSearchMap(searchStrings);
-    task.ownerInitiatorUidList.forEach(uid=>searchMap[uid]=true);
+    task.ownerInitiatorUidList.forEach(uid=>{if(uid)searchMap[uid]=true;});
     return searchMap;
   }
 
@@ -188,14 +192,6 @@ constructor(
       return transaction.get(docRef).then(async function(regDoc) {
           let subscriber = regDoc.data();
           // Note that we should start at the current event seq id to cascade the events
-
-          console.log("running transaction");
-          let taskDates = this.getTaskDates(this.status=='RESOLVED' ? refCopy : task);
-
-          // taskId = type=='new' ?
-          //           await this.db.generateDocuemnetRef(this.db.allCollections.task)
-          //           :
-          //           refCopy.id; //subscriberId + "_"+ (totalSequenceId +'_' + i);
           if(type=='new'){
             let taskRef = await this.db.generateDocuemnetRef(this.db.allCollections.task)
             await transaction.get(taskRef.ref).then(doc=>{
@@ -205,7 +201,44 @@ constructor(
             });
           } else {
             taskId = refCopy.id;
+            let taskRef = this.db.afs.collection(this.db.allCollections.task).doc(taskId).ref;
+            await transaction.get(taskRef).then(doc=>{
+              console.log("minutley task data doc", doc.id, doc.data())
+              const data: any = doc.data();
+              const id: string = doc.id;
+
+              const taskInitiationDate = moment(data.taskInitiationDate?.seconds*1000).format('YYYY-MM-DD');
+              const targetCompletionDate = moment(data.targetCompletionDate?.seconds ? new Date(data.targetCompletionDate?.seconds*1000) : null).format('YYYY-MM-DD');
+              const actualCompletionDate = data.actualCompletionDate?.seconds ? new Date(data.actualCompletionDate?.seconds*1000) : null;
+              const overdue =  data.taskStatus != 'RESOLVED' && new Date(moment(targetCompletionDate).add(1,'d').format('YYYY-MM-DD')) < new Date(moment().format('YYYY-MM-DD')) ? 'overdue' : '';
+              const overdueby = overdue=='overdue' ? moment(moment(targetCompletionDate).add(1,'d').format('YYYY-MM-DD')).fromNow() : '';
+              refCopy = {id, taskInitiationDate, targetCompletionDate, actualCompletionDate,
+                                     taskStatus: data.taskStatus,
+                                     taskInitiator: {...data.taskInitiator},
+                                     taskOwner: {...data.taskOwner},
+                                     ownerInitiatorUidList: [...data.ownerInitiatorUidList],
+                                     taskTitle: data.taskTitle,
+                                     tags: [...data.tags]
+                                   };
+              console.log("minutley task data refCopy", doc.id, refCopy)
+            });
           }
+
+          console.log("running transaction");
+          let taskDates = this.getTaskDates(task.taskStatus=='RESOLVED' ? refCopy : task, task.taskStatus);
+
+          // taskId = type=='new' ?
+          //           await this.db.generateDocuemnetRef(this.db.allCollections.task)
+          //           :
+          //           refCopy.id; //subscriberId + "_"+ (totalSequenceId +'_' + i);
+
+          // Get the minutelyKpi details
+          let widgetData: any = {};
+          let rlDocRef = this.db.afs.collection(this.db.allCollections.minutelykpi).doc(subscriberId).ref;
+          await transaction.get(rlDocRef).then(doc=>{
+            console.log("minutley kpi data doc", doc.id, doc.data())
+            widgetData = doc.data();
+          });
           // taskRef = this.db.afs.collection(this.db.allCollections.task).doc(taskId).ref;
 
           console.log("runninh transaction", taskId);
@@ -219,7 +252,7 @@ constructor(
           let linkage =  {
                             meetings:editedlinkages.meetings ? editedlinkages.meetings : [],
                             tasks: editedlinkages.tasks ? editedlinkages.tasks : [],
-                            issues: editedlinkages.issues ? editedlinkages.issues : [],
+                            issues: editedlinkages.tasks ? editedlinkages.tasks : [],
                             risks: editedlinkages.risks ? editedlinkages.risks : []
                           };
           // console.log("linkage", linkage, task.linkage.tasks[0].id, task.linkage.tasks[0].id);
@@ -234,13 +267,20 @@ constructor(
           // If this is the very first instance of the series of tasks, check for status change and subsequently
           // update the records as required
           if(type=='new'){
-            this.kpi.updateKpiDuringCreation('Task',1,sessionInfo)
+            this.kpi.updateKpiDuringCreation('Task',1,sessionInfo, transaction);
+            this.aclKpi.updateKpiDuringCreation(
+              'create-project-item',
+              sessionInfo,
+              transaction,
+              1
+            );
           } else {
             let statusChanged = (refCopy.taskStatus!=task.taskStatus);
             let prevStatus = refCopy.taskStatus;
+            console.log("statusChanged before transaction end", statusChanged, refCopy.taskStatus, task.taskStatus);
             if(statusChanged)
               {
-                this.kpi.updateKpiDuringUpdate('Task',prevStatus,task.taskStatus,task,sessionInfo);
+                this.kpi.updateKpiDuringUpdate('Task',prevStatus,dataToSave.taskStatus,dataToSave,sessionInfo, 1, widgetData, transaction, refCopy);
               }
           }
           console.log("running transaction end");
@@ -267,6 +307,8 @@ constructor(
           if(task.status != 'CANCEL'){
             // this.sendMail(task.attendeeList,refCopy.id,task.taskStart,task.taskEnd);
           }
+          //send mail during update and creation
+          // this.sendMailDuringCreationUpdateToOwner(task,sessionInfo,type);
 
           // this.sfp.defaultAlert("Successful","Task Data updated successfully.");
           // this.navData.loader = false;
@@ -284,59 +326,85 @@ constructor(
 
 
   // share task summary
-  // async shareTaskMinutes(task, linkages)
-  // {
-  //   if(task.data.status != 'COMPLETED'){
-  //     return {status: "warning", title: "Task status Open", body: "Task minutes can only be shared for COMPLETED tasks through email. Please mark the task COMPLETED and then share task minutes."};
-  //   } else {
-  //     let m = task.data;
-  //     let id = task.id;
-  //     Object.keys(linkages).forEach(async lt=>{
-  //       if(!linkages[lt] || linkages[lt].length==0){
-  //         // linkage data not yet fetched, so fetch it now
-  //         await this.link.getLinkagesOnce(id,'task', lt)
-  //               .then(allDocs=>{
-  //                 linkages[lt] = [];
-  //                 allDocs.forEach((doc) => {
-  //                       // doc.data() is never undefined for query doc snapshots
-  //                       let id = doc.id;
-  //                       let data = doc.data();
-  //                       // console.log(doc.id, " => ", doc.data());
-  //                       linkages[lt].push({id,data});
-  //                   });
-  //               })
-  //       }
-  //     })
-  //     let minutesObj = {
-  //       toEmail:m.attendeeList.map(a=>{return {email: a.email};}),
-  //       taskStart: moment.utc(new Date(m.taskStart)).format('MMM DD, YYYY h:mm a') + " UTC",
-  //       toName: m.ownerId.name,
-  //       taskTitle:m.taskTitle,
-  //       agendas:m.agendas,
-  //       notes: m.notes,
-  //       attendeeList: m.attendeeList,
-  //       meetingList: linkages.meetings,
-  //       riskList: linkages.risks,
-  //       taskList:linkages.tasks,
-  //       taskList:linkages.tasks,
-  //
-  //       // toEmail:senderEmail,
-  //       //   toName: senderName,
-  //       //   initiator:this.navData.name,
-  //       //   orgName:this.navData.subscriberId,
-  //       //   taskTitle:this.tasksChange.get("title").value,
-  //       //   initationDate:moment(this.tasksChange.get("initTime").value).format('MMM DD, YYYY'),
-  //       //   targetCompletionDate:moment(this.tasksChange.get("endTime").value).format('MMM DD, YYYY'),
-  //       //   status:this.status,
-  //     }
-  //     console.log("minutesObj email", minutesObj);
-  //     this.sendmail.sendCustomEmail(this.sendmail.shareTaskMinutesPath,minutesObj)
-  //     .then((sent: any)=>
-  //       {
-  //
-  //       });
-  //     return {status: "success", title: "Task Minutes", body: "Task minutes shared with attendees through email."};
-  //   }
-  // }
+  async shareTaskMinutes(task, linkages,selectedMembers)
+  {
+    console.log(task.data,task.data.taskStatus)
+    // if(task.data.taskStatus != 'RESOLVED'){
+    //   return {status: "warning", title: "Task status Open", body: "Task minutes can only be shared for RESOLVED tasks through email. Please mark the task RESOLVED and then share task minutes."};
+    // } else {
+      let m = task.data;
+      console.log(m);
+      let id = task.id;
+      Object.keys(linkages).forEach(async lt=>{
+        if(!linkages[lt] || linkages[lt].length==0){
+          // linkage data not yet fetched, so fetch it now
+          await this.link.getLinkagesOnce(id,'task', lt)
+                .then(allDocs=>{
+                  linkages[lt] = [];
+                  allDocs.forEach((doc) => {
+                        // doc.data() is never undefined for query doc snapshots
+                        let id = doc.id;
+                        let data = doc.data();
+                        // console.log(doc.id, " => ", doc.data());
+                        linkages[lt].push({id,data});
+                    });
+                })
+        }
+      })
+      let minutesObj = {
+        toEmail:selectedMembers.map(a=>{return {email: a.email};}),
+        taskStart: moment.utc(m.taskStart).format('MMM DD, YYYY h:mm a') + " UTC",
+        toName: m.taskInitiator.name,
+        taskTitle:m.taskTitle,
+        taskInitiationDate: moment(m.taskInitiationDate).format('MMM DD, YYYY'),
+        targetCompletionDate: moment(m.targetCompletionDate).format('MMM DD, YYYY'),
+        taskDetails: m.taskDetails,
+        taskStatus: m.taskStatus,
+        taskInitiator: m.taskInitiator,
+        taskOwner: m.taskOwner,
+        meetingList: linkages.meetings,
+        riskList: linkages.risks,
+        taskList:linkages.tasks,
+        issueList:linkages.tasks,
+      }
+      console.log("minutesObj email", minutesObj);
 
+      this.sendmail.sendCustomEmail(this.sendmail.shareTaskPath,minutesObj)
+      .then((sent: any)=>
+        {
+          this.aclKpi.updateKpiDuringCreation(
+            'share-project-item',
+            {subscriberId: m.subscriberId} , //sessionInfo,
+            null,
+            selectedMembers.length
+          );
+
+        });
+      return {status: "success", title: "Task Details", body: "Task details shared with selected users through email."};
+   // }
+  }
+  sendMailDuringCreationUpdateToOwner(taskDetails,sessionInfo,type){
+
+   console.log("send mail function calling");
+   console.log("data task",taskDetails,type);
+   let taskObj = {
+    toEmail:taskDetails.taskOwner.email,
+    toName: taskDetails.taskOwner.name,
+    initiator:sessionInfo.userProfile.name,
+    orgName:sessionInfo.orgProfile.subscriberId,
+    taskTitle:taskDetails.taskTitle,
+    initationDate:moment(taskDetails.taskInitiationDate).format('MMM DD, YYYY'),
+    targetCompletionDate:moment(taskDetails.targetCompletionDate).format('MMM DD, YYYY'),
+    status:taskDetails.taskStatus,
+   };
+   let path = type == 'update'? this.sendmail.updateTaskMailPath : this.sendmail.newTaskMailPath;
+
+   console.log("path",path);
+   console.log("object send",taskObj);
+   this.sendmail.sendCustomEmail(path,taskObj)
+      .then((sent: any)=>
+        {
+         console.log("sent mail res:",sent);
+        });
+  }
 }

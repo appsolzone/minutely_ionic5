@@ -1,14 +1,15 @@
-  h2{
-    display: flex;
-    span{
-      margin-left: 10px;
-    }
-  }
+  // h2{
+  //   display: flex;
+  //   span{
+  //     margin-left: 10px;
+  //   }
+  // }
 .graphX{
     margin: 0px 5px;
     padding: 10px;
     padding-bottom: 15px;
     .eachSummary{
+        cursor: pointer;
         margin-top: 0px;
         .floats{
             .label{
@@ -57,10 +58,10 @@
     }
 
 .graphY{
-    height: 200px;
+    height: 180px;
     margin-top: 15px;
-    border-bottom: 2px solid var(--ion-color-medium);
-    border-top: 2px dashed var(--ion-color-medium);
+    border-bottom: 1.5px solid var(--ion-color-medium);
+    border-top: 1px dashed var(--ion-color-medium);
     display: flex;
     margin-left: 10px;
     margin-right: 10px;
@@ -73,15 +74,16 @@
       margin-top: -20px;
     }
     .halfwaymark{
-      height: 100px;
+      height: 5px;
       width: calc(100% - 20px);
       position: absolute;
-      border-bottom: 2px dashed var(--ion-color-secondary);
+      border-bottom: 1px dashed var(--ion-color-secondary);
       z-index: 8;
       text-align: end;
-      padding-top: 100px;
+      margin-top: 85px;
     }
     .eachbar{
+        cursor: pointer;
         height: 100%;
         margin: 0 .5px;
         overflow: hidden;
@@ -98,6 +100,101 @@
         }
     }
 }
+.graphYP{
+    height: 150px;
+    margin-top: 15px;
+    border-bottom: 1.5px solid var(--ion-color-medium);
+    border-top: 1px dashed var(--ion-color-medium);
+    display: flex;
+    margin-left: 10px;
+    margin-right: 10px;
+    .maxlabel{
+      height: 10px;
+      width: calc(100% - 20px);
+      position: absolute;
+      z-index: 8;
+      text-align: end;
+      margin-top: -20px;
+    }
+    .halfwaymark{
+      height: 5px;
+      width: calc(100% - 20px);
+      position: absolute;
+      border-bottom: 1px dashed var(--ion-color-secondary);
+      z-index: 8;
+      text-align: end;
+      padding-top: 70px;
+    }
+    .eachbar{
+        cursor: pointer;
+        height: 100%;
+        margin: 0 .5px;
+        overflow: hidden;
+        position: relative;
+        background: transparent; //var(--ion-color-white);
+        div{
+          div{
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              width: 100%;
+              animation: slide-up 0.5s ease;
+          }
+        }
+    }
+}
+.graphYN{
+    height: 150px;
+    margin-bottom: 25px;
+    margin-top: -50px;
+    // border-bottom: 2px solid var(--ion-color-medium);
+    border-bottom: 1px dashed var(--ion-color-danger);
+    display: flex;
+    margin-left: 10px;
+    margin-right: 10px;
+    .zerolabel{
+      height: 10px;
+      width: calc(100% - 20px);
+      position: absolute;
+      z-index: 8;
+      text-align: end;
+      margin-top: -20px;
+    }
+    .maxlabel{
+      height: 10px;
+      width: calc(100% - 20px);
+      position: absolute;
+      z-index: 8;
+      text-align: end;
+      margin-top: 130px;
+    }
+    .halfwaymark{
+      height: 75px;
+      width: calc(100% - 20px);
+      position: absolute;
+      border-bottom: 1px dashed var(--ion-color-warning);
+      z-index: 8;
+      text-align: end;
+      padding-top: 55px;
+    }
+    .eachbar{
+        cursor: pointer;
+        height: 100%;
+        margin: 0 .5px;
+        overflow: hidden;
+        position: relative;
+        background: transparent; //var(--ion-color-white);
+        div{
+          div{
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              width: 100%;
+              animation: slide-down 0.5s ease;
+          }
+        }
+    }
+}
 .xAxis{
     height: 10px;
     margin-top: 10px;
@@ -107,7 +204,7 @@
     margin-right: 10px;
     .eachbar{
         height: 100%;
-        margin: 0 2px;
+        // margin: 0 2px;
         position: relative;
         transition: width 5s, opacity 500ms, z-index 500ms;
         div{
@@ -154,6 +251,9 @@
 .green{
   background: var(--ion-color-green); //
 }
+// .background{
+//   background: var(--ion-background-color);
+// }
 
 @keyframes slide-right {
     0% {
@@ -170,6 +270,16 @@
       0% {
           // opacity: 0;
           transform: translateY(100%);
+      }
+      100% {
+          // opacity: 1;
+          transform: translateY(0);
+      }
+  }
+@keyframes slide-down {
+      0% {
+          // opacity: 0;
+          transform: translateY(-100%);
       }
       100% {
           // opacity: 1;

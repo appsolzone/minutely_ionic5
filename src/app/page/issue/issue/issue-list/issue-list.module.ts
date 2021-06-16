@@ -8,12 +8,15 @@ import { IssueListComponent } from './issue-list.component';
 
 import { CalendarModule } from 'ion2-calendar';
 
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
     CalendarModule,
+    FeatureCheckDirectiveModule,
   ],
   declarations: [IssueListComponent],
   exports: [IssueListComponent]

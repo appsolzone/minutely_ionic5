@@ -64,7 +64,7 @@ export class TaskBasicInfoEditPage implements OnInit {
     if(
       (this.refInformation.taskInitiationDate == this.taskDetails.taskInitiationDate && this.refInformation.targetCompletionDate == this.taskDetails.targetCompletionDate) ||
       // (new Date() <= startDateTime)
-      (new Date(this.taskDetails.taskInitiationDate) <= new Date(this.taskDetails.targetCompletionDate))
+      (new Date(moment(this.taskDetails.taskInitiationDate).format('YYYY-MM-DD')) <= new Date(moment(this.taskDetails.targetCompletionDate).format('YYYY-MM-DD')))
     ) {
       return true;
     } else {
@@ -87,8 +87,10 @@ export class TaskBasicInfoEditPage implements OnInit {
   }
 
   addTag(){
-    this.taskDetails.tags.push(this.taskTag);
-    this.taskTag = '';
+    if(this.taskTag.trim()){
+      this.taskDetails.tags.push(this.taskTag);
+      this.taskTag = '';
+    }
   }
 
   removeTag(index){

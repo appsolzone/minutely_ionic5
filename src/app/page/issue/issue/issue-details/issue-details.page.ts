@@ -6,6 +6,8 @@ import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { IssueService } from 'src/app/shared/issue/issue.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { PopoverController, Platform } from '@ionic/angular';
+import { SelectUsersComponent } from 'src/app/page/select-users/select-users.component';
 
 @Component({
   selector: 'app-issue-details',
@@ -32,12 +34,14 @@ export class IssueDetailsPage implements OnInit {
                             issues: [],
                             risks: []
                           };
-
+  public sendIssueDetailsMode:boolean = false;
   constructor(
     private router: Router,
     private session: SessionService,
     private issueservice: IssueService,
     private common: ComponentsService,
+    public popoverController: PopoverController,
+    public platform: Platform,
   ) {
     this.getSessionInfo();
   }
@@ -109,18 +113,61 @@ export class IssueDetailsPage implements OnInit {
   editIssue(){
     this.router.navigate(['issue/issue-details-edit'],{state: {data:{issue: this.issue}}});
   }
-  // share minutes
-  async sendIssueDetails(){
-    let response: any = {} //await this.issueservice.shareIssueMinutes(this.issue, this.alllinkages);
-    let buttons = [
-                    {
-                      text: 'Dismiss',
-                      role: 'cancel',
-                      cssClass: '',
-                      handler: ()=>{}
-                    }
-                  ];
-    this.common.presentAlert(response.title, response.body, buttons);
+  sendIssueDetails(ev: any){
+    // if(this.platform.is('desktop') || this.platform.is('tablet')){
+      this.sendIssueDetailsMode = !this.sendIssueDetailsMode;
+      // console.log(this.platform.is('desktop') || this.platform.is('tablet'));
+      // this.presentPopover(ev);
+    // }else{
+      this.router.navigate(['issue/send-email'],{state: {data:{service: this.issue,linkages:this.alllinkages,parentsModule:'issue'}}});
+    // }
+  }
+
+  // share issue
+  async shareIssueDetails(selectedMembers){
+    console.log("in parent module",selectedMembers);
+    if (selectedMembers != null){
+      let response: any = await this.issueservice.shareIssueMinutes(this.issue, this.alllinkages,selectedMembers);
+      let buttons = [
+                      {
+                        text: 'Dismiss',
+                        role: 'cancel',
+                        cssClass: '',
+                        handler: ()=>{}
+                      }
+                    ];
+      this.common.presentAlert(response.title, response.body, buttons);
+    }
+  }
+  async presentPopover(ev: any) {
+    this.sendIssueDetailsMode = !this.sendIssueDetailsMode;
+    const popover = await this.popoverController.create({
+      component: SelectUsersComponent,
+      cssClass: 'customPopover',
+      event: ev,
+      translucent: true,
+      componentProps: {
+        sessionInfo:this.sessionInfo, alreadySelectedUserList: this.issue.data.issueOwner? [this.issue.data.issueOwner] : [],
+        buttonItem: { icon: 'paper-plane-outline', text: 'Send mail'},
+        showAddUser: false,
+        sectionHeader: { icon: 'people', text: 'Select Users to send email ' },
+        multiSelect:true,
+        popoverMode:true,
+        showAddNonPermUser: true,
+       },
+      // mode:'ios',
+      backdropDismiss:true //false
+    });
+
+   await popover.present();
+
+   popover.onDidDismiss().then((dataReturned) => {
+      console.log("returnded selected members:",dataReturned.data);
+      if (dataReturned != null) {
+        this.shareIssueDetails(dataReturned.data);
+        //alert('Modal Sent Data :'+ dataReturned);
+      }
+    });
   }
 
 }

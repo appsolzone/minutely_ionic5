@@ -6,6 +6,8 @@ import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { RiskService } from 'src/app/shared/risk/risk.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { Platform, PopoverController } from '@ionic/angular';
+import { SelectUsersComponent } from 'src/app/page/select-users/select-users.component';
 
 @Component({
   selector: 'app-risk-details',
@@ -32,12 +34,14 @@ export class RiskDetailsPage implements OnInit {
                             issues: [],
                             risks: []
                           };
-
+  public sendRiskDetailsMode:boolean = false;
   constructor(
     private router: Router,
     private session: SessionService,
     private riskservice: RiskService,
     private common: ComponentsService,
+    public platform: Platform,
+    public popoverController: PopoverController
   ) {
     this.getSessionInfo();
   }
@@ -109,18 +113,61 @@ export class RiskDetailsPage implements OnInit {
   editRisk(){
     this.router.navigate(['risk/risk-details-edit'],{state: {data:{risk: this.risk}}});
   }
-  // share minutes
-  async sendRiskDetails(){
-    let response: any = {} //await this.riskservice.shareRiskMinutes(this.risk, this.alllinkages);
-    let buttons = [
-                    {
-                      text: 'Dismiss',
-                      role: 'cancel',
-                      cssClass: '',
-                      handler: ()=>{}
-                    }
-                  ];
-    this.common.presentAlert(response.title, response.body, buttons);
+
+  sendRiskDetails(ev: any){
+    // if(this.platform.is('desktop') || this.platform.is('tablet')){
+      this.sendRiskDetailsMode = !this.sendRiskDetailsMode;
+      // console.log(this.platform.is('desktop') || this.platform.is('tablet'));
+      // this.presentPopover(ev);
+    // }else{
+      this.router.navigate(['risk/send-email'],{state: {data:{service: this.risk,linkages:this.alllinkages,parentsModule:'risk'}}});
+    // }
   }
 
+  // share risk
+  async shareRiskDetails(selectedMembers){
+    console.log("in parent module",selectedMembers);
+    if (selectedMembers != null){
+      let response: any = await this.riskservice.shareRiskMinutes(this.risk, this.alllinkages,selectedMembers);
+      let buttons = [
+                      {
+                        text: 'Dismiss',
+                        role: 'cancel',
+                        cssClass: '',
+                        handler: ()=>{}
+                      }
+                    ];
+      this.common.presentAlert(response.title, response.body, buttons);
+    }
+  }
+  async presentPopover(ev: any) {
+    this.sendRiskDetailsMode = !this.sendRiskDetailsMode;
+    const popover = await this.popoverController.create({
+      component: SelectUsersComponent,
+      cssClass: 'customPopover',
+      event: ev,
+      translucent: true,
+      componentProps: {
+        sessionInfo:this.sessionInfo, alreadySelectedUserList: this.risk.data.riskOwner? [this.risk.data.riskOwner] : [],
+        buttonItem: { icon: 'paper-plane-outline', text: 'Send mail'},
+        showAddUser: false,
+        sectionHeader: { icon: 'people', text: 'Select Users to send email ' },
+        multiSelect:true,
+        popoverMode:true,
+        showAddNonPermUser: true,
+       },
+      // mode:'ios',
+      backdropDismiss:true //false
+    });
+
+   await popover.present();
+
+   popover.onDidDismiss().then((dataReturned) => {
+      console.log("returnded selected members:",dataReturned.data);
+      if (dataReturned != null) {
+        this.shareRiskDetails(dataReturned.data);
+        //alert('Modal Sent Data :'+ dataReturned);
+      }
+    });
+  }
 }

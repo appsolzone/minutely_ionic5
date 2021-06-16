@@ -67,7 +67,7 @@
         <ion-item class="ion-no-padding" lines="none"  color="transparent">
           <img src="{{(t?.data.riskOwner.picUrl) ? t?.data.riskOwner?.picUrl : 'assets/shapes.svg'}}"
           (error)="profileImgErrorHandler(t.data.riskOwner)"
-            style="height:30px; width:30px;border-radius:50%;"
+            style="height:30px; width:30px;border-radius:50%;object-fit: cover; overflow: hidden;"
             />
           <ion-label class="ion-padding-start">
             <h2  *ngIf="t">Owner</h2>
@@ -79,7 +79,7 @@
         <ion-item class="ion-no-padding" lines="none"  color="transparent">
           <img src="{{(t?.data.riskInitiator.picUrl) ? t?.data.riskInitiator?.picUrl : 'assets/shapes.svg'}}"
           (error)="profileImgErrorHandler(t.data.riskInitiator)"
-            style="height:30px; width:30px;border-radius:50%;"
+            style="height:30px; width:30px;border-radius:50%;object-fit: cover; overflow: hidden;"
             />
           <ion-label class="ion-padding-start">
             <h2  *ngIf="t">Initiator</h2>

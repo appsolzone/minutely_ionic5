@@ -10,14 +10,6 @@
   </ion-col>
   <ion-col size="12" size-lg>
     <ion-card class="no-box-shadow">
-      <ion-segment [(ngModel)]="subscriberType" (ionChange)="segmentChanged($event)">
-        <ion-segment-button value="new">
-          <ion-label>New organisation</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="existing">
-          <ion-label>Join organisation</ion-label>
-        </ion-segment-button>
-      </ion-segment>
       <ion-card-header>
         <ion-item lines="full">
           <ion-icon name="calendar" color="success" class="ion-padding-end" slot="start"></ion-icon>
@@ -40,10 +32,18 @@
                   <h1 class="ion-text-wrap ion-text-center"><small>Let's create your profile</small></h1>
                 </ion-label>
               </ion-list-header>
+              <ion-segment [(ngModel)]="subscriberType" (ionChange)="segmentChanged($event)" color="success">
+                <ion-segment-button value="new">
+                  <ion-label class="ion-text-capitalize">New account</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="existing">
+                  <ion-label class="ion-text-capitalize">Join organization</ion-label>
+                </ion-segment-button>
+              </ion-segment>
               <ion-item lines="inset" *ngIf="requiredEmailCheck">
                 <ion-label position="floating">
                   <ion-icon name="mail" class="ion-margin-end"></ion-icon>
-                  Verify email address
+                  Re-enter email address
                 </ion-label>
                 <ion-input type="email" [(ngModel)]="verifyEmail" debounce=500
                   (ionInput)="ionInputVerifyEmail()" (ionChange)="checkVerifyEmail($event)"></ion-input>
@@ -58,10 +58,17 @@
                   </p>
                 </ion-text>
               </ion-item>
+              <!-- <ion-item *ngIf="subscriberType=='new'" lines="inset">
+                <ion-label position="floating">
+                  <ion-icon name="business" class="ion-margin-end"></ion-icon>Organization name
+                </ion-label>
+                <ion-input type="text" [(ngModel)]="orgProfile.companyName">
+                </ion-input>
+              </ion-item> -->
               <ion-item lines="inset">
                 <ion-label position="floating">
                   <ion-icon name="qr-code" class="ion-margin-end"></ion-icon> {{subscriberType=='existing' ? 'Enter' :
-                  'Choose'}} Organisation ID
+                  'Choose'}} Account ID
                 </ion-label>
                 <ion-input type="text" [(ngModel)]="orgProfile.subscriberId" debounce=500 minlength=3 maxlength=20
                   (ionInput)="ionInputSubscriberId()" (ionChange)="checkSubscriberId($event)"></ion-input>
@@ -70,19 +77,19 @@
                 <ion-text [color]="subscriberExists || subsriberIdContainsBlankSpace ? 'danger' : 'medium'">
                   <p>
                     <small>
-                      <span *ngIf="subsriberIdContainsBlankSpace">Organisation id can not contain blank space. Please check and try again.</span>
-                      <span *ngIf="subscriberType=='new' && subscriberExists">Organisation id is not available.</span>
+                      <span *ngIf="subsriberIdContainsBlankSpace">Account id can not contain blank space. Please check and try again.</span>
+                      <span *ngIf="subscriberType=='new' && subscriberExists">Account id is not available.</span>
                       <span *ngIf="subscriberType=='existing' && subscriberExists">
-                        <ion-text [color]="alreadyJoined ? 'danger' : 'success'">Organisation id found.{{alreadyJoined ?
-                          'You have already joined this organisation' : ''}}</ion-text>
+                        <ion-text [color]="alreadyJoined ? 'danger' : 'success'">Account id found.{{alreadyJoined ?
+                          'You have already joined this organization' : ''}}</ion-text>
                       </span>
                       <span *ngIf="(subscriberType=='new' || (subscriberType=='existing' && !subscriberExists)) && !subsriberIdContainsBlankSpace">
                         {{
                         subscriberType=='existing' ?
-                        'Enter the organisation id. If you do not have the organisation id, please check with your
+                        'Enter the account id. If you do not have the account id, please check with your
                         administrator'
                         :
-                        'Choose an unique id for the organization. It may contain alphabets, numbers and should be
+                        'Choose an unique id for your account. It may contain alphabets, numbers and should be
                         between 3 and 20 characters'
                         }}
                       </span>
@@ -90,14 +97,14 @@
                   </p>
                 </ion-text>
               </ion-item>
-              <ion-item lines="inset">
+              <ion-item *ngIf="subscriberType=='existing'" lines="inset">
                 <ion-label position="floating">
-                  <ion-icon name="business" class="ion-margin-end"></ion-icon>Organisation name
+                  <ion-icon name="business" class="ion-margin-end"></ion-icon>Organization name
                 </ion-label>
                 <ion-input type="text" [(ngModel)]="orgProfile.companyName" [disabled]="subscriberType=='existing'">
                 </ion-input>
               </ion-item>
-              <ion-item lines="inset">
+              <ion-item *ngIf="subscriberType=='existing'" lines="inset">
                 <ion-label position="floating" class="ion-margin-end">
                   <ion-icon name="location"></ion-icon>Address
                 </ion-label>

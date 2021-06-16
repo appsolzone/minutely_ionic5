@@ -106,7 +106,8 @@ export class MeetingDetailsPage implements OnInit {
   }
   // share minutes
   async sendMinutes(){
-    let response = await this.meetingservice.shareMeetingMinutes(this.meeting, this.alllinkages);
+    let selectedAttendee = this.meeting?.data.ownerId.uid == this.sessionInfo?.uid ? this.sessionInfo?.uid : null;
+    let response = await this.meetingservice.shareMeetingMinutes(this.meeting, this.alllinkages, selectedAttendee);
     let buttons = [
                     {
                       text: 'Dismiss',
@@ -116,6 +117,27 @@ export class MeetingDetailsPage implements OnInit {
                     }
                   ];
     this.common.presentAlert(response.title, response.body, buttons);
+  }
+
+  // copyMeeting
+  copyMeeting(){
+    const {id, data, overdue } = this.meeting;
+    let copiedData = {
+      ...data,
+      meetingTitle:'',
+      meetingStart:null,
+      meetingEnd:null,
+      status:'OPEN',
+      eventSequenceId: 1,
+      noOfOccurence:1, // forecfully reducing the number of occurences to one instance
+      tags:[],
+      eventId: null,
+      notes:'',
+      agendas:'',
+      updatedAt: null,
+    };
+    // setting id to null, overdue to '', as we would like to create a new meeting
+    this.router.navigate(['meeting/meeting-details-edit'],{state: {data:{meeting: {id: null, data: {...copiedData}, overdue: '' }}}});
   }
 
 }

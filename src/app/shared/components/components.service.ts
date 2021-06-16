@@ -5,23 +5,24 @@ import { AlertController, LoadingController, ToastController } from '@ionic/angu
   providedIn: 'root'
 })
 export class ComponentsService {
-  loader:any;
+  loader: any;
+  loderCount = 0;
   constructor(
     public alertController: AlertController,
     public loadingController: LoadingController,
-    public toastController:ToastController
+    public toastController: ToastController
     ) {}
 
 
-  //this.componentService.presentAlert('Success','message');
-  //this.componentService.presentAlert('Error','message');
-  //this.componentService.presentAlert('Warning','message');
-  //this.componentService.presentAlert('Alert','message');
+  // this.componentService.presentAlert('Success','message');
+  // this.componentService.presentAlert('Error','message');
+  // this.componentService.presentAlert('Warning','message');
+  // this.componentService.presentAlert('Alert','message');
 
-    async presentAlert(header,message,buttons?:any) {
+    async presentAlert(header, message, buttons?: any) {
 
-    let defaultDuttons:any = {
-      Success:[
+    const defaultDuttons: any = {
+      Success: [
          {
           text: 'Ok',
           role: 'ok',
@@ -31,7 +32,7 @@ export class ComponentsService {
           }
         }
       ],
-      Error:[
+      Error: [
          {
           text: 'Dismiss',
           role: 'error',
@@ -41,39 +42,39 @@ export class ComponentsService {
           }
         }
       ]
-    }
+    };
 
     const alert = this.alertController.create({
       cssClass: 'my-custom-class',
-      header: header,
-      //subHeader: subtitle,
-      message: message,
-      buttons:buttons ? buttons : defaultDuttons[header],
+      header,
+      // subHeader: subtitle,
+      message,
+      buttons: buttons ? buttons : defaultDuttons[header],
     });
 
     (await alert).present();
 
   }
-  presentAlertConfirm(header,message,buttons?:any){
+  presentAlertConfirm(header, message, buttons?: any){
   return new Promise(async (resolve) => {
         // process buttons
-        let newButtons = []
-        if(buttons){
-          newButtons = buttons.map(b=>{
+        let newButtons = [];
+        if (buttons){
+          newButtons = buttons.map(b => {
             return {
               text: b.text,
               role: b.role,
               cssClass: '',
-              handler: ()=>{
+              handler: () => {
                 b.handler();
-                resolve(b.resolve)
+                resolve(b.resolve);
               }
-            }
-          })
+            };
+          });
         }
         const alert = await this.alertController.create({
-          header: header,
-          message: message,
+          header,
+          message,
           buttons: buttons ? newButtons : [
             {
               text: 'Dismiss',
@@ -95,25 +96,34 @@ export class ComponentsService {
   }
 
 
-    //============[ loader ]====================
-     async showLoader(message: string = 'Please wait!') {
-        // console.log("this.loader", message);
-        if(!this.loader){
+    // ============[ loader ]====================
+     async showLoader(message: string = 'Please wait!', duration: number = 0) {
+        // console.log("this.loader requested for ", message);
+        // if(!this.loader){
+          console.log('creating this.loader for ', message, this.loderCount);
           this.loader = await this.loadingController.create({
             cssClass: 'my-custom-class',
-            message: message,
+            message,
+            duration // auto timeout limit
           });
 
-          (await this.loader)?.present();
-        }
+          this.loderCount++;
+          console.log('creating this.loader for this.loderCount ', message, this.loderCount);
+          return (this.loader)?.present();
+
+        // }
+
     }
 
-    async hideLoader(message: string='Hiding the loader') {
-       // console.log("this.loader", message);
+    async hideLoader(message: string= 'Hiding the loader') {
+       console.log('this.loader', message, this.loader, this.loderCount);
        (await this.loader)?.dismiss();
-        this.loader = null;
+       if (this.loderCount > 0) { this.loderCount--; }
+        // this.loader = null;
+       console.log('this.loader post dismiss', message, this.loader, this.loderCount);
+
     }
-    //===============[ toaster ]===============
+    // ===============[ toaster ]===============
     async presentToaster(msg) {
     const toast = await this.toastController.create({
       message: msg,

@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import { DatabaseService } from 'src/app/shared/database/database.service';
 import { TextsearchService } from 'src/app/shared/textsearch/textsearch.service';
 import { LinkageService } from 'src/app/shared/linkage/linkage.service';
+import { MinutelyKpiService } from 'src/app/shared/minutelykpi/minutelykpi.service';
 import { KpiService } from 'src/app/shared/kpi/kpi.service';
 import { NotificationsService } from 'src/app/shared/notifications/notifications.service';
 import { ItemUpdatesService } from 'src/app/shared/item-updates/item-updates.service';
@@ -48,7 +49,8 @@ export class MeetingService {
     public db: DatabaseService,
     public searchMap: TextsearchService,
     public link: LinkageService,
-    public kpi: KpiService,
+    public kpi: MinutelyKpiService,
+    public aclKpi: KpiService,
     public notification: NotificationsService,
     public itemupdate: ItemUpdatesService,
     public sendmail: SendEmailService,
@@ -171,7 +173,31 @@ export class MeetingService {
     return {status, title, body};
   }
 
-  validateBasicInfo(meeting, refInformation){
+  // This function check kpi free acl limit for a feature
+  isKpiAclLimitExhausted(m,mRef, sessionInfo){
+    const {aclFreeLimitKpi} = sessionInfo;
+    let meeting = m.data;
+    const {isOccurence, noOfOccurence, occurenceType, weekdays} = meeting;
+    let status = true;
+    let title = "Usage Limit";
+    let body = "";
+
+    const feature = aclFreeLimitKpi['create-meeting'];
+    const freeLimit = feature?.freeLimit!=null ?  feature?.freeLimit : -1;
+    const usedLimit = feature?.usedLimit!=null ?  feature?.usedLimit : 0;
+    const isWithinLimit = freeLimit == -1 ? true : freeLimit > (usedLimit + noOfOccurence - (mRef.noOfOccurence ? mRef.noOfOccurence : 0));
+    console.log('isWithinKpiAclLimit', isWithinLimit, feature);
+    if (!isWithinLimit){
+      status = false;
+      body = 'Please note that you are trying to create meetings beyound the allowed number of meetings for the current subscription plan.' +
+             ' Allowed : ' + freeLimit + ', already used : ' + usedLimit + ', no of new meetings trying to create : ' + noOfOccurence + '. ' +
+             ' Please upgrade your plan to continue creating meetings along with other features of Minutely.';
+      title = "Usage Limit Exhausted";
+    }
+    return {status, title, body};
+  }
+
+  validateBasicInfo(meeting, refInformation, sessionInfo){
 
     let check = this.dateChange(meeting,refInformation);
 
@@ -189,6 +215,15 @@ export class MeetingService {
 
     if(!check.status){
       return check;
+    }
+
+    // Run this check only when we are creating a new event or adding new instances
+    if(!refInformation?.id || (refInformation?.id && meeting?.data?.noOfOccurence != refInformation?.noOfOccurence)){
+      check = this.isKpiAclLimitExhausted(meeting, refInformation, sessionInfo);
+
+      if(!check.status){
+        return check;
+      }
     }
 
     return {status: true, title: 'Valid Basic Info', body: 'Valid Basic Info'};
@@ -293,7 +328,7 @@ export class MeetingService {
                         moment(new Date(meeting.meetingStart)).format("MMMM") + " " +
                         moment(new Date(meeting.meetingStart)).format("MMM");
     searchMap = this.searchMap.createSearchMap(searchStrings);
-    meeting.attendeeUidList.forEach(uid=>searchMap[uid]=true);
+    meeting.attendeeUidList.forEach(uid=>{if(uid)searchMap[uid]=true;});
     return searchMap;
   }
 
@@ -320,7 +355,14 @@ export class MeetingService {
                                 meeting.eventId;
           // initialise the summary view object
           let event = {...meeting};
-          // Note that we should start at the current event seq id to cascade the events
+          // Get the minutelyKpi details
+          let widgetData: any = {};
+          let rlDocRef = this.db.afs.collection(this.db.allCollections.minutelykpi).doc(subscriberId).ref;
+          await transaction.get(rlDocRef).then(doc=>{
+            console.log("minutley kpi data doc", doc.id, doc.data())
+            widgetData = doc.data();
+          });
+          // Note that we should start at the current event seq id to cascade the meetings
           for(let i=refEventSequenceId; i<=(toCascadeChanges ? noOfOccurence : refEventSequenceId); i++){
             console.log("runninh transaction", i);
             let eventDates = this.getEventStartAndEndDate((i-refEventSequenceId+1), meeting.isOccurence,
@@ -374,15 +416,31 @@ export class MeetingService {
           // If this is the very first instance of the series of meetings, check for status change and subsequently
           // update the records as required
           if(type=='new'){
-            this.kpi.updateKpiDuringCreation('Meeting',meeting.noOfOccurence,sessionInfo)
+            this.kpi.updateKpiDuringCreation('Meeting',meeting.noOfOccurence,sessionInfo, transaction)
           } else {
             let statusChanged = (refCopy.status!=meeting.status);
             let prevStatus = refCopy.status;
             if(statusChanged)
               {
-                this.kpi.updateKpiDuringUpdate('Meeting',prevStatus,meeting.status,meeting,sessionInfo, (toCascadeChanges ? meeting.noOfOccurence - meeting.eventSequenceId + 1 : 1));
+                this.kpi.updateKpiDuringUpdate('Meeting',prevStatus,meeting.status,meeting,sessionInfo, (toCascadeChanges ? meeting.noOfOccurence - meeting.eventSequenceId + 1 : 1), widgetData, transaction, null);
+              } else {
+                // status has not changed so add the new meetings as count increased
+                this.kpi.updateKpiDuringCreation('Meeting',meeting.noOfOccurence - refCopy.noOfOccurence,sessionInfo, transaction)
               }
           }
+
+          // Complete the last transaction which is to be executed out of while loop
+          // if it's a new event or no of events changed we have increase or decrease the usage counts
+          // so during cleanup or cancellation it'll decrese the count, and while adding it'll increase the count
+          if(  meeting.status!='CANCEL'){
+            this.aclKpi.updateKpiDuringCreation(
+              'create-meeting',
+              sessionInfo,
+              transaction,
+              (type=='new' ? meeting.noOfOccurence : meeting.noOfOccurence - refCopy.noOfOccurence)// if there is a new meeting sequences added, it will automatically detect the diff and increase the count
+            );
+          }
+
 
           // Complete the last transaction which is to be executed out of while loop
 
@@ -429,7 +487,7 @@ export class MeetingService {
 
 
   // share meeting summary
-  async shareMeetingMinutes(meeting, linkages)
+  async shareMeetingMinutes(meeting, linkages, selectedAttendee:any=null)
   {
     if(meeting.data.status != 'COMPLETED'){
       return {status: "warning", title: "Meeting status Open", body: "Meeting minutes can only be shared for COMPLETED meetings through email. Please mark the meeting COMPLETED and then share meeting minutes."};
@@ -452,9 +510,10 @@ export class MeetingService {
                 })
         }
       })
+      let attendeeList = selectedAttendee ? m.attendeeList.filter(a=>a.uid==selectedAttendee) : m.attendeeList;
       let minutesObj = {
-        toEmail:m.attendeeList.map(a=>{return {email: a.email};}),
-        meetingStart: moment.utc(new Date(m.meetingStart)).format('MMM DD, YYYY h:mm a') + " UTC",
+        toEmail: attendeeList.map(a=>{return {email: a.email};}),
+        meetingStart: moment.utc(m.meetingStart).format('MMM DD, YYYY h:mm a') + " UTC",
         toName: m.ownerId.name,
         meetingTitle:m.meetingTitle,
         agendas:m.agendas,
@@ -469,6 +528,12 @@ export class MeetingService {
       this.sendmail.sendCustomEmail(this.sendmail.shareMeetingMinutesPath,minutesObj)
       .then((sent: any)=>
         {
+          this.aclKpi.updateKpiDuringCreation(
+            'share-meeting',
+            {subscriberId: m.subscriberId} , //sessionInfo,
+            null, //batch,
+            m.attendeeList.length
+          );
 
         });
       return {status: "success", title: "Meeting Minutes", body: "Meeting minutes shared with attendees through email."};

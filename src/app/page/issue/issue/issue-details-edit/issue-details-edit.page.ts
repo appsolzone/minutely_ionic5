@@ -88,11 +88,11 @@ export class IssueDetailsEditPage implements OnInit {
     const id: string = issueStateData.id;
     const issueInitiationDate = moment(data.issueInitiationDate).format('YYYY-MM-DD');
     const targetCompletionDate = moment(data.targetCompletionDate).format('YYYY-MM-DD');
-    const actualCompletionDate = null;
+    const actualCompletionDate = data.actualCompletionDate; //null;
     const overdue =  data.issueStatus != 'RESOLVED' && new Date(moment(targetCompletionDate).add(1,'d').format('YYYY-MM-DD')) < new Date(moment().format('YYYY-MM-DD')) ? 'overdue' : '';
     const overdueby = overdue=='overdue' ? moment(moment(targetCompletionDate).add(1,'d').format('YYYY-MM-DD')).fromNow() : '';
     this.issue = {id, data: {...data, issueInitiationDate, targetCompletionDate, actualCompletionDate },overdue,overdueby};
-    this.refInformation = {id, issueInitiationDate, targetCompletionDate,
+    this.refInformation = {id, issueInitiationDate, targetCompletionDate, actualCompletionDate,
                            issueStatus: data.issueStatus,
                            issueInitiator: {...data.issueInitiator},
                            issueOwner: {...data.issueOwner},

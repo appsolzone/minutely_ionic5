@@ -181,8 +181,8 @@ export class MeetingListComponent implements OnInit {
         let idx = this.excludeList.findIndex(em=>em.id==id);
         // return {id, data: { ...data, startTime, endTime }};
         if(idx==-1) {
-          const meetingStart = data.meetingStart?.seconds ? new Date(data.meetingStart?.seconds*1000) : data.meetingStart;
-          const meetingEnd = data.meetingEnd?.seconds ? new Date(data.meetingEnd?.seconds*1000) : data.meetingEnd ? data.meetingEnd : null;
+          const meetingStart = data.meetingStart?.seconds ? new Date(data.meetingStart?.seconds*1000) : data.meetingStart ? data.meetingStart : null;
+          const meetingEnd = data.meetingEnd?.seconds ? new Date(data.meetingEnd?.seconds*1000) : data.meetingEnd ? data.meetingEnd : null;          
           allMeetings.push({id, data: {...data, meetingStart, meetingEnd }});
         }
       });

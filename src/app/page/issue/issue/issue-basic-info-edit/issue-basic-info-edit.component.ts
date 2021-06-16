@@ -64,7 +64,7 @@ export class IssueBasicInfoEditComponent implements OnInit {
     if(
       (this.refInformation.issueInitiationDate == this.issueDetails.issueInitiationDate && this.refInformation.targetCompletionDate == this.issueDetails.targetCompletionDate) ||
       // (new Date() <= startDateTime)
-      (new Date(this.issueDetails.issueInitiationDate) <= new Date(this.issueDetails.targetCompletionDate))
+      (new Date(moment(this.issueDetails.issueInitiationDate).format('YYYY-MM-DD')) <= new Date(moment(this.issueDetails.targetCompletionDate).format('YYYY-MM-DD')))
     ) {
       return true;
     } else {
@@ -87,8 +87,10 @@ export class IssueBasicInfoEditComponent implements OnInit {
   }
 
   addTag(){
-    this.issueDetails.tags.push(this.issueTag);
-    this.issueTag = '';
+    if(this.issueTag.trim()){
+      this.issueDetails.tags.push(this.issueTag);
+      this.issueTag = '';
+    }
   }
 
   removeTag(index){

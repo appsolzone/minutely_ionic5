@@ -7,7 +7,7 @@ import { Risk } from 'src/app/interface/risk';
 import { Task } from 'src/app/interface/task';
 import { ComponentsService } from '../components/components.service';
 import { DatabaseService } from '../database/database.service';
-import { KpiService } from '../kpi/kpi.service';
+import { MinutelyKpiService } from '../minutelykpi/minutelykpi.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { SendEmailService } from '../send-email/send-email.service';
 import { TextsearchService } from '../textsearch/textsearch.service';
@@ -78,7 +78,7 @@ export class CrudService {
     private _searchMap:TextsearchService,
     private _senDmail:SendEmailService,
     private _notification:NotificationsService,
-    private _kpi:KpiService
+    private _kpi:MinutelyKpiService
   ) { }
 
 

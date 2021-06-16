@@ -18,9 +18,9 @@
   <ion-avatar slot="start">
     <img src="{{(riskDetails?.latestComment.picUrl) ? riskDetails?.latestComment.picUrl : 'assets/shapes.svg'}}"
       (error)="profileImgErrorHandler(riskDetails?.latestComment)" />
-    <ion-icon *ngIf="riskDetails?.latestComment.picUrl == ''" color="primary" name="person-circle"
+    <!-- <ion-icon *ngIf="riskDetails?.latestComment.picUrl == ''" color="primary" name="person-circle"
       size="large">
-    </ion-icon>
+    </ion-icon> -->
   </ion-avatar>
   <ion-label>
     <h2>{{riskDetails?.latestComment.author}}</h2>

@@ -22,6 +22,9 @@ import { FormsModule,ReactiveFormsModule }   from '@angular/forms';
 // ion2-calendar
 import { CalendarModule } from 'ion2-calendar';
 
+// directive imports
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -36,7 +39,8 @@ import { CalendarModule } from 'ion2-calendar';
     CalendarModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FeatureCheckDirectiveModule
   ],
   providers: [
     StatusBar,

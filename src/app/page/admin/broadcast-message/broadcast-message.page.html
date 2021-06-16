@@ -27,7 +27,7 @@
         </ion-item>
         <ion-item lines="none">
           <ion-textarea autoGrow="true" wrap="soft" [(ngModel)]="msg.msgBody" [value]="msg.msgBody"
-            placeholder="Please enter boradcast message here"
+            placeholder="Please enter broadcast message here"
           ></ion-textarea>
         </ion-item>
         <br/>
@@ -43,7 +43,7 @@
         [alreadySelectedUserList]="[]"
         [multiSelect]="true"
         (onSelectionComplete)="processUserList($event)"
-        [buttonItem]="{ icon: 'megaphone', text: ' Boradcast'}"
+        [buttonItem]="{ icon: 'megaphone', text: ' Broadcast'}"
         ></app-select-users>
     </ion-col>
   </ion-row>

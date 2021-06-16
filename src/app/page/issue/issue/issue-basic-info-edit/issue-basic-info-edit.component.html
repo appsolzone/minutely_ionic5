@@ -2,7 +2,7 @@
   <ion-label>
     <ion-icon name="pencil"></ion-icon> Initiation date
   </ion-label>
-  <ion-datetime displayFormat="DD MMM, YYYY" [disabled]="editMode=='update'"
+  <ion-datetime displayFormat="DD MMM, YYYY" [disabled]="editMode=='update'" [max]="maxIssueInitiationDate"
     [(ngModel)]="issueDetails.issueInitiationDate"
     placeholder="Select initiation date"></ion-datetime>
 </ion-item>
@@ -27,14 +27,16 @@
 <ion-item>
   <ion-textarea required="true" autoGrow="true" wrap="soft" spellcheck="true" [(ngModel)]="issueDetails.issueTitle"
   placeholder="Please enter issue title"
-    [value]="issueDetails?.issueTitle"></ion-textarea>
+    [value]="issueDetails?.issueTitle"
+    [readonly]="issueDetails?.issueStatus =='RESOLVED' || refInformation?.issueInitiator?.uid != sessionInfo?.userProfile?.uid"
+    ></ion-textarea>
 </ion-item>
 <ion-item>
   <ion-label>
     <ion-icon name="pricetags"></ion-icon>
     Tags
   </ion-label>
-  <ion-input [(ngModel)]="issueTag" [value]="issueTag" placeholder="Please enter keyword to add as tag"
+  <ion-input [(ngModel)]="issueTag" [value]="issueTag" placeholder="Please enter tag keyword"
     (keyup.enter)="addTag()"></ion-input>
   <ion-buttons slot="end">
     <ion-button slot="end" (click)="addTag()" color="medium">

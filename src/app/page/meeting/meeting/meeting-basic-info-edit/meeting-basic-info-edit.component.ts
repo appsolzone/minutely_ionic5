@@ -75,7 +75,8 @@ export class MeetingBasicInfoEditComponent implements OnInit {
     this.meetingDetails.meetingEnd = this.meetingDetails.meetingEnd ? this.meetingDetails.meetingEnd  : null;
     this.noOfOccurenceOption.splice(0,
                                       this.meetingDetails.noOfOccurence &&
-                                      this.noOfOccurenceOption.length == 30
+                                      this.noOfOccurenceOption.length == 30 &&
+                                      this.refInformation?.id //if its an event we are trying to update id can not be null
                                       ? this.meetingDetails.noOfOccurence-1 : 0);
     // console.log("this.noOfOccurenceOption",this.noOfOccurenceOption);
   }
@@ -135,8 +136,10 @@ export class MeetingBasicInfoEditComponent implements OnInit {
   }
 
   addTag(){
-    this.meetingDetails.tags.push(this.meetingTag);
-    this.meetingTag = '';
+    if(this.meetingTag.trim()){
+      this.meetingDetails.tags.push(this.meetingTag);
+      this.meetingTag = '';
+    }
   }
 
   removeTag(index){

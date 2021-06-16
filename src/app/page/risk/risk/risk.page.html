@@ -9,7 +9,7 @@
     <ion-col size="12"  size-md="4" size-lg="5" size-xl="6">
       <ion-row>
         <ion-col size="12">
-          <app-kpi *ngIf="sessionInfo?.userProfile" [kpiTypes]="['risk', 'issue','riskMatrix']"></app-kpi>
+          <app-kpi *ngIf="sessionInfo?.userProfile" [kpiTypes]="['avgResolution','riskMatrix']"></app-kpi>
         </ion-col>
         <ion-col size="12" class="ion-hide-lg-down">
           <app-risk-list viewMode="upcoming"></app-risk-list>
@@ -22,7 +22,11 @@
     </ion-col>
   </ion-row>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button  size="small" (click)="gotoAddRisk()">
+    <ion-fab-button  size="small"
+    (featureClick)="gotoAddRisk()"
+    appFeatureCheck
+    [featureIdList]="['create-project-item']"
+    >
       <ion-icon name="add" size="large"></ion-icon>
     </ion-fab-button>
   </ion-fab>

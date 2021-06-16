@@ -13,7 +13,7 @@ import { SessionService } from 'src/app/shared/session/session.service';
   templateUrl: './admin.page.html',
   styleUrls: ['./admin.page.scss'],
 })
-export class AdminPage implements OnInit,OnChanges {
+export class AdminPage implements OnInit, OnChanges {
 
   // observables
   sessionSubs$;
@@ -23,18 +23,18 @@ export class AdminPage implements OnInit,OnChanges {
   id: string;
   allProfiles: any[];
   userProfile: User;
-  orgProfile:any =null;
+  orgProfile: any = null;
 
-  addMember:boolean = false;
-  allMembers:any = [];
-  allMembersCopy:any = [];
-  filterCategory: any = "all";
-  textSearch: any = "";
+  addMember = false;
+  allMembers: any = [];
+  allMembersCopy: any = [];
+  filterCategory: any = 'all';
+  textSearch: any = '';
   constructor(
-    private session:SessionService,
-    private componentService:ComponentsService,
-    private router:Router,
-    private adminManageUserServ:ManageuserService,
+    private session: SessionService,
+    private componentService: ComponentsService,
+    private router: Router,
+    private adminManageUserServ: ManageuserService,
     public actionSheetController: ActionSheetController
   ) { }
 
@@ -57,15 +57,15 @@ export class AdminPage implements OnInit,OnChanges {
 
 
    getSessionInfo(){
-    this.sessionSubs$ = this.session.watch().subscribe(value=>{
-       console.log("Session Subscription got", value);
+    this.sessionSubs$ = this.session.watch().subscribe(value => {
+       console.log('Session Subscription got', value);
 
        // Re populate the values as required
        this.userProfile = value?.userProfile;
        this.orgProfile = value?.orgProfile;
 
 
-       if(this.userProfile){
+       if (this.userProfile){
          // Nothing to do just display details
        } else {
           this.router.navigate(['profile']);
@@ -74,7 +74,7 @@ export class AdminPage implements OnInit,OnChanges {
   }
 
   fetchAllMembers(){
-    let queryObj = [{field: 'subscriberId',operator: '==', value: this.orgProfile?.subscriberId}]
+    const queryObj = [{field: 'subscriberId', operator: '==', value: this.orgProfile?.subscriberId}];
     this.fetchAllMembers$ = this.adminManageUserServ.fetchAllUsers(queryObj)
     .pipe(
         map((actions: any[]) => actions.map((a: any) => {
@@ -83,16 +83,16 @@ export class AdminPage implements OnInit,OnChanges {
           return { id, ...data };
         }))
       )
-    .subscribe((data)=>{
+    .subscribe((data) => {
     this.allMembers = data;
     this.allMembersCopy = data;
-    console.log("all members list",this.allMembers);
+    console.log('all members list', this.allMembers);
     this.filterAllMembers();
-    })
+    });
   }
 
   filterAllMembers(){
-      console.log("calling",this.filterCategory);
+      console.log('calling', this.filterCategory);
       this.allMembers = this.allMembersCopy.filter((item) => {
       // if(this.filterCategory == "others"){
       //   return item.name.toLowerCase().indexOf(this.textSearch.toLowerCase()) > -1 && (item.status != "ACTIVE" && item.status != "REGISTERED" );
@@ -110,10 +110,10 @@ export class AdminPage implements OnInit,OnChanges {
               );
       // }
     });
-    console.log('after filter all members',this.allMembers)
+      console.log('after filter all members', this.allMembers);
     }
     async filterMemberActionSheet() {
-    console.log("calling",this.filterCategory);
+    console.log('calling', this.filterCategory);
     const actionSheet = await this.actionSheetController.create({
       header: 'Filter all members',
       cssClass: 'my-custom-class',
@@ -159,44 +159,48 @@ export class AdminPage implements OnInit,OnChanges {
   }
     // present sheet for actions
  async memberManageActionSheet(data) {
-    console.log("member current status:",data.status);
-    if(data.email == this.userProfile.email){
-      this.componentService.presentAlert("Error","You can't amend your own access or role details.");
+    console.log('member current status:', data.status);
+    if (data.email == this.userProfile.email){
+      this.componentService.presentAlert('Error', 'You can\'t amend your own access or role details.');
     }else{
-      let btns = [];
-      if(data.status == 'ACTIVE'){ // when user is active
+      const btns = [];
+      if (data.status == 'ACTIVE'){ // when user is active
         btns.push({ text: 'Suspend access', handler: () => { this.adminManageUserServ.userDataUpdateTransection( data, 'SUSPENDED', this.orgProfile ); } });
-        btns.push({ text: 'Mark as leaver', handler: () => { this.adminManageUserServ.userDataUpdateTransection( data, 'LEAVER',this.orgProfile ); } });
+        btns.push({ text: 'Mark as leaver', handler: () => { this.adminManageUserServ.userDataUpdateTransection( data, 'LEAVER', this.orgProfile ); } });
 
-        if(data.role=='USER'){
+        if (data.role == 'USER'){
           btns.push({ text: 'Assign Admin Role', handler: () => { this.adminManageUserServ.changeUserRole( data, 'ADMIN' ); } });
           // btns.push({ text: 'Approve external access', handler: () => { this.adminManageUserServ.changeUserRole( data, 'EXTERNAL'); } });
         } else {
           btns.push({ text: 'Assign User Role', handler: () => { this.adminManageUserServ.changeUserRole( data, 'USER' ); } });
         }
-      }else if(data.status == 'REJECTED'){ // when user is rejected
-        if (this.orgProfile.noOfFreeLicense > 0)
-          btns.push({ text: 'Approve access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'ACTIVE',this.orgProfile ); } });
-      }else if(data.status == 'REGISTERED'){ // when user is just registered
+      }else if (data.status == 'REJECTED'){ // when user is rejected
+        if (this.orgProfile.noOfFreeLicense > 0) {
+          btns.push({ text: 'Approve access', handler: () => { this.adminManageUserServ.userDataUpdateTransection( data, 'ACTIVE', this.orgProfile ); } });
+        }
+      }else if (data.status == 'REGISTERED'){ // when user is just registered
         btns.push({ text: 'Reject request', handler: () => { this.adminManageUserServ.changeUserRole( data, 'REJECTED'); } });
-        if (this.orgProfile.noOfFreeLicense > 0)
-          btns.push({ text: 'Approve access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'ACTIVE',this.orgProfile ); } });
+        if (this.orgProfile.noOfFreeLicense > 0) {
+          btns.push({ text: 'Approve access', handler: () => { this.adminManageUserServ.userDataUpdateTransection( data, 'ACTIVE', this.orgProfile ); } });
+        }
 
-      }else if(data.status == 'SUSPENDED' || data.status == 'LEAVER'){ // when user already suspended
-        if (this.orgProfile.noOfFreeLicense > 0)
-          btns.push({ text: 'Re-activate access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'ACTIVE',this.orgProfile ); } });
+      }else if (data.status == 'SUSPENDED' || data.status == 'LEAVER'){ // when user already suspended
+        if (this.orgProfile.noOfFreeLicense > 0) {
+          btns.push({ text: 'Re-activate access', handler: () => { this.adminManageUserServ.userDataUpdateTransection( data, 'ACTIVE', this.orgProfile ); } });
+        }
           // btns.push({ text: 'Approve external access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'EXTERNAL',this.orgProfile ); } });
-      }else if(data.status == 'EXTERNAL'){ // when user is rejected
-        btns.push({ text: 'Suspend access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'SUSPENDED',this.orgProfile ); } });
-        btns.push({ text: 'Approve access', handler: () =>{ this.adminManageUserServ.changeUserRole( data, 'USER'); } });
+      }else if (data.status == 'EXTERNAL'){ // when user is rejected
+        btns.push({ text: 'Suspend access', handler: () => { this.adminManageUserServ.userDataUpdateTransection( data, 'SUSPENDED', this.orgProfile ); } });
+        btns.push({ text: 'Approve access', handler: () => { this.adminManageUserServ.changeUserRole( data, 'USER'); } });
       }else{ // when user left the organization
-        if (this.orgProfile.noOfFreeLicense > 0)
-          btns.push({ text: 'Approve access', handler: () =>{ this.adminManageUserServ.userDataUpdateTransection( data, 'ACTIVE',this.orgProfile ); } });
+        if (this.orgProfile.noOfFreeLicense > 0) {
+          btns.push({ text: 'Approve access', handler: () => { this.adminManageUserServ.userDataUpdateTransection( data, 'ACTIVE', this.orgProfile ); } });
+        }
       }
       // default button
       btns.push({ text: 'Cancel', role: 'cancel', handler: () => {  } });
       // create alert
-      let actionSheet = await this.actionSheetController.create({
+      const actionSheet = await this.actionSheetController.create({
         header: 'Amend access for ' + data.name,
        cssClass: 'my-custom-class',
         buttons: btns

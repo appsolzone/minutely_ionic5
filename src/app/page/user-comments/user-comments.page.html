@@ -44,7 +44,11 @@
 <ion-footer>
   <ion-item lines="none">
     <ion-buttons slot="end">
-      <ion-button slot="end" color="medium" (click)="addComment()">
+      <ion-button slot="end" color="medium"
+      (featureClick)="addComment()"
+      appFeatureCheck
+      [featureIdList]="['comments-log']"
+      >
         <ion-icon name="send"></ion-icon>
       </ion-button>
     </ion-buttons>

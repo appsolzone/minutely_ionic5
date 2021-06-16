@@ -8,6 +8,7 @@ import { AdminPageRoutingModule } from './admin-routing.module';
 
 import { AdminPage } from './admin.page';
 import { AddMemberPageModule } from './add-member/add-member.module';
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { AddMemberPageModule } from './add-member/add-member.module';
     FormsModule,
     IonicModule,
     AdminPageRoutingModule,
-    AddMemberPageModule
+    AddMemberPageModule,
+    FeatureCheckDirectiveModule,
   ],
   declarations: [AdminPage]
 })

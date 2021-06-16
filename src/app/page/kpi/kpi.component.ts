@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
-import { KpiService } from 'src/app/shared/kpi/kpi.service';
+import { MinutelyKpiService } from 'src/app/shared/minutelykpi/minutelykpi.service';
 
 
 @Component({
@@ -24,7 +24,7 @@ export class KpiComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private kpi: KpiService,
+    private kpi: MinutelyKpiService,
   ) {
     this.kpiSubs$ = this.kpi.watch().subscribe(value=>{
       this.kpiData = value;
@@ -48,9 +48,9 @@ export class KpiComponent implements OnInit {
            title: 'Average resolution time (days)',
            maxValue: 1,
            data: [
-              {icon: 'body', label: 'Tasks completion', labelValue: averageResolutionTask.toFixed(1), stack: [{cssClass: 'green', width: (averageResolutionTask*100/maxValueOfX), height: 1}]},
-              {icon: 'flag', label: 'Risks resolution', labelValue: averageResolutionRisk.toFixed(1), stack: [{cssClass: 'warning', width: (averageResolutionRisk*100/maxValueOfX), height: 1}]},
-              {icon: 'options', label: 'Issues resolution', labelValue: averageResolutionIssue.toFixed(1), stack: [{cssClass: 'danger', width: (averageResolutionIssue*100/maxValueOfX), height: 1}]}
+              {icon: 'body', label: 'Tasks completion', labelValue: averageResolutionTask?.toFixed(1), stack: [{cssClass: 'green', width: (averageResolutionTask*100/maxValueOfX), height: 1}]},
+              {icon: 'flag', label: 'Risks resolution', labelValue: averageResolutionRisk?.toFixed(1), stack: [{cssClass: 'warning', width: (averageResolutionRisk*100/maxValueOfX), height: 1}]},
+              {icon: 'options', label: 'Issues resolution', labelValue: averageResolutionIssue?.toFixed(1), stack: [{cssClass: 'danger', width: (averageResolutionIssue*100/maxValueOfX), height: 1}]}
             ],
         };
       }

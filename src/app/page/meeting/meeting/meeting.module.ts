@@ -14,6 +14,8 @@ import { KpiModule } from 'src/app/page/kpi/kpi.module';
 
 import { CalendarModule } from 'ion2-calendar';
 
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -22,7 +24,8 @@ import { CalendarModule } from 'ion2-calendar';
     MeetingPageRoutingModule,
     KpiModule,
     CalendarModule,
-    MeetingListModule
+    MeetingListModule,
+    FeatureCheckDirectiveModule
   ],
   declarations: [
     MeetingPage,

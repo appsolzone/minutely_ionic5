@@ -27,14 +27,16 @@
 <ion-item>
   <ion-textarea required="true" autoGrow="true" wrap="soft" spellcheck="true" [(ngModel)]="taskDetails.taskTitle"
   placeholder="Please enter task title"
-    [value]="taskDetails?.taskTitle"></ion-textarea>
+    [value]="taskDetails?.taskTitle"
+    [readonly]="taskDetails?.taskStatus =='RESOLVED' || refInformation?.taskInitiator?.uid != sessionInfo?.userProfile?.uid"
+    ></ion-textarea>
 </ion-item>
 <ion-item>
   <ion-label>
     <ion-icon name="pricetags"></ion-icon>
     Tags
   </ion-label>
-  <ion-input [(ngModel)]="taskTag" [value]="taskTag" placeholder="Please enter keyword to add as tag"
+  <ion-input [(ngModel)]="taskTag" [value]="taskTag" placeholder="Please enter tag keyword"
     (keyup.enter)="addTag()"></ion-input>
   <ion-buttons slot="end">
     <ion-button slot="end" (click)="addTag()" color="medium">

@@ -6,6 +6,8 @@ import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { TaskService } from 'src/app/shared/task/task.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { Platform, PopoverController } from '@ionic/angular';
+import { SelectUsersComponent } from 'src/app/page/select-users/select-users.component';
 
 @Component({
   selector: 'app-task-details',
@@ -32,12 +34,14 @@ export class TaskDetailsPage implements OnInit {
                             issues: [],
                             risks: []
                           };
-
+  public sendTaskDetailsMode:boolean = false;
   constructor(
     private router: Router,
     private session: SessionService,
     private taskservice: TaskService,
     private common: ComponentsService,
+    public platform: Platform,
+    public popoverController: PopoverController
   ) {
     this.getSessionInfo();
   }
@@ -109,18 +113,62 @@ export class TaskDetailsPage implements OnInit {
   editTask(){
     this.router.navigate(['task/task-details-edit'],{state: {data:{task: this.task}}});
   }
-  // share minutes
-  async sendTaskDetails(){
-    let response: any = {} //await this.taskservice.shareTaskMinutes(this.task, this.alllinkages);
-    let buttons = [
-                    {
-                      text: 'Dismiss',
-                      role: 'cancel',
-                      cssClass: '',
-                      handler: ()=>{}
-                    }
-                  ];
-    this.common.presentAlert(response.title, response.body, buttons);
+
+
+  sendTaskDetails(ev: any){
+    // if(this.platform.is('desktop') || this.platform.is('tablet')){
+      this.sendTaskDetailsMode = !this.sendTaskDetailsMode;
+      // console.log(this.platform.is('desktop') || this.platform.is('tablet'));
+      // this.presentPopover(ev);
+    // }else{
+      this.router.navigate(['task/send-email'],{state: {data:{service: this.task,linkages:this.alllinkages,parentsModule:'task'}}});
+    // }
   }
 
+  // share task
+  async shareTaskDetails(selectedMembers){
+    console.log("in parent module",selectedMembers);
+    if (selectedMembers != null){
+      let response: any = await this.taskservice.shareTaskMinutes(this.task, this.alllinkages,selectedMembers);
+      let buttons = [
+                      {
+                        text: 'Dismiss',
+                        role: 'cancel',
+                        cssClass: '',
+                        handler: ()=>{}
+                      }
+                    ];
+      this.common.presentAlert(response.title, response.body, buttons);
+    }
+  }
+  async presentPopover(ev: any) {
+    this.sendTaskDetailsMode = !this.sendTaskDetailsMode;
+    const popover = await this.popoverController.create({
+      component: SelectUsersComponent,
+      cssClass: 'customPopover',
+      event: ev,
+      translucent: true,
+      componentProps: {
+        sessionInfo:this.sessionInfo, alreadySelectedUserList: this.task.data.taskOwner? [this.task.data.taskOwner] : [],
+        buttonItem: { icon: 'paper-plane-outline', text: 'Send mail'},
+        showAddUser: false,
+        sectionHeader: { icon: 'people', text: 'Select Users to send email ' },
+        multiSelect:true,
+        popoverMode:true,
+        showAddNonPermUser: true,
+       },
+      // mode:'ios',
+      backdropDismiss:true //false
+    });
+
+   await popover.present();
+
+   popover.onDidDismiss().then((dataReturned) => {
+      console.log("returnded selected members:",dataReturned.data);
+      if (dataReturned != null) {
+        this.shareTaskDetails(dataReturned.data);
+        //alert('Modal Sent Data :'+ dataReturned);
+      }
+    });
+  }
 }

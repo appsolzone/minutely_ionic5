@@ -21,8 +21,8 @@ export class AdminAddUsersService {
   ) {this.userDataForm = this.manageUserService.newUser}
 
   // new register
-  addNewUser(newUserData,orgProfile){
-  this.componentService.showLoader();
+  async addNewUser(newUserData,orgProfile){
+  await this.componentService.showLoader();
   this.systemGeneratedPassword = this.generatePassWord();
 
   return this.db.adminFrb.auth().createUserWithEmailAndPassword(newUserData.email, this.systemGeneratedPassword).then(res =>{
@@ -110,7 +110,7 @@ export class AdminAddUsersService {
      .then(async function(res:any){
       console.log("======= presentAlertConfirm ========");
       if(res){
-        this.componentService.showLoader();
+        await this.componentService.showLoader();
         await this.registerationService.joinSubscriber(userId,orgProfile.subscriberId, newUserData.name,newUserData.email,newUserData);
         return true;
         }
@@ -167,7 +167,7 @@ export class AdminAddUsersService {
   if(err == 'auth-table-error'){
     errorMsg = "The user can not be added. Please try again. If the problem persists please request the user to Sign up using his/her credentials.";
   }else if(err == 'already-exist-user'){
-    errorMsg = "The user exists for the organisation. Please check member list to take necessary action";
+    errorMsg = "The user exists for the organization. Please check member list to take necessary action";
   }else{
     errorMsg = err;
   }

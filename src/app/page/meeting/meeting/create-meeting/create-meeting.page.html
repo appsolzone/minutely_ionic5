@@ -38,7 +38,26 @@
         <app-meeting-location-edit *ngIf="showSection=='LOCATION' && sessionInfo && meeting" editMode="create" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-location-edit>
         <app-meeting-attendees-edit *ngIf="showSection=='ATTENDEES' && sessionInfo && meeting" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-attendees-edit>
         <app-meeting-agenda-note-edit *ngIf="showSection=='AGENDA' && sessionInfo && meeting" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-agenda-note-edit>
-
+        <ion-toolbar class="ion-no-margin ion-no-padding ion-margin-top">
+          <ion-item class="ion-margin-top ion-margin-bottom" color="transparent" lines="none">
+          </ion-item>
+          <ion-item class="ion-no-padding ion-margin-top ion-margin-bottom" color="transparent" lines="none">
+            <ion-buttons slot="start" *ngIf="showSection!='BASICINFO'">
+              <ion-button slot="start" color="primary" (click)="gotoSection('back')">
+                <ion-icon slot="icon-only"  size="large" name="arrow-back"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+            <ion-buttons slot="end" *ngIf="showSection!='LOCATION'">
+              <ion-button slot="end" color="primary" (click)="gotoSection('forward')">
+                <ion-icon slot="icon-only" size="large" name="arrow-forward"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+            <ion-button *ngIf="showSection=='LOCATION'" slot="end" color="primary" fill="solid" size="default" (click)="saveMeeting()">
+              <ion-icon slot="start" name="checkmark-done"></ion-icon>
+               Save
+            </ion-button>
+          </ion-item>
+        </ion-toolbar>
     </ion-col>
     <ion-col size="12" size-lg="4" class="ion-hide-lg-down">
       <ion-card>
@@ -59,9 +78,9 @@
       <!-- <app-linkage *ngIf="sessionInfo && meeting" viewMode="edit" [selectedObject]="meeting" [sessionInfo]="sessionInfo" [alllinkages]="alllinkages" [editedlinkages]="editedlinkages"> </app-linkage> -->
     </ion-col>
   </ion-row>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button  size="small" (click)="saveMeeting()">
       <ion-icon name="checkmark-done"></ion-icon>
     </ion-fab-button>
-  </ion-fab>
+  </ion-fab> -->
 </ion-content>

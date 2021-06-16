@@ -6,6 +6,7 @@ import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { IssueService } from 'src/app/shared/issue/issue.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
 
 
 @Component({
@@ -41,6 +42,7 @@ export class CreateIssuePage implements OnInit {
     private session: SessionService,
     private issueservice: IssueService,
     private common: ComponentsService,
+    private analytics: AnalyticsService,
   ) {
     this.getSessionInfo();
   }
@@ -53,10 +55,14 @@ export class CreateIssuePage implements OnInit {
     //   this.router.navigate(['issue']);
     // } else{
     //   if(issueStateData?.id!=this.issue?.id){
-        let issue = {...this.issueservice.newIssue};
+        let issue = {...this.issueservice.newIssue,
+                      tags:[],
+                      ownerInitiatorUidList:[]
+                    };
         this.getissue({id:null,data:issue});
     //   }
     // }
+    this.collectAnalytics();
   }
 
   ngOnDestroy(){}
@@ -72,6 +78,15 @@ export class CreateIssuePage implements OnInit {
     //     this.getissue(issueStateData);
     //   }
     // }
+  }
+
+  collectAnalytics(name: any ='Open_Create_Issue'){
+    this.analytics.setScreenName({name: 'CreateIssuePage'});
+    let event = {
+      name: name,
+      params: {}
+    };
+    this.analytics.logEvent(event);
   }
 
   getSessionInfo(){
@@ -138,6 +153,7 @@ export class CreateIssuePage implements OnInit {
 
   // saveissue
   async saveIssue(){
+    this.collectAnalytics('Save_Issue');
     const { issueStatus } = this.issue.data;
     let title = '';
     let body = '';
@@ -170,7 +186,7 @@ export class CreateIssuePage implements OnInit {
       await this.common.presentAlertConfirm(validation.title,validation.body, buttons);
     } else {
       title = 'Confirmation';
-      body = "You are about to create a new issue. Are you sure that you want to continue to create the issue?";
+      body = "Are you sure that you want to continue to create the issue?";
       response = false;
       await this.common.presentAlertConfirm(title,body, continueButtons);
       console.log("response", response);
@@ -205,6 +221,25 @@ export class CreateIssuePage implements OnInit {
           }
         }
       }
+    }
+  }
+
+  gotoSection(action){
+    switch(action){
+      case 'back':
+        if(this.showSection=='OWNER'){
+          this.showSection = 'BASICINFO';
+        } else {
+          this.showSection = 'OWNER';
+        }
+        break;
+      case 'forward':
+        if(this.showSection=='BASICINFO'){
+          this.showSection = 'OWNER';
+        } else {
+          this.showSection = 'NOTES';
+        }
+        break;
     }
   }
 

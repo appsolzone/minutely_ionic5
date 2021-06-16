@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Send email</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="returnPath"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <app-select-users [sessionInfo]="sessionInfo"
+    [alreadySelectedUserList]="alreadySelectedUserList" [multiSelect]="true"
+    [buttonItem]="{ icon: 'paper-plane-outline', text: 'Send mail'}"
+    [showAddUser]="false"
+    [showAddNonPermUser]="true"
+    [sectionHeader]="{ icon: 'people', text: 'Select Users to send email ' }"
+    (onSelectionComplete)="shareDetails($event)"></app-select-users>
+</ion-content>

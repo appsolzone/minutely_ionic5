@@ -6,6 +6,7 @@ import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { MeetingService } from 'src/app/shared/meeting/meeting.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
 
 @Component({
   selector: 'app-create-meeting',
@@ -39,6 +40,7 @@ export class CreateMeetingPage implements OnInit {
     private session: SessionService,
     private meetingservice: MeetingService,
     private common: ComponentsService,
+    private analytics: AnalyticsService,
   ) {
     this.getSessionInfo();
   }
@@ -49,12 +51,27 @@ export class CreateMeetingPage implements OnInit {
     //   console.log("ngOnInit")
     //   this.router.navigate(['meeting']);
     // } else{
-        let meeting = {...this.meetingservice.newMeeting};
+        let meeting = {...this.meetingservice.newMeeting,
+                        tags:[],
+                        attendeeList:[],
+                        attendeeUidList:[],
+                        weekdays:[false, false, false, false, false, false, false],
+                      };
         this.getMeeting({id:null,data:meeting});
     // }
+    this.collectAnalytics();
   }
 
   ngOnDestroy(){}
+
+  collectAnalytics(name: any ='Open_Create_Meeting'){
+    this.analytics.setScreenName({name: 'CreateMeetingPage'});
+    let event = {
+      name: name,
+      params: {}
+    };
+    this.analytics.logEvent(event);
+  }
 
   sectionChanged(e)
   {
@@ -126,6 +143,7 @@ export class CreateMeetingPage implements OnInit {
 
   // saveMeeting
   async saveMeeting(){
+    this.collectAnalytics('Save_Meeting');
     const { status, isOccurence, eventSequenceId, noOfOccurence, attendeeList } = this.meeting.data;
     let { toCascadeChanges } = this.refInformation;
     let title = '';
@@ -153,7 +171,7 @@ export class CreateMeetingPage implements OnInit {
     let validation = status=='CANCEL' ?
                      {status: true, title: 'cancel', body: 'cancel meeting'}
                      :
-                     this.meetingservice.validateBasicInfo(this.meeting, this.refInformation);
+                     this.meetingservice.validateBasicInfo(this.meeting, this.refInformation, this.sessionInfo);
 
     if(!validation.status){
       await this.common.presentAlertConfirm(validation.title,validation.body, buttons);
@@ -168,6 +186,7 @@ export class CreateMeetingPage implements OnInit {
       }
       if(response){
         // this.meetingservice.processMeeting(this.meeting, this.refInformation, this.alllinkages, this.sessionInfo);
+        await this.common.showLoader("Creating meeting, please wait...");
         let processMeetingstatus: any = await this.meetingservice.processMeeting(this.meeting, this.refInformation, this.alllinkages, this.sessionInfo);
         console.log("this.meeting to be saved", this.meeting, this.alllinkages, this.refInformation, processMeetingstatus);
         this.common.hideLoader();
@@ -179,6 +198,29 @@ export class CreateMeetingPage implements OnInit {
       } else {
         this.showSection = 'ATTENDEES';
       }
+    }
+  }
+
+  gotoSection(action){
+    switch(action){
+      case 'back':
+        if(this.showSection=='ATTENDEES'){
+          this.showSection = 'BASICINFO';
+        } else if(this.showSection=='AGENDA'){
+          this.showSection = 'ATTENDEES';
+        } else {
+          this.showSection = 'AGENDA';
+        }
+        break;
+      case 'forward':
+        if(this.showSection=='BASICINFO'){
+          this.showSection = 'ATTENDEES';
+        } else if(this.showSection=='ATTENDEES'){
+          this.showSection = 'AGENDA';
+        } else {
+          this.showSection = 'LOCATION';
+        }
+        break;
     }
   }
 

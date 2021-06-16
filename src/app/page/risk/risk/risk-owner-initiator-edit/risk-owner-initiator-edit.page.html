@@ -30,7 +30,9 @@
   </ion-buttons>
 </ion-item>
 <app-select-users *ngIf="showSelectOwner" [sessionInfo]="sessionInfo"
-  [alreadySelectedUserList]="riskDetails?.riskOwner? [riskDetails?.riskOwner] : []" [multiSelect]="false"
+  [alreadySelectedUserList]="riskDetails?.riskOwner?.uid || riskDetails?.riskOwner?.name ? [riskDetails?.riskOwner] : []"
+  [multiSelect]="false"
+  [showAddNonPermUser]="true"
   (onSelectionComplete)="changeRiskOwner($event)"></app-select-users>
 <ion-item *ngIf="!showSelectOwner">
   <ion-avatar slot="start">

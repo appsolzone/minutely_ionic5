@@ -11,7 +11,8 @@
   <ion-row class="wave-background">
     <ion-col>
      <ion-row>
-      <ion-col size="12" *ngIf="newsubscriber !== undefined || (orgProfile?.subscriptionType=='Free' && !orgProfile?.paypalId)">
+      <!-- <ion-col size="12" *ngIf="newsubscriber !== undefined || (orgProfile?.subscriptionType=='Free' && !orgProfile?.paypalId)"> -->
+      <ion-col size="12">
         <ion-row>
           <ion-col size="12" size-xl="1">
           </ion-col>
@@ -21,12 +22,20 @@
                 <ion-item  lines="none">
                   <ion-icon color="primary" slot="start" name="qr-code"></ion-icon>
                   <ion-label>
+                    <ion-skeleton-text *ngIf="!orgProfile?.subscriberId" animated style="width: 50%"></ion-skeleton-text>
                     {{orgProfile?.subscriberId}}
                   </ion-label>
                 </ion-item>
               </ion-card-header>
               <ion-card-content>
-                <ion-list >
+                <ion-list *ngIf="!orgProfile">
+                  <ion-item *ngFor="let dummy of [null,null,null]" lines="inset" class="ion-hide-md-down">
+                    <ion-label>
+                      <ion-skeleton-text *ngIf="!orgProfile?.subscriberId" animated style="width: 100%"></ion-skeleton-text>
+                    </ion-label>
+                  </ion-item>
+                </ion-list>
+                <ion-list *ngIf="orgProfile">
                   <ion-item lines="inset" class="ion-hide-md-down">
                     <ion-label>
                       <ion-icon name="apps"></ion-icon>
@@ -48,12 +57,20 @@
                     <ion-input type="text" [value]="orgProfile?.noOfUserAllowed - orgProfile?.noOfFreeLicense + ' of ' + orgProfile?.noOfUserAllowed + ' in use'" class="ion-text-right"
                       placeholder="No free license info" readonly></ion-input>
                   </ion-item>
+                  <!-- <ion-item  class="ion-hide-md-up"lines="none" color="transparent" (click)="scrollToBottom()">
+                    <ion-button  size="deafult" color="light" slot="end">
+                      <ion-icon color="success" slot="start" name="ticket"></ion-icon>
+                      <ion-text class="ion-text-capitalize">
+                        Apply Coupon Code
+                      </ion-text>
+                    </ion-button>
+                  </ion-item> -->
                 </ion-list>
               </ion-card-content>
             </ion-card>
           </ion-col>
           <ion-col size="12" size-md class="ion-hide-md-down">
-            <ion-card mode="ios" *ngIf="orgProfile" class="uniform-card-height">
+            <!-- <ion-card mode="ios" *ngIf="orgProfile" class="uniform-card-height">
               <ion-card-header color="light">
                 <ion-item  lines="none" color="transparent">
                   <ion-icon color="success" slot="start" name="ticket"></ion-icon>
@@ -75,9 +92,9 @@
                   <ion-note>Please enter the coupon code to avail discounted subscription plan</ion-note>
                 </ion-item>
               </ion-card-content>
-            </ion-card>
+            </ion-card> -->
           </ion-col>
-          <ion-col size="12" class="ion-hide-md-up">
+          <!-- <ion-col size="12" class="ion-hide-md-up">
             <ion-card mode="ios" *ngIf="orgProfile">
               <ion-card-header color="light">
                 <ion-item  button=true lines="none" color="transparent" (click)="scrollToBottom()">
@@ -88,7 +105,7 @@
                 </ion-item>
               </ion-card-header>
             </ion-card>
-          </ion-col>
+          </ion-col> -->
           <ion-col size="12" size-xl="1">
           </ion-col>
         </ion-row>
@@ -99,28 +116,42 @@
           </ion-col>
           <ion-col size="12" size-md>
             <ion-row>
-              <ion-col *ngFor="let plan of generalPlans; let i = index">
+              <ion-col size="12" size-md *ngFor="let plan of generalPlans ?  generalPlans : [null, null]; let i = index">
                   <ion-card mode="ios" class="uniform-card-height">
-                    <ion-item lines="none" color="transparent" style="background: {{plan.color}};">
-                      <h1>
-                          <ion-text color="white">{{ plan.planName }}</ion-text>
-                      </h1>
-                      <ion-text color="white" slot="end">$ {{plan.price}} / mo</ion-text>
+                    <!-- <ion-item lines="none" color="transparent" style="background: {{plan.color}};"> -->
+                    <ion-item lines="none" color="transparent">
+                      <ion-label class="ion-text-center">
+                        <h1 class="large-title">
+                          <small>
+                            <ion-skeleton-text *ngIf="!plan" animated style="width: 40%"></ion-skeleton-text>
+                            <ion-text *ngIf="plan">{{ plan.planName }}</ion-text>
+                          </small>
+                        </h1>
+                      </ion-label>
+                      <!-- <ion-text slot="end">$ {{plan.price * (orgProfile?.noOfUserAllowed ?  orgProfile.noOfUserAllowed : 1) | number:'1.2-2' }} / mo</ion-text> -->
                     </ion-item>
+                    <ion-progress-bar [color]="plan?.color ? plan.color : 'medium'" value="1"></ion-progress-bar>
                     <ion-card-content>
-                      <ion-item no-lines>
+                      <ion-item lines="none">
                         <ion-label class="ion-text-center">
-                          <h1>
-                            <ion-text class="large-title">$ {{ plan.price/plan.allowedLicense | number:'1.2-2'}}</ion-text> / mo <br/> <small>per user</small>
+                          <ion-skeleton-text *ngIf="!plan" animated style="width: 100%" class="large-title"></ion-skeleton-text>
+                          <h1 *ngIf="plan">
+                            <ion-text  class="large-title">$ {{ plan.price | number:'1.2-2'}}</ion-text> / mo <br/> <small>per user</small>
                           </h1>
                         </ion-label>
                       </ion-item>
-                      <ion-item lines="none" class="" *ngFor="let tag of plan.tags;">
-                        <p class="ion-text-start">{{tag}}</p>
+                      <ion-item lines="none" class="" *ngFor="let tag of plan ? plan.tags : [null,null,null,null];">
+                        <ion-skeleton-text *ngIf="!plan" animated style="width: 100%"></ion-skeleton-text>
+                        <p *ngIf="plan" class="ion-text-start">{{tag}}</p>
                         <ion-icon slot="start" color="green" name="checkmark-circle-outline"></ion-icon>
                       </ion-item>
-                      <ion-item lines="none">
-                        <ion-button fill="outline" slot="end" color="secondary" (click)="paymentPage(plan)">Subscribe</ion-button>
+                      <!-- <ion-item lines="none">
+                        <ion-button *ngIf="plan" fill="outline" slot="end" color="secondary" (click)="paymentPage(plan)">Subscribe</ion-button>
+                      </ion-item> -->
+                      <ion-item lines="none" [color]="plan?.color ? plan.color : 'medium'">
+                        <ion-label class="ion-text-center ion-text-wrap">
+                          <h2>Enjoy your free usage, subscription will be enabled soon</h2>
+                        </ion-label>
                       </ion-item>
                     </ion-card-content>
                   </ion-card>
@@ -130,7 +161,7 @@
           <ion-col size="12" size-xl="1">
           </ion-col>
           <ion-col size="12" class="ion-hide-md-up" *ngIf="newsubscriber !== undefined || (orgProfile?.subscriptionType=='Free' && !orgProfile?.paypalId)">
-            <ion-card mode="ios" *ngIf="orgProfile" class="uniform-card-height">
+            <!-- <ion-card mode="ios" *ngIf="orgProfile" class="uniform-card-height">
               <ion-card-header color="light">
                 <ion-item  lines="none" color="transparent">
                   <ion-icon color="success" slot="start" name="ticket"></ion-icon>
@@ -152,7 +183,7 @@
                   <ion-note>Please enter the coupon code to avail discounted subscription plan</ion-note>
                 </ion-item>
               </ion-card-content>
-            </ion-card>
+            </ion-card> -->
           </ion-col>
         </ion-row>
       </ion-col>

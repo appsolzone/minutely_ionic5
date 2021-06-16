@@ -18,9 +18,9 @@
   <ion-avatar slot="start">
     <img src="{{(taskDetails?.latestComment.picUrl) ? taskDetails?.latestComment.picUrl : 'assets/shapes.svg'}}"
       (error)="profileImgErrorHandler(taskDetails?.latestComment)" />
-    <ion-icon *ngIf="taskDetails?.latestComment.picUrl == ''" color="primary" name="person-circle"
+    <!-- <ion-icon *ngIf="taskDetails?.latestComment.picUrl == ''" color="primary" name="person-circle"
       size="large">
-    </ion-icon>
+    </ion-icon> -->
   </ion-avatar>
   <ion-label>
     <h2>{{taskDetails?.latestComment.author}}</h2>

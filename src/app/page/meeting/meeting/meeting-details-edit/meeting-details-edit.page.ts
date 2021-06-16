@@ -64,7 +64,7 @@ export class MeetingDetailsEditPage implements OnInit {
       console.log("ionViewDidEnter")
       this.router.navigate(['meeting']);
     } else {
-      if(meetingStateData?.id!=this.meeting?.id){
+      if(meetingStateData?.id!=this.meeting?.id || !meetingStateData?.id){
         this.getMeeting(meetingStateData);
       }
     }
@@ -85,12 +85,14 @@ export class MeetingDetailsEditPage implements OnInit {
     // this.meeting = null;
     const data: any = meetingStateData.data;
     const id: string = meetingStateData.id;
-    const meetingStart = moment(data.meetingStart).format('YYYY-MM-DDTHH:mm');
-    const meetingEnd = moment(data.meetingEnd).format('YYYY-MM-DDTHH:mm');
+    const meetingStart = id ? moment(data.meetingStart).format('YYYY-MM-DDTHH:mm') : null;
+    const meetingEnd = id ? moment(data.meetingEnd).format('YYYY-MM-DDTHH:mm') : null;
     const weekdays = data.weekdays ? data.weekdays : [false,false,false,false,false,false,false];
+    const attendeeUidList = [...data.attendeeUidList];
     this.meeting = {id, data: {...data, meetingStart, meetingEnd, weekdays}};
     this.refInformation = {id, meetingStart, meetingEnd,
                            status: data.status,
+                           isOccurence: data.isOccurence,
                            occurenceType: data.occurenceType,
                            weekdays: [...weekdays],
                            noOfOccurence: data.noOfOccurence,
@@ -98,6 +100,7 @@ export class MeetingDetailsEditPage implements OnInit {
                            attendeeList: [...data.attendeeList],
                            meetingTitle: data.meetingTitle,
                            tags: [...data.tags],
+                           attendeeUidList: attendeeUidList,
                            toCascadeChanges: false};
     console.log("meeting details", this.meeting);
 
@@ -139,7 +142,7 @@ export class MeetingDetailsEditPage implements OnInit {
     let validation = status=='CANCEL' ?
                      {status: true, title: 'cancel', body: 'cancel meeting'}
                      :
-                     this.meetingservice.validateBasicInfo(this.meeting, this.refInformation);
+                     this.meetingservice.validateBasicInfo(this.meeting, this.refInformation, this.sessionInfo);
 
     if(!validation.status){
       await this.common.presentAlertConfirm(validation.title,validation.body, buttons);
@@ -179,7 +182,7 @@ export class MeetingDetailsEditPage implements OnInit {
           validation = status=='CANCEL' ?
                            {status: true, title: 'cancel', body: 'cancel meeting'}
                            :
-                           this.meetingservice.validateBasicInfo(this.meeting, this.refInformation);
+                           this.meetingservice.validateBasicInfo(this.meeting, this.refInformation, this.sessionInfo);
           if(!toCascadeChanges || status == 'CANCEL' || validation.status){
             // Now run the process as required
             // this.navData.loader = true;

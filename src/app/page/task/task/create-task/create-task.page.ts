@@ -6,6 +6,7 @@ import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { TaskService } from 'src/app/shared/task/task.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
 
 
 @Component({
@@ -41,6 +42,7 @@ export class CreateTaskPage implements OnInit {
     private session: SessionService,
     private taskservice: TaskService,
     private common: ComponentsService,
+    private analytics: AnalyticsService,
   ) {
     this.getSessionInfo();
   }
@@ -53,10 +55,14 @@ export class CreateTaskPage implements OnInit {
     //   this.router.navigate(['task']);
     // } else{
     //   if(taskStateData?.id!=this.task?.id){
-        let task = {...this.taskservice.newTask};
+        let task = {...this.taskservice.newTask,
+                    tags:[],
+                    ownerInitiatorUidList:[]
+                    };
         this.gettask({id:null,data:task});
     //   }
     // }
+    this.collectAnalytics();
   }
 
   ngOnDestroy(){}
@@ -72,6 +78,15 @@ export class CreateTaskPage implements OnInit {
     //     this.gettask(taskStateData);
     //   }
     // }
+  }
+
+  collectAnalytics(name: any ='Open_Create_Task'){
+    this.analytics.setScreenName({name: 'CreateTaskPage'});
+    let event = {
+      name: name,
+      params: {}
+    };
+    this.analytics.logEvent(event);
   }
 
   getSessionInfo(){
@@ -138,6 +153,7 @@ export class CreateTaskPage implements OnInit {
 
   // savetask
   async saveTask(){
+    this.collectAnalytics('Save_Task');
     const { taskStatus } = this.task.data;
     let title = '';
     let body = '';
@@ -170,7 +186,7 @@ export class CreateTaskPage implements OnInit {
       await this.common.presentAlertConfirm(validation.title,validation.body, buttons);
     } else {
       title = 'Confirmation';
-      body = "You are about to create a new task. Are you sure that you want to continue to create the task?";
+      body = "Are you sure that you want to continue to create the task?";
       response = false;
       await this.common.presentAlertConfirm(title,body, continueButtons);
       console.log("response", response);
@@ -205,6 +221,25 @@ export class CreateTaskPage implements OnInit {
           }
         }
       }
+    }
+  }
+
+  gotoSection(action){
+    switch(action){
+      case 'back':
+        if(this.showSection=='OWNER'){
+          this.showSection = 'BASICINFO';
+        } else {
+          this.showSection = 'OWNER';
+        }
+        break;
+      case 'forward':
+        if(this.showSection=='BASICINFO'){
+          this.showSection = 'OWNER';
+        } else {
+          this.showSection = 'NOTES';
+        }
+        break;
     }
   }
 

@@ -10,7 +10,18 @@
         (click)="editTask()">
         <ion-icon name="create-outline" slot="icon-only"></ion-icon>
       </ion-button>
-      <ion-button slot="end" (click)="sendTaskDetails()">
+      <ion-button slot="end" class="ion-hide-md-up"
+      (featureClick)="sendTaskDetails($event)"
+      appFeatureCheck
+      [featureIdList]="['share-project-item']"
+      >
+        <ion-icon name="paper-plane-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button slot="end"  class="ion-hide-md-down"
+      (featureClick)="presentPopover($event)"
+      appFeatureCheck
+      [featureIdList]="['share-project-item']"
+      >
         <ion-icon name="paper-plane-outline" slot="icon-only"></ion-icon>
       </ion-button>
       <ion-button slot="end" disabled="true" class="ion-hide-lg-up">
@@ -29,6 +40,11 @@
         <app-task-agenda-note *ngIf="sessionInfo && task" [task]="task" [sessionInfo]="sessionInfo"></app-task-agenda-note>
       </ion-card>
     </ion-col>
+    <!-- <ion-col size="12" size-md="6" class="ion-hide-md-down" *ngIf="sendTaskDetailsMode">
+      <app-select-users [sessionInfo]="sessionInfo"
+        [alreadySelectedUserList]="task?.data?.taskOwner? [task?.data?.taskOwner] : []" [multiSelect]="true"
+        (onSelectionComplete)="shareTaskDetails($event)"></app-select-users>
+    </ion-col> -->
     <ion-col size="12" size-md="6">
       <app-task-comments *ngIf="sessionInfo && task" [task]="task" [sessionInfo]="sessionInfo"></app-task-comments>
       <app-linkage *ngIf="sessionInfo && task" [selectedObject]="task" [itemType]="'task'" [sessionInfo]="sessionInfo" (publishLinkage)="publishLinkage($event)"> </app-linkage>

@@ -12,6 +12,8 @@ import { RiskListPage } from './risk-list.page';
 
 import { CalendarModule } from 'ion2-calendar';
 
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -19,7 +21,8 @@ import { CalendarModule } from 'ion2-calendar';
     IonicModule,
     RiskListPageRoutingModule,
     RiskMatrixModule,
-    CalendarModule
+    CalendarModule,
+    FeatureCheckDirectiveModule,
   ],
   declarations: [RiskListPage],
   exports:[RiskListPage]

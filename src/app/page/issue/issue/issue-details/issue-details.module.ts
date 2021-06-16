@@ -15,13 +15,16 @@ import { LinkageModule } from 'src/app/page/linkage/linkage.module';
 
 import { IssueDetailsPage } from './issue-details.page';
 
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
     IssueDetailsPageRoutingModule,
-    LinkageModule
+    LinkageModule,
+    FeatureCheckDirectiveModule,
   ],
   declarations: [
     IssueBasicInfoComponent,

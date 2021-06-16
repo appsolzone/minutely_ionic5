@@ -45,6 +45,7 @@
   [sessionInfo]="sessionInfo"
   [alreadySelectedUserList]="meetingDetails?.attendeeList? meetingDetails?.attendeeList : []"
   [multiSelect]="true"
+  [showAddNonPermUser]="true"
   (onSelectionComplete)="processAttendeeList($event)"
   ></app-select-users>
 <ion-list *ngIf="!showSelectAttendees">

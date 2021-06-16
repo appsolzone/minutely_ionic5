@@ -30,7 +30,9 @@
   </ion-buttons>
 </ion-item>
 <app-select-users *ngIf="showSelectOwner" [sessionInfo]="sessionInfo"
-  [alreadySelectedUserList]="taskDetails?.taskOwner? [taskDetails?.taskOwner] : []" [multiSelect]="false"
+  [alreadySelectedUserList]="taskDetails?.taskOwner?.uid  || taskDetails?.taskOwner?.name ? [taskDetails?.taskOwner] : []" 
+  [multiSelect]="false"
+  [showAddNonPermUser]="true"
   (onSelectionComplete)="changeTaskOwner($event)"></app-select-users>
 <ion-item *ngIf="!showSelectOwner">
   <ion-avatar slot="start">

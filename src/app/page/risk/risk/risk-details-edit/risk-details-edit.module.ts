@@ -9,6 +9,7 @@ import { RiskDetailsEditPageRoutingModule } from './risk-details-edit-routing.mo
 import { RiskDetailsEditPage } from './risk-details-edit.page';
 import { RiskBasicInfoEditPageModule } from '../risk-basic-info-edit/risk-basic-info-edit.module';
 import { RiskMitigationContingencyEditModule } from '../risk-mitigation-contingency-edit/risk-mitigation-contingency-edit.module';
+import { RiskProbabilityImpactComponentModule } from '../risk-probability-impact/risk-probability-impact.module';
 import { RiskProbabilityImpactEditPageModule } from '../risk-probability-impact-edit/risk-probability-impact-edit.module';
 import { RiskOwnerInitiatorEditPageModule } from '../risk-owner-initiator-edit/risk-owner-initiator-edit.module';
 import { LinkageModule } from 'src/app/page/linkage/linkage.module';
@@ -21,6 +22,7 @@ import { LinkageModule } from 'src/app/page/linkage/linkage.module';
     RiskDetailsEditPageRoutingModule,
     RiskBasicInfoEditPageModule,
     RiskMitigationContingencyEditModule,
+    RiskProbabilityImpactComponentModule,
     RiskProbabilityImpactEditPageModule,
     RiskOwnerInitiatorEditPageModule,
     LinkageModule

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { UserCommentService } from 'src/app/shared/user-comment/user-comment.service';
+import { ComponentsService } from 'src/app/shared/components/components.service';
 
 @Component({
   selector: 'app-task-user-comments',
@@ -24,7 +25,8 @@ export class TaskUserCommentsPage implements OnInit,OnDestroy {
   constructor(
     private router: Router,
     private session: SessionService,
-    private commentServ:UserCommentService
+    private commentServ:UserCommentService,
+    private componentService:ComponentsService,
   ) {
     this.getSessionInfo();
   }
@@ -85,23 +87,28 @@ export class TaskUserCommentsPage implements OnInit,OnDestroy {
       console.log(this.allComments);
     });
   }
-  addComment(){
+  async addComment(){
+    await this.componentService.showLoader('Adding your comment, please wait...');
     let commentObj = {...this.commentServ.newComment};
     commentObj.author = this.sessionInfo.userProfile.name;
     commentObj.comment = this.postedComment;
     commentObj.picUrl = this.sessionInfo.userProfile.picUrl;
     commentObj.uid = this.sessionInfo.userProfile.uid;
-    let servicedoc = {collectionName:'task',id:this.task.id};
-    this.commentServ.addComment(commentObj,servicedoc)
+    let servicedoc = {collectionName:'task',id:this.task.id,members:[{...this.task.taskOwner},{...this.task.taskInitiator}]};
+    this.commentServ.addComment(commentObj,servicedoc,this.sessionInfo)
     .then((res)=>{
       console.log("comment add resposnse",res);
       this.postedComment = '';
+      this.componentService.hideLoader();
+      this.componentService.presentToaster('Your comment added successfully!!');
     })
-    .catch(error=>console.log(error));
+    .catch(error=>{
+      this.componentService.hideLoader();
+      console.log(error)
+    });
   }
 
   profileImgErrorHandler(user: any){
     user.picUrl = '/assets/shapes.svg';
   }
 }
-

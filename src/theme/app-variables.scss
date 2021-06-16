@@ -106,6 +106,16 @@ ion-icon {
   --max-height: 40%;
 }
 
+.customPopover {
+  .popover-content {
+    width: 450px; //auto !important;
+  }
+}
+
+.background{
+  background: #fff;
+}
+
 /*
  * Dark Colors
  * -------------------------------------------
@@ -188,6 +198,9 @@ body.dark {
       color: var(--ion-color-step-650);
     }
   }
+  .signin-banner{
+    background: var(--ion-color-light) !important;
+  }
 }
 
 /*
@@ -240,6 +253,9 @@ body.dark {
     button {
       color: var(--ion-color-step-650);
     }
+  }
+  .background{
+    background: var(--ion-card-background);
   }
 
 }
@@ -299,6 +315,9 @@ body.dark {
     button {
       color: var(--ion-color-step-650);
     }
+  }
+  .background{
+    background: var(--ion-card-background);
   }
 
 }

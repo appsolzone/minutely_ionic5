@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from '../database/database.service';
+import { KpiService } from '../kpi/kpi.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class LinkageService {
 
   constructor(
     private db: DatabaseService,
+    private aclKpi: KpiService,
   )
   {
     // To be used if required
@@ -80,6 +82,7 @@ export class LinkageService {
           //   step 3: remove linkages marked as delete
           //   step 4: if any element from step 1 is modified
           //           update reference data of the ITEM for the existing linked objects
+          let aclKpiCount = 0;
           linkageSubCollections.forEach((sub)=>{
             // loop through each of the linkage item
             linkage[sub].forEach((link)=>{
@@ -96,12 +99,14 @@ export class LinkageService {
                   let linkData = this.getLinkData(sub,link.data);
                   batch.set(linkRef,linkData);
                   batch.set(conlinkRef,selfLinkData);
+                  aclKpiCount++;
                   break;
                 case 'delete':
                   // add the linkage to the item for both current document as well as corresponding document
 
                   batch.delete(linkRef);
                   batch.delete(conlinkRef);
+                  aclKpiCount--;
                   break;
                 default:
                   // so this is an existing linkage, update the references if data is modified
@@ -112,6 +117,13 @@ export class LinkageService {
             });
 
           });
+
+          this.aclKpi.updateKpiDuringCreation(
+            'link-project-item',
+            {subscriberId: data.subscriberId} , //sessionInfo,
+            batch,
+            aclKpiCount
+          );
         }
 
       }

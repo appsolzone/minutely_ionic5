@@ -6,6 +6,7 @@ import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { RiskService } from 'src/app/shared/risk/risk.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
 
 
 @Component({
@@ -41,6 +42,7 @@ export class CreateRiskPage implements OnInit {
     private session: SessionService,
     private riskservice: RiskService,
     private common: ComponentsService,
+    private analytics: AnalyticsService,
   ) {
     this.getSessionInfo();
   }
@@ -53,10 +55,14 @@ export class CreateRiskPage implements OnInit {
     //   this.router.navigate(['risk']);
     // } else{
     //   if(riskStateData?.id!=this.risk?.id){
-        let risk = {...this.riskservice.newRisk};
+        let risk = {...this.riskservice.newRisk,
+                    tags:[],
+                    ownerInitiatorUidList:[]
+                    };
         this.getrisk({id:null,data:risk});
     //   }
     // }
+    this.collectAnalytics();
   }
 
   ngOnDestroy(){}
@@ -72,6 +78,15 @@ export class CreateRiskPage implements OnInit {
     //     this.getrisk(riskStateData);
     //   }
     // }
+  }
+
+  collectAnalytics(name: any ='Open_Create_Issue'){
+    this.analytics.setScreenName({name: 'CreateIssuePage'});
+    let event = {
+      name: name,
+      params: {}
+    };
+    this.analytics.logEvent(event);
   }
 
   getSessionInfo(){
@@ -138,6 +153,7 @@ export class CreateRiskPage implements OnInit {
 
   // saverisk
   async saveRisk(){
+    this.collectAnalytics('Save_Risk');
     const { riskStatus } = this.risk.data;
     let title = '';
     let body = '';
@@ -170,7 +186,7 @@ export class CreateRiskPage implements OnInit {
       await this.common.presentAlertConfirm(validation.title,validation.body, buttons);
     } else {
       title = 'Confirmation';
-      body = "You are about to create a new risk. Are you sure that you want to continue to create the risk?";
+      body = "Are you sure that you want to continue to create the risk?";
       response = false;
       await this.common.presentAlertConfirm(title,body, continueButtons);
       console.log("response", response);
@@ -205,6 +221,29 @@ export class CreateRiskPage implements OnInit {
           }
         }
       }
+    }
+  }
+
+  gotoSection(action){
+    switch(action){
+      case 'back':
+        if(this.showSection=='OWNER'){
+          this.showSection = 'BASICINFO';
+        } else if(this.showSection=='PRIORITY'){
+          this.showSection = 'OWNER';
+        } else {
+          this.showSection = 'PRIORITY';
+        }
+        break;
+      case 'forward':
+        if(this.showSection=='BASICINFO'){
+          this.showSection = 'OWNER';
+        } else if(this.showSection=='OWNER'){
+          this.showSection = 'PRIORITY';
+        } else {
+          this.showSection = 'MITIGATION';
+        }
+        break;
     }
   }
 
