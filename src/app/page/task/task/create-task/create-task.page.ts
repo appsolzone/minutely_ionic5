@@ -6,6 +6,7 @@ import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { TaskService } from 'src/app/shared/task/task.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
 
 
 @Component({
@@ -41,6 +42,7 @@ export class CreateTaskPage implements OnInit {
     private session: SessionService,
     private taskservice: TaskService,
     private common: ComponentsService,
+    private analytics: AnalyticsService,
   ) {
     this.getSessionInfo();
   }
@@ -60,6 +62,7 @@ export class CreateTaskPage implements OnInit {
         this.gettask({id:null,data:task});
     //   }
     // }
+    this.collectAnalytics();
   }
 
   ngOnDestroy(){}
@@ -75,6 +78,15 @@ export class CreateTaskPage implements OnInit {
     //     this.gettask(taskStateData);
     //   }
     // }
+  }
+
+  collectAnalytics(name: any ='Open_Create_Task'){
+    this.analytics.setScreenName({name: 'CreateTaskPage'});
+    let event = {
+      name: name,
+      params: {}
+    };
+    this.analytics.logEvent(event);
   }
 
   getSessionInfo(){
@@ -141,6 +153,7 @@ export class CreateTaskPage implements OnInit {
 
   // savetask
   async saveTask(){
+    this.collectAnalytics('Save_Task');
     const { taskStatus } = this.task.data;
     let title = '';
     let body = '';

@@ -4,6 +4,7 @@ import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { User } from 'src/app/interface/user';
 import { MinutelyKpiService } from 'src/app/shared/minutelykpi/minutelykpi.service';
 import { SessionService } from 'src/app/shared/session/session.service';
+import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
 
 @Component({
   selector: 'app-meeting',
@@ -19,14 +20,29 @@ export class MeetingPage implements OnInit,OnDestroy {
   constructor(
     private router: Router,
     private kpi: MinutelyKpiService,
-    private session: SessionService
+    private session: SessionService,
+    private analytics: AnalyticsService,
   ) { }
 
   ngOnInit() {
      this.getSessionInfo();
+     this.collectAnalytics();
   }
 
   ngOnDestroy(){}
+
+  ionViewDidEnter(){
+    this.collectAnalytics();
+  }
+
+  collectAnalytics(name: any ='Meeting_home'){
+    this.analytics.setScreenName({name: 'MeetingPage'});
+    let event = {
+      name: name,
+      params: {}
+    };
+    this.analytics.logEvent(event);
+  }
 
   getSessionInfo(){
     this.sessionSubs$ = this.session.watch().subscribe(value=>{

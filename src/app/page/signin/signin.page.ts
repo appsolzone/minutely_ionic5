@@ -6,6 +6,7 @@ import { Plugins } from '@capacitor/core';
 
 import { AuthenticationService } from '../../shared/authentication/authentication.service';
 import { ComponentsService } from './../../shared/components/components.service';
+import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
 
 @Component({
   selector: 'app-signin',
@@ -26,6 +27,62 @@ export class SigninPage implements OnInit {
   It connects resources of your organization and helps in managing and tracking meetings. Easy to generate \
   minutes and circulating MoM. You can link other project items like issues, tasks and \
   risk in one place to boost productivity and efficiency.';
+  public signInFeatures = [
+    {
+      icon: 'today-outline',
+      title: 'Meetings Simplified',
+      details: [
+        'Setup meetings',
+        'Notify attendees',
+        'Stay on top of your schedule'
+      ]
+    },
+    {
+      icon: 'people-outline',
+      title: 'Collaborate',
+      details: [
+        'Create Tasks, Issues and Risks',
+        'Track each of these items',
+        'Collaborate and record feedbacks'
+      ]
+    },
+    {
+      icon: 'library-outline',
+      title: 'All In One Place',
+      details: [
+        'No items go out of your radar',
+        'Create linkage across items',
+        'Manage and share details with stakeholders'
+      ]
+    },
+    {
+      icon: 'rocket-outline',
+      title: 'Boost Productivity',
+      details: [
+        'Be on top of actions',
+        'Make your meetings effective and productive',
+        'Stats and info just a tap away'
+      ]
+    },
+    {
+      icon: 'notifications-outline',
+      title: 'Notifications',
+      details: [
+        'Get notified anytime, anywhere',
+        'Be on top of your actionables',
+        'Broadcast and share messages'
+      ]
+    },
+    {
+      icon: 'search-outline',
+      title: 'Powerful Search',
+      details: [
+        'Powerful search engine',
+        'Search by name, keyword, date etc',
+        'Access details from search results'
+      ]
+    },
+  ]
   signinUi: any;
   userData: any;
   redirectUrl = 'profile';
@@ -33,7 +90,8 @@ export class SigninPage implements OnInit {
     private router: Router,
     private platform: Platform,
     private auth: AuthenticationService,
-    private common: ComponentsService
+    private common: ComponentsService,
+    private analytics: AnalyticsService,
   ) {
     this.isMobile =
       this.platform.is('mobile') && !this.platform.is('mobileweb');
@@ -42,7 +100,14 @@ export class SigninPage implements OnInit {
     );
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.analytics.setScreenName({name: 'SigninPage'});
+    let event = {
+      name: 'Signin_Page',
+      params: {}
+    };
+    this.analytics.logEvent(event);
+  }
 
   async googleSignup() {
     const googleUser = (await Plugins.GoogleAuth.signIn(null).catch((err) =>

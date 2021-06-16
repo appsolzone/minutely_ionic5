@@ -8,6 +8,7 @@ import { Plugins } from '@capacitor/core';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { Platform } from '@ionic/angular';
 import { CouponService } from 'src/app/shared/coupon/coupon.service';
+import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
 const { Storage } = Plugins;
 @Component({
   selector: 'app-choose-plan',
@@ -36,7 +37,8 @@ export class ChoosePlanPage implements OnInit {
       private router:Router,
       private componentService:ComponentsService,
       private couponService:CouponService,
-      private platform:Platform
+      private platform:Platform,
+      private analytics: AnalyticsService,
   ) { }
 
   ngOnInit() {
@@ -49,6 +51,7 @@ export class ChoosePlanPage implements OnInit {
     setTimeout(()=>this.getSessionInfo(),300);
     this.fetchAllPlans();
     this.fetchAllCoupons();
+    this.collectAnalytics();
   }
 
   ngOnDestroy(){
@@ -79,6 +82,19 @@ export class ChoosePlanPage implements OnInit {
       // subscriber changed but no new subscription so back to subscription page
       this.router.navigate(['subscription']);
     }
+  }
+
+  ionViewDidEnter(){
+    this.collectAnalytics();
+  }
+
+  collectAnalytics(name: any ='Choose_Plan'){
+    this.analytics.setScreenName({name: 'ChoosePlanPage'});
+    let event = {
+      name: name,
+      params: {}
+    };
+    this.analytics.logEvent(event);
   }
 
   getSessionInfo(){

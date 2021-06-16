@@ -6,6 +6,7 @@ import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { MeetingService } from 'src/app/shared/meeting/meeting.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
 
 @Component({
   selector: 'app-create-meeting',
@@ -39,6 +40,7 @@ export class CreateMeetingPage implements OnInit {
     private session: SessionService,
     private meetingservice: MeetingService,
     private common: ComponentsService,
+    private analytics: AnalyticsService,
   ) {
     this.getSessionInfo();
   }
@@ -57,9 +59,19 @@ export class CreateMeetingPage implements OnInit {
                       };
         this.getMeeting({id:null,data:meeting});
     // }
+    this.collectAnalytics();
   }
 
   ngOnDestroy(){}
+
+  collectAnalytics(name: any ='Open_Create_Meeting'){
+    this.analytics.setScreenName({name: 'CreateMeetingPage'});
+    let event = {
+      name: name,
+      params: {}
+    };
+    this.analytics.logEvent(event);
+  }
 
   sectionChanged(e)
   {
@@ -131,6 +143,7 @@ export class CreateMeetingPage implements OnInit {
 
   // saveMeeting
   async saveMeeting(){
+    this.collectAnalytics('Save_Meeting');
     const { status, isOccurence, eventSequenceId, noOfOccurence, attendeeList } = this.meeting.data;
     let { toCascadeChanges } = this.refInformation;
     let title = '';

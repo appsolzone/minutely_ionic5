@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { NotificationsService } from 'src/app/shared/notifications/notifications.service';
 import { SessionService } from 'src/app/shared/session/session.service';
+import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
 
 @Component({
   selector: 'app-notification',
@@ -36,13 +37,30 @@ export class NotificationPage implements OnInit {
   constructor(
     private router: Router,
     private session: SessionService,
-    private notification: NotificationsService
+    private notification: NotificationsService,
+    private analytics: AnalyticsService,
   ) {
     this.getSessionInfo();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.analytics.setScreenName({name: 'NotificationPage'});
+    let event = {
+      name: 'Notification_Page',
+      params: {}
+    };
+    this.analytics.logEvent(event);
+  }
   ngOnDestroy() {}
+
+  ionViewDidEnter() {
+    this.analytics.setScreenName({name: 'NotificationPage'});
+    let event = {
+      name: 'Notification_Page',
+      params: {}
+    };
+    this.analytics.logEvent(event);
+  }
 
   getSessionInfo(){
    this.sessionSubs$ = this.session.watch().subscribe(value=>{

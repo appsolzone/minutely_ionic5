@@ -6,6 +6,7 @@ import { User } from 'src/app/interface/user';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { RiskService } from 'src/app/shared/risk/risk.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
 
 
 @Component({
@@ -41,6 +42,7 @@ export class CreateRiskPage implements OnInit {
     private session: SessionService,
     private riskservice: RiskService,
     private common: ComponentsService,
+    private analytics: AnalyticsService,
   ) {
     this.getSessionInfo();
   }
@@ -60,6 +62,7 @@ export class CreateRiskPage implements OnInit {
         this.getrisk({id:null,data:risk});
     //   }
     // }
+    this.collectAnalytics();
   }
 
   ngOnDestroy(){}
@@ -75,6 +78,15 @@ export class CreateRiskPage implements OnInit {
     //     this.getrisk(riskStateData);
     //   }
     // }
+  }
+
+  collectAnalytics(name: any ='Open_Create_Issue'){
+    this.analytics.setScreenName({name: 'CreateIssuePage'});
+    let event = {
+      name: name,
+      params: {}
+    };
+    this.analytics.logEvent(event);
   }
 
   getSessionInfo(){
@@ -141,6 +153,7 @@ export class CreateRiskPage implements OnInit {
 
   // saverisk
   async saveRisk(){
+    this.collectAnalytics('Save_Risk');
     const { riskStatus } = this.risk.data;
     let title = '';
     let body = '';

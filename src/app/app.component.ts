@@ -14,6 +14,7 @@ const { App } = Plugins;
 
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { FcmService } from 'src/app/shared/fcm/fcm.service';
+import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
 
 @Component({
   selector: 'app-root',
@@ -34,6 +35,7 @@ export class AppComponent {
     private statusBar: StatusBar,
     private common: ComponentsService,
     private fcmService: FcmService,
+    private analytics: AnalyticsService,
   ) {
     if (!isDevMode()) {
         console.log = function () {};
@@ -51,6 +53,7 @@ export class AppComponent {
       this.splashScreen.hide();
       // Trigger the push setup
       this.fcmService.initPush();
+      this.analytics.initAnalytics();
     });
   }
   ngOnInit() {

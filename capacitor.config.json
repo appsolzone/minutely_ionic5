@@ -13,7 +13,7 @@
         "profile",
         "email"
       ],
-      "serverClientId": "REPLACE.apps.googleusercontent.com",
+      "serverClientId": "RELACE.apps.googleusercontent.com",
       "forceCodeForRefreshToken": true
     },
     "PushNotifications": {
