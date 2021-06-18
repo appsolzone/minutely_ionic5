@@ -8,6 +8,7 @@ import { SubscriberService } from '../../shared/subscriber/subscriber.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { Plugins } from '@capacitor/core';
+import { appPages } from 'src/app/shared/app-menu-pages';
 const { Storage } = Plugins;
 
 
@@ -189,7 +190,8 @@ export class AddSubscriberPage implements OnInit {
             });
             this.componentService.hideLoader();
             this.componentService.presentToaster('Success!! Organization created successfully');
-            this.router.navigate(['subscription/choose-plan'], {state: {data: {newsubscriber: this.orgProfile.subscriberId.trim().toUpperCase()}}});
+            this.router.navigate([appPages[0].tab]);
+            // this.router.navigate(['subscription/choose-plan'], {state: {data: {newsubscriber: this.orgProfile.subscriberId.trim().toUpperCase()}}});
             // });
 
             this.cancelAddSubscriber(false, true);
