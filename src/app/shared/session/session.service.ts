@@ -392,7 +392,18 @@ export class SessionService {
       if(sessionInfo?.orgProfile?.settings?.location){
         coordinates = await Geolocation.getCurrentPosition();
       } else {
-        coordinates = {narration: 'Settings for location is turned off'};
+        coordinates = {
+          coords: {
+            latitude: null,
+            longitude: null,
+            altitude: null,
+            accuracy: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+          },
+          narration: 'Settings for location is turned off'
+        };
       }
 
       // console.log('Current', coordinates);
