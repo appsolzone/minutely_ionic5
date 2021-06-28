@@ -10,16 +10,10 @@
 // },
 export const appPages = [
   // {
-  //   title: 'Attendance',
-  //   url: 'attendance',
-  //   icon: 'time',
-  //   tab: 'attendance',
-  // },
-  // {
-  //   title: 'Leaves',
-  //   url: 'leave',
-  //   icon: 'cafe',
-  //   tab: 'leave',
+  //   title: 'List',
+  //   url: 'activitysearch',
+  //   icon: 'list',
+  //   tab: 'activitysearch',
   // },
   // {
   //   title: 'Expenses',
@@ -32,13 +26,16 @@ export const appPages = [
     url: 'profile',
     icon: 'person-circle',
     tab: 'profile',
+    disabled: false,
   },
   {
-    title: 'Ntification',
+    title: 'Alerts',
     url: 'notification',
     icon: 'notifications',
     tab: 'notification',
+    disabled: true,
   },
+
   // {
   //   title: 'Regions',
   //   url: 'region',
@@ -46,17 +43,27 @@ export const appPages = [
   //   tab: 'region',
   // },
   {
-    title: 'Organisation',
+    title: 'Organization',
     url: 'admin',
     icon: 'people',
     tab: 'admin',
+    disabled: true,
   },
   {
     title: 'Subscription',
     url: 'subscription',
     icon: 'card',
     tab: 'subscription',
+    disabled: false,
   },
+  {
+    title: 'Settings',
+    url: 'settings',
+    icon: 'settings',
+    tab: 'settings',
+    disabled: true,
+  },
+
 ];
 
 /*

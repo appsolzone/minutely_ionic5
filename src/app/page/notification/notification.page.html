@@ -1,9 +1,68 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>notification</ion-title>
+    <ion-title>Notification</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <ion-row class="wave-background">
+    <ion-col size="12" size-md="5">
+      <ion-card>
+        <app-bargraph [graphX]="alertSummary"></app-bargraph>
+        <ion-item *ngIf="allAlerts?.length==0" lines="none">
+          <ion-label class="ion-text-center ion-text-wrap">
+            <p>Please note that there is no notification for you now.</p>
+          </ion-label>
+        </ion-item>
+      </ion-card>
+    </ion-col>
+    <ion-col size="12" size-md="7" *ngIf="!allAlerts || allAlerts?.length > 0">
+      <ion-card *ngFor="let alert of allAlerts ? allAlerts : [null,null,null]">
+        <ion-item lines="none">
+          <!-- <ion-avatar [ngStyle]="{'height':'auto','width':'40px'}" slot="start"> -->
+            <ion-icon [name]="alert?.data?.origin?.icon ? alert?.data?.origin?.icon : 'notifications'"
+              [color]="alert?.data?.origin?.color ? alert?.data?.origin?.color : 'medium'"
+              slot="start"
+              >
+            </ion-icon>
+          <!-- </ion-avatar> -->
+          <ion-label *ngIf="alert" class="ion-text-wrap">
+            <h1 class="ion-text-capitalize"><small>{{alert.data.msgTitle}}</small></h1>
+            <p><small><ion-text color="primary">{{alert.data.createdAt | date : 'medium'}}</ion-text></small></p>
+            <p>{{alert.data.msgBody}}</p>
+          </ion-label>
+          <ion-label *ngIf="!alert" class="ion-text-wrap">
+            <h1 class="ion-text-capitalize"><ion-skeleton-text animated style="width: 80%"></ion-skeleton-text></h1>
+            <p><small><ion-text color="primary"><ion-skeleton-text animated style="width: 40%"></ion-skeleton-text></ion-text></small></p>
+            <p><ion-skeleton-text animated style="width: 80%"></ion-skeleton-text></p>
+            <p><ion-skeleton-text animated style="width: 80%"></ion-skeleton-text></p>
+          </ion-label>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-chip slot="end" *ngFor="let act of alert?.data?.actions" [color]="act.color" (click)="actionClick(alert,act)">
+            <ion-label>{{act.text}}</ion-label>
+          </ion-chip>
+        </ion-item>
+      </ion-card>
+    </ion-col>
+    <ion-col size="12" size-md="7" *ngIf="allAlerts?.length==0">
+      <ion-card>
+        <ion-toolbar>
+          <ion-item lines="none">
+            <ion-icon name="notifications" color="danger" slot="start"></ion-icon>
+            <ion-label class="ion-text-wrap"><h1>All your notifications to appear here</h1></ion-label>
+          </ion-item>
+        </ion-toolbar>
+        <ion-list>
+          <ion-item lines="none">
+            <ion-label class="ion-text-wrap">We are working diligently to bring you all the benefits of real time alerts such that you will be </ion-label>
+          </ion-item>
+          <ion-item *ngFor="let text of allTexts" lines="none">
+            <ion-icon name="checkbox-outline" color="success" slot="start"></ion-icon>
+            <ion-label class="ion-text-wrap">{{text.text}}</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card>
+    </ion-col>
+  </ion-row>
 </ion-content>

@@ -6,6 +6,7 @@ import { Plugins } from '@capacitor/core';
 
 import { AuthenticationService } from '../../shared/authentication/authentication.service';
 import { ComponentsService } from './../../shared/components/components.service';
+import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
 
 @Component({
   selector: 'app-signin',
@@ -16,80 +17,152 @@ export class SigninPage implements OnInit {
   // @ViewChild('firebaseuiauthcontainer') firebaseui: ElementRef;
   // observables
   getauthStateSubs$;
-  public showResetButton: boolean = false;
+  public showResetButton = false;
   public observer: any;
   public firebaseui: any;
   public isMobile: boolean = false;
   public showGooglesignin: boolean = true;
   public hideFirebaseUiGoogleButton: boolean = false;
-  public signInWelcomeTxt: string = 'Onestop solution for your organisation HRMS needs. \
-                                      Be it expanding operations across regions or viewing trends in one place, \
-                                      bring everything together. Get the team to focus on the \
-                                      targets and leave the rest to HRMS.';
+  public signInWelcomeTxt: string = 'Manage meetings and projects with greater efficiency with commonModule. \
+  It connects resources of your organization and helps in managing and tracking meetings. Easy to generate \
+  minutes and circulating MoM. You can link other project items like issues, tasks and \
+  risk in one place to boost productivity and efficiency.';
+  public signInFeatures = [
+    {
+      icon: 'today-outline',
+      title: 'Meetings Simplified',
+      details: [
+        'Setup meetings',
+        'Notify attendees',
+        'Stay on top of your schedule'
+      ]
+    },
+    {
+      icon: 'people-outline',
+      title: 'Collaborate',
+      details: [
+        'Create Tasks, Issues and Risks',
+        'Track each of these items',
+        'Collaborate and record feedbacks'
+      ]
+    },
+    {
+      icon: 'library-outline',
+      title: 'All In One Place',
+      details: [
+        'No items go out of your radar',
+        'Create linkage across items',
+        'Manage and share details with stakeholders'
+      ]
+    },
+    {
+      icon: 'rocket-outline',
+      title: 'Boost Productivity',
+      details: [
+        'Be on top of actions',
+        'Make your meetings effective and productive',
+        'Stats and info just a tap away'
+      ]
+    },
+    {
+      icon: 'notifications-outline',
+      title: 'Notifications',
+      details: [
+        'Get notified anytime, anywhere',
+        'Be on top of your actionables',
+        'Broadcast and share messages'
+      ]
+    },
+    {
+      icon: 'search-outline',
+      title: 'Powerful Search',
+      details: [
+        'Powerful search engine',
+        'Search by name, keyword, date etc',
+        'Access details from search results'
+      ]
+    },
+  ]
   signinUi: any;
   userData: any;
-  redirectUrl: string = 'profile';
+  redirectUrl = 'profile';
   constructor(
     private router: Router,
     private platform: Platform,
     private auth: AuthenticationService,
-    private common:ComponentsService,
+    private common: ComponentsService,
+    private analytics: AnalyticsService,
   ) {
-    this.isMobile = this.platform.is('mobile') && !this.platform.is('mobileweb');
-    this.getauthStateSubs$ = this.auth.authState(this.authStateCallBack.bind(this));
+    this.isMobile =
+      this.platform.is('mobile') && !this.platform.is('mobileweb');
+    this.getauthStateSubs$ = this.auth.authState(
+      this.authStateCallBack.bind(this)
+    );
   }
 
   ngOnInit() {
+    this.analytics.setScreenName({name: 'SigninPage'});
+    let event = {
+      name: 'Signin_Page',
+      params: {}
+    };
+    this.analytics.logEvent(event);
   }
 
   async googleSignup() {
-    const googleUser = await Plugins.GoogleAuth.signIn(null).catch(err=>alert(err)) as any;
+    const googleUser = (await Plugins.GoogleAuth.signIn(null).catch((err) =>
+      alert(err)
+    )) as any;
     // console.log('my user: ', googleUser);
     // userInfo = googleUser;
     // alert("Googleuser" + googleUser.authentication.idToken);
-    const credential = this.auth.frb.auth.GoogleAuthProvider.credential(googleUser.authentication.idToken);
+    const credential = this.auth.frb.auth.GoogleAuthProvider.credential(
+      googleUser.authentication.idToken
+    );
     // alert(googleUser.authentication.idToken);
     // return this.afAuth.auth.signInAndRetrieveDataWithCredential(credential);
-    this.auth.auth.signInWithCredential(credential).then(()=>this.router.navigate([this.redirectUrl]));
+    this.auth.auth.signInWithCredential(credential).then(() => {
+      // initiate the Check aclkpi
+      this.router.navigate([this.redirectUrl]);
+    });
     this.stopFirebaseuiauthcontainerObserver();
-    this.common.showLoader("Please wait ... G auth signin");
+    await this.common.showLoader('Please wait ... G auth signin');
   }
 
-  resetAuthButtons(){
-    this.authStateCallBack({userData: null, signinUi: this.auth.signinUi});
-
+  resetAuthButtons() {
+    this.authStateCallBack({ userData: null, signinUi: this.auth.signinUi });
   }
 
-
-  authStateCallBack(data){
+  authStateCallBack(data) {
     this.signinUi = data.signinUi;
     this.userData = data.userData;
-    this.redirectUrl = history.state?.redirectUrl ? history.state.redirectUrl : 'profile';
-    let signInOptions = [
-                          {
-                            provider: this.auth.firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                            customParameters: {
-                              // Forces account selection even when one account
-                              // is available.
-                              prompt: 'select_account'
-                            }
-                          },
-                          // 'microsoft.com',
-                          // 'yahoo.com',
-                          // {
-                          //   provider: this.auth.firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-                          //   defaultCountry: 'IN',
-                          // },
-                          this.auth.firebase.auth.EmailAuthProvider.PROVIDER_ID
-                        ];
+    this.redirectUrl = history.state?.redirectUrl
+      ? history.state.redirectUrl
+      : 'profile';
+    const signInOptions = [
+      {
+        provider: this.auth.firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        customParameters: {
+          // Forces account selection even when one account
+          // is available.
+          prompt: 'select_account',
+        },
+      },
+      // 'microsoft.com',
+      // 'yahoo.com',
+      // {
+      //   provider: this.auth.firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+      //   defaultCountry: 'IN',
+      // },
+      this.auth.firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    ];
 
-    //console.log("SigninPage history.state",this.redirectUrl,history.state?.redirectUrl);
-    setTimeout(()=>{
-      if(this.signinUi){
-
+    // console.log("SigninPage history.state",this.redirectUrl,history.state?.redirectUrl);
+    setTimeout(() => {
+      if (this.signinUi) {
         // Configure FirebaseUI.
         const uiConfig = {
-          credentialHelper: 'none', //firebaseui.auth.CredentialHelper.NONE,
+          credentialHelper: 'none', // firebaseui.auth.CredentialHelper.NONE,
           // Popup signin flow rather than redirect flow.
           signInFlow: 'popup',
           // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
@@ -102,38 +175,42 @@ export class SigninPage implements OnInit {
           //   'yahoo.com',
           //   'email',
           // ],
-          signInOptions: signInOptions,
+          signInOptions,
           // tosUrl and privacyPolicyUrl accept either url string or a callback
           // function.
           // Terms of service url/callback.
-          tosUrl: 'https://orghomeidea.web.app/',
+          tosUrl: 'https://organizedhub.com/terms-of-use',
           // Privacy policy url/callback.
-          privacyPolicyUrl: function() {
-            window.location.assign('https://orghomeidea.web.app/');
-          },
+          // privacyPolicyUrl() {
+          //   window.location.assign('https://organizedhub.com/privacy-policy');
+          // },
+          privacyPolicyUrl: 'https://organizedhub.com/privacy-policy',
           callbacks: {
-              // Avoid redirects after sign-in.
-              signInSuccessWithAuthResult: () => {
-                console.log("success");
-                 // stop frebaseui observer for form
-                this.stopFirebaseuiauthcontainerObserver();
-                this.common.hideLoader();
-                this.router.navigate([this.redirectUrl]);
-                return false;
-              },
-              uiShown: ()=>{
-                // The widget is rendered.
-                // Hide the loader.
-                // document.getElementById('loader').style.display = 'none';
-                console.log("UI Shown")
-                // alert("UI Shown");
-                this.showResetButton = false;
-                this.showGooglesignin = true;
-                // start observing firebaseui form
-                this.startFirebaseuiauthcontainerObserver("firebaseuiauthcontainer", 1);
-                this.common.hideLoader();
-              }
+            // Avoid redirects after sign-in.
+            signInSuccessWithAuthResult: () => {
+              console.log('success');
+              // stop frebaseui observer for form
+              this.stopFirebaseuiauthcontainerObserver();
+              this.common.hideLoader();
+              this.router.navigate([this.redirectUrl]);
+              return false;
             },
+            uiShown: () => {
+              // The widget is rendered.
+              // Hide the loader.
+              // document.getElementById('loader').style.display = 'none';
+              console.log('UI Shown');
+              // alert("UI Shown");
+              this.showResetButton = false;
+              this.showGooglesignin = true;
+              // start observing firebaseui form
+              this.startFirebaseuiauthcontainerObserver(
+                'firebaseuiauthcontainer',
+                1
+              );
+              this.common.hideLoader();
+            },
+          },
         };
 
         this.showResetButton = false;
@@ -141,18 +218,17 @@ export class SigninPage implements OnInit {
         this.hideFirebaseUiGoogleButton = false;
         this.signinUi.start('#firebaseuiauthcontainer', uiConfig);
       } else {
-        console.log("else of this.siginui");
+        console.log('else of this.siginui');
         this.stopFirebaseuiauthcontainerObserver();
         this.common.hideLoader();
       }
-    },10);
-
+    }, 10);
   }
 
-  stopFirebaseuiauthcontainerObserver(){
+  stopFirebaseuiauthcontainerObserver() {
     this.common.hideLoader();
-    if(this.isMobile && this.observer?.disconnect){
-      console.log("stop observing now")
+    if (this.isMobile && this.observer?.disconnect) {
+      console.log('stop observing now');
       this.showResetButton = false;
       this.showGooglesignin = true;
       this.hideFirebaseUiGoogleButton = false;
@@ -160,52 +236,74 @@ export class SigninPage implements OnInit {
     }
   }
 
-  startFirebaseuiauthcontainerObserver(refId, source){
+  startFirebaseuiauthcontainerObserver(refId, source) {
     this.firebaseui = document.getElementById(refId);
     // stop any observer
     this.stopFirebaseuiauthcontainerObserver();
 
-    if(this.isMobile && this.firebaseui){
+    if (this.isMobile && this.firebaseui) {
       // alert(this.firebaseui);
-      console.log("view child", this.firebaseui);
-      if(!this.observer){
+      console.log('view child', this.firebaseui);
+      if (!this.observer) {
         this.observer = new MutationObserver((mutations) => {
-          this.showHideButtons('insideobserver '+ source);
+          this.showHideButtons('insideobserver ' + source);
         });
       }
-      this.showHideButtons('one off call for buttons '+source);
+      this.showHideButtons('one off call for buttons ' + source);
       // now start observing the form changes
       this.observer.observe(this.firebaseui, {
         attributes: true,
         childList: true,
-        characterData: true
+        characterData: true,
       });
     }
   }
 
-  showHideButtons(source){
-      let element = document.getElementsByTagName("button");
-      let isGoogleBtnTxt = element[0].innerText.trim().toUpperCase();
-      let isGoogleBtnClass = element[0].className;
-      console.log("element", element, element[0].innerText.trim().toUpperCase(), isGoogleBtnTxt, isGoogleBtnClass);
-      // alert("showbuttons called" + source + "  " + element.length + "   " + element[0].innerText.trim().toUpperCase());
-      if(element && (!isGoogleBtnTxt.includes("SIGN IN WITH GOOGLE") || !isGoogleBtnClass.includes('firebaseui-idp-google'))){
-        this.showGooglesignin = false;
-      } else {
-        this.showGooglesignin = element.length == 1 || !isGoogleBtnClass.includes('firebaseui-idp-google') ? false : true;
-      }
-      console.log("this.showGooglesignin", element[0].className, isGoogleBtnClass, this.showGooglesignin);
-      if(element && ((element[0].innerText && isGoogleBtnTxt.includes("SIGN IN WITH GOOGLE"))||isGoogleBtnClass.includes('firebaseui-idp-google'))){
-        console.log("element", element[0], element[0].innerText, isGoogleBtnTxt);
-        // element[0].classList.add('hideFirebaseuiButton');
-        element[0].style.opacity = "0";
-        element[0].disabled = true;
-        this.showGooglesignin = element.length == 1 ? false : true;
-        this.showResetButton =  element.length == 1 ? true : false;
-      }
-      else {
-        this.showResetButton = false;
-      }
+  showHideButtons(source) {
+    const element = document.getElementsByTagName('button');
+    const isGoogleBtnTxt = element[0].innerText.trim().toUpperCase();
+    const isGoogleBtnClass = element[0].className;
+    console.log(
+      'element',
+      element,
+      element[0].innerText.trim().toUpperCase(),
+      isGoogleBtnTxt,
+      isGoogleBtnClass
+    );
+    // alert("showbuttons called" + source + "  " + element.length + "   " + element[0].innerText.trim().toUpperCase());
+    if (
+      element &&
+      (!isGoogleBtnTxt.includes('SIGN IN WITH GOOGLE') ||
+        !isGoogleBtnClass.includes('firebaseui-idp-google'))
+    ) {
+      this.showGooglesignin = false;
+    } else {
+      this.showGooglesignin =
+        element.length == 1 ||
+        !isGoogleBtnClass.includes('firebaseui-idp-google')
+          ? false
+          : true;
+    }
+    console.log(
+      'this.showGooglesignin',
+      element[0].className,
+      isGoogleBtnClass,
+      this.showGooglesignin
+    );
+    if (
+      element &&
+      ((element[0].innerText &&
+        isGoogleBtnTxt.includes('SIGN IN WITH GOOGLE')) ||
+        isGoogleBtnClass.includes('firebaseui-idp-google'))
+    ) {
+      console.log('element', element[0], element[0].innerText, isGoogleBtnTxt);
+      // element[0].classList.add('hideFirebaseuiButton');
+      element[0].style.opacity = '0';
+      element[0].disabled = true;
+      this.showGooglesignin = element.length == 1 ? false : true;
+      this.showResetButton = element.length == 1 ? true : false;
+    } else {
+      this.showResetButton = false;
+    }
   }
-
 }

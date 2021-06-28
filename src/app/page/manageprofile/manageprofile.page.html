@@ -25,7 +25,7 @@
                 <ion-icon name="add"></ion-icon>
               </ion-button>
               <ion-label>
-                <h1>Select organisation</h1>
+                <h1>Select organization</h1>
               </ion-label>
             </ion-item>
           </ion-card-header>
@@ -57,9 +57,10 @@
               <ion-label>
                 <h1>
                   <ion-icon name="leaf" color="success" class="ion-padding-end"></ion-icon>Hi !
+
                 </h1>
               </ion-label>
-              <ion-button fill="clear" slot="end" *ngIf="!editProfile  && userProfile" (click)="userProfile=null">
+              <ion-button fill="clear" slot="end" *ngIf="userProfile" (click)="userProfile=null">
                 <ion-icon slot="icon-only" name="qr-code" color="success"></ion-icon>
               </ion-button>
               <ion-button fill="clear" slot="end" *ngIf="!editProfile  && userProfile" (click)="toggleEditMode()">
@@ -74,7 +75,7 @@
             <ion-item  lines="none">
 
 
-              <ion-avatar slot="start" (click)="take_photo()" >
+              <ion-avatar slot="start" (click)="takePhoto()" >
 
                   <img src="{{userProfile?.picUrl}}" *ngIf="userProfile?.picUrl" >
 
@@ -93,7 +94,7 @@
                 <ion-progress-bar type="indeterminate"></ion-progress-bar>
               </ion-label>
               <ion-label color="primary" *ngIf="allProfiles && !userProfile && !editProfile">
-                <h2 class="ion-text-wrap">Select an organisation to continue</h2>
+                <h2 class="ion-text-wrap">Select an organization to continue</h2>
               </ion-label>
               <ion-label *ngIf="userProfile && !editProfile">
                 <h1 class="ion-text-wrap">{{userProfile.name? userProfile.name : 'Guest'}}</h1>
@@ -105,7 +106,7 @@
                   <h1 class="ion-padding-bottom"><small>
                       <ion-text color="primary">Update profile</ion-text>
                     </small></h1>
-                  <ion-progress-bar value="0.5" color="warning"></ion-progress-bar>
+                  <!-- <ion-progress-bar value="0.5" color="warning"></ion-progress-bar> -->
                 </ion-label>
               </ion-list-header>
               <ion-item lines="inset">
@@ -141,7 +142,7 @@
                 <ion-label>
                   <ion-icon name="call"></ion-icon>
                 </ion-label>
-                <ion-input type="tel" [(ngModel)]="updatedProfile.phoneNumber" class="ion-text-right"
+                <ion-input  type="number" inputmode="numeric" [(ngModel)]="updatedProfile.phoneNumber" class="ion-text-right hide-number-arrow"
                   [disabled]="userData.providerData[0].providerId=='phone'"
                   placeholder="Please enter phone no with country code" [readonly]="!editProfile"></ion-input>
               </ion-item>

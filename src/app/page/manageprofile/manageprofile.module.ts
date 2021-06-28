@@ -18,6 +18,6 @@ import { AddSubscriberPageModule } from '../add-subscriber/add-subscriber.module
     AddSubscriberPageModule,
   ],
   declarations: [ManageprofilePage],
-  exports:[ManageprofilePage],
+  exports: [ManageprofilePage],
 })
 export class ManageprofilePageModule {}

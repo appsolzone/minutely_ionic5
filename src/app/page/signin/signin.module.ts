@@ -16,6 +16,6 @@ import { SigninPage } from './signin.page';
     SigninPageRoutingModule
   ],
   declarations: [SigninPage],
-  exports:[SigninPage]
+  exports: [SigninPage]
 })
 export class SigninPageModule {}

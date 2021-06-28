@@ -10,12 +10,20 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+import { HttpClientModule } from '@angular/common/http';
 // firebase
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
+import { FormsModule,ReactiveFormsModule }   from '@angular/forms';
+
+// ion2-calendar
+import { CalendarModule } from 'ion2-calendar';
+
+// directive imports
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,7 +35,12 @@ import { environment } from '../environments/environment';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     AngularFireDatabaseModule,
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    CalendarModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FeatureCheckDirectiveModule
   ],
   providers: [
     StatusBar,

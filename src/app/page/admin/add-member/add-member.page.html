@@ -1,0 +1,56 @@
+<ion-header [class]="showHeader ? '' : 'ion-hide-md-up'" >
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add member</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+<ion-row class="wave-background">
+<ion-col>
+<ion-card>
+<ion-card-header>
+  <ion-item lines="full">
+    <ion-label><h1>Add new member</h1></ion-label>
+  </ion-item>
+</ion-card-header>
+<ion-card-content>
+  <form [formGroup]="adminUserForm" (ngSubmit)="onSubmit()">
+  <ion-list>
+    <ion-item lines="inset">
+      <ion-label>
+        <ion-icon name="people"></ion-icon>
+      </ion-label>
+      <ion-select formControlName="role" [(ngModel)]="addUserData.role" interface="popover"  slot="end" placeholder="Select a role">
+        <ion-select-option *ngFor="let role of userRoles" [value]="role">{{ role }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item lines="inset">
+      <ion-label><ion-icon name="person-circle"></ion-icon></ion-label>
+      <ion-input class="ion-text-right" type="text" formControlName="name"  placeholder="Please enter name" [(ngModel)]="addUserData.name" required></ion-input>
+    </ion-item>
+    <ion-item lines="inset">
+      <ion-label><ion-icon name="body"></ion-icon></ion-label>
+      <ion-input class="ion-text-right" type="text" formControlName="description" placeholder="Job description" [(ngModel)]="addUserData.jobTitle" required></ion-input>
+    </ion-item>
+    <ion-item lines="inset">
+      <ion-label><ion-icon name="mail"></ion-icon></ion-label>
+      <ion-input class="ion-text-right" type="email" formControlName="email" placeholder="Please enter email address" [(ngModel)]="addUserData.email" required></ion-input>
+    </ion-item>
+    <ion-item lines="inset">
+      <ion-label><ion-icon name="call"></ion-icon></ion-label>
+      <ion-input type="number" inputmode="numeric" formControlName="phone" class="ion-text-right hide-number-arrow" placeholder="Please enter contact number" [(ngModel)]="addUserData.phoneNumber" required></ion-input>
+    </ion-item>
+    <ion-item lines="none" class="ion-margin-top">
+      <ion-button fill="clear" size="default" color="medium" slot="end" (click)="resetAddUserForm()">Clear</ion-button>
+      <ion-button slot="end" size="default" type="submit" [disabled]="!adminUserForm.valid">Submit</ion-button>
+    </ion-item>
+  </ion-list>
+</form>
+</ion-card-content>
+</ion-card>
+</ion-col>
+</ion-row>
+</ion-content>

@@ -1,0 +1,63 @@
+<ion-card *ngIf="roleData">
+  <!-- <ion-card-header>
+
+  </ion-card-header> -->
+  <!-- <ion-card-content> -->
+    <ion-item>
+      <ion-label>
+        <h1>{{roleData?.id ? 'Edit' : 'Create'}} Role</h1>
+        <p>Grant or revoke permissions</p>
+      </ion-label>
+      <!-- <ion-buttons slot="end">
+        <ion-button slot="end" (click)="cancelEditRole()">
+          <ion-icon name="close" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-buttons> -->
+    </ion-item>
+    <ion-toolbar color="">
+      <ion-item color="" lines="inset">
+        <ion-icon name="person-circle" slot="start"></ion-icon>
+        <ion-input [(ngModel)]="roleData.data.roleName" color="" placeholder="Please enter role name" [disabled]="roleData?.id">
+        </ion-input>
+      </ion-item>
+      <ion-item color="" lines="inset">
+        <ion-icon name="document-text" slot="start"></ion-icon>
+        <ion-textarea [(ngModel)]="roleData.data.description" autoGrow="true" color="" placeholder="Please enter role description here">
+        </ion-textarea>
+      </ion-item>
+      <ion-item color="" lines="none">
+        <ion-icon name="options" slot="start"></ion-icon>
+        <ion-label>
+          <h1>
+            <small>
+              Permissions for the role
+            </small>
+          </h1>
+        </ion-label>
+      </ion-item>
+    </ion-toolbar>
+    <ion-list>
+      <!-- <ion-item *ngFor="let module of modules; let i=index;" [color]="i%2==0 ? 'light' : ''"
+      [lines]="i+1==modules.length ? 'none' : ''"
+      >
+        <ion-label class="ion-text-wrap">
+          <h2>{{permissions[module].moduleName}}</h2>
+          <p><small>{{permissions[module].description}}</small></p>
+        </ion-label>
+        <ion-toggle [(ngModel)]="permissions[module].access"></ion-toggle>
+      </ion-item> -->
+      <ion-item *ngFor="let feature of features; let j=index;" [color]="j%2==0 ? 'light' : ''"
+      [lines]="j+1==features.length ? 'none' : ''"
+      >
+        <ion-label class="ion-text-wrap">
+          <h2>{{roleFeatures[feature]?.featureName}}</h2>
+          <p><small>{{roleFeatures[feature]?.description}}</small></p>
+        </ion-label>
+        <ion-toggle *ngIf="roleFeatures[feature]" [(ngModel)]="roleFeatures[feature].access"></ion-toggle>
+      </ion-item>
+    </ion-list>
+  <!-- </ion-card-content> -->
+  <ion-item lines="none" class="ion-margin-top ion-margin-bottom">
+    <ion-button slot="end" size="default" [disabled]="!roleData?.data?.roleName" (click)="saveRole()">Save</ion-button>
+  </ion-item>
+</ion-card>

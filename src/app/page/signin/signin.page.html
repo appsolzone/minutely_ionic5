@@ -22,22 +22,35 @@
     <ion-col size="1" class="ion-hide-xl-down">
     </ion-col>
     <ion-col size="12" size-md class="ion-hide-md-down">
+      <ion-card color="" mode="ios" class="ion-no-margin ion-margin-top" *ngFor="let ftr of signInFeatures">
+        <ion-card-header color="" class="">
+          <ion-item color="" lines="none">
+            <ion-icon [name]="ftr.icon" slot="start" color="medium"></ion-icon>
+            <ion-label class="ion-text-wrap ion-text-end">
+              <h1><ion-text color="">{{ftr.title}}</ion-text></h1>
+              <p *ngFor="let txt of ftr.details">
+                <small><ion-text color="">{{txt}}</ion-text></small>
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-card-header>
+      </ion-card>
+    </ion-col>
+    <!-- <ion-col size="12" size-md class="ion-hide-md-down">
       <ion-card color="" class="ion-no-border">
         <ion-card-header>
           <ion-item color="transparent">
-            <ion-icon size="large" slot="start" name="cube"></ion-icon>
-            <ion-label><h1 class="ion-text-end">CubedHR</h1></ion-label>
+            <ion-icon size="large" slot="start" name="calendar"></ion-icon>
+            <ion-label><h1 class="ion-text-end">commonModule</h1></ion-label>
           </ion-item>
         </ion-card-header>
         <ion-card-content>
-          <!-- <div item-content padding-top> -->
             <p class="ion-padding">
               {{signInWelcomeTxt}}
             </p>
-          <!-- </div> -->
         </ion-card-content>
       </ion-card>
-    </ion-col>
+    </ion-col> -->
     <ion-col size="12" size-md>
       <div class="ion-margin  ion-padding-bottom signin-banner">
         <ion-item lines="full">
@@ -71,22 +84,35 @@
       </div>
     </ion-col>
     <ion-col size="12" size-md class="ion-hide-md-up">
+      <ion-card color="" mode="ios" class="ion-no-margin ion-margin-top" *ngFor="let ftr of signInFeatures">
+        <ion-card-header color="" class="">
+          <ion-item color="" lines="none">
+            <ion-icon [name]="ftr.icon" slot="start" color="medium"></ion-icon>
+            <ion-label class="ion-text-wrap ion-text-end">
+              <h1><ion-text color="">{{ftr.title}}</ion-text></h1>
+              <p *ngFor="let txt of ftr.details">
+                <small><ion-text color="">{{txt}}</ion-text></small>
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-card-header>
+      </ion-card>
+    </ion-col>
+    <!-- <ion-col size="12" size-md class="ion-hide-md-up">
       <ion-card color="">
         <ion-card-header>
           <ion-item color="transparent">
-            <ion-icon size="large" slot="start" name="cube"></ion-icon>
-            <ion-label><h1 class="ion-text-end">CubedHR</h1></ion-label>
+            <ion-icon size="large" slot="start" name="calendar"></ion-icon>
+            <ion-label><h1 class="ion-text-end">commonModule</h1></ion-label>
           </ion-item>
         </ion-card-header>
         <ion-card-content>
-          <!-- <div item-content padding-top> -->
             <p class="ion-padding">
               {{signInWelcomeTxt}}
             </p>
-          <!-- </div> -->
         </ion-card-content>
       </ion-card>
-    </ion-col>
+    </ion-col> -->
     <ion-col size="1" class="ion-hide-xl-down">
     </ion-col>
   </ion-row>

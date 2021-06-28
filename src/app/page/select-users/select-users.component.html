@@ -1,0 +1,137 @@
+<ion-item *ngIf="sectionHeader">
+  <ion-icon slot="start" [name]="sectionHeader.icon"></ion-icon>
+  <ion-label>
+    <h1><small>{{sectionHeader.text}}</small></h1>
+  </ion-label>
+</ion-item>
+<ion-row>
+  <ion-col *ngIf="!filterdUserList">
+    <ion-list>
+      <ion-item *ngFor="let member of [null,null,null]">
+        <ion-avatar [ngStyle]="{'height':'auto','width':'40px'}" slot="start">
+          <ion-icon color="medium" name="person-circle" [ngStyle]="{'height':'40px','width':'40px'}">
+          </ion-icon>
+        </ion-avatar>
+        <ion-label>
+          <h3><ion-skeleton-text animated style="width: 80%"></ion-skeleton-text></h3>
+          <p><ion-skeleton-text animated style="width: 60%"></ion-skeleton-text></p>
+          <p><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-col>
+  <ion-col *ngIf="filterdUserList">
+      <ion-toolbar>
+        <ion-searchbar
+          placeholder="Search by name, email, role"
+          [(ngModel)]="textSearch"
+          (ionChange)="onSearchUser()"
+          (ionClear)="onSearchUser()">
+        </ion-searchbar>
+        <ion-buttons slot="end">
+          <ion-button *ngIf="multiSelect" slot="end" (click)="returnSelectedUsers()">
+            <ion-icon [name]="buttonItem.icon" slot="icon-only"></ion-icon>
+          </ion-button>
+          <ion-button *ngIf="showAddUser" slot="end" size="default" (click)="gotoAddMemberPage()">
+            <ion-icon name="person-add" slot="icon-only"></ion-icon>
+          </ion-button>
+          <ion-button *ngIf="popoverMode" slot="end" size="default" (click)="selectedUsers=null;closePopover()">
+            <ion-icon name="close" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar *ngIf="showAddNonPermUser">
+        <div *ngIf="showAddTempUser">
+          <ion-item>
+            <ion-label>
+              <p>Adding external user to the list</p>
+            </ion-label>
+            <ion-buttons slot="end">
+              <ion-button slot="end" (click)="showHideAddTempUser()">
+                <ion-icon name="close" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
+          <ion-list>
+            <ion-item lines="inset">
+              <ion-label><ion-icon name="person-circle"></ion-icon></ion-label>
+              <ion-input class="ion-text-right" type="text" placeholder="Please enter name" [(ngModel)]="addUserData.name" required></ion-input>
+            </ion-item>
+            <ion-item lines="inset">
+              <ion-label><ion-icon name="mail"></ion-icon></ion-label>
+              <ion-input class="ion-text-right" type="email" inputmode="email" [pattern]="emailRegExp" placeholder="Please enter email address" [(ngModel)]="addUserData.email" required></ion-input>
+            </ion-item>
+            <ion-button expand="block" slot="end" size="default" [disabled]="!addUserData.name || !addUserData.email" (click)="onAddTempUser()">
+              <ion-icon name="person-add-outline" slot="start"></ion-icon>
+              Add
+            </ion-button>
+          </ion-list>
+        </div>
+        <ion-button *ngIf="!showAddTempUser" expand="block" size="default" fill="outline" (click)="showHideAddTempUser()">
+          <ion-icon name="person-add-outline" slot="start"></ion-icon>
+          Add external user to the list
+        </ion-button>
+        <ion-button expand="block">
+          <ion-icon lazy="true" slot="start" name="cloud-upload"></ion-icon>
+          <ion-label slot="end" for="myFileInput" >Upload attendee list</ion-label>
+          <ion-input id="myFileInput" type="file" (change)="selectedFile($event)" id="file-input" [ngStyle]="{'position':'absolute','opacity': '0', 'width': '100%'}"
+            accept=".csv, text/csv"></ion-input>
+        </ion-button>
+        <ion-item lines="none" color="transparent">
+          <ion-icon name="information-circle-outline" slot="start" color="medium"></ion-icon>
+          <ion-label class="ion-text-wrap">
+            <p>
+              <ion-text color="medium">
+                .csv file should have a header 'name,email' and then the respective user info lines with corresponding name and email.
+              </ion-text>
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-toolbar>
+      <ion-list *ngIf="!multiSelect">
+        <ion-radio-group [(ngModel)]="selectedUser" [value]="selectedUser" (ngModelChange)="returnSelectedUsers()">
+          <ion-item *ngFor="let member of filterdUserList">
+            <ion-avatar [ngStyle]="{'height':'auto','width':'40px'}" slot="start">
+              <img *ngIf="member?.picUrl != ''" src="{{member?.picUrl}}" [ngStyle]="{'height':'40px','width':'40px'}">
+              <ion-icon *ngIf="!member?.picUrl" color="primary" name="person-circle" [ngStyle]="{'height':'40px','width':'40px'}">
+              </ion-icon>
+            </ion-avatar>
+            <ion-label>
+              <h3>{{member.name}}</h3>
+              <p>{{member.email}}</p>
+              <p>{{member.jobTitle}}</p>
+            </ion-label>
+            <ion-radio [value]="member"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+      <ion-list *ngIf="multiSelect">
+        <ion-item *ngFor="let member of filterdUserList" (click)="multiSelectAddRemove(member)">
+          <ion-avatar [ngStyle]="{'height':'auto','width':'40px'}" slot="start">
+            <img *ngIf="member?.picUrl != ''" src="{{member?.picUrl}}" [ngStyle]="{'height':'40px','width':'40px'}">
+            <ion-icon *ngIf="!member?.picUrl" color="primary" name="person-circle" [ngStyle]="{'height':'40px','width':'40px'}">
+            </ion-icon>
+          </ion-avatar>
+          <ion-label>
+            <h3>{{member.name}}</h3>
+            <p>{{member.email}}</p>
+            <p>{{member.jobTitle}}</p>
+          </ion-label>
+          <ion-checkbox slot="end"
+            [(ngModel)]="member.selected"
+            [checked]="member?.selected"
+            >
+          </ion-checkbox>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-button *ngIf="popoverMode" slot="end" fill="clear" color="medium" (click)="selectedUsers=null;closePopover()">
+            Cancel
+          </ion-button>
+          <ion-button slot="end" (click)="returnSelectedUsers()">
+            <ion-icon [name]="buttonItem.icon" slot="start"></ion-icon>
+            {{buttonItem.text}}
+          </ion-button>
+        </ion-item>
+      </ion-list>
+  </ion-col>
+</ion-row>

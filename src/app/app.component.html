@@ -4,8 +4,8 @@
   <ion-menu contentId="main" side="start">
     <ion-header>
       <ion-toolbar>
-        <ion-icon name="cube" size="small" slot="start" class="ion-padding-start"></ion-icon>
-        <ion-title *ngIf="!isMenubarCollapsed">CubedHR</ion-title>
+        <ion-icon name="calendar" size="small" slot="start" class="ion-padding-start"></ion-icon>
+        <ion-title *ngIf="!isMenubarCollapsed">commonModule</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-item color="light" lines="none">
@@ -16,9 +16,17 @@
     <ion-content>
       <ion-list>
         <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
-          <ion-item routerDirection="forward" [routerLink]="[p.url]" lines="none" detail="false" [class.selected]="selectedIndex == i">
+          <ion-item routerDirection="forward" [routerLink]="[selectedIndex==i ? p.tab : p.url]" lines="none" detail="false" [class.selected]="selectedIndex == i" [disabled]="p.disabled">
             <ion-icon [slot]="!isMenubarCollapsed ? 'start' : ''" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
             <ion-label *ngIf="!isMenubarCollapsed">{{ p.title }}</ion-label>
+          </ion-item>
+          <ion-item *ngIf="i==appPages.length-1 && !isMenubarCollapsed" lines="none" details="false">
+            <ion-icon *ngIf="!isMenubarCollapsed" name="moon" slot="start"></ion-icon>
+            <ion-label *ngIf="!isMenubarCollapsed">Dark</ion-label>
+            <ion-toggle *ngIf="!isMenubarCollapsed" [checked]="darkMode" color="dark" (ionChange)="changeDarkMode($event.detail.checked)" slot="end"></ion-toggle>
+          </ion-item>
+          <ion-item *ngIf="i==appPages.length-1 && isMenubarCollapsed" button="true" (click)="changeDarkMode(!darkMode)" lines="none" detail="false">
+            <ion-icon name="moon" slot=""></ion-icon>
           </ion-item>
         </ion-menu-toggle>
       </ion-list>

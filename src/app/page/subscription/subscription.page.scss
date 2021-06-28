@@ -1,15 +1,10 @@
-.wave-background {
-  min-height: 100%;
-  background-image: url(../../../assets/app-assets/waveBackground.svg),
-    linear-gradient(
-      45deg,
-      var(--ion-color-light),
-      var(--ion-color-medium),
-      var(--ion-color-medium),
-      transparent
-    );
-  // width: 100%;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
+.large-title{
+  font-size: 2.4em;
+  line-height: 1.25;
+}
+
+@media (min-width: 1200px){
+  .large-title{
+    font-size: 2.8em;
+  }
 }
