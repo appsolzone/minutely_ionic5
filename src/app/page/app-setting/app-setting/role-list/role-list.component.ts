@@ -65,7 +65,18 @@ export class RoleListComponent implements OnInit {
 
   goToEditRoleMobile(role){
     if(role && this.sessionInfo.userProfile.role==role.data.roleName){
-      this.common.presentAlert('Warning','Please note that you can not edit permissions for the role which is assigned to your profile');
+      if(role && this.sessionInfo.userProfile.role==role.data.roleName){
+      let buttons = [
+         {
+          text: 'Dismiss',
+          role: 'error',
+          cssClass: 'error-button',
+          handler: () => {
+            // console.log('Confirm Ok');
+          }
+        }
+      ];
+      this.common.presentAlert('Warning','Please note that you can not edit permissions for the role which is assigned to your profile', buttons);
     } else {
       let selectedRoleData = role ?
                             {...role}
