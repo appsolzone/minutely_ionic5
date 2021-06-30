@@ -43,6 +43,12 @@ const routes: Routes = [
         canActivate: [AuthguardService]
       },
       {
+        path: 'broadcast-message',
+        loadChildren: () => import('../page/admin/broadcast-message/broadcast-message.module').then( m => m.BroadcastMessagePageModule),
+        canLoad: [AuthguardService],
+        canActivate: [AuthguardService]
+      },
+      {
         path: 'access-denied/:pgId',
         loadChildren: () => import('../page/access-denied/access-denied/access-denied.module').then( m => m.AccessDeniedPageModule)
       },

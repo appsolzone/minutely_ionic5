@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
+    <ion-buttons slot="start" *ngIf="path=='admin'">
       <ion-back-button defaultHref="/admin"></ion-back-button>
     </ion-buttons>
     <ion-title>Broadcast message</ion-title>
@@ -44,6 +44,9 @@
         [multiSelect]="true"
         (onSelectionComplete)="processUserList($event)"
         [buttonItem]="{ icon: 'megaphone', text: ' Broadcast'}"
+        [showAddUser]="false"
+        [showSelectAll]="true"
+        [showNonSelectExitAlert]="true"
         ></app-select-users>
     </ion-col>
   </ion-row>

@@ -65,7 +65,6 @@ export class RoleListComponent implements OnInit {
 
   goToEditRoleMobile(role){
     if(role && this.sessionInfo.userProfile.role==role.data.roleName){
-      if(role && this.sessionInfo.userProfile.role==role.data.roleName){
       let buttons = [
          {
           text: 'Dismiss',

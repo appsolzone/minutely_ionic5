@@ -47,6 +47,7 @@ export class ManageprofilePage implements OnInit {
   photo: SafeResourceUrl;
   public base64Image: string;
   public isMobile = false;
+  public postLoginStarted = false;
 
   constructor(
     private router: Router,
@@ -70,10 +71,17 @@ export class ManageprofilePage implements OnInit {
     this.session.watch().subscribe((value) => {
       // console.log("Session Subscription got", value);
       // Re populate the values as required
+      let permissionKeys = value?.permissions ? Object.keys(value?.permissions.features) : [];
       const roleStatusChanged =
         !value ||
         this.sessionInfo?.userProfile?.status != value?.userProfile?.status ||
         this.sessionInfo?.userProfile?.role != value?.userProfile?.role;
+      const permissionChanged = (value?.permissions && permissionKeys.some(featureId => {
+            console.log("checking permissions", featureId, value?.permissions?.features[featureId].access, this.sessionInfo?.permissions?.features[featureId].access)
+            return value?.permissions?.features[featureId].access != this.sessionInfo?.permissions?.features[featureId].access;
+          })
+        )
+      console.log("permission changed",permissionChanged);
       const subscriberChanged =
         !value ||
         this.sessionInfo?.userProfile?.subscriberId !=
@@ -110,16 +118,27 @@ export class ManageprofilePage implements OnInit {
         (this.sessionInfo &&
           this.sessionInfo.userProfile &&
           this.sessionInfo.orgProfile &&
-          subscriberChanged)
+          subscriberChanged) ||
+        (
+          this.sessionInfo &&
+          this.sessionInfo.userProfile &&
+          this.sessionInfo.orgProfile &&
+          this.sessionInfo?.userProfile?.subscriberId ==
+            this.sessionInfo?.orgProfile?.subscriberId &&
+          this.sessionInfo?.userProfile?.role ==
+            value?.userProfile?.role &&
+          permissionChanged
+        )
       ) {
 
         console.log('performPostLoginChecks session watch');
-        this.performPostLoginChecks();
+        if(!this.postLoginStarted) this.performPostLoginChecks();
       }
     });
   }
 
   async performPostLoginChecks() {
+    this.postLoginStarted = true;
     await this.common.showLoader('Checking details, please wait...');
     // first check whether the user is active or not
     let validationResponse: any = {};
@@ -154,11 +173,13 @@ export class ManageprofilePage implements OnInit {
       this.addSubscriber = false;
       // hide loader manually before navigating to another route
       this.common.hideLoader();
+      this.postLoginStarted = false;
       this.router.navigate(['profile']);
     }
     // hide the loader now
     // setTimeout(() => this.common.hideLoader(), 100);
     this.common.hideLoader();
+    this.postLoginStarted = false;
   }
 
   ngOnInit() {}
@@ -211,10 +232,12 @@ export class ManageprofilePage implements OnInit {
       this.appPages.forEach((p) => (p.disabled = false));
       if (!this.newsubscriber){
         // hide loader before navigating to another route
+        this.postLoginStarted = false;
         this.common.hideLoader();
         this.router.navigate([this.appPages[0].url]);
       }
       // hide loader before navigating to another route
+      this.postLoginStarted = false;
       this.common.hideLoader();
     } else {
       // should we signout the user or redirect for select profile
@@ -226,10 +249,12 @@ export class ManageprofilePage implements OnInit {
       );
       if (this.newsubscriber){
         // hide loader before navigating to another route
+        this.postLoginStarted = false;
         this.common.hideLoader();
         this.router.navigate(['profile']);
       }
       // hide loader before navigating to another route
+      this.postLoginStarted = false;
       this.common.hideLoader();
     }
     this.newsubscriber = false;
@@ -241,6 +266,7 @@ export class ManageprofilePage implements OnInit {
     //   (p) => (p.disabled = !["profile", "subscription"].includes(p.tab))
     // );
     // hide loader before navigating to another route
+    this.postLoginStarted = false;
     this.common.hideLoader();
     this.router.navigate(['subscription']);
   }
@@ -302,6 +328,7 @@ export class ManageprofilePage implements OnInit {
       this.userData = data.userData;
       this.updatedProfile = undefined;
     }
+    this.postLoginStarted = false;
     this.common.hideLoader();
   }
 
@@ -386,6 +413,7 @@ export class ManageprofilePage implements OnInit {
     await this.user.updateProfile(this.id, this.updatedProfile);
     this.editProfile = false;
     // hide the loader now
+    this.postLoginStarted = false;
     setTimeout(() => this.common.hideLoader(), 100);
   }
   // skip profile update

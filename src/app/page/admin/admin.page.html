@@ -15,28 +15,26 @@
     <ion-title>Admin</ion-title>
   </ion-toolbar>
 </ion-header>
+<ion-header class="ion-hide-md-up">
 
+  <ion-toolbar class="ion-padding-end">
+    <ion-buttons slot="end" class="ion-hide-md-up ion-padding-end ion-margin-end">
+      <ion-button routerDirection="forward"
+      (featureClick)="gotoBroadcastMessage()"
+      appFeatureCheck
+      [featureIdList]="['broadcast-message']"
+      >
+        <ion-icon slot="icon-only" name="megaphone"></ion-icon>
+      </ion-button>
+      <ion-button routerDirection="forward" (click)="gotoChangeOrgName()">
+        <ion-icon slot="icon-only" name="qr-code"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Admin</ion-title>
+  </ion-toolbar>
+</ion-header>
 
 <ion-content>
-  <ion-header class="ion-hide-md-up">
-
-    <ion-toolbar class="ion-padding-end">
-      <ion-buttons slot="end" class="ion-hide-md-up ion-padding-end ion-margin-end">
-        <ion-button routerDirection="forward"
-        (featureClick)="gotoBroadcastMessage()"
-        appFeatureCheck
-        [featureIdList]="['broadcast-message']"
-        >
-          <ion-icon slot="icon-only" name="megaphone"></ion-icon>
-        </ion-button>
-        <ion-button routerDirection="forward" (click)="gotoChangeOrgName()">
-          <ion-icon slot="icon-only" name="qr-code"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-      <ion-title>Admin</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
   <ion-row class="height-background">
     <!-- <ion-col>
     <ion-row>
@@ -68,7 +66,7 @@
               <img *ngIf="member?.picUrl != ''" src="{{member?.picUrl}}" [ngStyle]="{'height':'40px','width':'40px'}">
               <ion-icon *ngIf="!member?.picUrl" color="primary" name="person-circle" [ngStyle]="{'height':'40px','width':'40px'}">
               </ion-icon>
-              <p class="ion-no-margin ion-no-padding ion-text-lowercase ion-text-center"><small><ion-text [color]="member.role == 'ADMIN'?'success':member.role == 'USER'?'medium':'warning'">{{member?.role}}</ion-text></small></p>
+              <p class="ion-no-margin ion-no-padding ion-text-lowercase ion-text-center app-oneline"><small><ion-text [color]="member.role == 'ADMIN'?'success':member.role == 'USER'?'medium':'warning'">{{member?.role}}</ion-text></small></p>
             </ion-avatar>
             <ion-label>
               <h3>{{member.name}}</h3>

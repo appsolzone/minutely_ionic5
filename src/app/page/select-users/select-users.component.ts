@@ -23,6 +23,8 @@ export class SelectUsersComponent implements OnInit {
   @Input() showAddUser:boolean = true;
   @Input() showAddNonPermUser:boolean = false;
   @Input() sectionHeader:any = null; //{ icon: 'people', text: 'Select Users to send email ' }
+  @Input() showSelectAll: boolean = false;
+  @Input() showNonSelectExitAlert: boolean = false;
   @Output() onSelectionComplete= new EventEmitter<any>();
   // observables
   userSubs$;
@@ -33,6 +35,7 @@ export class SelectUsersComponent implements OnInit {
   public selectedUser: any;
   public selectedUsers: any[]=[];
   public showAddTempUser: boolean = false;
+  public selectedAll: boolean = false;
   public addUserData:any;
   public emailRegExp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"; //RFC 5322
 
@@ -127,18 +130,33 @@ export class SelectUsersComponent implements OnInit {
     console.log("post splice user.selected", user.selected, this.selectedUsers);
   }
 
-  returnSelectedUsers(){
+  async returnSelectedUsers(){
     console.log("this.selectedUsers",this.selectedUser, this.selectedUsers);
-    if(this.multiSelect){
-      this.onSelectionComplete.emit(this.selectedUsers);
-    } else {
-      this.onSelectionComplete.emit(this.selectedUser);
+    let response: any = true;
+    if(this.showNonSelectExitAlert
+        &&
+        (
+          (this.multiSelect && this.selectedUsers.length==0) ||
+          (!this.multiSelect && !this.selectedUser)
+        )
+      ){
+      response = await this.common.presentAlertConfirm('Warning','No user selected, no action will be taken. Are you sure you would like to continue?');
+      console.log("response is", response);
     }
-    // this.selectedUsers = [];
-    // this.selectedUser = null;
-    // this.textSearch ='';
+    console.log("response is after check", response);
+    if(response){
+      if(this.multiSelect){
+        this.onSelectionComplete.emit(this.selectedUsers);
+      } else {
+        this.onSelectionComplete.emit(this.selectedUser);
+      }
+      // this.selectedUsers = [];
+      // this.selectedUser = null;
+      // this.textSearch ='';
 
-    if(this.popoverMode) this.closePopover();
+      if(this.popoverMode) this.closePopover();
+    }
+
   }
 
   gotoAddMemberPage(){
@@ -217,6 +235,13 @@ export class SelectUsersComponent implements OnInit {
     // if(extractMembers.length > 0){
     //   await this.common.presentToaster("Attendee list uploaded successfully");
     // }
+  }
+
+  onSelectAll(e){
+    this.filterdUserList.forEach(u=>{
+      u.selected = this.selectedAll;
+      this.multiSelectAddRemove(u);
+    })
   }
 
 }

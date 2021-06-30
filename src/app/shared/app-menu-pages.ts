@@ -35,6 +35,13 @@ export const appPages = [
     tab: 'notification',
     disabled: true,
   },
+  {
+    title: 'Broadcast',
+    url: 'broadcast-message',
+    icon: 'megaphone',
+    tab: 'broadcast-message',
+    disabled: true,
+  },
 
   // {
   //   title: 'Regions',
