@@ -67,7 +67,7 @@ export class SessionService {
   // this should be called inside authState call back before setting the subscriber/sessionInfo
   async getProfiles(uid, authUserData: any = null) {
     // clear the existing session$ values as we have logged in using a new uid
-    this.clear();
+    // this.clear();
     // log entries for user access time details
     if(authUserData) {
       this.user.processAuthData(authUserData);
@@ -179,7 +179,9 @@ export class SessionService {
   // get subscriber data
   async getSubscriberProfile(subscriberId) {
     // check if the new subscriber id is selected or it is existing subscriber id
-    if (subscriberId != this.peek()?.subscriberId) {
+    // or the source is localstorage
+    let sessionInfo = this.peek();
+    if (subscriberId != sessionInfo?.subscriberId || sessionInfo?.source == 'localstorage') {
       if (this.getSubscriberSubs$?.unsubscribe) {
         await this.getSubscriberSubs$.unsubscribe();
       }
@@ -251,6 +253,7 @@ export class SessionService {
                 userProfile: data,
                 userProfileDocId: id,
                 orgProfile: allSubData[0].data,
+                source: 'firebase'
               });
             } else {
               // if sessionInfo.settings.ACL is turned off and role is not USER or ADMIN, set the default role as USER
@@ -265,7 +268,8 @@ export class SessionService {
                 userProfile: data,
                 userProfileDocId: id,
                 orgProfile: allSubData[0].data,
-                permissions
+                permissions,
+                source: 'firebase'
               });
             }
 
@@ -412,6 +416,10 @@ export class SessionService {
       // this.componentService.presentAlert("Error","Please note that location can not be determined. Check location service is on and permission is given to the app from settings.");
       return undefined;
     }
+  }
+
+  async setLastSessionInfo(sessionInfo){
+    await this.patch({...sessionInfo});
   }
 
   watch() {

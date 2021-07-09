@@ -101,7 +101,7 @@
                 <ion-label position="floating">
                   <ion-icon name="business" class="ion-margin-end"></ion-icon>Organization name
                 </ion-label>
-                <ion-input type="text" [(ngModel)]="orgProfile.companyName" [disabled]="subscriberType=='existing'">
+                <ion-input type="text" [(ngModel)]="orgProfile.companyName" [disabled]="subscriberType=='existing'" placeholder="Organization name not provided">
                 </ion-input>
               </ion-item>
               <ion-item *ngIf="subscriberType=='existing'" lines="inset">

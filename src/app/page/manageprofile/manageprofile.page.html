@@ -5,6 +5,18 @@
 </ion-header>
 <ion-content>
 </ion-content> -->
+<ion-content fullscreen class="ion-padding" scroll-y="false" *ngIf="(!allProfiles && !editProfile && userData) || postLoginStarted">
+  <ion-slides [options]="slideOpts">
+    <ion-slide *ngFor="let ftr of signInFeatures">
+      <div class="slide">
+        <!-- <img src="./slide-1.png"/> -->
+        <ion-icon [name]="ftr.icon" slot="start" color="medium"></ion-icon>
+        <h2>{{ftr.title}}</h2>
+        <p *ngFor="let txt of ftr.details">{{txt}}</p>
+      </div>
+    </ion-slide>
+  </ion-slides>
+</ion-content>
 <ion-row class="ion-no-padding ion-padding-bottom" *ngIf="userData">
   <ion-col size="1" class="ion-hide-xl-down">
   </ion-col>

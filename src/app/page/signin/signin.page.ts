@@ -83,6 +83,11 @@ export class SigninPage implements OnInit {
       ]
     },
   ]
+  public slideOpts = {
+    initialSlide: Math.floor(Math.random() * this.signInFeatures.length), //0,
+    slidesPerView: 1,
+    autoplay:true
+  };
   signinUi: any;
   userData: any;
   redirectUrl = 'profile';
