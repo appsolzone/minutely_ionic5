@@ -21,13 +21,24 @@ export const environment = {
       // storageBucket: "rnmm-7b33d.appspot.com",
       // messagingSenderId: "418702508352",
       // appId: "1:418702508352:web:37971ae16be3fe0e49faa5"
-      apiKey: "AIzaSyAAlYcDlFQPlEEYZKimGAjNAvJhMlsjGdU",
-    authDomain: "ocurrenshub.firebaseapp.com",
-    databaseURL: "https://ocurrenshub.firebaseio.com",
-    projectId: "ocurrenshub",
-    storageBucket: "ocurrenshub.appspot.com",
-    messagingSenderId: "438479765215",
-    appId: "1:438479765215:web:9389987f7dcabee06b736a"
+
+      apiKey: "AIzaSyCf_VbhCidN5BNmRcjSXYia_TInk9mVqUY",
+      authDomain: "minutely-d2d12.firebaseapp.com",
+      databaseURL: "https://minutely-d2d12-default-rtdb.firebaseio.com",
+      projectId: "minutely-d2d12",
+      storageBucket: "minutely-d2d12.appspot.com",
+      messagingSenderId: "729051006555",
+      appId: "1:729051006555:web:d47a5f94deb269f8cbe17e",
+      measurementId: "G-PWZ7WKYMMC"
+
+
+    //   apiKey: "AIzaSyAAlYcDlFQPlEEYZKimGAjNAvJhMlsjGdU",
+    // authDomain: "ocurrenshub.firebaseapp.com",
+    // databaseURL: "https://ocurrenshub.firebaseio.com",
+    // projectId: "ocurrenshub",
+    // storageBucket: "ocurrenshub.appspot.com",
+    // messagingSenderId: "438479765215",
+    // appId: "1:438479765215:web:9389987f7dcabee06b736a"
 
 
 

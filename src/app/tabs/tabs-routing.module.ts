@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
+// authguard
+import { AuthguardService } from 'src/app/shared/authguard/authguard.service';
 
 const routes: Routes = [
   {
@@ -13,7 +15,9 @@ const routes: Routes = [
       },
       {
         path: 'admin',
-        loadChildren: () => import('../page/admin/admin.module').then( m => m.AdminPageModule)
+        loadChildren: () => import('../page/admin/admin.module').then( m => m.AdminPageModule),
+        canLoad: [AuthguardService],
+        canActivate: [AuthguardService]
       },
       {
         path: 'notification',
@@ -21,7 +25,9 @@ const routes: Routes = [
       },
         {
         path: 'subscription',
-        loadChildren: () => import('../page/subscription/subscription.module').then( m => m.SubscriptionPageModule)
+        loadChildren: () => import('../page/subscription/subscription.module').then( m => m.SubscriptionPageModule),
+        canLoad: [AuthguardService],
+        canActivate: [AuthguardService]
       },
         {
         path: 'meeting',
@@ -43,7 +49,23 @@ const routes: Routes = [
         path: '',
         redirectTo: 'profile',
         pathMatch: 'full'
-      }
+      },
+      {
+        path: 'settings',
+        loadChildren: () => import('../page/app-setting/app-setting/app-setting.module').then( m => m.AppSettingPageModule),
+        canLoad: [AuthguardService],
+        canActivate: [AuthguardService]
+      },
+      {
+        path: 'broadcast-message',
+        loadChildren: () => import('../page/admin/broadcast-message/broadcast-message.module').then( m => m.BroadcastMessagePageModule),
+        canLoad: [AuthguardService],
+        canActivate: [AuthguardService]
+      },
+      {
+        path: 'access-denied/:pgId',
+        loadChildren: () => import('../page/access-denied/access-denied/access-denied.module').then( m => m.AccessDeniedPageModule)
+      },
     ]
   },
   {

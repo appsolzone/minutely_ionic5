@@ -1,0 +1,38 @@
+<ion-card>
+  <!-- <ion-card-header>
+
+  </ion-card-header> -->
+  <!-- <ion-card-content> -->
+    <ion-item color="">
+      <ion-label>
+        <h1>System Roles</h1>
+        <p>Select a template to create new role</p>
+      </ion-label>
+    </ion-item>
+    <ion-list>
+      <!-- <ion-item *ngFor="let role of templates; let i=index;" [color]="i%2==0 ? '' : ''"
+        [button]="true" (click)="selectedRole(role)"
+        [lines]="i+1==templates.length ? 'none' : ''"
+        class="ion-hide-md-down"
+      >
+        <ion-icon name="person-circle" slot="start"></ion-icon>
+        <ion-label class="ion-text-wrap">
+          <h2>{{role.roleName}}</h2>
+          <p>{{role.description}}</p>
+        </ion-label>
+        <ion-chip color="primary" class="ion-text-end"><ion-label>Template</ion-label></ion-chip>
+      </ion-item> -->
+      <ion-item *ngFor="let role of templates; let i=index;" [color]="i%2==0 ? '' : ''"
+        [button]="true" (click)="goToEditRoleMobile(role)"
+        [lines]="i+1==templates.length ? 'none' : ''"
+      >
+        <ion-icon name="person-circle" slot="start"></ion-icon>
+        <ion-label class="ion-text-wrap">
+          <h2>{{role.roleName}}</h2>
+          <p>{{role.description}}</p>
+        </ion-label>
+        <ion-chip color="primary" class="ion-text-end"><ion-label>Template</ion-label></ion-chip>
+      </ion-item>
+    </ion-list>
+  <!-- </ion-card-content> -->
+</ion-card>

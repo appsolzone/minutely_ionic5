@@ -3,6 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { RiskPage } from './risk.page';
 
+// authguard
+import { AuthguardService } from 'src/app/shared/authguard/authguard.service';
+
 const routes: Routes = [
   {
     path: '',
@@ -26,7 +29,9 @@ const routes: Routes = [
   },
   {
     path: 'create-risk',
-    loadChildren: () => import('./create-risk/create-risk.module').then( m => m.CreateRiskPageModule)
+    loadChildren: () => import('./create-risk/create-risk.module').then( m => m.CreateRiskPageModule),
+    canLoad: [AuthguardService],
+    canActivate: [AuthguardService]
   },
   {
     path: 'comments',

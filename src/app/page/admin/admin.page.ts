@@ -168,12 +168,22 @@ export class AdminPage implements OnInit, OnChanges {
         btns.push({ text: 'Suspend access', handler: () => { this.adminManageUserServ.userDataUpdateTransection( data, 'SUSPENDED', this.orgProfile ); } });
         btns.push({ text: 'Mark as leaver', handler: () => { this.adminManageUserServ.userDataUpdateTransection( data, 'LEAVER', this.orgProfile ); } });
 
-        if (data.role == 'USER'){
+        if (data.role != 'ADMIN'){
           btns.push({ text: 'Assign Admin Role', handler: () => { this.adminManageUserServ.changeUserRole( data, 'ADMIN' ); } });
           // btns.push({ text: 'Approve external access', handler: () => { this.adminManageUserServ.changeUserRole( data, 'EXTERNAL'); } });
-        } else {
+        }
+        if (data.role != 'USER'){
           btns.push({ text: 'Assign User Role', handler: () => { this.adminManageUserServ.changeUserRole( data, 'USER' ); } });
         }
+        // now add the other custom roles
+        if(this.orgProfile?.settings?.roles  && this.orgProfile?.settings?.ACL){
+          this.orgProfile.settings.roles.forEach(r=>{
+            if(data.role!=r){
+              btns.push({ text: 'Assign ' + r + ' Role', handler: () => { this.adminManageUserServ.changeUserRole( data, r ); } });
+            }
+          })
+        }
+
       }else if (data.status == 'REJECTED'){ // when user is rejected
         if (this.orgProfile.noOfFreeLicense > 0) {
           btns.push({ text: 'Approve access', handler: () => { this.adminManageUserServ.userDataUpdateTransection( data, 'ACTIVE', this.orgProfile ); } });

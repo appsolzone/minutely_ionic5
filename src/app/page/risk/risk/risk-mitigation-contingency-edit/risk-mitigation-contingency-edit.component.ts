@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { SpeechService } from 'src/app/shared/speech/speech.service';
 
 @Component({
   selector: 'app-risk-mitigation-contingency-edit',
@@ -12,7 +13,9 @@ export class RiskMitigationContingencyEditComponent implements OnInit {
   // form data
   public riskDetails: any;
 
-  constructor() { }
+  constructor(
+    private speech: SpeechService,
+  ) { }
 
   ngOnInit() {
    this.riskDetails = this.risk?.data;
@@ -20,5 +23,12 @@ export class RiskMitigationContingencyEditComponent implements OnInit {
     // if(this.riskDetails){
     //   //this.checkAcceptence();
     // }
+  }
+
+  async startSpeech(type){
+    let res = await this.speech.startListening('What would you like to add as ' + type);
+    if(res?.text){
+      this.riskDetails[type] += (' ' + res.text);
+    }
   }
 }

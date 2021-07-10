@@ -18,6 +18,7 @@ import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import '@codetrix-studio/capacitor-google-auth';
 import { KpiService } from 'src/app/shared/kpi/kpi.service';
+// import { AccessDeniedPage } from 'src/app/page/access-denied/access-denied/access-denied.page';
 
 const { Storage } = Plugins;
 
@@ -47,6 +48,77 @@ export class ManageprofilePage implements OnInit {
   photo: SafeResourceUrl;
   public base64Image: string;
   public isMobile = false;
+  public postLoginStarted = false;
+  public signInFeatures = [
+    {
+      icon: 'today-outline',
+      title: 'Meetings Simplified',
+      details: [
+        'Setup meetings',
+        'Notify attendees',
+        'Stay on top of your schedule'
+      ]
+    },
+    {
+      icon: 'mic-outline',
+      title: 'Speech Recognition',
+      details: [
+        'Speech to text',
+        'Edit or add texts effeortlessly',
+        'Tap on the mic to start'
+      ]
+    },
+    {
+      icon: 'people-outline',
+      title: 'Collaborate',
+      details: [
+        'Create Tasks, Issues and Risks',
+        'Track each of these items',
+        'Collaborate and record feedbacks'
+      ]
+    },
+    {
+      icon: 'library-outline',
+      title: 'All In One Place',
+      details: [
+        'No items go out of your radar',
+        'Create linkage across items',
+        'Manage and share details with stakeholders'
+      ]
+    },
+    {
+      icon: 'rocket-outline',
+      title: 'Boost Productivity',
+      details: [
+        'Be on top of actions',
+        'Make your meetings effective and productive',
+        'Stats and info just a tap away'
+      ]
+    },
+    {
+      icon: 'notifications-outline',
+      title: 'Notifications',
+      details: [
+        'Get notified anytime, anywhere',
+        'Be on top of your actionables',
+        'Broadcast and share messages'
+      ]
+    },
+    {
+      icon: 'search-outline',
+      title: 'Powerful Search',
+      details: [
+        'Powerful search engine',
+        'Search by name, keyword, date etc',
+        'Access details from search results'
+      ]
+    },
+  ];
+  public slideOpts = {
+    initialSlide: Math.floor(Math.random() * this.signInFeatures.length), //0,
+    slidesPerView: 1,
+    autoplay:true
+  };
 
   constructor(
     private router: Router,
@@ -70,21 +142,32 @@ export class ManageprofilePage implements OnInit {
     this.session.watch().subscribe((value) => {
       // console.log("Session Subscription got", value);
       // Re populate the values as required
+      let permissionKeys = value?.permissions ? Object.keys(value?.permissions.features) : [];
       const roleStatusChanged =
         !value ||
         this.sessionInfo?.userProfile?.status != value?.userProfile?.status ||
         this.sessionInfo?.userProfile?.role != value?.userProfile?.role;
+      const permissionChanged = (value?.permissions && permissionKeys.some(featureId => {
+            console.log("checking permissions", featureId, value?.permissions?.features[featureId]?.access, this.sessionInfo?.permissions?.features[featureId]?.access)
+            return value?.permissions?.features[featureId]?.access != this.sessionInfo?.permissions?.features[featureId]?.access;
+          })
+        )
+      console.log("permission changed",permissionChanged);
       const subscriberChanged =
         !value ||
         this.sessionInfo?.userProfile?.subscriberId !=
           value?.userProfile?.subscriberId ||
         this.sessionInfo?.orgProfile?.subscriptionType !=
-          value?.orgProfile?.subscriptionType;
+          value?.orgProfile?.subscriptionType ||
+        this.sessionInfo?.orgProfile?.subscriptionEnd?.seconds !=
+          value?.orgProfile?.subscriptionEnd?.seconds;
       console.log(
         'performPostLoginChecks session watch roleStatusChanged',
         roleStatusChanged,
         subscriberChanged,
-        value
+        value,
+        this.sessionInfo?.orgProfile?.subscriptionEnd?.seconds,
+          value?.orgProfile?.subscriptionEnd?.seconds
       );
       this.sessionInfo = value;
       this.allProfiles = value?.allProfiles;
@@ -110,17 +193,28 @@ export class ManageprofilePage implements OnInit {
         (this.sessionInfo &&
           this.sessionInfo.userProfile &&
           this.sessionInfo.orgProfile &&
-          subscriberChanged)
+          subscriberChanged) ||
+        (
+          this.sessionInfo &&
+          this.sessionInfo.userProfile &&
+          this.sessionInfo.orgProfile &&
+          this.sessionInfo?.userProfile?.subscriberId ==
+            this.sessionInfo?.orgProfile?.subscriberId &&
+          this.sessionInfo?.userProfile?.role ==
+            value?.userProfile?.role &&
+          permissionChanged
+        )
       ) {
 
         console.log('performPostLoginChecks session watch');
-        this.performPostLoginChecks();
+        if(!this.postLoginStarted) this.performPostLoginChecks();
       }
     });
   }
 
   async performPostLoginChecks() {
-    await this.common.showLoader('Checking details, please wait...');
+    this.postLoginStarted = true;
+    // await this.common.showLoader('Checking details, please wait...');
     // first check whether the user is active or not
     let validationResponse: any = {};
     validationResponse = this.user.checkUser(this.sessionInfo?.userProfile);
@@ -154,14 +248,18 @@ export class ManageprofilePage implements OnInit {
       this.addSubscriber = false;
       // hide loader manually before navigating to another route
       this.common.hideLoader();
+      this.postLoginStarted = false;
       this.router.navigate(['profile']);
     }
     // hide the loader now
     // setTimeout(() => this.common.hideLoader(), 100);
     this.common.hideLoader();
+    this.postLoginStarted = false;
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    // this.common.presentModal(AccessDeniedPage);
+  }
 
   async renewNow(userProfile, org, instruction: any = null) {
     console.log('my_org', org);
@@ -211,10 +309,18 @@ export class ManageprofilePage implements OnInit {
       this.appPages.forEach((p) => (p.disabled = false));
       if (!this.newsubscriber){
         // hide loader before navigating to another route
+        this.postLoginStarted = false;
         this.common.hideLoader();
+        // set the new session value as we received all session
+        Storage.set({
+          key: 'sessionInfo',
+          value: JSON.stringify(this.sessionInfo),
+        });
+        // this.common.dismissModal();
         this.router.navigate([this.appPages[0].url]);
       }
       // hide loader before navigating to another route
+      this.postLoginStarted = false;
       this.common.hideLoader();
     } else {
       // should we signout the user or redirect for select profile
@@ -224,12 +330,14 @@ export class ManageprofilePage implements OnInit {
       this.appPages.forEach(
         (p) => (p.disabled = !['profile', 'subscription'].includes(p.tab))
       );
-      if (this.newsubscriber){
+      // if (this.newsubscriber){
         // hide loader before navigating to another route
+        this.postLoginStarted = false;
         this.common.hideLoader();
         this.router.navigate(['profile']);
-      }
+      // }
       // hide loader before navigating to another route
+      this.postLoginStarted = false;
       this.common.hideLoader();
     }
     this.newsubscriber = false;
@@ -241,6 +349,7 @@ export class ManageprofilePage implements OnInit {
     //   (p) => (p.disabled = !["profile", "subscription"].includes(p.tab))
     // );
     // hide loader before navigating to another route
+    this.postLoginStarted = false;
     this.common.hideLoader();
     this.router.navigate(['subscription']);
   }
@@ -258,7 +367,7 @@ export class ManageprofilePage implements OnInit {
 
   async signOut() {
     // await this.common.showLoader("Please wait... signout");
-    await Storage.remove({ key: 'userProfile' });
+    await Storage.remove({ key: 'sessionInfo' });
     if (this.isMobile) {
       await Plugins.GoogleAuth.signOut();
     }
@@ -282,13 +391,22 @@ export class ManageprofilePage implements OnInit {
     this.newsubscriber = newsubscriber;
   }
 
-  authStateCallBack(data) {
+  async authStateCallBack(data) {
     // setTimeout(()=>{
     // this.signinUi = data.signinUi;
     // if we are receiving the data for the first time
     if (data.userData && !this.userData) {
       //// console.log("if data.userData && this.userData", data.userData, this.userData);
       this.userData = data.userData;
+      const ret = await Storage.get({ key: 'sessionInfo' });
+      const lastSessionInfo =
+        ret.value && ret.value != 'undefined' ? JSON.parse(ret.value) : {};
+      console.log("setLastSessionInfo 0", lastSessionInfo?.orgProfile)
+      this.session.setLastSessionInfo({...lastSessionInfo, source: 'localstorage'});
+      console.log("setLastSessionInfo", lastSessionInfo?.orgProfile)
+      // alert("Goto home page")
+      // this.common.dismissModal();
+      this.router.navigate([this.appPages[0].url]);
       this.session.getProfiles(this.userData.uid, this.userData);
     } else if (data.userData && this.userData) {
       //// console.log("else if", data.userData, this.userData);
@@ -302,6 +420,7 @@ export class ManageprofilePage implements OnInit {
       this.userData = data.userData;
       this.updatedProfile = undefined;
     }
+    this.postLoginStarted = false;
     this.common.hideLoader();
   }
 
@@ -331,7 +450,7 @@ export class ManageprofilePage implements OnInit {
           name: displayName,
           email,
           phoneNumber: phoneNumber ? phoneNumber : '',
-          appRole: 'USER',
+          role: 'USER',
           jobTitle: '',
           address: '',
           status: 'CREATED',
@@ -350,11 +469,13 @@ export class ManageprofilePage implements OnInit {
   }
   // get last sign in info
   async getLastSignInProfile() {
-    const ret = await Storage.get({ key: 'userProfile' });
+    console.log('idx getLastSignInProfile this.allProfiles', this.allProfiles);
+    const ret = await Storage.get({ key: 'sessionInfo' });
     // console.log("ret getLastSignInProfile", ret);
-    const lastSigninUserProfile =
+    const lastSessionInfo =
       ret.value && ret.value != 'undefined' ? JSON.parse(ret.value) : {};
-    // console.log("getLastSignInProfile",lastSigninUserProfile, ret);
+    const lastSigninUserProfile = lastSessionInfo.userProfile ? lastSessionInfo.userProfile : {};
+    console.log("getLastSignInProfile",lastSessionInfo);
     const idx = this.allProfiles.findIndex(
       (p) => p.data.subscriberId == lastSigninUserProfile.subscriberId
     );
@@ -367,10 +488,11 @@ export class ManageprofilePage implements OnInit {
   getUserProfile(index) {
     this.userProfile = this.allProfiles[index]?.data;
     this.id = this.allProfiles[index]?.id;
+    const sessionInfo = { uid: this.userProfile.uid, userProfileDocId: this.id, userProfile: this.userProfile };
     console.log('getUserProfileArnsb', this.userProfile, index);
     Storage.set({
-      key: 'userProfile',
-      value: JSON.stringify(this.userProfile),
+      key: 'sessionInfo',
+      value: JSON.stringify(sessionInfo),
     });
     this.session.getSessionInfo(this.userProfile.subscriberId);
     // this.userData = data.userData;
@@ -386,6 +508,7 @@ export class ManageprofilePage implements OnInit {
     await this.user.updateProfile(this.id, this.updatedProfile);
     this.editProfile = false;
     // hide the loader now
+    this.postLoginStarted = false;
     setTimeout(() => this.common.hideLoader(), 100);
   }
   // skip profile update

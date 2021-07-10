@@ -29,7 +29,7 @@ export class SpeechService {
         let message = Capacitor.platform !== 'web' ?
                       "Please grant access for Microphone from settings to continue"
                       :
-                      "Please note that this is a mobile only feature and currently not available for web. Please use mobile app to avail speach to text feature";
+                      "Please note that speech to text is a mobile only feature and currently not available for web. Please use mobile app to avail speach to text feature. For web continue to use keyborad to write input text.";
         let buttons = [
            {
             text: 'Dismiss',

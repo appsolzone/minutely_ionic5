@@ -4,6 +4,7 @@ import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { UserCommentService } from 'src/app/shared/user-comment/user-comment.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { SpeechService } from 'src/app/shared/speech/speech.service';
 
 @Component({
   selector: 'app-issue-user-comments',
@@ -27,6 +28,7 @@ export class IssueUserCommentsPage implements OnInit,OnDestroy {
     private session: SessionService,
     private commentServ:UserCommentService,
     private componentService:ComponentsService,
+    private speech: SpeechService,
   ) {
     this.getSessionInfo();
   }
@@ -112,5 +114,12 @@ export class IssueUserCommentsPage implements OnInit,OnDestroy {
 
   profileImgErrorHandler(user: any){
     user.picUrl = '/assets/shapes.svg';
+  }
+
+  async startSpeech(type){
+    let res = await this.speech.startListening('What would you like to add as ' + type);
+    if(res?.text){
+      this.postedComment += (' ' + res.text);
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { SpeechService } from 'src/app/shared/speech/speech.service';
 
 @Component({
   selector: 'app-issue-description-edit',
@@ -12,7 +13,9 @@ export class IssueDescriptionEditComponent implements OnInit {
   // form data
   public issueDetails: any;
 
-  constructor() { }
+  constructor(
+    private speech: SpeechService,
+  ) { }
 
   ngOnInit() {
     this.issueDetails = this.issue?.data;
@@ -20,6 +23,13 @@ export class IssueDescriptionEditComponent implements OnInit {
 
   ngOnChanges() {
     this.issueDetails = this.issue?.data;
+  }
+
+  async startSpeech(type){
+    let res = await this.speech.startListening('What would you like to add as ' + type);
+    if(res?.text){
+      this.issueDetails[type] += (' ' + res.text);
+    }
   }
 
 }

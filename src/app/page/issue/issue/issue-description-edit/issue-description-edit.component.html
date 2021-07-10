@@ -5,6 +5,11 @@
       Details
     </ion-label>
     <ion-input readonly="true"></ion-input>
+    <ion-buttons slot="end">
+      <ion-button  slot="end" color="success" (click)="startSpeech('issueDetails')">
+        <ion-icon slot="icon-only" name="mic"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-item>
   <ion-item lines="none">
     <ion-textarea autoGrow="true" readonly="false" wrap="soft" [(ngModel)]="issueDetails.issueDetails"

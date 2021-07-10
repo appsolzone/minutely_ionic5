@@ -38,6 +38,15 @@ export class SigninPage implements OnInit {
       ]
     },
     {
+      icon: 'mic-outline',
+      title: 'Speech Recognition',
+      details: [
+        'Speech to text',
+        'Edit or add texts effeortlessly',
+        'Tap on the mic to start'
+      ]
+    },
+    {
       icon: 'people-outline',
       title: 'Collaborate',
       details: [
@@ -83,6 +92,11 @@ export class SigninPage implements OnInit {
       ]
     },
   ]
+  public slideOpts = {
+    initialSlide: Math.floor(Math.random() * this.signInFeatures.length), //0,
+    slidesPerView: 1,
+    autoplay:true
+  };
   signinUi: any;
   userData: any;
   redirectUrl = 'profile';

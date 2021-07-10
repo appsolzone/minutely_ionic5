@@ -3,6 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IssuePage } from './issue.page';
 
+// authguard
+import { AuthguardService } from 'src/app/shared/authguard/authguard.service';
+
 const routes: Routes = [
   {
     path: '',
@@ -26,7 +29,9 @@ const routes: Routes = [
   },
   {
     path: 'create-issue',
-    loadChildren: () => import('./create-issue/create-issue.module').then( m => m.CreateIssuePageModule)
+    loadChildren: () => import('./create-issue/create-issue.module').then( m => m.CreateIssuePageModule),
+    canLoad: [AuthguardService],
+    canActivate: [AuthguardService]
   },
     {
     path: 'comments',

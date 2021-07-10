@@ -63,6 +63,13 @@ export const appPages = [
     tab: 'profile',
     disabled: false,
   },
+  {
+    title: 'Broadcast',
+    url: 'broadcast-message',
+    icon: 'megaphone',
+    tab: 'broadcast-message',
+    disabled: true,
+  },
 
   // {
   //   title: 'Regions',
@@ -83,6 +90,13 @@ export const appPages = [
     icon: 'card',
     tab: 'subscription',
     disabled: false,
+  },
+  {
+    title: 'Settings',
+    url: 'settings',
+    icon: 'settings',
+    tab: 'settings',
+    disabled: true,
   },
 
 ];

@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AdminPage } from './admin.page';
+// authguard
+import { AuthguardService } from 'src/app/shared/authguard/authguard.service';
 
 const routes: Routes = [
   {
@@ -17,7 +19,9 @@ const routes: Routes = [
   },
   {
     path: 'broadcast-message',
-    loadChildren: () => import('./broadcast-message/broadcast-message.module').then( m => m.BroadcastMessagePageModule)
+    loadChildren: () => import('./broadcast-message/broadcast-message.module').then( m => m.BroadcastMessagePageModule),
+    canLoad: [AuthguardService],
+    canActivate: [AuthguardService]
   }
 
 ];

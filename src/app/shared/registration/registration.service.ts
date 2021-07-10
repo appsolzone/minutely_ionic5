@@ -212,7 +212,6 @@ export class RegistrationService {
             newNotification
           );
         }
-
       }); // end of transaction callback
     }); // end of runTransaction
   }

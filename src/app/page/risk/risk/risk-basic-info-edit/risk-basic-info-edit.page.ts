@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { SpeechService } from 'src/app/shared/speech/speech.service';
 
 @Component({
   selector: 'app-risk-basic-info-edit',
@@ -27,7 +28,8 @@ export class RiskBasicInfoEditPage implements OnInit {
 
   constructor(
     private router: Router,
-    private common: ComponentsService
+    private common: ComponentsService,
+    private speech: SpeechService,
   ) { }
 
   ngOnInit() {
@@ -107,6 +109,13 @@ export class RiskBasicInfoEditPage implements OnInit {
       } else {
         this.riskDetails.riskStatus=status;
       }
+  }
+
+  async startSpeech(type){
+    let res = await this.speech.startListening('What would you like to add as ' + type);
+    if(res?.text){
+      this.riskDetails[type] += (' ' + res.text);
+    }
   }
 
 }

@@ -22,14 +22,6 @@ export class FeatureCheckDirective {
   feature: any;
   sessionSubs$: any;
   sessionInfo: any;
-  userProfile: any;
-  orgProfile: any;
-  userRole: any;
-  aclPermission: any;
-  msgDescrition: any;
-  AclToggleValue: any;
-  kpiData: unknown;
-  componentAccess = false;
 
   // constructor() {
   //   console.log("feature value", this.feature, this.featureClick)
@@ -49,11 +41,6 @@ export class FeatureCheckDirective {
       );
       // Re populate the values as required
       this.sessionInfo = value;
-      this.userProfile = value?.userProfile;
-      this.orgProfile = value?.orgProfile;
-      this.userRole = value?.userProfile?.role;
-      this.permission = value?.orgProfile?.ACL;
-      this.AclToggleValue = value?.orgProfile?.settings?.ACL;
 
       // if (!this.sessionInfo) {
       //   this.router.navigate(["profile"]);
@@ -80,19 +67,27 @@ export class FeatureCheckDirective {
 
   // This function check kpi free acl limit for a feature
   isAclAccessNotAllowed(){
+    const {permissions} = this.sessionInfo;
     return this.featureIdList.some(featureId => {
       // Now check the feature id
       // This is to be implemented once the role is implemented
-      const feature = {access: true, description: 'No message available', redirectPath: null};
+      // const feature = {access: true, description: 'No message available', redirectPath: null};
+      const feature = permissions.features && permissions.features[featureId] ?
+                      permissions.features[featureId]
+                      :
+                      {access: true, description: 'No message available', redirectPath: null};
       const {access, description, redirectPath} = feature;
       console.log('isAclAccessAllowed', this.featureIdList, access, description, redirectPath);
       if (!access){
-        const msg = description;
+        const msg =
+        'Please note that you can not access ' + feature?.featureName +' page at present. ' +
+        'Contact your system administrator to grant permission if you require access for ' + feature?.featureName +' page. ' +
+        'About the page : ' + description;
         const redirectionObj = {
           text: 'Ok',
           redirectPath: redirectPath ? redirectPath : '/'
         };
-        this.showAlert(msg, redirectionObj);
+        this.showAlert(msg, redirectPath ? redirectionObj : null);
       }
       // Now return false if access not allowed
       return !access;

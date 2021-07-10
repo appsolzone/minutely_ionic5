@@ -8,12 +8,15 @@ import { RiskUserCommentsPageRoutingModule } from './risk-user-comments-routing.
 
 import { RiskUserCommentsPage } from './risk-user-comments.page';
 
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    RiskUserCommentsPageRoutingModule
+    RiskUserCommentsPageRoutingModule,
+    FeatureCheckDirectiveModule
   ],
   declarations: [RiskUserCommentsPage]
 })

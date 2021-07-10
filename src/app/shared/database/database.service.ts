@@ -22,6 +22,7 @@ export class DatabaseService {
     coupons:"coupons",
     latestAlert:"latestAlerts",
     aclKpi: 'aclKpi',
+    roles: 'roles',
     meeting:'meetings',
     risk:'risks',
     task:'tasks',

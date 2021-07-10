@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Warning</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="">
+  <ion-row class="ion-align-items-center ion-justify-content-center ion-text-center" style="height: calc(100% - 8em);">
+    <ion-col size="1" size-md="3" size-xl>
+    </ion-col>
+    <ion-col>
+      <ion-icon class="" name="trail-sign" style="font-size: 4em;" color="warning"></ion-icon>
+      <ion-label class="ion-text-wrap">
+        <h1>Access Denied</h1>
+        <p>
+          Please note that you can not access <b>{{ data?.permission?.featureName ? data?.permission?.featureName : data?.url}}</b> page at present.
+          Contact your system administrator to grant permission if you require access for <b>{{ data?.permission?.featureName ? data?.permission?.featureName : data?.url}}</b> page.
+        </p>
+        <br/>
+        <p>
+          System administrator can grant access from <br/><b>Settings</b> <ion-icon name="arrow-forward-outline"></ion-icon>
+          <b>Manage roles</b>
+        </p>
+        <p>
+          Note that <b>Custom role based access</b> option needs to be enabled to edit roles.
+        </p>
+      </ion-label>
+    </ion-col>
+    <ion-col size="1" size-md="3" size-xl>
+    </ion-col>
+  </ion-row>
+
+</ion-content>

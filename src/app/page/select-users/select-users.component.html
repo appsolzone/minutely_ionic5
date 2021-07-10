@@ -40,6 +40,13 @@
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
+      <ion-item>
+        <ion-label *ngIf="showSelectAll && multiSelect" class="ion-text-end ion-margin-end">
+          <p>Select all</p>
+        </ion-label>
+        <ion-checkbox slot="end" [(ngModel)]="selectedAll" (ionChange)="onSelectAll($event)">
+        </ion-checkbox>
+      </ion-item>
       <ion-toolbar *ngIf="showAddNonPermUser">
         <div *ngIf="showAddTempUser">
           <ion-item>

@@ -15,71 +15,55 @@ export class AclService {
 
   constructor(
     private db: DatabaseService,
-    private componentsService: ComponentsService,
+    private common: ComponentsService,
     private router: Router
   ) { }
 
-  getRoleData(subscriberId){
-    return this.db.getDocumentSnapshotById(this.db.allCollections.subscribers, subscriberId);
+  getRoleData(queryObj:any[] = [], textSearchObj = null){
+    // return this.db.getDocumentSnapshotById(this.db.allCollections.subscribers, subscriberId);
+    return this.db.getAllDocumentsSnapshotByQuery(
+      this.db.allCollections.roles,
+      queryObj,
+      textSearchObj
+    );
   }
-    updateRole(subscriberId, queryObj){
-      this.db.updateDocument(this.db.allCollections.subscribers, subscriberId, queryObj);
 
-    }
+  async saveRole(roleObj){
+    const subscriberRef = this.db.afs.firestore
+      .collection(this.db.allCollections.subscribers)
+      .doc(roleObj.data.subscriberId);
+    return this.db.afs.firestore.runTransaction((transaction) => {
+      return transaction.get(subscriberRef).then(async (subsDoc) => {
+        if (subsDoc.exists) {
+          // since we have the subscriber doc
+          let subscriberData = subsDoc.data();
+          let roles = subscriberData.settings?.roles ? subscriberData.settings?.roles : [];
+          // Hardcoded system roles ADMIN and USER here to avoid any duplicate role created by the same name
+          // roles = ['ADMIN','USER', ...roles];
+          let roleRef: any;
+          console.log("subscriberData.settings", roleObj.data.roleName, roles, subscriberData.settings, subscriberData);
+          let idx = ['ADMIN','USER', ...roles].findIndex(r=>r.toLowerCase()==roleObj.data.roleName.toLowerCase());
+          if(idx != -1 && !roleObj.id){
+            return {status: 'error', title: 'Role exists', msg: 'Another role exists with the same role name "'+ roleObj.data.roleName +'". Please change the role name and try again.'}
+          } else {
 
-     async pageAccessCheck(url, permission, userRole){
-      return  this.permissionCheck(permission, userRole, url).then(feed => {
-        console.log('return0005', feed);
-        // let aclPermission = feed;
-        return feed;
+            if(!roleObj.id){
+              roles.push(roleObj.data.roleName);
+              let newroleObj = await this.db.generateDocuemnetRef(this.db.allCollections.roles);
+              roleRef = newroleObj.ref;
+            } else {
+              roleRef = this.db.afs.firestore
+                .collection(this.db.allCollections.roles)
+                .doc(roleObj.id);
+            }
 
+            transaction.set(roleRef,roleObj.data);
 
-
-      }).catch(err => {
-        console.log('return error005', false);
-
-
-
-        Object.keys(permission[userRole].permission).forEach(ftrKey => {
-          Object.keys(permission[userRole].permission[ftrKey].features).forEach(ftrKey2 => {
-          if (ftrKey2 == url){
-            this.aclPermission = permission[userRole].permission[ftrKey].features[url].access;
-            this.msgDescription = permission[userRole].permission[ftrKey].features[url].description;
-            this.redirectPath = permission[userRole].permission[ftrKey].features[url].redirectPath;
-
-
+            transaction.set(subscriberRef, {settings:{roles: roles}},{merge: true})
           }
-         });
-        });
-        return [this.aclPermission, this.msgDescription, this.redirectPath];
 
-
-      //  console.log('last data', aclPermission)
-
-
-      });
-     }
-
-
-
-
-     updateAclMode(e, subscriberId, dataObj){
-       this.db.updateDocument(this.db.allCollections.subscribers, subscriberId, dataObj);
-     }
-
-
-     async permissionCheck(permission, role, url){
-
-      const msgDescription = permission[role].permission[url].description;
-      const redirectPath = permission[role].permission[url].redirectPath;
-      console.log('url url', url);
-
-      return [permission[role].permission[url].access, msgDescription, redirectPath] ;
-
-    }
-
-
-    getFreeUserAclKpi(subscriberId){
-      return this.db.getDocumentSnapshotById(this.db.allCollections.aclKpi, subscriberId);
-    }
+        }
+      })
+    });
+  }
 }

@@ -8,12 +8,15 @@ import { IssueUserCommentsPageRoutingModule } from './issue-user-comments-routin
 
 import { IssueUserCommentsPage } from './issue-user-comments.page';
 
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    IssueUserCommentsPageRoutingModule
+    IssueUserCommentsPageRoutingModule,
+    FeatureCheckDirectiveModule
   ],
   declarations: [IssueUserCommentsPage]
 })

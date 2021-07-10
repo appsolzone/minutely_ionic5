@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController, ModalController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -7,10 +7,12 @@ import { AlertController, LoadingController, ToastController } from '@ionic/angu
 export class ComponentsService {
   loader: any;
   loderCount = 0;
+  public modal: any;
   constructor(
     public alertController: AlertController,
     public loadingController: LoadingController,
-    public toastController: ToastController
+    public toastController: ToastController,
+    public modalCtrl: ModalController,
     ) {}
 
 
@@ -18,6 +20,26 @@ export class ComponentsService {
   // this.componentService.presentAlert('Error','message');
   // this.componentService.presentAlert('Warning','message');
   // this.componentService.presentAlert('Alert','message');
+
+  async presentModal(modalComponent, componentProps: any ={}, onDismissCallback: any = null) {
+    this.modal = await this.modalCtrl.create({
+      component: modalComponent,
+      swipeToClose: true,
+      // presentingElement: this.routerOutlet.nativeEl,
+      componentProps: { ...componentProps }
+    });
+    await this.modal.present();
+
+    const { data } = await this.modal.onWillDismiss();
+    if (data && onDismissCallback) {
+      onDismissCallback(data);
+    }
+  }
+
+  async dismissModal(){
+    await this.modal.dismiss();
+    this.modal = null;
+  }
 
     async presentAlert(header, message, buttons?: any) {
 

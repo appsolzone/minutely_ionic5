@@ -49,8 +49,15 @@
 <ion-footer>
   <ion-item lines="none">
     <ion-buttons slot="end">
-      <ion-button slot="end" color="primary" (click)="addComment()" [disabled]="postedComment == ''">
+      <ion-button slot="end" color="primary" [disabled]="postedComment == ''"
+      (featureClick)="addComment()"
+      appFeatureCheck
+      [featureIdList]="['comments-log']"
+      >
         <ion-icon name="send"></ion-icon>
+      </ion-button>
+      <ion-button  slot="end" color="success" (click)="startSpeech('comments')">
+        <ion-icon slot="icon-only" name="mic"></ion-icon>
       </ion-button>
     </ion-buttons>
 

@@ -23,6 +23,11 @@
    Task title
   </ion-label>
   <ion-input readonly="true"></ion-input>
+  <ion-buttons slot="end">
+    <ion-button  slot="end" color="success" (click)="startSpeech('taskTitle')">
+      <ion-icon slot="icon-only" name="mic"></ion-icon>
+    </ion-button>
+  </ion-buttons>
 </ion-item>
 <ion-item>
   <ion-textarea required="true" autoGrow="true" wrap="soft" spellcheck="true" [(ngModel)]="taskDetails.taskTitle"

@@ -3,6 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { TaskPage } from './task.page';
 
+// authguard
+import { AuthguardService } from 'src/app/shared/authguard/authguard.service';
+
 const routes: Routes = [
   {
     path: '',
@@ -26,7 +29,9 @@ const routes: Routes = [
   },
   {
     path: 'create-task',
-    loadChildren: () => import('./create-task/create-task.module').then( m => m.CreateTaskPageModule)
+    loadChildren: () => import('./create-task/create-task.module').then( m => m.CreateTaskPageModule),
+    canLoad: [AuthguardService],
+    canActivate: [AuthguardService]
   },
   {
     path: 'comments',

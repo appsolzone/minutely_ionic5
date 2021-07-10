@@ -8,12 +8,15 @@ import { TaskUserCommentsPageRoutingModule } from './task-user-comments-routing.
 
 import { TaskUserCommentsPage } from './task-user-comments.page';
 
+import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/featurecheck.directive.module';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    TaskUserCommentsPageRoutingModule
+    TaskUserCommentsPageRoutingModule,
+    FeatureCheckDirectiveModule
   ],
   declarations: [TaskUserCommentsPage]
 })

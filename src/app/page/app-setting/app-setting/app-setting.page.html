@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Settings</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item lines="" class="ion-margin-top">
+    <ion-label class="ion-text-wrap">
+      <h2>Custom role based access</h2>
+      <p><small>Enabling this option will allow managing role based access of different modules for user groups</small></p>
+    </ion-label>
+    <ion-toggle *ngIf="sessionInfo?.orgProfile?.settings" [(ngModel)]="sessionInfo.orgProfile.settings.ACL" (ionChange)="updateSettings('ACL')"></ion-toggle>
+  </ion-item>
+  <ion-item *ngIf="sessionInfo?.orgProfile?.settings?.ACL" lines="" button="true" detail="true"
+    (click)="gotoManageRoles()"
+  >
+    <ion-label class="ion-text-wrap">
+      <h2>Manage roles</h2>
+      <p><small>Create new role from template, edit existing roles</small></p>
+    </ion-label>
+  </ion-item>
+  <ion-item lines="">
+    <ion-label class="ion-text-wrap">
+      <h2>Location information</h2>
+      <p><small>Enabling this option will collect location information for selected operations</small></p>
+    </ion-label>
+    <ion-toggle *ngIf="sessionInfo?.orgProfile?.settings" [(ngModel)]="sessionInfo.orgProfile.settings.location" (ionChange)="updateSettings('location')"></ion-toggle>
+  </ion-item>
+</ion-content>

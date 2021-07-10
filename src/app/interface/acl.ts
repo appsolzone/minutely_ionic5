@@ -20,7 +20,6 @@ export interface Permission {
   pathName: string; // end point name
   description: string; // description of the end point, this is to be used as message for access denied prompt
   access: boolean; // true => view access, false=> no access
-  features: Features;
 }
 
 export interface Permissions {
@@ -28,7 +27,9 @@ export interface Permissions {
 }
 
 export interface Acl {
-  roleName: string;
-  description: string;
-  permissions: Permissions;
+  subscriberId: string,
+  roleName: string,
+  description: string,
+  // permissions: Permissions;
+  features: Features,
 }

@@ -4,7 +4,7 @@ export interface User {
   name: string;
   email: string;
   phoneNumber?: string;
-  appRole: string;
+  role: string;
   jobTitle: string;
   status: string;
   address?: string;

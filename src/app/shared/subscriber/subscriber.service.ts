@@ -58,8 +58,8 @@ export class SubscriberService {
 
   async checkOrg(org, userProfile){
     // compare the subscription end date with the server time to ensure subscription is valid
-    const subscriptionEnd = new Date(org?.subscriptionEnd.toMillis());
-    const endDate =  new Date(org?.subscriptionEnd.toMillis() + (15 * 24 * 60 * 60 * 1000));
+    const subscriptionEnd = new Date(org?.subscriptionEnd?.seconds ? org?.subscriptionEnd?.seconds*1000 : org?.subscriptionEnd.toMillis());
+    const endDate =  new Date((org?.subscriptionEnd?.seconds ? org?.subscriptionEnd?.seconds*1000 : org?.subscriptionEnd.toMillis()) + (15 * 24 * 60 * 60 * 1000));
     const loginStart = await this.db.getServerTime(userProfile?.uid);
     const toDay = new Date(loginStart?.serverTime);
     const subsStatus = org?.subscriptionType.toUpperCase() == 'FREE' ?

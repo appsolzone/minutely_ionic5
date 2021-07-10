@@ -90,6 +90,11 @@ export class AddMemberPage implements OnInit,OnChanges {
        } else {
          this.router.navigate(['profile']);
        }
+       if(this.orgProfile?.settings?.roles && this.orgProfile?.settings?.ACL){
+         this.userRoles = [...this.AdminAddService.newMemberAddRoles, ...this.orgProfile?.settings?.roles];
+       } else {
+         this.userRoles = [...this.AdminAddService.newMemberAddRoles];
+       }
      });
   }
 

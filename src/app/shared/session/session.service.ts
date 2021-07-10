@@ -7,6 +7,8 @@ import { ManageuserService } from '../manageuser/manageuser.service';
 import { SubscriberService } from '../subscriber/subscriber.service';
 // import { Subscriber } from '../../../interface/subscriber';
 // import { User } from '../../../interface/user';
+import { appDefaultAclAclList } from 'src/app/shared/acl/appDefaultAclRole';
+import { AclService } from 'src/app/shared/acl/acl.service';
 import { PlanService } from '../plan/plan.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { KpiService } from '../kpi/kpi.service';
@@ -20,11 +22,13 @@ export class SessionService {
   session$ = new BehaviorSubject<any | undefined>(undefined);
   // Observable
   getProfileSubs$;
+  getRoleSubs$;
   getSubscriberSubs$;
   getPlanSubs$;
   getFreeLimitKpiSubs$;
   // network handler
   handler;
+  networkLoaderOn: boolean = false;
 
   constructor(
     private auth: AuthenticationService,
@@ -32,7 +36,8 @@ export class SessionService {
     private subscriber: SubscriberService,
     private plan: PlanService,
     private componentService: ComponentsService,
-    private aclKpi: KpiService
+    private aclKpi: KpiService,
+    private acl: AclService,
   ) {
     // initialise
     this.session$.next(undefined);
@@ -43,12 +48,16 @@ export class SessionService {
       // console.log("Network status changed", status);
       // this.patch({networkStatus: status});
       // if(!this.peek().networkStatus.connected){
-      if (!status.connected) {
+      if (!status.connected && !this.networkLoaderOn) {
+        this.networkLoaderOn = true;
         await componentService.showLoader(
           'Please check network connection, you are currently offline.'
         );
       } else {
-        setTimeout(() => componentService.hideLoader(), 300);
+        setTimeout(() =>{
+          componentService.hideLoader();
+          this.networkLoaderOn = false;
+        }, 300);
       }
     });
   }
@@ -63,7 +72,7 @@ export class SessionService {
   // this should be called inside authState call back before setting the subscriber/sessionInfo
   async getProfiles(uid, authUserData: any = null) {
     // clear the existing session$ values as we have logged in using a new uid
-    this.clear();
+    // this.clear();
     // log entries for user access time details
     if(authUserData) {
       this.user.processAuthData(authUserData);
@@ -100,10 +109,65 @@ export class SessionService {
           p.data.uid == sessionInfo?.uid && p.data.subscriberId == subscriberId
       );
       console.log('getUserProfile userProfile', userProfile);
+      let role = userProfile[0]?.data ? userProfile[0]?.data.role : 'USER';
+      let roleIdx = appDefaultAclAclList.findIndex(r=>r.roleName==role);
+      if(roleIdx!=-1){
+        this.patch({
+          permissions: {...appDefaultAclAclList[roleIdx]}
+        })
+      } else {
+        // get the permissions for the role
+        this.getRoleDetails(userProfile[0].data);
+      }
       return userProfile[0];
     } else {
       return { id: undefined, data: undefined };
     }
+  }
+
+  // get permissions for the role
+  async getRoleDetails(userProfile){
+    if (this.getRoleSubs$?.unsubscribe) {
+      await this.getRoleSubs$.unsubscribe();
+    }
+    const { role, subscriberId } = userProfile;
+    let queryObj=[
+      {field: 'subscriberId', operator: '==', value: subscriberId},
+      {field: 'roleName', operator: '==', value: role}
+    ];
+    this.getRoleSubs$ = this.acl
+      .getRoleData(queryObj)
+      .subscribe((sub) => {
+        //// console.log("subscribed up", data.userData, this.userData);
+        const allRoleData = sub.map((a: any) => {
+          const data = a.payload.doc.data();
+          const id = a.payload.doc.id;
+          return { id, data };
+        });
+        if(allRoleData.length > 0){
+          console.log("setting permission inside get role");
+          let sessionInfo = this.peek();
+          console.log("setting permission inside get role", sessionInfo, sessionInfo?.orgProfile?.settings?.ACL,allRoleData[0].data.features.admin.access,allRoleData[0].data.features.settings.access);
+          if(sessionInfo?.orgProfile?.settings?.ACL){
+            this.patch({
+              permissions: allRoleData[0].data,
+            });
+          } else {
+            // if sessionInfo.settings.ACL is turned off and role is not USER or ADMIN, set the default role as USER
+            let role = (userProfile.role == 'ADMIN' || allRoleData[0].data.features.admin.access || allRoleData[0].data.features.settings.access) ? 'ADMIN' : 'USER';
+            console.log("setting permission inside get role value of role ", role);
+            let roleIdx = appDefaultAclAclList.findIndex(r=>r.roleName==role);
+            let permissions:any ={};
+            if(roleIdx!=-1){
+              permissions =  {...appDefaultAclAclList[roleIdx]}
+            }
+            this.patch({
+              permissions: permissions,
+            });
+          }
+
+        }
+      });
   }
 
   // get User profile
@@ -120,7 +184,9 @@ export class SessionService {
   // get subscriber data
   async getSubscriberProfile(subscriberId) {
     // check if the new subscriber id is selected or it is existing subscriber id
-    if (subscriberId != this.peek()?.subscriberId) {
+    // or the source is localstorage
+    let sessionInfo = this.peek();
+    if (subscriberId != sessionInfo?.subscriberId || sessionInfo?.source == 'localstorage') {
       if (this.getSubscriberSubs$?.unsubscribe) {
         await this.getSubscriberSubs$.unsubscribe();
       }
@@ -143,6 +209,11 @@ export class SessionService {
             const id = a.payload.doc.id;
             return { id, data };
           });
+          Object.assign(
+              allSubData[0].data,
+              // patch settings for older versions
+              {settings: allSubData[0].data?.settings ? allSubData[0].data?.settings : {}}
+            );
 
           console.log('allSubData', allSubData);
 
@@ -179,12 +250,34 @@ export class SessionService {
             // }
 
             // plan has not changed so just patch the session data
-            this.patch({
-              subscriberId,
-              userProfile: data,
-              userProfileDocId: id,
-              orgProfile: allSubData[0].data,
-            });
+            let sessionInfo = this.peek();
+            console.log("sessionInfo inside get subscriber", sessionInfo, sessionInfo?.orgProfile?.settings?.ACL);
+            if(sessionInfo?.orgProfile?.settings?.ACL){
+              this.patch({
+                subscriberId,
+                userProfile: data,
+                userProfileDocId: id,
+                orgProfile: allSubData[0].data,
+                source: 'firebase'
+              });
+            } else {
+              // if sessionInfo.settings.ACL is turned off and role is not USER or ADMIN, set the default role as USER
+              let role = data.role=='USER' || data.role == 'ADMIN' ? data.role : 'USER';
+              let roleIdx = appDefaultAclAclList.findIndex(r=>r.roleName==role);
+              let permissions:any ={};
+              if(roleIdx!=-1){
+                permissions =  {...appDefaultAclAclList[roleIdx]}
+              }
+              this.patch({
+                subscriberId,
+                userProfile: data,
+                userProfileDocId: id,
+                orgProfile: allSubData[0].data,
+                permissions,
+                source: 'firebase'
+              });
+            }
+
           }
         });
     }
@@ -233,15 +326,38 @@ export class SessionService {
           //                         freeLimitObj
           //                       );
           // }
-          this.patch({
-            subscriberId: subscriberId
-              ? subscriberId
-              : currentSession?.subscriberId,
-            orgProfile: orgProfile ? orgProfile : currentSession?.orgProfile,
-            orgPlan: allPlanData[0]?.data,
-            userProfile: data,
-            userProfileDocId: id,
-          });
+          let sessionInfo = this.peek();
+          console.log("sessionInfo inside get plan", sessionInfo, sessionInfo?.orgProfile?.settings?.ACL);
+          if(sessionInfo?.orgProfile?.settings?.ACL){
+            this.patch({
+              subscriberId: subscriberId
+                ? subscriberId
+                : currentSession?.subscriberId,
+              orgProfile: orgProfile ? orgProfile : currentSession?.orgProfile,
+              orgPlan: allPlanData[0]?.data,
+              userProfile: data,
+              userProfileDocId: id,
+            });
+          } else {
+            // if sessionInfo.settings.ACL is turned off and role is not USER or ADMIN, set the default role as USER
+            let role = data.role=='USER' || data.role == 'ADMIN' ? data.role : 'USER';
+            let roleIdx = appDefaultAclAclList.findIndex(r=>r.roleName==role);
+            let permissions:any ={};
+            if(roleIdx!=-1){
+              permissions =  {...appDefaultAclAclList[roleIdx]}
+            }
+            this.patch({
+              subscriberId: subscriberId
+                ? subscriberId
+                : currentSession?.subscriberId,
+              orgProfile: orgProfile ? orgProfile : currentSession?.orgProfile,
+              orgPlan: allPlanData[0]?.data,
+              userProfile: data,
+              userProfileDocId: id,
+              permissions
+            });
+          }
+
         });
     }
   }
@@ -280,13 +396,35 @@ export class SessionService {
   // get geolocation
   async getCurrentPosition() {
     try {
-      const coordinates = await Geolocation.getCurrentPosition();
+      let sessionInfo = this.peek();
+      let coordinates: any = {};
+      if(sessionInfo?.orgProfile?.settings?.location){
+        coordinates = await Geolocation.getCurrentPosition();
+      } else {
+        coordinates = {
+          coords: {
+            latitude: null,
+            longitude: null,
+            altitude: null,
+            accuracy: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+          },
+          narration: 'Settings for location is turned off'
+        };
+      }
+
       // console.log('Current', coordinates);
       return coordinates;
     } catch (error) {
       // this.componentService.presentAlert("Error","Please note that location can not be determined. Check location service is on and permission is given to the app from settings.");
       return undefined;
     }
+  }
+
+  async setLastSessionInfo(sessionInfo){
+    await this.patch({...sessionInfo});
   }
 
   watch() {

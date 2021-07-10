@@ -55,7 +55,7 @@ export class MeetingPage implements OnInit,OnDestroy {
         this.kpi.initialiseKpi(value);
       }
       this.sessionInfo = value;
-      if(!this.sessionInfo){
+      if(!this.sessionInfo || !this.sessionInfo?.userProfile?.uid){
         this.router.navigate(['profile']);
       }
     });

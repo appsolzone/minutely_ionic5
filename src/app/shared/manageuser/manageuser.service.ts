@@ -16,7 +16,7 @@ export class ManageuserService {
                       name: '',
                       email: '',
                       phoneNumber: '',
-                      appRole: '',
+                      role: '',
                       jobTitle: '',
                       status: '',
                       address: '',
