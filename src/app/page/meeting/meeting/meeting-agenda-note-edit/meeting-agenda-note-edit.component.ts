@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { SpeechService } from 'src/app/shared/speech/speech.service';
 
 @Component({
   selector: 'app-meeting-agenda-note-edit',
@@ -11,7 +12,9 @@ export class MeetingAgendaNoteEditComponent implements OnInit {
   // form data
   public meetingDetails: any;
 
-  constructor() { }
+  constructor(
+    private speech: SpeechService,
+  ) { }
 
   ngOnInit() {
     this.meetingDetails = this.meeting?.data;
@@ -19,6 +22,13 @@ export class MeetingAgendaNoteEditComponent implements OnInit {
 
   ngOnChanges() {
     this.meetingDetails = this.meeting?.data;
+  }
+
+  async startSpeech(type){
+    let res = await this.speech.startListening('What would you like to add as ' + type);
+    if(res?.text){
+      this.meetingDetails[type] += (' ' + res.text);
+    }
   }
 
 }

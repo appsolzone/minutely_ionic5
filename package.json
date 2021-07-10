@@ -21,6 +21,7 @@
     "@angular/platform-browser-dynamic": "~10.0.0",
     "@angular/router": "~10.0.0",
     "@capacitor-community/firebase-analytics": "^0.3.2",
+    "@capacitor-community/speech-recognition": "0.0.4",
     "@capacitor/android": "^2.4.5",
     "@capacitor/core": "2.4.5",
     "@codetrix-studio/capacitor-google-auth": "^2.1.3",

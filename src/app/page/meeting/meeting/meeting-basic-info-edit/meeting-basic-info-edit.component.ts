@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { ComponentsService } from 'src/app/shared/components/components.service';
+import { SpeechService } from 'src/app/shared/speech/speech.service';
 
 @Component({
   selector: 'app-meeting-basic-info-edit',
@@ -31,7 +32,8 @@ export class MeetingBasicInfoEditComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private common: ComponentsService
+    private common: ComponentsService,
+    private speech: SpeechService,
   ) { }
 
   ngOnInit() {
@@ -189,6 +191,13 @@ export class MeetingBasicInfoEditComponent implements OnInit {
       } else {
         this.meetingDetails.status=status;
       }
+  }
+
+  async startSpeech(type){
+    let res = await this.speech.startListening('What would you like to add as meeting title');
+    if(res?.text){
+      this.meetingDetails[type] += (' ' + res.text);
+    }
   }
 
 }

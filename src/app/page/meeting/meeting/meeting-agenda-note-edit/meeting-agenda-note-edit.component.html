@@ -5,6 +5,11 @@
       Agenda
     </ion-label>
     <ion-input readonly="true"></ion-input>
+    <ion-buttons slot="end">
+      <ion-button  slot="end" color="success" (click)="startSpeech('agendas')">
+        <ion-icon slot="icon-only" name="mic"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-item>
   <ion-item lines="none">
     <ion-textarea autoGrow="true" wrap="soft" [(ngModel)]="meetingDetails.agendas" [value]="meetingDetails?.agendas"  color="medium"
@@ -21,6 +26,11 @@
       Notes
     </ion-label>
     <ion-input  readonly="true"></ion-input>
+    <ion-buttons slot="end">
+      <ion-button  slot="end" color="success" (click)="startSpeech('notes')">
+        <ion-icon slot="icon-only" name="mic"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-item>
   <ion-item lines="none">
     <ion-textarea autoGrow="true" wrap="soft" [(ngModel)]="meetingDetails.notes" [value]="meetingDetails?.notes" color="medium"
