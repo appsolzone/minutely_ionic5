@@ -1,0 +1,98 @@
+export const newMeetingMockData = {
+  meetingTitle: "",
+  meetingStart: null,
+  meetingEnd: null,
+  status: "OPEN",
+  subscriberId: "",
+  ownerId: {
+    name: "",
+    uid: "",
+    subscriberId: "",
+    picUrl: "",
+  },
+  meetingPlace: {
+    from: null,
+    url: null,
+  },
+  callList: "",
+  tags: [],
+
+  attendeeList: [],
+  attendeeUidList: [],
+  notes: "",
+  agendas: "",
+  searchMap: {},
+
+  eventSequenceId: 1,
+  isOccurence: false,
+  occurenceType: "daily",
+  noOfOccurence: 1,
+  weekdays: [false, false, false, false, false, false, false],
+  eventId: null,
+  updatedAt: null,
+};
+export const meetingDetailsMockData = {
+  meetingTitle: "Meeting mock data title",
+  meetingStart: new Date(),
+  meetingEnd: new Date(),
+  status: "OPEN",
+  subscriberId: "ACLTEST123",
+  ownerId: {
+    name: "Arnab dutta",
+    uid: "abcd1234",
+    subscriberId: "ACLTEST123",
+    picUrl: "",
+  },
+  meetingPlace: "",
+  callList: "",
+  tags: ["meeting", "mock", "testing"],
+
+  attendeeList: [
+    {
+      name: "Amit dutta",
+      uid: "abcd1235",
+      subscriberId: "ACLTEST123",
+      picUrl: "",
+      attendance: null,
+      accepted: null,
+    },
+    {
+      name: "Arjun dutta",
+      uid: "abcd1236",
+      subscriberId: "ACLTEST123",
+      picUrl: "",
+      attendance: "absent",
+      accepted: "accept",
+    },
+    {
+      name: "Umi dutta",
+      uid: "abcd1237",
+      subscriberId: "ACLTEST123",
+      picUrl: "",
+      attendance: "present",
+      accepted: "accept",
+    },
+    {
+      name: "Sharmista dutta",
+      uid: "abcd1238",
+      subscriberId: "ACLTEST123",
+      picUrl: "",
+      attendance: null,
+      accepted: "decline",
+    },
+  ],
+  attendeeUidList: ["abcd1234", "abcd1235", "abcd1236"],
+  notes:
+    "This is the mock testing meeting note where noting should me mentions any credantial information.",
+  agendas:
+    "This is the mock testing meeting note where agenda should be clarify all the test cases is reported.",
+  searchMap: {},
+
+  eventSequenceId: 1,
+  isOccurence: false,
+  occurenceType: "daily",
+  noOfOccurence: 1,
+  weekdays: [false, false, false, false, false, false, false],
+  eventId: null,
+  updatedAt: null,
+};

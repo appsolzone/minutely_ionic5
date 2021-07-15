@@ -1,12 +1,11 @@
-<ion-item >
+<ion-item>
   <ion-label>
     <ion-icon name="bookmark"></ion-icon>
     Status
   </ion-label>
   <ion-button slot="end"
     [color]="meetingDetails?.status=='OPEN'? 'warning' : meetingDetails?.status=='COMPLETED' ? 'green' : 'danger'"
-    class="ion-padding-start ion-padding-end"
-    >
+    class="ion-padding-start ion-padding-end">
     {{meetingDetails?.status}}
   </ion-button>
 </ion-item>
@@ -15,14 +14,13 @@
     <ion-icon name="person-circle"></ion-icon>
     Organiser
   </ion-label>
-  <ion-input  readonly="true" type="text" [value]="meetingDetails?.ownerId.name" class="ion-text-end"  color="medium">
+  <ion-input readonly="true" type="text" [value]="meetingDetails?.ownerId.name" class="ion-text-end" color="medium">
   </ion-input>
 </ion-item>
 <ion-item>
   <ion-avatar slot="start">
-    <img
-      src="{{(meetingDetails?.ownerId.picUrl) ? meetingDetails?.ownerId.picUrl : 'assets/shapes.svg'}}"
-      (error)="profileImgErrorHandler(meetingDetails?.ownerId)"/>
+    <img src="{{(meetingDetails?.ownerId.picUrl) ? meetingDetails?.ownerId.picUrl : 'assets/shapes.svg'}}"
+      (error)="profileImgErrorHandler(meetingDetails?.ownerId)" />
   </ion-avatar>
   <ion-label>
     <h3>{{meetingDetails?.ownerId.name}}</h3>
@@ -30,22 +28,27 @@
   </ion-label>
 </ion-item>
 
-<ion-item >
-  <ion-label><ion-icon name="people-circle"></ion-icon> Attendees</ion-label>
+<ion-item>
+  <ion-label>
+    <ion-icon name="people-circle"></ion-icon> Attendees
+  </ion-label>
 </ion-item>
 <ion-list>
-  <ion-item *ngFor="let data of meetingDetails?.attendeeList; let i = index;let c = count;" [lines]="i==c-1 ? 'none' : '' ">
+  <ion-item *ngFor="let data of meetingDetails?.attendeeList; let i = index;let c = count;"
+    [lines]="i==c-1 ? 'none' : '' ">
     <ion-avatar slot="start">
-      <img
-        src="{{(data.picUrl) ? data.picUrl : 'assets/shapes.svg'}}"
-        (error)="profileImgErrorHandler(data)"/>
+      <img src="{{(data.picUrl) ? data.picUrl : 'assets/shapes.svg'}}" (error)="profileImgErrorHandler(data)" />
     </ion-avatar>
     <ion-label>
       <h3>{{data.name}}</h3>
       <p><small>{{data.email}}</small></p>
     </ion-label>
-    <ion-icon name="today" slot="end" [color]="data.accepted=='accept' ? 'success' : data.accepted=='decline' ? 'danger' : 'medium'" size="small"></ion-icon>
-    <ion-icon name="finger-print" slot="end" [color]="data.attendance=='present' ? 'success' : data.attendance=='absent' ? 'danger' : 'medium'"  size="small"></ion-icon>
+    <ion-icon name="today" slot="end"
+      [color]="data.accepted=='accept' ? 'success' : data.accepted=='decline' ? 'danger' : 'medium'" size="small"
+      class="meetingInviteAcceptDecline"></ion-icon>
+    <ion-icon name="finger-print" slot="end"
+      [color]="data.attendance=='present' ? 'success' : data.attendance=='absent' ? 'danger' : 'medium'" size="small"
+      class="meetingAttendencePresentAbsent"></ion-icon>
     <!-- <ion-buttons slot="end">
       <ion-button slot="end" [color]="data.accepted=='accept' ? 'success' : data.accepted=='decline' ? 'danger' : 'medium'">
         <ion-icon name="today" slot="icon-only"></ion-icon>
