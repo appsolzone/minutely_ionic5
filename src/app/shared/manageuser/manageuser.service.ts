@@ -3,6 +3,7 @@ import { DatabaseService } from '../database/database.service';
 import { User } from '../../interface/user';
 import { ComponentsService } from '../components/components.service';
 import { SendEmailService } from '../send-email/send-email.service';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root'
@@ -86,14 +87,17 @@ export class ManageuserService {
 
   processAuthData(userData){
     const { displayName, email, phoneNumber } = userData.providerData[0];
+    let creationTime = userData.metadata?.creationTime;
     let uid = userData.uid;
-    console.log("authUserData", userData);
+    console.log("authUserData", userData, new Date( creationTime), creationTime);
     let newuseruids = {
       uid: uid,
       name: displayName,
       email,
       phoneNumber: phoneNumber ? phoneNumber : '',
-      lastAccessTimeStamp: this.db.frb.firestore.FieldValue.serverTimestamp()
+      lastAccessTimeStamp: this.db.frb.firestore.FieldValue.serverTimestamp(),
+      creationTime: creationTime? new Date(creationTime) : null,
+      [Capacitor.platform] : this.db.frb.firestore.FieldValue.increment(1),
     };
     this.db.setDocument(
       this.db.allCollections.useruids,
