@@ -6,29 +6,25 @@
 
 <ion-content>
   <ion-row>
-    <ion-col size="12"  size-md="4" size-lg="5" size-xl="6">
+    <ion-col size="12" size-md="4" size-lg="5" size-xl="6">
       <ion-row>
         <ion-col size="12">
-          <app-kpi *ngIf="sessionInfo?.userProfile"></app-kpi>
+          <app-kpi *ngIf="sessionInfo?.userProfile" #kpiComponent (viewSummeryGuide)="viewTourGuide($event)"></app-kpi>
         </ion-col>
         <ion-col size="12" class="ion-hide-lg-down">
-          <app-meeting-list viewMode="upcoming"></app-meeting-list>
+          <app-meeting-list viewMode="upcoming" #meetingList></app-meeting-list>
         </ion-col>
       </ion-row>
     </ion-col>
     <ion-col size="12" size-md="8" size-lg="7" size-xl="6">
-      <app-meeting-list viewMode="upcoming" class="ion-hide-lg-up"></app-meeting-list>
-    <!-- </ion-col>
+      <app-meeting-list viewMode="upcoming" class="ion-hide-lg-up" #meetingList></app-meeting-list>
+      <!-- </ion-col>
     <ion-col size="12" size-md="8" size-lg="7" size-xl="6"> -->
-      <app-meeting-list class="ion-hide-lg-down"></app-meeting-list>
+      <app-meeting-list class="ion-hide-lg-down" #meetingList></app-meeting-list>
     </ion-col>
   </ion-row>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button  size="small"
-    (featureClick)="gotoAddMeeting()"
-    appFeatureCheck
-    [featureIdList]="['create-meeting']"
-    >
+    <ion-fab-button size="small" (featureClick)="gotoAddMeeting()" appFeatureCheck [featureIdList]="['create-meeting']">
       <ion-icon name="add" size="large"></ion-icon>
     </ion-fab-button>
   </ion-fab>

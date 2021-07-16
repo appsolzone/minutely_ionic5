@@ -1,11 +1,12 @@
 <ion-tabs>
 
   <ion-tab-bar slot="bottom">
-    <ion-tab-button [tab]="p.tab" *ngFor="let p of appPages; let i = index" [class]="i>4 ? 'ion-hide-lg-down' : ''" [disabled]="p.disabled">
+    <ion-tab-button [tab]="p.tab" *ngFor="let p of appPages; let i = index" [class]="i>4 ? 'ion-hide-lg-down' : ''"
+      [disabled]="p.disabled"
+      [ngClass]="p.title=='Task'||p.title=='Issue'||p.title=='Risk'?'taskIssueRiskNav':p.title=='Alerts'?'notificationNav':''">
       <ion-icon [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
       <ion-label>{{ p.title }}</ion-label>
     </ion-tab-button>
-
   </ion-tab-bar>
 
 </ion-tabs>

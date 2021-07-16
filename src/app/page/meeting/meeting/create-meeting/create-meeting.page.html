@@ -10,20 +10,18 @@
 <ion-content>
   <ion-row>
     <ion-col size="12" class="ion-padding-top">
-      <ion-segment mode="ios"
-        [(ngModel)]="showSection"
-        (ionChange)="sectionChanged($event)">
-        <ion-segment-button value="BASICINFO" layout="icon-start">
+      <ion-segment mode="ios" [(ngModel)]="showSection" (ionChange)="sectionChanged($event)">
+        <ion-segment-button value="BASICINFO" layout="icon-start" class="meetingSchedule">
           <ion-label>Schedule</ion-label>
           <ion-icon name="calendar" size="small"></ion-icon>
         </ion-segment-button>
-        <ion-segment-button value="ATTENDEES" layout="icon-start">
+        <ion-segment-button value="ATTENDEES" layout="icon-start" class="attendee">
           <ion-label>Attendees</ion-label>
-          <ion-icon name="people-circle"  size="small"></ion-icon>
+          <ion-icon name="people-circle" size="small"></ion-icon>
         </ion-segment-button>
-        <ion-segment-button value="AGENDA" layout="icon-start">
+        <ion-segment-button value="AGENDA" layout="icon-start" class="agendaNotes">
           <ion-label>Agenda</ion-label>
-          <ion-icon name="document-text"  size="small"></ion-icon>
+          <ion-icon name="document-text" size="small"></ion-icon>
         </ion-segment-button>
         <ion-segment-button value="LOCATION" layout="icon-start">
           <ion-label>Location</ion-label>
@@ -33,31 +31,36 @@
     </ion-col>
     <ion-col size="12" size-lg="8" class="ion-margin-top">
       <!-- <ion-card class="ion-no-padding ion-no-margin"> -->
-        <app-meeting-basic-info-edit *ngIf="showSection=='BASICINFO' && sessionInfo && meeting" editMode="create" [meeting]="meeting" [sessionInfo]="sessionInfo" [refInformation]="refInformation"></app-meeting-basic-info-edit>
+      <app-meeting-basic-info-edit *ngIf="showSection=='BASICINFO' && sessionInfo && meeting" editMode="create"
+        [meeting]="meeting" [sessionInfo]="sessionInfo" [refInformation]="refInformation"></app-meeting-basic-info-edit>
       <!-- </ion-card> -->
-        <app-meeting-location-edit *ngIf="showSection=='LOCATION' && sessionInfo && meeting" editMode="create" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-location-edit>
-        <app-meeting-attendees-edit *ngIf="showSection=='ATTENDEES' && sessionInfo && meeting" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-attendees-edit>
-        <app-meeting-agenda-note-edit *ngIf="showSection=='AGENDA' && sessionInfo && meeting" [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-agenda-note-edit>
-        <ion-toolbar class="ion-no-margin ion-no-padding ion-margin-top">
-          <ion-item class="ion-margin-top ion-margin-bottom" color="transparent" lines="none">
-          </ion-item>
-          <ion-item class="ion-no-padding ion-margin-top ion-margin-bottom" color="transparent" lines="none">
-            <ion-buttons slot="start" *ngIf="showSection!='BASICINFO'">
-              <ion-button slot="start" color="primary" (click)="gotoSection('back')">
-                <ion-icon slot="icon-only"  size="large" name="arrow-back"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-            <ion-buttons slot="end" *ngIf="showSection!='LOCATION'">
-              <ion-button slot="end" color="primary" (click)="gotoSection('forward')">
-                <ion-icon slot="icon-only" size="large" name="arrow-forward"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-            <ion-button *ngIf="showSection=='LOCATION'" slot="end" color="primary" fill="solid" size="default" (click)="saveMeeting()">
-              <ion-icon slot="start" name="checkmark-done"></ion-icon>
-               Save
+      <app-meeting-location-edit *ngIf="showSection=='LOCATION' && sessionInfo && meeting" editMode="create"
+        [meeting]="meeting" [sessionInfo]="sessionInfo"></app-meeting-location-edit>
+      <app-meeting-attendees-edit *ngIf="showSection=='ATTENDEES' && sessionInfo && meeting" [meeting]="meeting"
+        [sessionInfo]="sessionInfo"></app-meeting-attendees-edit>
+      <app-meeting-agenda-note-edit *ngIf="showSection=='AGENDA' && sessionInfo && meeting" [meeting]="meeting"
+        [sessionInfo]="sessionInfo"></app-meeting-agenda-note-edit>
+      <ion-toolbar class="ion-no-margin ion-no-padding ion-margin-top">
+        <ion-item class="ion-margin-top ion-margin-bottom" color="transparent" lines="none">
+        </ion-item>
+        <ion-item class="ion-no-padding ion-margin-top ion-margin-bottom" color="transparent" lines="none">
+          <ion-buttons slot="start" *ngIf="showSection!='BASICINFO'">
+            <ion-button slot="start" color="primary" (click)="gotoSection('back')">
+              <ion-icon slot="icon-only" size="large" name="arrow-back"></ion-icon>
             </ion-button>
-          </ion-item>
-        </ion-toolbar>
+          </ion-buttons>
+          <ion-buttons slot="end" *ngIf="showSection!='LOCATION'">
+            <ion-button slot="end" color="primary" (click)="gotoSection('forward')">
+              <ion-icon slot="icon-only" size="large" name="arrow-forward"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-button *ngIf="showSection=='LOCATION'" slot="end" color="primary" fill="solid" size="default"
+            (click)="saveMeeting()">
+            <ion-icon slot="start" name="checkmark-done"></ion-icon>
+            Save
+          </ion-button>
+        </ion-item>
+      </ion-toolbar>
     </ion-col>
     <ion-col size="12" size-lg="4" class="ion-hide-lg-down">
       <ion-card>
@@ -69,10 +72,18 @@
           </ion-item>
         </ion-card-header>
         <ion-card-content>
-          <p><ion-icon name="calendar"></ion-icon> Provide meeting schedule</p>
-          <p><ion-icon name="people-circle"></ion-icon> Add attendees as required</p>
-          <p><ion-icon name="document-text"></ion-icon> Add agenda, notes, if any</p>
-          <p><ion-icon name="call"></ion-icon> Add meeting url, dial-in, if any</p>
+          <p>
+            <ion-icon name="calendar"></ion-icon> Provide meeting schedule
+          </p>
+          <p>
+            <ion-icon name="people-circle"></ion-icon> Add attendees as required
+          </p>
+          <p>
+            <ion-icon name="document-text"></ion-icon> Add agenda, notes, if any
+          </p>
+          <p>
+            <ion-icon name="call"></ion-icon> Add meeting url, dial-in, if any
+          </p>
         </ion-card-content>
       </ion-card>
       <!-- <app-linkage *ngIf="sessionInfo && meeting" viewMode="edit" [selectedObject]="meeting" [sessionInfo]="sessionInfo" [alllinkages]="alllinkages" [editedlinkages]="editedlinkages"> </app-linkage> -->

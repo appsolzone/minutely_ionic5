@@ -1,4 +1,4 @@
-<ion-row *ngIf="kpiData">
+<ion-row *ngIf="kpiData" class="view_summery">
   <ion-col size="6" size-md *ngIf="kpiTypes.includes('meeting')" class="">
     <ion-card class="ion-no-padding ion-no-margin" button="true" (click)="gotoItemPage('meeting')">
       <ion-header mode="ios">
@@ -40,7 +40,7 @@
           </ion-item>
         </ion-toolbar>
       </ion-header>
-    </ion-card >
+    </ion-card>
   </ion-col>
   <ion-col size="6" size-md *ngIf="kpiTypes.includes('task')" class="">
     <ion-card class="ion-no-padding ion-no-margin" button="true" (click)="gotoItemPage('task')">
@@ -83,7 +83,7 @@
           </ion-item>
         </ion-toolbar>
       </ion-header>
-    </ion-card >
+    </ion-card>
   </ion-col>
   <ion-col size="6" size-md *ngIf="kpiTypes.includes('risk')" class="">
     <ion-card class="ion-no-padding ion-no-margin" button="true" (click)="gotoItemPage('risk')">
@@ -126,7 +126,7 @@
           </ion-item>
         </ion-toolbar>
       </ion-header>
-    </ion-card >
+    </ion-card>
   </ion-col>
   <ion-col size="6" size-md *ngIf="kpiTypes.includes('issue')" class="">
     <ion-card class="ion-no-padding ion-no-margin" button="true" (click)="gotoItemPage('issue')">
@@ -169,7 +169,7 @@
           </ion-item>
         </ion-toolbar>
       </ion-header>
-    </ion-card >
+    </ion-card>
   </ion-col>
   <ion-col size="12" *ngIf="kpiTypes.includes('riskMatrix')" class="">
     <ion-card class="ion-no-padding ion-no-margin">

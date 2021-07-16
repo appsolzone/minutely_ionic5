@@ -48,3 +48,28 @@
   background-color: var(--ion-color-primary) !important;
   border-radius: 5px;
 }
+body::after {
+  opacity: 0;
+}
+
+body.shepherd-active::after {
+  content: "";
+  display: block;
+  background-color: #000000;
+  opacity: 0.4;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000000;
+}
+
+.shepherd-element.shepherd-open,
+.shepherd-target.shepherd-enabled {
+  z-index: 10000000;
+  position: relative;
+}
+.shepherd-enabled.shepherd-element {
+  margin: 10px 0px;
+}
