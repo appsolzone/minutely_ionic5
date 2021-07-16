@@ -6,36 +6,34 @@
     </ion-label>
     <ion-input readonly="true"></ion-input>
     <ion-buttons slot="end">
-      <ion-button  slot="end" color="success" (click)="startSpeech('agendas')">
+      <ion-button slot="end" color="success" (click)="startSpeech('agendas')" class="agendaSpeech">
         <ion-icon slot="icon-only" name="mic"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-item>
   <ion-item lines="none">
-    <ion-textarea autoGrow="true" wrap="soft" [(ngModel)]="meetingDetails.agendas" [value]="meetingDetails?.agendas"  color="medium"
-      placeholder="Please enter meeting agenda here"
-    ></ion-textarea>
+    <ion-textarea autoGrow="true" wrap="soft" [(ngModel)]="meetingDetails.agendas" [value]="meetingDetails?.agendas"
+      color="medium" placeholder="Please enter meeting agenda here"></ion-textarea>
   </ion-item>
-  <br/>
+  <br />
 </ion-card>
-<br/>
+<br />
 <ion-card class="ion-no-padding ion-no-margin">
   <ion-item>
     <ion-label>
       <ion-icon name="create"></ion-icon>
       Notes
     </ion-label>
-    <ion-input  readonly="true"></ion-input>
+    <ion-input readonly="true"></ion-input>
     <ion-buttons slot="end">
-      <ion-button  slot="end" color="success" (click)="startSpeech('notes')">
+      <ion-button slot="end" color="success" (click)="startSpeech('notes')" class="notesSpeech">
         <ion-icon slot="icon-only" name="mic"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-item>
   <ion-item lines="none">
-    <ion-textarea autoGrow="true" wrap="soft" [(ngModel)]="meetingDetails.notes" [value]="meetingDetails?.notes" color="medium"
-    placeholder="Please add meeting notes here"
-    ></ion-textarea>
+    <ion-textarea autoGrow="true" wrap="soft" [(ngModel)]="meetingDetails.notes" [value]="meetingDetails?.notes"
+      color="medium" placeholder="Please add meeting notes here"></ion-textarea>
   </ion-item>
-  <br/>
+  <br />
 </ion-card>

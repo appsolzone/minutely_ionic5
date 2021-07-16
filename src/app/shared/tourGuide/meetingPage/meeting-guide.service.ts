@@ -81,8 +81,6 @@ export class MeetingGuideService {
     }
   }
 
-
-
   async createMeeting() {
     let featureSteps: ShepherdStep[] = [
       {
@@ -239,6 +237,59 @@ export class MeetingGuideService {
       this.common.sheperdInit(featureSteps);
       this.common.shepherdStart();
       this.common.setVisited("meetingLocationGuide");
+    }
+  }
+
+  public async meetingAgendaNotesSpeechGuide() {
+    let featureSteps: ShepherdStep[] = [
+      {
+        title: "Add Agenda with voice",
+        text: `Easily add meeting agenda with voice record tool`,
+        className: ".agendaSpeech",
+        isNext: true,
+        buttons: [
+          {
+            type: ShepherButton.Hide,
+            callBack: null,
+            classes: "shepherd-button-secondary",
+            text: "Skip",
+          },
+          {
+            type: ShepherButton.Next,
+            callBack: null,
+            classes: "null",
+            text: "Next",
+          },
+        ],
+      },
+      {
+        title: "Add notes using voice",
+        text: `Easily add meeting notes with voice record tool`,
+        className: ".notesSpeech",
+        isNext: true,
+        buttons: [
+          {
+            type: ShepherButton.Hide,
+            callBack: null,
+            classes: "shepherd-button-secondary",
+            text: "Skip",
+          },
+          {
+            type: ShepherButton.Next,
+            callBack: null,
+            classes: "null",
+            text: "Done",
+          },
+        ],
+      },
+    ];
+    let isVisited = await this.common.getVisited(
+      "meetingAgendaNotesSpeechGuide"
+    );
+    if (!isVisited) {
+      this.common.sheperdInit(featureSteps);
+      this.common.shepherdStart();
+      this.common.setVisited("meetingAgendaNotesSpeechGuide");
     }
   }
 }
