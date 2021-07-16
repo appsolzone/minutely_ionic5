@@ -13,15 +13,15 @@
       <ion-segment mode="ios"
         [(ngModel)]="showSection"
         (ionChange)="sectionChanged($event)">
-        <ion-segment-button value="BASICINFO" layout="icon-start">
+        <ion-segment-button value="BASICINFO" layout="icon-start" class="meetingSchedule">
           <ion-label>Schedule</ion-label>
           <ion-icon name="calendar" size="small"></ion-icon>
         </ion-segment-button>
-        <ion-segment-button value="ATTENDEES" layout="icon-start">
+        <ion-segment-button value="ATTENDEES" layout="icon-start" class="attendee">
           <ion-label>Attendees</ion-label>
           <ion-icon name="people-circle"  size="small"></ion-icon>
         </ion-segment-button>
-        <ion-segment-button value="AGENDA" layout="icon-start">
+        <ion-segment-button value="AGENDA" layout="icon-start" class="agendaNotes">
           <ion-label>Agenda</ion-label>
           <ion-icon name="document-text"  size="small"></ion-icon>
         </ion-segment-button>

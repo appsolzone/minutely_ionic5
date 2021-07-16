@@ -5,6 +5,7 @@ import { User } from 'src/app/interface/user';
 import { MinutelyKpiService } from 'src/app/shared/minutelykpi/minutelykpi.service';
 import { SessionService } from 'src/app/shared/session/session.service';
 import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
+import { MeetingGuideService } from 'src/app/shared/tourGuide/meetingPage/meeting-guide.service';
 
 @Component({
   selector: 'app-meeting',
@@ -22,16 +23,23 @@ export class MeetingPage implements OnInit,OnDestroy {
     private kpi: MinutelyKpiService,
     private session: SessionService,
     private analytics: AnalyticsService,
-  ) { }
+    private meetingguide: MeetingGuideService,
+  ) {
+    this.getSessionInfo();
+  }
 
   ngOnInit() {
-     this.getSessionInfo();
      this.collectAnalytics();
   }
 
   ngOnDestroy(){}
 
   ionViewDidEnter(){
+    if (!this.sessionInfo || !this.sessionInfo?.uid) {
+      this.router.navigate(['profile']);
+    } else {
+      this.meetingguide.meetingDashboardTour(this.gotoAddMeeting.bind(this));
+    }
     this.collectAnalytics();
   }
 

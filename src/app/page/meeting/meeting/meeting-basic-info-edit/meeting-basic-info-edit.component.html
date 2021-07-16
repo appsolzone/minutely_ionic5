@@ -27,7 +27,7 @@
   </ion-label>
   <ion-input readonly="true"></ion-input>
   <ion-buttons slot="end">
-    <ion-button  slot="end" color="success" (click)="startSpeech('meetingTitle')">
+    <ion-button  class="titleSpeech" slot="end" color="success" (click)="startSpeech('meetingTitle')">
       <ion-icon slot="icon-only" name="mic"></ion-icon>
     </ion-button>
   </ion-buttons>
@@ -61,12 +61,12 @@
     <p><small><ion-text color="warning">Tap or click on the tag you wish to remove from the list</ion-text></small></p>
   </ion-label>
 </ion-item>
-<ion-item class="">
+<ion-item>
   <ion-label>
     <ion-icon name="repeat" class="icons"></ion-icon>
     Recurring event
   </ion-label>
-  <ion-toggle slot="end"
+  <ion-toggle slot="end" class="recurrenceMeeting"
     [(ngModel)]="meetingDetails.isOccurence"
     ></ion-toggle>
 </ion-item>

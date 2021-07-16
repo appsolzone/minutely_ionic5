@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { Autounsubscribe } from 'src/app/decorator/autounsubscribe';
@@ -7,6 +7,7 @@ import { SessionService } from 'src/app/shared/session/session.service';
 import { MeetingService } from 'src/app/shared/meeting/meeting.service';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
+import { MeetingGuideService } from 'src/app/shared/tourGuide/meetingPage/meeting-guide.service';
 
 @Component({
   selector: 'app-create-meeting',
@@ -14,7 +15,7 @@ import { AnalyticsService } from 'src/app/shared/analytics/analytics.service';
   styleUrls: ['./create-meeting.page.scss'],
 })
 @Autounsubscribe()
-export class CreateMeetingPage implements OnInit {
+export class CreateMeetingPage implements OnInit, OnDestroy {
   // observables
   sessionSubs$;
   meetingsSubs$;
@@ -41,6 +42,7 @@ export class CreateMeetingPage implements OnInit {
     private meetingservice: MeetingService,
     private common: ComponentsService,
     private analytics: AnalyticsService,
+    private meetingguide: MeetingGuideService,
   ) {
     this.getSessionInfo();
   }
@@ -59,6 +61,17 @@ export class CreateMeetingPage implements OnInit {
                       };
         this.getMeeting({id:null,data:meeting});
     // }
+    this.collectAnalytics();
+  }
+
+  ionViewWillEnter(){
+    console.log("ionViewDidEnter meetingguide");
+    if (!this.sessionInfo || !this.sessionInfo?.uid) {
+      this.router.navigate(['profile']);
+    } else {
+      console.log("ionViewDidEnter meetingguide");
+      this.meetingguide.createMeeting();
+    }
     this.collectAnalytics();
   }
 

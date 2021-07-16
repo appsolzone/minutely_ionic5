@@ -9,7 +9,7 @@
     <ion-col size="12"  size-md="4" size-lg="5" size-xl="6">
       <ion-row>
         <ion-col size="12">
-          <app-kpi *ngIf="sessionInfo?.userProfile"></app-kpi>
+          <app-kpi *ngIf="sessionInfo?.userProfile" class="view_summery"></app-kpi>
         </ion-col>
         <ion-col size="12" class="ion-hide-lg-down">
           <app-meeting-list viewMode="upcoming"></app-meeting-list>
@@ -28,6 +28,7 @@
     (featureClick)="gotoAddMeeting()"
     appFeatureCheck
     [featureIdList]="['create-meeting']"
+    class="create_meeting"
     >
       <ion-icon name="add" size="large"></ion-icon>
     </ion-fab-button>
