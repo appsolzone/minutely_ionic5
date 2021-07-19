@@ -119,13 +119,14 @@ export class ComponentsService {
 
 
     // ============[ loader ]====================
-     async showLoader(message: string = 'Please wait!', duration: number = 0) {
+     async showLoader(message: string = 'Please wait!', duration: number = 0, spinner: any=null) {
         // console.log("this.loader requested for ", message);
         // if(!this.loader){
           console.log('creating this.loader for ', message, this.loderCount);
           this.loader = await this.loadingController.create({
             cssClass: 'my-custom-class',
             message,
+            spinner: spinner,
             duration // auto timeout limit
           });
 

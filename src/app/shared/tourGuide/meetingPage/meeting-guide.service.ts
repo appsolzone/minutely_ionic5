@@ -21,26 +21,26 @@ export class MeetingGuideService {
 
   public async meetingDashboardTour(openCreateMeeting: any) {
     let steps: ShepherdStep[] = [
-      {
-        title: "View Summary",
-        text: `View summary data with status, click on any to go to relevant sections`,
-        className: ".view_summery",
-        isNext: true,
-        buttons: [
-          {
-            type: ShepherButton.Hide,
-            callBack: null,
-            classes: "shepherd-button-secondary",
-            text: "Hide",
-          },
-          {
-            type: ShepherButton.Next,
-            callBack: null,
-            classes: null,
-            text: "Next",
-          },
-        ],
-      },
+      // {
+      //   title: "View Summary",
+      //   text: `View summary data with status, click on any to go to relevant sections`,
+      //   className: ".view_summery",
+      //   isNext: true,
+      //   buttons: [
+      //     {
+      //       type: ShepherButton.Hide,
+      //       callBack: null,
+      //       classes: "shepherd-button-secondary",
+      //       text: "Hide",
+      //     },
+      //     {
+      //       type: ShepherButton.Next,
+      //       callBack: null,
+      //       classes: null,
+      //       text: "Next",
+      //     },
+      //   ],
+      // },
       {
         title: "Create Meeting",
         text: `Click to create your own meeting`,
@@ -50,23 +50,23 @@ export class MeetingGuideService {
         // }_create_meeting`,
         isNext: false,
         buttons: [
-          // {
-          //   type: ShepherButton.Hide,
-          //   callBack: null,
-          //   classes: "shepherd-button-secondary",
-          //   text: "Skip",
-          // },
           {
-            type: ShepherButton.Back,
+            type: ShepherButton.Hide,
             callBack: null,
             classes: "shepherd-button-secondary",
-            text: "Back",
+            text: "Skip",
           },
+          // {
+          //   type: ShepherButton.Back,
+          //   callBack: null,
+          //   classes: "shepherd-button-secondary",
+          //   text: "Back",
+          // },
           {
             type: ShepherButton.Next,
             callBack: openCreateMeeting,
             classes: null,
-            text: "Next",
+            text: "Create Meeting",
           },
         ],
       },
@@ -83,10 +83,30 @@ export class MeetingGuideService {
 
   async createMeeting() {
     let featureSteps: ShepherdStep[] = [
+      // {
+      //   title: "Create Meeting",
+      //   text: `Provide the meeting Title, schedule etc`,
+      //   className: ".meetingSchedule",
+      //   isNext: false,
+      //   buttons: [
+      //     {
+      //       type: ShepherButton.Hide,
+      //       callBack: null,
+      //       classes: "shepherd-button-secondary",
+      //       text: "Skip",
+      //     },
+      //     {
+      //       type: ShepherButton.Next,
+      //       callBack: null,
+      //       classes: "null",
+      //       text: "Next",
+      //     },
+      //   ],
+      // },
       {
-        title: "Create Meeting",
-        text: `Provide the meeting Title, schedule etc`,
-        className: ".meetingSchedule",
+        title: "Meeting Title",
+        text: `Provide the meeting Title`,
+        className: ".meetingTitle",
         isNext: false,
         buttons: [
           {
@@ -135,38 +155,12 @@ export class MeetingGuideService {
         className: ".recurrenceMeeting",
         isNext: false,
         buttons: [
-          {
-            type: ShepherButton.Hide,
-            callBack: null,
-            classes: "shepherd-button-secondary",
-            text: "Skip",
-          },
-          {
-            type: ShepherButton.Back,
-            callBack: null,
-            classes: "shepherd-button-secondary",
-            text: "Back",
-          },
-          {
-            type: ShepherButton.Next,
-            callBack: null,
-            classes: "null",
-            text: "Next",
-          },
-        ],
-      },
-      {
-        title: "Add Attendee",
-        text: `Invite the members by selecting the members or add them/importing them from csv`,
-        className: ".attendee",
-        isNext: false,
-        buttons: [
-          {
-            type: ShepherButton.Hide,
-            callBack: null,
-            classes: "shepherd-button-secondary",
-            text: "Skip",
-          },
+          // {
+          //   type: ShepherButton.Hide,
+          //   callBack: null,
+          //   classes: "shepherd-button-secondary",
+          //   text: "Skip",
+          // },
           {
             type: ShepherButton.Back,
             callBack: null,
@@ -177,30 +171,56 @@ export class MeetingGuideService {
             type: ShepherButton.Next,
             callBack: null,
             classes: "null",
-            text: "Next",
+            text: "Hide",
           },
         ],
       },
-      {
-        title: "Set Agenda And Notes",
-        text: `Setup Agenda and Notes of meeting in advance. You can edit them later during the meeting also.`,
-        className: ".agendaNotes",
-        isNext: false,
-        buttons: [
-          {
-            type: ShepherButton.Back,
-            callBack: null,
-            classes: "shepherd-button-secondary",
-            text: "Back",
-          },
-          {
-            type: ShepherButton.Next,
-            callBack: null,
-            classes: "null",
-            text: "Done",
-          },
-        ],
-      },
+      // {
+      //   title: "Add Attendee",
+      //   text: `Invite the members by selecting the members or add them/importing them from csv`,
+      //   className: ".attendee",
+      //   isNext: false,
+      //   buttons: [
+      //     {
+      //       type: ShepherButton.Hide,
+      //       callBack: null,
+      //       classes: "shepherd-button-secondary",
+      //       text: "Skip",
+      //     },
+      //     {
+      //       type: ShepherButton.Back,
+      //       callBack: null,
+      //       classes: "shepherd-button-secondary",
+      //       text: "Back",
+      //     },
+      //     {
+      //       type: ShepherButton.Next,
+      //       callBack: null,
+      //       classes: "null",
+      //       text: "Next",
+      //     },
+      //   ],
+      // },
+      // {
+      //   title: "Set Agenda And Notes",
+      //   text: `Setup Agenda and Notes of meeting in advance. You can edit them later during the meeting also.`,
+      //   className: ".agendaNotes",
+      //   isNext: false,
+      //   buttons: [
+      //     {
+      //       type: ShepherButton.Back,
+      //       callBack: null,
+      //       classes: "shepherd-button-secondary",
+      //       text: "Back",
+      //     },
+      //     {
+      //       type: ShepherButton.Next,
+      //       callBack: null,
+      //       classes: "null",
+      //       text: "Done",
+      //     },
+      //   ],
+      // },
     ];
     let isVisited = await this.common.getVisited("createMeetingGuide");
     if (!isVisited) {
@@ -210,86 +230,86 @@ export class MeetingGuideService {
     }
   }
   public async meetingLocation() {
-    let featureSteps: ShepherdStep[] = [
-      {
-        title: "Meeting Location",
-        text: `Provide Zoom, Meet, Skype link etc and login to that platform from here.`,
-        className: ".meetingLocation",
-        isNext: false,
-        buttons: [
-          {
-            type: ShepherButton.Hide,
-            callBack: null,
-            classes: "shepherd-button-secondary",
-            text: "Skip",
-          },
-          {
-            type: ShepherButton.Next,
-            callBack: null,
-            classes: "null",
-            text: "Done",
-          },
-        ],
-      },
-    ];
-    let isVisited = await this.common.getVisited("meetingLocationGuide");
-    if (!isVisited) {
-      this.common.sheperdInit(featureSteps);
-      this.common.shepherdStart();
-      this.common.setVisited("meetingLocationGuide");
-    }
+    // let featureSteps: ShepherdStep[] = [
+    //   {
+    //     title: "Meeting Location",
+    //     text: `Provide Zoom, Meet, Skype link etc and login to that platform from here.`,
+    //     className: ".meetingLocation",
+    //     isNext: false,
+    //     buttons: [
+    //       {
+    //         type: ShepherButton.Hide,
+    //         callBack: null,
+    //         classes: "shepherd-button-secondary",
+    //         text: "Skip",
+    //       },
+    //       {
+    //         type: ShepherButton.Next,
+    //         callBack: null,
+    //         classes: "null",
+    //         text: "Done",
+    //       },
+    //     ],
+    //   },
+    // ];
+    // let isVisited = await this.common.getVisited("meetingLocationGuide");
+    // if (!isVisited) {
+    //   this.common.sheperdInit(featureSteps);
+    //   this.common.shepherdStart();
+    //   this.common.setVisited("meetingLocationGuide");
+    // }
   }
 
   public async meetingAgendaNotesSpeechGuide() {
-    let featureSteps: ShepherdStep[] = [
-      {
-        title: "Add Agenda with voice",
-        text: `Easily add meeting agenda with voice record tool`,
-        className: ".agendaSpeech",
-        isNext: true,
-        buttons: [
-          {
-            type: ShepherButton.Hide,
-            callBack: null,
-            classes: "shepherd-button-secondary",
-            text: "Skip",
-          },
-          {
-            type: ShepherButton.Next,
-            callBack: null,
-            classes: "null",
-            text: "Next",
-          },
-        ],
-      },
-      {
-        title: "Add notes using voice",
-        text: `Easily add meeting notes with voice record tool`,
-        className: ".notesSpeech",
-        isNext: true,
-        buttons: [
-          {
-            type: ShepherButton.Hide,
-            callBack: null,
-            classes: "shepherd-button-secondary",
-            text: "Skip",
-          },
-          {
-            type: ShepherButton.Next,
-            callBack: null,
-            classes: "null",
-            text: "Done",
-          },
-        ],
-      },
-    ];
-    let isVisited = await this.common.getVisited(
-      "meetingAgendaNotesSpeechGuide"
-    );
-    if (!isVisited) {
-      this.common.sheperdInit(featureSteps);
-      this.common.shepherdStart();
-      this.common.setVisited("meetingAgendaNotesSpeechGuide");
-    }
+    // let featureSteps: ShepherdStep[] = [
+    //   {
+    //     title: "Add Agenda with voice",
+    //     text: `Easily add meeting agenda with voice record tool`,
+    //     className: ".agendaSpeech",
+    //     isNext: true,
+    //     buttons: [
+    //       {
+    //         type: ShepherButton.Hide,
+    //         callBack: null,
+    //         classes: "shepherd-button-secondary",
+    //         text: "Skip",
+    //       },
+    //       {
+    //         type: ShepherButton.Next,
+    //         callBack: null,
+    //         classes: "null",
+    //         text: "Next",
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     title: "Add notes using voice",
+    //     text: `Easily add meeting notes with voice record tool`,
+    //     className: ".notesSpeech",
+    //     isNext: true,
+    //     buttons: [
+    //       {
+    //         type: ShepherButton.Hide,
+    //         callBack: null,
+    //         classes: "shepherd-button-secondary",
+    //         text: "Skip",
+    //       },
+    //       {
+    //         type: ShepherButton.Next,
+    //         callBack: null,
+    //         classes: "null",
+    //         text: "Done",
+    //       },
+    //     ],
+    //   },
+    // ];
+    // let isVisited = await this.common.getVisited(
+    //   "meetingAgendaNotesSpeechGuide"
+    // );
+    // if (!isVisited) {
+    //   this.common.sheperdInit(featureSteps);
+    //   this.common.shepherdStart();
+    //   this.common.setVisited("meetingAgendaNotesSpeechGuide");
+    // }
   }
 }

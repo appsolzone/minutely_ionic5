@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Plugins, PermissionType, Capacitor } from "@capacitor/core";
+import { recognition } from 'src/app/shared/speech/speech-web.js';
 import { ComponentsService } from 'src/app/shared/components/components.service';
 const { SpeechRecognition, Permissions } = Plugins;
 
@@ -14,6 +15,10 @@ export class SpeechService {
   ) { }
 
   async startListening(prompt: string ="Say something"){
+    if(Capacitor.platform == 'web'){
+      let res = await this.startListeningWeb(prompt);
+      return res;
+    }
     // check whether we have speech SpeechRecognition
     // alert("Start")
     // if(!SpeechRecognition.available()){
@@ -76,5 +81,61 @@ export class SpeechService {
 
   stop(){
     SpeechRecognition.stop();
+  }
+
+  async startListeningWeb(prompt: string ="Say something"): Promise<any>{
+      let text = '';
+      if(recognition){
+        await this.common.showLoader("Say " + prompt,0,'dots')
+        recognition.start();
+        return new Promise((resolve: any, reject: any)=>{
+
+          recognition.onresult = (event)=> {
+          //   // The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
+          //   // The SpeechRecognitionResultList object contains SpeechRecognitionResult objects.
+          //   // It has a getter so it can be accessed like an array
+          //   // The first [0] returns the SpeechRecognitionResult at the last position.
+          //   // Each SpeechRecognitionResult object contains SpeechRecognitionAlternative objects that contain individual results.
+          //   // These also have getters so they can be accessed like arrays.
+          //   // The second [0] returns the SpeechRecognitionAlternative at position 0.
+          //   // We then return the transcript property of the SpeechRecognitionAlternative object
+          //   // var color = event.results[0][0].transcript;
+          //   // diagnostic.textContent = 'Result received: ' + color + '.';
+          //   // bg.style.backgroundColor = color;
+          //   // console.log('Confidence: ' + event.results[0][0].confidence);
+            var text = event.results[0][0].transcript;
+            this.common.hideLoader()
+            resolve({text: text});
+          }
+          recognition.onspeechend = ()=>{
+            console.log('stop 1: ', new Date());
+            this.common.hideLoader()
+            recognition.stop();
+            console.log('stop 2: ', new Date());
+          }
+          recognition.onnomatch = (event)=>{
+            // diagnostic.textContent = "I didn't recognise that color.";
+            this.common.hideLoader()
+            this.common.presentAlert('Error',"Could not recognize the speech")
+          }
+
+          recognition.onerror = (event)=> {
+            // diagnostic.textContent = 'Error occurred in recognition: ' + event.error;
+            this.common.hideLoader()
+            let msg = 'Error occurred in recognition: ' + event.error + '.'
+            ' It may have cused due to incompatible browser. Please try with Chrome browser.' +
+            ' Also note that this feature is available on mobile app as well.';
+            setTimeout(()=>this.common.presentAlert('Error',msg),300)
+          }
+
+        });
+      } else {
+        this.common.hideLoader()
+        let msg = 'Error occurred in recognition. ' +
+                  ' It may have cused due to incompatible browser. Please try with Chrome browser.' +
+                  ' Also note that this feature is available on mobile app as well.';
+        this.common.presentAlert('Error',msg);
+      }
+
   }
 }

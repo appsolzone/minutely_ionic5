@@ -66,6 +66,7 @@ export class MeetingLocationEditComponent implements OnInit, AfterViewInit {
         }
         break;
       case "delete":
+        this.meetingUrl = '';
         this.meetingDetails.meetingPlace = { url: null, from: null };
         break;
     }

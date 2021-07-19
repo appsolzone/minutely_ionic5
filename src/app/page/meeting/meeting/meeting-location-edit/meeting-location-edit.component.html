@@ -27,13 +27,14 @@
 </ion-item>
 <ion-item>
   <ion-input type="url" [(ngModel)]="meetingUrl" [value]="meetingUrl" placeholder="Please provide the meeting link"
+    (ionBlur)="editMeetingPlace('add')"
     color="medium">
   </ion-input>
-  <ion-buttons slot="end">
+  <!-- <ion-buttons slot="end">
     <ion-button slot="end" [disabled]="!meetingUrl" (click)="editMeetingPlace('add')" class="meetingLocation">
       <ion-icon name="add-circle-outline" size="large" slot="icon-only"></ion-icon>
     </ion-button>
-  </ion-buttons>
+  </ion-buttons> -->
 </ion-item>
 <ion-item detail="true" button="true" (click)="dropDownCallList()">
   <ion-label>
