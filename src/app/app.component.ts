@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Router, Event, NavigationStart, NavigationEnd } from '@angular/router';
 
 import { Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+// import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { appPages } from './shared/app-menu-pages';
 
@@ -10,7 +10,7 @@ import { isDevMode } from '@angular/core';
 
 // import { IonRouterOutlet, Platform } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
-const { App } = Plugins;
+const { App, SplashScreen } = Plugins;
 
 import { ComponentsService } from 'src/app/shared/components/components.service';
 import { FcmService } from 'src/app/shared/fcm/fcm.service';
@@ -31,7 +31,7 @@ export class AppComponent {
   constructor(
     private router: Router,
     private platform: Platform,
-    private splashScreen: SplashScreen,
+    // private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private common: ComponentsService,
     private fcmService: FcmService,
@@ -50,7 +50,8 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      // this.splashScreen.hide();
+      SplashScreen.hide();
       // Trigger the push setup
       this.fcmService.initPush();
       this.analytics.initAnalytics();

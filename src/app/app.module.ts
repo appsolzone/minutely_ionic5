@@ -4,7 +4,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { PathLocationStrategy, LocationStrategy } from '@angular/common';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+// import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -44,7 +44,7 @@ import { FeatureCheckDirectiveModule } from 'src/app/directive/featurecheck/feat
   ],
   providers: [
     StatusBar,
-    SplashScreen,
+    // SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: LocationStrategy, useClass: PathLocationStrategy },
     AngularFirestoreModule,

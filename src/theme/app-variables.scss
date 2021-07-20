@@ -43,6 +43,13 @@ ion-icon {
   background-position: center center;
 }
 
+.index-background{
+  background-image: url(/assets/app-assets/index-image.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
 // .section-masonic{
 //   columns: 4;
 //   // column-gap: 15px;
@@ -367,6 +374,10 @@ body.dark {
 @media (min-width: 992px) {
   .section-masonic {
     columns: var(--masonic-no-of-col-lg);
+  }
+  .index-background{
+    background-image: linear-gradient(to right, var(--ion-color-white) 15%, transparent, transparent, transparent), url(/assets/app-assets/index-image.png);
+    // background-position: ;
   }
 }
 
