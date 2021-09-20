@@ -12,4 +12,5 @@ export interface User {
   fcm?: string;
   lastUpdateTimeStamp: any;
   userCreationTimeStamp: any;
+  speechServiceLang?: any;
 }

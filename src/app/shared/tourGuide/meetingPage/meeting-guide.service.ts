@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { Router } from '@angular/router';
 import { Platform } from "@ionic/angular";
 import { ShepherButton, ShepherdStep } from "src/app/interface/sheperdStep";
 import { CommonShepherdService } from "../common/common-shepherd.service";
@@ -10,6 +11,7 @@ import { OthersGuideService } from "../others/others-guide.service";
 export class MeetingGuideService {
   isMobile: string = "sm";
   constructor(
+    private router: Router,
     private common: CommonShepherdService,
     private navTourGuide: OthersGuideService,
     private platform: Platform
@@ -124,8 +126,8 @@ export class MeetingGuideService {
         ],
       },
       {
-        title: "Speech Recognition",
-        text: `Tap on the mic and speak to record meeting title`,
+        title: "Voice Notes",
+        text: `Tap on the mic and speak to record meeting title. Set preferred voice notes language from Profile.`,
         className: ".titleSpeech",
         isNext: false,
         buttons: [
@@ -141,6 +143,12 @@ export class MeetingGuideService {
             classes: "shepherd-button-secondary",
             text: "Back",
           },
+          // {
+          //   type: ShepherButton.Next,
+          //   callBack: ()=>this.router.navigate(['profile']),
+          //   classes: "null",
+          //   text: "Set language",
+          // },
           {
             type: ShepherButton.Next,
             callBack: null,

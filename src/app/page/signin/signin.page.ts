@@ -91,9 +91,9 @@ export class SigninPage implements OnInit {
         'Access details from search results'
       ]
     },
-  ]
+  ].sort( () => .5 - Math.random() );
   public slideOpts = {
-    initialSlide: Math.floor(Math.random() * this.signInFeatures.length), //0,
+    initialSlide: 0, //Math.floor(Math.random() * this.signInFeatures.length), //0,
     slidesPerView: 1,
     autoplay:true
   };

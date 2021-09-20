@@ -115,7 +115,7 @@ export class TaskUserCommentsPage implements OnInit,OnDestroy {
   }
 
   async startSpeech(type){
-    let res = await this.speech.startListening('What would you like to add as ' + type);
+    let res = await this.speech.startListening('What would you like to add as ' + type, this.sessionInfo);
     if(res?.text){
       this.postedComment += (' ' + res.text);
     }

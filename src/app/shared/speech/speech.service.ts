@@ -14,9 +14,9 @@ export class SpeechService {
     private common: ComponentsService
   ) { }
 
-  async startListening(prompt: string ="Say something"){
+  async startListening(prompt: string ="Say something", sessionInfo: any = null){
     if(Capacitor.platform == 'web'){
-      let res = await this.startListeningWeb(prompt);
+      let res = await this.startListeningWeb(prompt, sessionInfo);
       return res;
     }
     // check whether we have speech SpeechRecognition
@@ -56,7 +56,7 @@ export class SpeechService {
             // alert("permission, now start speech")
 
             return SpeechRecognition.start({
-              language: "en-US", //"bn-IN",
+              language: sessionInfo?.userProfile?.speechServiceLang ? sessionInfo?.userProfile?.speechServiceLang.lang : 'en-US', //"en-US", //"bn-IN",
               maxResults: 2,
               prompt: prompt,
               partialResults: true,
@@ -83,9 +83,10 @@ export class SpeechService {
     SpeechRecognition.stop();
   }
 
-  async startListeningWeb(prompt: string ="Say something"): Promise<any>{
+  async startListeningWeb(prompt: string ="Say something", sessionInfo: any = null): Promise<any>{
       let text = '';
       if(recognition){
+        recognition.lang = sessionInfo?.userProfile?.speechServiceLang ? sessionInfo?.userProfile?.speechServiceLang.lang : 'en-US';
         await this.common.showLoader("Say " + prompt,0,'dots')
         recognition.start();
         return new Promise((resolve: any, reject: any)=>{
@@ -122,7 +123,7 @@ export class SpeechService {
           recognition.onerror = (event)=> {
             // diagnostic.textContent = 'Error occurred in recognition: ' + event.error;
             this.common.hideLoader()
-            let msg = 'Error occurred in recognition: ' + event.error + '.'
+            let msg = 'Error occurred in recognition: ' + event.error + '.' +
             ' It may have cused due to incompatible browser. Please try with Chrome browser.' +
             ' Also note that this feature is available on mobile app as well.';
             setTimeout(()=>this.common.presentAlert('Error',msg),300)

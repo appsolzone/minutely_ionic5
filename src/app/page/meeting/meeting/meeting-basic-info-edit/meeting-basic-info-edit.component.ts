@@ -194,7 +194,7 @@ export class MeetingBasicInfoEditComponent implements OnInit {
   }
 
   async startSpeech(type){
-    let res = await this.speech.startListening('What would you like to add as meeting title');
+    let res = await this.speech.startListening('What would you like to add as meeting title', this.sessionInfo);
     if(res?.text){
       this.meetingDetails[type] += (' ' + res.text);
     }

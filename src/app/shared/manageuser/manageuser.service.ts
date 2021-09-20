@@ -24,7 +24,8 @@ export class ManageuserService {
                       picUrl: '',
                       fcm: '',
                       lastUpdateTimeStamp: this.db.frb.firestore.FieldValue.serverTimestamp(),
-                      userCreationTimeStamp: this.db.frb.firestore.FieldValue.serverTimestamp()
+                      userCreationTimeStamp: this.db.frb.firestore.FieldValue.serverTimestamp(),
+                      speechServiceLang: {description: 'English (United States)', lang: 'en-US'},
                   };
 
   constructor(

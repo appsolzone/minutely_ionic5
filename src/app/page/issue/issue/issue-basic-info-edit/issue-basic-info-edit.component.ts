@@ -112,7 +112,7 @@ export class IssueBasicInfoEditComponent implements OnInit {
   }
 
   async startSpeech(type){
-    let res = await this.speech.startListening('What would you like to add as ' + type);
+    let res = await this.speech.startListening('What would you like to add as ' + type, this.sessionInfo);
     if(res?.text){
       this.issueDetails[type] += (' ' + res.text);
     }

@@ -12,7 +12,7 @@
         <!-- <img src="./slide-1.png"/> -->
         <ion-icon [name]="ftr.icon" slot="start" color="medium"></ion-icon>
         <h2>{{ftr.title}}</h2>
-        <p *ngFor="let txt of ftr.details">{{txt}}</p>
+        <!-- <p *ngFor="let txt of ftr.details">{{txt}}</p> -->
       </div>
     </ion-slide>
   </ion-slides>
@@ -164,6 +164,21 @@
                 </ion-label>
                 <ion-input type="text" [(ngModel)]="updatedProfile.address" class="ion-text-right"
                   placeholder="Please enter you permanent address" [readonly]="!editProfile"></ion-input>
+              </ion-item>
+              <ion-item [lines]="editProfile ? 'none' : 'inset'">
+                <!-- <ion-label><ion-icon name="mic" class="ion-margin-end"></ion-icon> Select speech language</ion-label> -->
+                <ion-label class="ion-text-wrap">
+                  <ion-icon name="mic"></ion-icon>
+                </ion-label>
+                <ion-input class="ion-text-end" type="text" readonly="true" [value]="!editProfile || updatedProfile.speechServiceLang ? updatedProfile.speechServiceLang.description : 'Voice notes language'"></ion-input>
+              </ion-item>
+              <ion-item *ngIf="editProfile" lines="inset">
+                <!-- <ion-label class="ion-text-wrap">
+                  <p><small>Select the desired input language for voice notes</small></p>
+                </ion-label> -->
+                <ion-select style="width: 100%!important;" class="ion-text-end" interface="action-sheet" placeholder="Select input language for voice notes" [(ngModel)]="updatedProfile.speechServiceLang">
+                  <ion-select-option *ngFor="let c of allLanguages" [value]="c">{{c.description}}</ion-select-option>
+                </ion-select>
               </ion-item>
               <ion-item lines="none" class="ion-margin-top" *ngIf="editProfile">
                 <ion-button fill="clear" size="default" color="medium" slot="end" (click)="onSkip()">Skip</ion-button>

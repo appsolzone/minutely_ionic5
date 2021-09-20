@@ -19,6 +19,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import '@codetrix-studio/capacitor-google-auth';
 import { KpiService } from 'src/app/shared/kpi/kpi.service';
 // import { AccessDeniedPage } from 'src/app/page/access-denied/access-denied/access-denied.page';
+import { languages } from 'src/app/shared/static/languages';
 
 const { Storage } = Plugins;
 
@@ -113,12 +114,14 @@ export class ManageprofilePage implements OnInit {
         'Access details from search results'
       ]
     },
-  ];
+  ].sort( () => .5 - Math.random() );
   public slideOpts = {
-    initialSlide: Math.floor(Math.random() * this.signInFeatures.length), //0,
+    initialSlide: 0, //Math.floor(Math.random() * this.signInFeatures.length), //0,
     slidesPerView: 1,
     autoplay:true
   };
+  public allLanguages: any[]=languages;
+    public speechServiceLang: any;
 
   constructor(
     private router: Router,
@@ -289,7 +292,7 @@ export class ManageprofilePage implements OnInit {
       // if everything is fine just go to activity page directly
       this.onDismissClick(instruction);
     } else if(this.sessionInfo?.orgProfile?.subscriptionType.toUpperCase() == 'FREE'){
-      this.common.presentToaster(instruction.body);
+      // this.common.presentToaster(instruction.body);
       this.onDismissClick(instruction);
     } else {
       await this.common.presentAlert(
@@ -456,6 +459,7 @@ export class ManageprofilePage implements OnInit {
           status: 'CREATED',
           lastUpdateTimeStamp: this.firestore.FieldValue.serverTimestamp(),
           userCreationTimeStamp: this.firestore.FieldValue.serverTimestamp(),
+          speechServiceLang: {description: 'English (United States)', lang: 'en-US'},
         };
       }
     } else {

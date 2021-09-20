@@ -54,6 +54,7 @@ export class CommonShepherdService {
         element: className,
         on: "bottom",
       },
+      canClickTarget: false,
       buttons: buttons
         ? buttons.map((b) => {
             return {

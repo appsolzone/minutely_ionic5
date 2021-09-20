@@ -14,7 +14,7 @@
         "profile",
         "email"
       ],
-      "serverClientId": "REPLACE.apps.googleusercontent.com",
+      "serverClientId": "REPLACEME.apps.googleusercontent.com",
       "forceCodeForRefreshToken": true
     },
     "PushNotifications": {
