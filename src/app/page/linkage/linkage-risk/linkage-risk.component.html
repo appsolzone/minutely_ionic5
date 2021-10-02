@@ -8,7 +8,7 @@
     </ion-button>
   </ion-buttons>
 </ion-item>
-<ion-card *ngIf="!showSearchList && linkedRisks?.length==0" class="ion-no-padding">
+<ion-card *ngIf="!showSearchList && (risks && linkedRisks?.length==0)" class="ion-no-padding">
   <ion-item lines="none">
     <ion-icon name="information-circle-outline"  slot="start" color="medium"></ion-icon>
     <ion-label class="ion-text-wrap" color="medium">
@@ -31,7 +31,7 @@
     <h2>Selected linked risks</h2>
   </ion-label>
 </ion-item>
-<ion-card class="ion-no-padding" *ngFor="let t of linkedRisks ? linkedRisks : [null,null];let i=index;"
+<ion-card class="ion-no-padding" *ngFor="let t of (risks && linkedRisks)? linkedRisks : [null,null];let i=index;"
   [button]="viewMode=='edit' ? false : true" (click)="viewMode=='edit' ? null : openRiskDetails(t)">
   <ion-item lines="none" color="transparent">
     <!-- <ion-buttons slot="start"> -->

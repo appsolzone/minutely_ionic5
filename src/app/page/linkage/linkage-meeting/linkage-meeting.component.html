@@ -8,7 +8,7 @@
     </ion-button>
   </ion-buttons>
 </ion-item>
-<ion-card *ngIf="!showSearchList && linkedMeetings?.length==0" class="ion-no-padding">
+<ion-card *ngIf="!showSearchList && (meetings && linkedMeetings?.length==0)" class="ion-no-padding">
   <ion-item lines="none">
     <ion-icon name="information-circle-outline"  slot="start" color="medium"></ion-icon>
     <ion-label class="ion-text-wrap" color="medium">
@@ -31,7 +31,7 @@
     <h2>Selected linked meetings</h2>
   </ion-label>
 </ion-item>
-<ion-card class="ion-no-padding" *ngFor="let m of linkedMeetings ? linkedMeetings : [null,null];let i=index;"
+<ion-card class="ion-no-padding" *ngFor="let m of (meetings && linkedMeetings) ? linkedMeetings : [null,null];let i=index;"
   [button]="viewMode=='edit' ? false : true" (click)="viewMode=='edit' ? null : openMeetingDetails(m)">
   <ion-item lines="none" color="transparent">
     <ion-chip *ngIf="m" size="small"  slot="start" color="primary">{{m.data.meetingStart| date : 'shortTime'}} - {{m.data.meetingEnd| date : 'shortTime'}}</ion-chip>
